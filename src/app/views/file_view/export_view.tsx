@@ -284,10 +284,13 @@ export class ExportTemplateView extends ContextedComponent<
           <div className="form-group-file">
             <label>{label}</label>
             <FileUploader
+              filename={value}
               extensions={["*"]}
               onChange={async file => {
                 const fileContent = await readFileAsDataUrl(file);
-                onChange(fileContent);
+                onChange({
+                  file ,fileContent
+                });
               }}
             />
             <i className="bar" />
@@ -298,14 +301,25 @@ export class ExportTemplateView extends ContextedComponent<
 
   public renderTargetProperties() {
     return this.state.target.getProperties().map(property => {
+      let displayName = this.store.getPropertyExportName(property.name);
+      if (property.name === "visualIcon") {
+        displayName = this.store.getPropertyExportName(`${property.name}FileName`);
+      }
       return (
         <div key={property.name}>
           {this.renderInput(
             property.displayName,
             property.type,
-            this.state.targetProperties[property.name],
+            displayName || this.state.targetProperties[property.name],
             value => {
-              this.state.targetProperties[property.name] = value;
+              debugger;
+              if (property.name === "visualIcon") {
+                this.store.setPropertyExportName(`${property.name}FileName`, value.file.name);
+                this.store.setPropertyExportName(`${property.name}Content`, value.fileContent);
+              } else {
+                this.state.targetProperties[property.name] = value;
+                this.store.setPropertyExportName(property.name, value);
+              }
               this.setState({
                 targetProperties: this.state.targetProperties
               });

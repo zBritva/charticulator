@@ -114,6 +114,8 @@ export class AppStore extends BaseStore {
 
   public actionHandlers = new ActionHandlerRegistry<AppStore, Actions.Action>();
 
+  private propertyExportName = new Map<string, string>();
+
   constructor(worker: CharticulatorWorker, dataset: Dataset.Dataset) {
     super(null);
 
@@ -153,6 +155,14 @@ export class AppStore extends BaseStore {
         };
       }
     );
+  }
+
+  public setPropertyExportName(propertyName: string, value: string) {
+    this.propertyExportName.set(`${propertyName}`, value);
+  }
+
+  public getPropertyExportName(propertyName: string) {
+    return this.propertyExportName.get(`${propertyName}`);
   }
 
   public saveState(): AppStoreState {
