@@ -726,7 +726,18 @@ export function buildAxisWidgets(
                 m.inputExpression({
                   property: axisProperty,
                   field: "expression"
-                })
+                },
+                  {
+                    dropzone: {
+                      ...dropzoneOptions.dropzone,
+                      field: "tickDataExpression",
+                    },
+                    widget: m.clearButton({
+                      property: axisProperty,
+                      field: "tickDataExpression"
+                    }),
+                  }
+                )
               )
             );
           }
@@ -763,7 +774,18 @@ export function buildAxisWidgets(
               m.inputExpression({
                 property: axisProperty,
                 field: "tickDataExpression"
-              })
+              },
+                {
+                  dropzone: {
+                    ...dropzoneOptions.dropzone,
+                    field: "tickDataExpression",
+                  },
+                  widget: m.clearButton({
+                    property: axisProperty,
+                    field: "tickDataExpression"
+                  }),
+                }),
+              m.clearButton({ property: axisProperty })
             )
           );
           widgets.push(
