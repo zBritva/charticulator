@@ -268,23 +268,98 @@ export class WidgetManager implements Prototypes.Controls.WidgetManager {
     property: Prototypes.Controls.Property,
     options: Prototypes.Controls.InputExpressionOptions = {}
   ) {
-    return (
-      <InputExpression
-        defaultValue={this.getPropertyValue(property) as string}
-        validate={value =>
-          this.store.verifyUserExpressionWithTable(value, options.table)
-        }
-        placeholder="(none)"
-        onEnter={value => {
-          if (value.trim() == "") {
-            this.emitSetProperty(property, null);
-          } else {
-            this.emitSetProperty(property, value);
+    if (options.dropzone) {
+      let refButton: Element;
+      const current = this.getPropertyValue({
+        property: options.dropzone.property
+      }) as Specification.Types.AxisDataBinding;
+
+      return (
+        <DropZoneView
+          filter={data => data instanceof DragData.DataExpression}
+          onDrop={(data: DragData.DataExpression) => {
+            if (data.expression.trim() == "") {
+              this.emitSetProperty(property, null);
+            } else {
+              this.emitSetProperty(property, data.expression);
+            }
+          }}
+          className="charticulator__widget-section-header charticulator__widget-section-header-dropzone"
+          draggingHint={() => (
+            <span className="el-dropzone-hint">{options.dropzone.prompt}</span>
+          )}
+        >
+          <InputExpression
+            defaultValue={this.getPropertyValue(property) as string}
+            validate={value =>
+              this.store.verifyUserExpressionWithTable(value, options.table)
+            }
+            placeholder="(none)"
+            onEnter={value => {
+              if (value.trim() == "") {
+                this.emitSetProperty(property, null);
+              } else {
+                this.emitSetProperty(property, value);
+              }
+              return true;
+            }}
+          />
+          {options.widget}
+          <Button
+            icon={"general/bind-data"}
+            ref={e => (refButton = ReactDOM.findDOMNode(e) as Element)}
+            onClick={() => {
+              globals.popupController.popupAt(
+                context => {
+                  return (
+                    <PopupView context={context}>
+                      <DataFieldSelector
+                        datasetStore={this.store}
+                        defaultValue={
+                          current && current.expression
+                            ? { table: null, expression: current.expression }
+                            : null
+                        }
+                        useAggregation={true}
+                        nullDescription={"(none)"}
+                        nullNotHighlightable={true}
+                        onChange={value => {
+                          if (value.columnName.trim() == "") {
+                            this.emitSetProperty(property, null);
+                          } else {
+                            this.emitSetProperty(property, value.expression);
+                          }
+                        }}
+                      />
+                    </PopupView>
+                  );
+                },
+                { anchor: refButton }
+              );
+            }}
+            active={false}
+          />
+        </DropZoneView>
+      );
+    } else {
+      return (
+        <InputExpression
+          defaultValue={this.getPropertyValue(property) as string}
+          validate={value =>
+            this.store.verifyUserExpressionWithTable(value, options.table)
           }
-          return true;
-        }}
-      />
-    );
+          placeholder="(none)"
+          onEnter={value => {
+            if (value.trim() == "") {
+              this.emitSetProperty(property, null);
+            } else {
+              this.emitSetProperty(property, value);
+            }
+            return true;
+          }}
+        />
+      );
+    }
   }
   public inputColor(
     property: Prototypes.Controls.Property,

@@ -35,6 +35,7 @@ export interface RowOptions {
     type: "axis-data-binding";
     prompt?: string;
     property?: string;
+    field?: string;
   };
 }
 
@@ -125,6 +126,14 @@ export interface ScrollListOptions {
 
 export interface InputExpressionOptions {
   table?: string;
+  title?: string;
+  widget?: JSX.Element,
+  dropzone?: {
+    type: "axis-data-binding";
+    prompt?: string;
+    property?: string;
+    field?: string;
+  };
 }
 
 export interface WidgetManager {
