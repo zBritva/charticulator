@@ -85,7 +85,7 @@ export interface InputColorOptions {
   allowNull?: boolean;
 }
 
-export interface TableOptions {}
+export interface TableOptions { }
 
 export interface FilterEditorOptions {
   table: string;
@@ -133,7 +133,8 @@ export interface InputExpressionOptions {
     prompt?: string;
     property?: string;
     field?: string;
-  };
+  },
+  readonly?: boolean;
 }
 
 export interface WidgetManager {

@@ -12,6 +12,7 @@ export interface InputExpressionProps {
   onCancel?: () => void;
   textExpression?: boolean;
   allowNull?: boolean;
+  readonly?: boolean;
 }
 
 export interface InputExpressionState {
@@ -79,6 +80,7 @@ export class InputExpression extends React.Component<
     return (
       <span className="charticulator__widget-control-input-expression">
         <input
+        readOnly={this.props.readonly}
           className={classNames(
             "charticulator__widget-control-input-expression-input",
             ["is-error", this.state.errorIndicator]

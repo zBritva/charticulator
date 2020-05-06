@@ -352,6 +352,7 @@ export class ColorSpacePicker extends React.Component<
 }
 
 export interface InputFieldProps {
+  readonly?: boolean;
   defaultValue?: string;
   onEnter?: (value: string) => boolean;
 }
@@ -392,6 +393,7 @@ export class InputField extends React.Component<InputFieldProps, {}> {
   public render() {
     return (
       <input
+        readOnly={this.props.readonly}
         type="text"
         ref={e => (this.inputElement = e)}
         defaultValue={this.props.defaultValue}

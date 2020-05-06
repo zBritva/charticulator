@@ -53,6 +53,7 @@ import { FilterEditor } from "./filter_editor";
 import { MappingEditor } from "./mapping_editor";
 import { GroupByEditor } from "./groupby_editor";
 import { ChartTemplate } from "../../../../container";
+import { InputField } from "../../../components/color_space_picker";
 
 export type OnEditMappingHandler = (
   attribute: string,
@@ -290,6 +291,7 @@ export class WidgetManager implements Prototypes.Controls.WidgetManager {
           )}
         >
           <InputExpression
+            readonly={options.readonly}
             defaultValue={this.getPropertyValue(property) as string}
             validate={value =>
               this.store.verifyUserExpressionWithTable(value, options.table)

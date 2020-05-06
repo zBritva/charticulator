@@ -784,6 +784,7 @@ export function buildAxisWidgets(
                     property: axisProperty,
                     field: "tickDataExpression"
                   }),
+                  readonly: true
                 }),
               m.clearButton({ property: axisProperty })
             )
