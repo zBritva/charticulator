@@ -100,6 +100,7 @@ export class ChartEditorView
     this.tokens = [];
   }
 
+  // SAME
   public getRelativePoint(point: Point): Point {
     const r = this.refs.canvas.getBoundingClientRect();
     return {
@@ -127,6 +128,7 @@ export class ChartEditorView
     return zoom;
   }
 
+  // 2/3 IS SAME
   public componentDidMount() {
     this.hammer = new Hammer(this.refs.canvasInteraction);
     this.hammer.add(new Hammer.Tap());
@@ -279,12 +281,14 @@ export class ChartEditorView
     );
   }
 
+  // SAME
   public componentWillUnmount() {
     this.hammer.destroy();
     this.tokens.forEach(t => t.remove());
     globals.dragController.unregisterDroppable(this);
   }
 
+  // CAN BE MERGED
   public onDragEnter(ctx: DragContext) {
     new Actions.SetCurrentTool(null).dispatch(this.props.store.dispatcher);
     const data = ctx.data;
@@ -302,23 +306,28 @@ export class ChartEditorView
     return false;
   }
 
+  // UNIQUE
   protected getGraphics(): Graphics.Element {
     const renderer = new Graphics.ChartRenderer(this.props.store.chartManager);
     return renderer.render();
   }
 
+  // UNIQUE
   protected updateSelection() {
     this.setState({ currentSelection: this.props.store.currentSelection });
   }
 
+  // UNIQUE
   protected updateGraphics() {
     this.setState({ graphics: this.getGraphics() });
   }
 
+  // UNIQUE
   public renderGraphics() {
     return <GraphicalElementDisplay element={this.state.graphics} />;
   }
 
+  // UNIQUE
   public renderEditingLink() {
     const store = this.props.store;
     if (store.currentSelection instanceof ChartElementSelection) {
@@ -338,6 +347,7 @@ export class ChartEditorView
     return null;
   }
 
+  // SIMILAR
   public renderCreatingComponent() {
     if (this.state.currentCreation == null) {
       return null;
@@ -474,6 +484,7 @@ export class ChartEditorView
     }
   }
 
+  // SAME
   public renderBoundsGuides() {
     // let chartClass = this.props.store.chartManager.getChartClass(this.props.store.chartState);
     // let boundsGuides = chartClass.getSnappingGuides();
@@ -514,6 +525,7 @@ export class ChartEditorView
     });
   }
 
+  // SIMILAR
   public getSnappingGuides(): ChartSnappableGuide[] {
     const chartClass = this.props.store.chartManager.getChartClass(
       this.props.store.chartState
@@ -551,6 +563,7 @@ export class ChartEditorView
     return chartGuides;
   }
 
+  // SIMILAR TO renderMarkHandles
   public renderChartHandles() {
     const chartClass = this.props.store.chartManager.getChartClass(
       this.props.store.chartState
@@ -590,6 +603,7 @@ export class ChartEditorView
     });
   }
 
+  // UNIQUE
   public renderMarkHandlesInPlotSegment(
     plotSegment: Specification.PlotSegment,
     plotSegmentState: Specification.PlotSegmentState
@@ -646,6 +660,7 @@ export class ChartEditorView
     return <g>{bboxViews}</g>;
   }
 
+  // SIMILAR to renderElementHandles
   public renderLayoutHandles() {
     const elements = this.props.store.chart.elements;
     const elementStates = this.props.store.chartState.elements;
@@ -789,6 +804,7 @@ export class ChartEditorView
     );
   }
 
+  // SAME
   public renderHandles() {
     return (
       <g>
@@ -798,6 +814,7 @@ export class ChartEditorView
     );
   }
 
+  // UNIQUE
   public renderControls() {
     const elements = this.props.store.chart.elements;
     const elementStates = this.props.store.chartState.elements;
@@ -857,6 +874,7 @@ export class ChartEditorView
     );
   }
 
+  // SAME
   public renderSnappingGuides() {
     const guides = this.state.snappingCandidates;
     if (!guides || guides.length == 0) {
@@ -907,6 +925,7 @@ export class ChartEditorView
     });
   }
 
+  // UNIQUE
   public renderChartCanvas() {
     const chartState = this.props.store.chartState;
     const p1 = {
@@ -958,6 +977,7 @@ export class ChartEditorView
     );
   }
 
+  // UNIQUE
   public renderDropZoneForMarkLayout(
     layout: Specification.PlotSegment,
     state: Specification.PlotSegmentState
@@ -1072,7 +1092,7 @@ export class ChartEditorView
     const height = this.state.viewHeight;
     const transform = `translate(${this.state.zoom.centerX},${
       this.state.zoom.centerY
-    }) scale(${this.state.zoom.scale})`;
+      }) scale(${this.state.zoom.scale})`;
     return (
       <div className="chart-editor-view">
         <div className="chart-editor-canvas-view" ref="canvasContainer">

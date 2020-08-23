@@ -52,7 +52,7 @@ export interface MarkEditorViewState {
 export class MarkEditorView extends ContextedComponent<
   MarkEditorViewProps,
   MarkEditorViewState
-> {
+  > {
   protected refContainer: HTMLDivElement;
   protected refSingleMarkView: SingleMarkView;
   protected resizeListenerHandle: number;
@@ -275,6 +275,7 @@ export class SingleMarkView
     };
   }
 
+  // UNIQUE
   public doZoom(factor: number) {
     const { scale, centerX, centerY } = this.state.zoom;
     const fixPoint = Geometry.unapplyZoom(this.state.zoom, {
@@ -292,6 +293,7 @@ export class SingleMarkView
     });
   }
 
+  // UNIQUE
   public doZoomAuto() {
     const newZoom = this.getFitViewZoom(this.props.width, this.props.height);
     if (!newZoom) {
@@ -302,6 +304,7 @@ export class SingleMarkView
     });
   }
 
+  // THE PART IS SAME
   public getFitViewZoom(width: number, height: number) {
     const glyphState = this.props.glyphState;
     if (!glyphState) {
@@ -426,6 +429,7 @@ export class SingleMarkView
       } as ZoomInfo;
       return zoom;
     } else {
+      // SIMILAR TO in getFitViewZoom of chart editor
       const x1 = Math.min(...boundingRects.map(b => b[0]));
       const x2 = Math.max(...boundingRects.map(b => b[1]));
       const y1 = Math.min(...boundingRects.map(b => b[2]));
@@ -445,6 +449,7 @@ export class SingleMarkView
     }
   }
 
+  // UNIQUE
   public doAutoFit() {
     const newZoom = this.getFitViewZoom(this.props.width, this.props.height);
     if (!newZoom) {
@@ -455,6 +460,7 @@ export class SingleMarkView
     });
   }
 
+  // UNIQUE
   public scheduleAutoFit() {
     const token = this.store.addListener(AppStore.EVENT_GRAPHICS, () => {
       this.doAutoFit();
@@ -462,6 +468,7 @@ export class SingleMarkView
     });
   }
 
+  // SAME
   public getRelativePoint(point: Point): Point {
     const r = this.refs.canvas.getBoundingClientRect();
     return {
@@ -470,6 +477,7 @@ export class SingleMarkView
     };
   }
 
+  // CAN BE MERGED
   public onDragEnter(ctx: DragContext) {
     this.dispatch(new Actions.SetCurrentTool(null));
     const data = ctx.data;
@@ -526,6 +534,7 @@ export class SingleMarkView
   private tokens: EventSubscription[] = [];
   private hammer: HammerManager;
 
+  // 2/3 IS SAME
   public componentDidMount() {
     this.hammer = new Hammer(this.refs.canvasInteraction);
     this.hammer.add(new Hammer.Tap());
@@ -633,6 +642,7 @@ export class SingleMarkView
     );
   }
 
+  // SAME
   public componentWillUnmount() {
     this.hammer.destroy();
     globals.dragController.unregisterDroppable(this);
@@ -658,6 +668,7 @@ export class SingleMarkView
     return renderGraphicalElementSVG(graphics);
   }
 
+  // UNIQUE
   public renderDropIndicator() {
     if (!this.state.showIndicator) {
       return null;
@@ -676,6 +687,7 @@ export class SingleMarkView
     );
   }
 
+  // SIMILAR
   public getSnappingGuides(): MarkSnappableGuide[] {
     let guides: MarkSnappableGuide[];
     const chartStore = this.store;
@@ -713,6 +725,7 @@ export class SingleMarkView
     );
   }
 
+  // SAME
   public renderBoundsGuides() {
     // let chartClass = this.props.store.chartManager.getChartClass(this.props.store.chartState);
     // let boundsGuides = chartClass.getSnappingGuides();
@@ -753,6 +766,7 @@ export class SingleMarkView
     });
   }
 
+  // SIMILAR to renderChartHandles
   public renderMarkHandles() {
     const chartStore = this.store;
     const glyphState = this.props.glyphState;
@@ -784,6 +798,7 @@ export class SingleMarkView
     });
   }
 
+  // UNIQUE
   public renderAnchorHandles() {
     return zipArray(this.props.glyph.marks, this.props.glyphState.marks)
       .filter(x => x[0].classID == "mark.anchor")
@@ -827,6 +842,7 @@ export class SingleMarkView
       });
   }
 
+  // SIMILAR to renderLayoutHandles
   public renderElementHandles() {
     return zipArray(this.props.glyph.marks, this.props.glyphState.marks)
       .filter(x => x[0].classID != "mark.anchor")
@@ -999,6 +1015,7 @@ export class SingleMarkView
       });
   }
 
+  // UNIQUE
   public renderDropZoneForElement(
     data: any,
     element: Specification.Element,
@@ -1081,6 +1098,7 @@ export class SingleMarkView
       });
   }
 
+  // UNIQUE
   public renderSnappingGuidesLabels() {
     const allLabels: Prototypes.SnappingGuides.Description[] = [];
     for (const [element, elementState] of zip(
@@ -1120,6 +1138,7 @@ export class SingleMarkView
     );
   }
 
+  // SAME
   public renderSnappingGuides() {
     const guides = this.state.snappingCandidates;
     if (!guides || guides.length == 0) {
@@ -1170,6 +1189,7 @@ export class SingleMarkView
     });
   }
 
+  // UNIQUE
   public renderMarkGuides() {
     const markClass = this.store.chartManager.getGlyphClass(
       this.props.glyphState
@@ -1205,6 +1225,7 @@ export class SingleMarkView
     });
   }
 
+  // UNIQUE
   public renderAnchor() {
     const { glyph, glyphState } = this.props;
 
@@ -1218,12 +1239,13 @@ export class SingleMarkView
       <path
         d={`M${pt.x - 5},${pt.y}L${pt.x},${pt.y - 5}L${pt.x + 5},${pt.y}L${
           pt.x
-        },${pt.y + 5}Z`}
+          },${pt.y + 5}Z`}
         className="mark-anchor"
       />
     );
   }
 
+  // SIMILAR
   public renderCreatingComponent() {
     const currentCreation = this.props.parent.getCurrentCreation();
     const currentCreationOptions = this.props.parent.getCurrentCreationOptions();
@@ -1362,7 +1384,7 @@ export class SingleMarkView
     const { glyph, glyphState } = this.props;
     const transform = `translate(${this.state.zoom.centerX},${
       this.state.zoom.centerY
-    }) scale(${this.state.zoom.scale})`;
+      }) scale(${this.state.zoom.scale})`;
     if (!glyphState) {
       return (
         <div className="mark-editor-single-view">
