@@ -1,22 +1,29 @@
 {
-  "[typescript]": {
-    "editor.formatOnSave": true
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[json]": {
-    "editor.formatOnSave": false
-  },
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "dist/": true,
-    "node_modules/": true
-  },
-  "files.associations": {
-    "*.chart": "json",
-    "*.tmplt": "json"
-  },
-  "editor.formatOnSave": true
+    "[json]": {
+        "editor.formatOnSave": false
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "dist/": true,
+        "node_modules/": true
+    },
+    "files.associations": {
+        "*.chart": "json",
+        "*.tmplt": "json"
+    },
+    "tslint.configFile": "../tslint.json",
+    "tslint.packageManager": "yarn",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

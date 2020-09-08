@@ -24,7 +24,9 @@ export default function(REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       // Export as vector graphics
       if (action.type == "svg") {
         const svg = await this.renderLocalSVG();
-        const blob = new Blob([svg], { type: "image/svg;charset=utf-8" });
+        const blob = new Blob([svg], {
+          type: "image/svg;charset=utf-8"
+        });
         saveAs(blob, "charticulator.svg", true);
       }
       // Export as bitmaps

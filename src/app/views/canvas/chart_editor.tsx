@@ -15,7 +15,7 @@ import {
   Specification,
   stableSortBy,
   zipArray,
-  ZoomInfo
+  ZoomInfo,
 } from "../../../core";
 import { Actions, DragData } from "../../actions";
 import { DragContext, Droppable } from "../../controllers";
@@ -24,14 +24,14 @@ import {
   ChartElementSelection,
   AppStore,
   MarkSelection,
-  Selection
+  Selection,
 } from "../../stores";
 import { Button } from "../panels/widgets/controls";
 import { WidgetManager } from "../panels/widgets/manager";
 import { BoundingBoxView } from "./bounding_box";
 import {
   CreatingComponent,
-  CreatingComponentFromCreatingInteraction
+  CreatingComponentFromCreatingInteraction,
 } from "./creating_component";
 import { DropZoneView } from "./dropzone";
 import { EditingLink } from "./editing_link";
@@ -85,7 +85,7 @@ export class ChartEditorView
       zoom: {
         centerX: 50,
         centerY: 50,
-        scale: 1
+        scale: 1,
       },
       snappingCandidates: null,
       graphics: this.getGraphics(),
@@ -94,7 +94,7 @@ export class ChartEditorView
       dropZoneData: false,
       viewWidth: 100,
       viewHeight: 100,
-      isSolving: false
+      isSolving: false,
     };
 
     this.tokens = [];
@@ -104,7 +104,7 @@ export class ChartEditorView
     const r = this.refs.canvas.getBoundingClientRect();
     return {
       x: point.x - r.left,
-      y: point.y - r.top
+      y: point.y - r.top,
     };
   }
 
@@ -122,7 +122,7 @@ export class ChartEditorView
     const zoom = {
       centerX: width / 2,
       centerY: height / 2,
-      scale: Math.min(scale1, scale2)
+      scale: Math.min(scale1, scale2),
     } as ZoomInfo;
     return zoom;
   }
@@ -169,8 +169,8 @@ export class ChartEditorView
         zoom: {
           centerX: cX + e.deltaX - dX0 + (cScale - newScale) * fixPoint.x,
           centerY: cY + e.deltaY - dY0 + (cScale - newScale) * fixPoint.y,
-          scale: newScale
-        }
+          scale: newScale,
+        },
       });
       lastDeltaX = e.deltaX;
       lastDeltaY = e.deltaY;
@@ -191,8 +191,8 @@ export class ChartEditorView
         zoom: {
           centerX: centerX + (scale - newScale) * fixPoint.x,
           centerY: centerY + (scale - newScale) * fixPoint.y,
-          scale: newScale
-        }
+          scale: newScale,
+        },
       });
       cX = this.state.zoom.centerX;
       cY = this.state.zoom.centerY;
@@ -221,7 +221,7 @@ export class ChartEditorView
       this.props.store.addListener(AppStore.EVENT_CURRENT_TOOL, () => {
         this.setState({
           currentCreation: this.props.store.currentTool,
-          currentCreationOptions: this.props.store.currentToolOptions
+          currentCreationOptions: this.props.store.currentToolOptions,
         });
       })
     );
@@ -254,7 +254,7 @@ export class ChartEditorView
       this.setState({
         viewWidth: width,
         viewHeight: height,
-        zoom: this.getFitViewZoom(width, height)
+        zoom: this.getFitViewZoom(width, height),
       });
     };
     globals.resizeListeners.addListener(this.refs.canvasContainer, doResize);
@@ -265,7 +265,7 @@ export class ChartEditorView
         const session = globals.dragController.getSession();
         if (session && session.data instanceof DragData.DropZoneData) {
           this.setState({
-            dropZoneData: { data: session.data }
+            dropZoneData: { data: session.data },
           });
         }
       })
@@ -273,7 +273,7 @@ export class ChartEditorView
     this.tokens.push(
       globals.dragController.addListener("sessionend", () => {
         this.setState({
-          dropZoneData: false
+          dropZoneData: false,
         });
       })
     );
@@ -290,11 +290,11 @@ export class ChartEditorView
     const data = ctx.data;
     if (data instanceof DragData.ScaffoldType) {
       this.setState({
-        dropZoneData: { layout: data }
+        dropZoneData: { layout: data },
       });
       ctx.onLeave(() => {
         this.setState({
-          dropZoneData: false
+          dropZoneData: false,
         });
       });
       return true;
@@ -522,7 +522,7 @@ export class ChartEditorView
     let chartGuides = boundsGuides.map(bounds => {
       return {
         element: null,
-        guide: bounds
+        guide: bounds,
       };
     });
     const elements = this.props.store.chart.elements;
@@ -542,7 +542,7 @@ export class ChartEditorView
           layoutClass.getSnappingGuides().map(bounds => {
             return {
               element: layout,
-              guide: bounds
+              guide: bounds,
             };
           })
         );
@@ -577,7 +577,7 @@ export class ChartEditorView
                   }
                   new Actions.SetChartAttribute(name, {
                     type: "value",
-                    value: updates[name]
+                    value: updates[name],
                   } as Specification.ValueMapping).dispatch(
                     this.props.store.dispatcher
                   );
@@ -767,12 +767,12 @@ export class ChartEditorView
                 ctx.onDrag(e => {
                   session.handleDrag(e);
                   this.setState({
-                    snappingCandidates: session.getCurrentCandidates()
+                    snappingCandidates: session.getCurrentCandidates(),
                   });
                 });
                 ctx.onEnd(e => {
                   this.setState({
-                    snappingCandidates: null
+                    snappingCandidates: null,
                   });
                   const action = session.getActions(session.handleEnd(e));
                   if (action) {
@@ -832,7 +832,7 @@ export class ChartEditorView
                 }
                 const pt = Geometry.applyZoom(this.state.zoom, {
                   x: controls.anchor.x,
-                  y: -controls.anchor.y
+                  y: -controls.anchor.y,
                 });
                 return (
                   <div
@@ -841,7 +841,7 @@ export class ChartEditorView
                     style={{
                       left: pt.x.toFixed(0) + "px",
                       bottom:
-                        (this.state.viewHeight - pt.y + 5).toFixed(0) + "px"
+                        (this.state.viewHeight - pt.y + 5).toFixed(0) + "px",
                     }}
                   >
                     {manager.horizontal(
@@ -911,11 +911,11 @@ export class ChartEditorView
     const chartState = this.props.store.chartState;
     const p1 = {
       x: -chartState.attributes.width / 2,
-      y: -chartState.attributes.height / 2
+      y: -chartState.attributes.height / 2,
     };
     const p2 = {
       x: +chartState.attributes.width / 2,
-      y: +chartState.attributes.height / 2
+      y: +chartState.attributes.height / 2,
     };
     const p1t = Geometry.applyZoom(this.state.zoom, p1);
     const p2t = Geometry.applyZoom(this.state.zoom, p2);
@@ -1114,7 +1114,7 @@ export class ChartEditorView
                 const { scale, centerX, centerY } = this.state.zoom;
                 const fixPoint = Geometry.unapplyZoom(this.state.zoom, {
                   x: this.state.viewWidth / 2,
-                  y: this.state.viewHeight / 2
+                  y: this.state.viewHeight / 2,
                 });
                 let newScale = scale * 1.1;
                 newScale = Math.min(20, Math.max(0.05, newScale));
@@ -1122,8 +1122,8 @@ export class ChartEditorView
                   zoom: {
                     centerX: centerX + (scale - newScale) * fixPoint.x,
                     centerY: centerY + (scale - newScale) * fixPoint.y,
-                    scale: newScale
-                  }
+                    scale: newScale,
+                  },
                 });
               }}
             />
@@ -1133,7 +1133,7 @@ export class ChartEditorView
                 const { scale, centerX, centerY } = this.state.zoom;
                 const fixPoint = Geometry.unapplyZoom(this.state.zoom, {
                   x: this.state.viewWidth / 2,
-                  y: this.state.viewHeight / 2
+                  y: this.state.viewHeight / 2,
                 });
                 let newScale = scale / 1.1;
                 newScale = Math.min(20, Math.max(0.05, newScale));
@@ -1141,8 +1141,8 @@ export class ChartEditorView
                   zoom: {
                     centerX: centerX + (scale - newScale) * fixPoint.x,
                     centerY: centerY + (scale - newScale) * fixPoint.y,
-                    scale: newScale
-                  }
+                    scale: newScale,
+                  },
                 });
               }}
             />
@@ -1157,7 +1157,7 @@ export class ChartEditorView
                   return;
                 }
                 this.setState({
-                  zoom: newZoom
+                  zoom: newZoom,
                 });
               }}
             />
