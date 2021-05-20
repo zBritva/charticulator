@@ -76,6 +76,7 @@ export const icons: Region2DConfigurationIcons = {
   gridIcon: "sublayout/grid",
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",
+  cloudIcon: "sublayout/cloud",
   overlapIcon: "sublayout/overlap",
 };
 

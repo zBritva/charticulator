@@ -292,6 +292,10 @@ addSVGIcon(
   "sublayout/jitter",
   require("resources/icons/icons_sublayout-jitter.svg")
 );
+// addSVGIcon(
+//   "sublayout/cloud",
+//   require("resources/icons/icons_sublayout-cloud.svg")
+// );
 addSVGIcon("align/left", require("resources/icons/icons_align-left.svg"));
 addSVGIcon(
   "align/x-middle",

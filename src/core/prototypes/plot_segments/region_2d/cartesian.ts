@@ -17,6 +17,7 @@ import {
 } from "../../common";
 import { AxisRenderer, buildAxisInference, buildAxisProperties } from "../axis";
 import {
+  CloudLayoutMode,
   GridDirection,
   PlotSegmentAxisPropertyNames,
   Region2DAttributes,
@@ -64,6 +65,7 @@ const icons: Region2DConfigurationIcons = {
   gridIcon: "sublayout/grid",
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",
+  cloudIcon: "sublayout/cloud",
   overlapIcon: "sublayout/overlap",
 };
 
@@ -119,6 +121,9 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       packing: {
         gravityX: 0.1,
         gravityY: 0.1,
+      },
+      cloud: {
+        mode: CloudLayoutMode.Glyph,
       },
       orderReversed: null,
     },

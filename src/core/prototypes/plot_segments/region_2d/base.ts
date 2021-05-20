@@ -27,6 +27,7 @@ export enum Region2DSublayoutType {
   Grid = "grid",
   Packing = "packing",
   Jitter = "jitter",
+  Cloud = "cloud",
 }
 
 export enum SublayoutAlignment {
@@ -38,6 +39,11 @@ export enum SublayoutAlignment {
 export enum GridDirection {
   X = "x",
   Y = "y",
+}
+
+export enum CloudLayoutMode {
+  Glyph = "glypth",
+  Mark = "mark",
 }
 
 export interface Region2DSublayoutOptions extends Specification.AttributeMap {
@@ -73,6 +79,9 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
   jitter: {
     vertical: boolean;
     horizontal: boolean;
+  };
+  cloud: {
+    mode: CloudLayoutMode;
   };
 }
 
@@ -137,6 +146,7 @@ export interface Region2DConfigurationTerminology {
   packing: string;
   overlap: string;
   jitter: string;
+  cloud: string;
 }
 
 export interface Region2DConfigurationIcons {
@@ -151,6 +161,7 @@ export interface Region2DConfigurationIcons {
   gridIcon: string;
   packingIcon: string;
   jitterIcon: string;
+  cloudIcon: string;
   overlapIcon: string;
 }
 
@@ -1223,6 +1234,10 @@ export class Region2DConstraintBuilder {
         if (props.sublayout.type == Region2DSublayoutType.Jitter) {
           this.sublayoutJitter(groups);
         }
+        // Cloud layout
+        if (props.sublayout.type == Region2DSublayoutType.Cloud) {
+          this.sublayoutCloud(groups);
+        }
       }
     }
   }
@@ -2026,6 +2041,47 @@ export class Region2DConstraintBuilder {
     });
   }
 
+  public sublayoutCloud(groups: SublayoutGroup[], axisOnly?: "x" | "y") {
+    const solver = this.solver;
+    const state = this.plotSegment.state;
+    const cloudProps = this.plotSegment.object.properties.sublayout.cloud;
+
+    groups.forEach((group) => {
+      // const markStates = group.group.map((index) => state.glyphs[index]);
+      const { x1, y1, x2, y2 } = group;
+
+      const squares = group.group.map((index) => {
+        const gl = state.glyphs[index];
+        return <[Variable, Variable, Variable, Variable, number, number]>[
+          solver.attr(gl.attributes, "x1"),
+          solver.attr(gl.attributes, "y1"),
+          solver.attr(gl.attributes, "x2"),
+          solver.attr(gl.attributes, "y2"),
+          <number>gl.attributes.width,
+          <number>gl.attributes.height,
+        ];
+      });
+
+      const x = (solver.getValue(x2) + solver.getValue(x1)) / 2;
+      const y = (solver.getValue(y2) + solver.getValue(y1)) / 2;
+
+      solver.addPlugin(
+        new ConstraintPlugins.CloudPlugin(
+          solver,
+          x1,
+          y1,
+          x2,
+          y2,
+          x,
+          y,
+          squares,
+          axisOnly,
+          cloudProps ? cloudProps : {}
+        )
+      );
+    });
+  }
+
   public getHandles(): Region2DHandleDescription[] {
     const state = this.plotSegment.state;
     const props = this.plotSegment.object.properties;
@@ -2392,6 +2448,11 @@ export class Region2DConstraintBuilder {
       label: terminology.jitter,
       icon: icons.jitterIcon,
     };
+    const cloudOption = {
+      value: Region2DSublayoutType.Cloud,
+      label: terminology.cloud,
+      icon: icons.cloudIcon,
+    };
     const props = this.plotSegment.object.properties;
     const xMode = props.xData ? props.xData.type : "null";
     const yMode = props.yData ? props.yData.type : "null";
@@ -2405,10 +2466,11 @@ export class Region2DConstraintBuilder {
         gridOption,
         packingOption,
         jitterOption,
+        cloudOption,
         overlapOption,
       ];
     }
-    return [packingOption, jitterOption, overlapOption];
+    return [packingOption, jitterOption, cloudOption, overlapOption];
   }
 
   public isSublayoutApplicable() {
@@ -2589,6 +2651,25 @@ export class Region2DConstraintBuilder {
             m.inputBoolean(
               { property: "sublayout", field: ["jitter", "vertical"] },
               { type: "highlight", icon: "sublayout/dodge-y" }
+            )
+          )
+        )
+      );
+    }
+    if (type == Region2DSublayoutType.Cloud) {
+      extra.push(
+        m.row(
+          "Distribution",
+          m.horizontal(
+            [0, 1, 1],
+            m.inputSelect(
+              { property: "sublayout", field: ["cloud", "mode"] },
+              {
+                options: [CloudLayoutMode.Glyph, CloudLayoutMode.Mark],
+                labels: [strings.objects.glyph, strings.objects.mark],
+                type: "dropdown",
+                icons: [],
+              }
             )
           )
         )
