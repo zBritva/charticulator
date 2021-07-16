@@ -940,59 +940,74 @@ export class ChartEditorView
   public renderControls() {
     const elements = this.props.store.chart.elements;
     const elementStates = this.props.store.chartState.elements;
+
+    const renderer = new Graphics.ChartRenderer(
+      this.props.store.chartManager,
+      this.props.store.renderEvents
+    );
+
     return (
-      <div className="canvas-popups">
-        {zipArray(elements, elementStates)
-          .filter(([element]) =>
-            Prototypes.isType(element.classID, "plot-segment")
-          )
-          .map(
-            (
-              [layout, layoutState]: [
-                Specification.PlotSegment,
-                Specification.PlotSegmentState
-              ],
-              index
-            ) => {
-              if (
-                this.state.currentSelection instanceof ChartElementSelection &&
-                this.state.currentSelection.chartElement == layout
-              ) {
-                const layoutClass = this.props.store.chartManager.getPlotSegmentClass(
-                  layoutState
-                );
-                const manager = new WidgetManager(
-                  this.props.store,
-                  layoutClass
-                );
-                const controls = layoutClass.getPopupEditor(manager);
-                if (!controls) {
-                  return null;
+      <>
+        <div className="canvas-popups">
+          {zipArray(elements, elementStates)
+            .filter(([element]) =>
+              Prototypes.isType(element.classID, "plot-segment")
+            )
+            .map(
+              (
+                [layout, layoutState]: [
+                  Specification.PlotSegment,
+                  Specification.PlotSegmentState
+                ],
+                index
+              ) => {
+                if (
+                  this.state.currentSelection instanceof
+                    ChartElementSelection &&
+                  this.state.currentSelection.chartElement == layout
+                ) {
+                  const layoutClass = this.props.store.chartManager.getPlotSegmentClass(
+                    layoutState
+                  );
+                  const manager = new WidgetManager(
+                    this.props.store,
+                    layoutClass
+                  );
+                  const controls = layoutClass.getPopupEditor(manager);
+                  if (!controls) {
+                    return null;
+                  }
+                  const pt = Geometry.applyZoom(this.state.zoom, {
+                    x: controls.anchor.x,
+                    y: -controls.anchor.y,
+                  });
+                  return (
+                    <div
+                      className="charticulator__canvas-popup"
+                      key={`m${index}`}
+                      style={{
+                        left: pt.x.toFixed(0) + "px",
+                        bottom:
+                          (this.state.viewHeight - pt.y + 5).toFixed(0) + "px",
+                      }}
+                    >
+                      {manager.horizontal(
+                        controls.widgets.map(() => 0),
+                        ...controls.widgets
+                      )}
+                    </div>
+                  );
                 }
-                const pt = Geometry.applyZoom(this.state.zoom, {
-                  x: controls.anchor.x,
-                  y: -controls.anchor.y,
-                });
-                return (
-                  <div
-                    className="charticulator__canvas-popup"
-                    key={`m${index}`}
-                    style={{
-                      left: pt.x.toFixed(0) + "px",
-                      bottom:
-                        (this.state.viewHeight - pt.y + 5).toFixed(0) + "px",
-                    }}
-                  >
-                    {manager.horizontal(
-                      controls.widgets.map(() => 0),
-                      ...controls.widgets
-                    )}
-                  </div>
-                );
               }
-            }
+            )}
+        </div>
+        <div className="canvas-chart-controls">
+          {renderer.renderControls(
+            this.props.store.chart,
+            this.props.store.chartState
           )}
-      </div>
+        </div>
+      </>
     );
   }
 
