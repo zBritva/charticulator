@@ -925,10 +925,10 @@ export class AxisRenderer {
   public renderVirtualScrollBar(x: number, y: number, axis: AxisMode) {
     switch (axis) {
       case AxisMode.X: {
-        return this.renderScrollBar(x, y, 0, 1);
+        return this.renderScrollBar(x, y, 0, 1, 0);
       }
       case AxisMode.Y: {
-        return this.renderScrollBar(x, y, 90, -1);
+        return this.renderScrollBar(x, y, 90, -1, 100);
       }
     }
   }
@@ -937,7 +937,8 @@ export class AxisRenderer {
     x: number,
     y: number,
     angle: number,
-    side: number
+    side: number,
+    handlePosition: number
   ): Graphics.Element {
     const group = makeGroup([]);
 
@@ -971,6 +972,18 @@ export class AxisRenderer {
     }
 
     const handleWidth = (rangeMax - rangeMin) / 10;
+
+    if (handlePosition > 100) {
+      handlePosition = 100;
+    }
+
+    if (handlePosition < 0) {
+      handlePosition = 0;
+    }
+
+    const trackSize = Math.abs(rangeMax - rangeMin) - handleWidth;
+
+    handlePosition = (trackSize / 100) * handlePosition; // map % to axis position
 
     let width = 0;
     let height = 0;
@@ -1006,29 +1019,40 @@ export class AxisRenderer {
     width = 0;
     height = 0;
 
+    let handlePositionX = 0;
+    let handlePositionY = 0;
+
     if (angle === 90) {
       height += handleWidth;
       width = AxisRenderer.SCROLL_BAR_SIZE;
+      handlePositionY = handlePosition;
     }
     if (angle === 0) {
       width += handleWidth;
       height = AxisRenderer.SCROLL_BAR_SIZE;
+      handlePositionX = handlePosition;
     }
 
-    const handle = makeRect(x1, y1, x1 + width, y1 + height, {
-      opacity: 0.7,
-      strokeLinecap: "square",
-      strokeColor: {
-        b: 0,
-        r: 0,
-        g: 0,
-      },
-      fillColor: {
-        b: 0,
-        r: 0,
-        g: 0,
-      },
-    });
+    const handle = makeRect(
+      x1 + handlePositionX,
+      y1 + handlePositionY,
+      handlePositionX + x1 + width,
+      handlePositionY + y1 + height,
+      {
+        opacity: 0.7,
+        strokeLinecap: "square",
+        strokeColor: {
+          b: 0,
+          r: 0,
+          g: 0,
+        },
+        fillColor: {
+          b: 0,
+          r: 0,
+          g: 0,
+        },
+      }
+    );
 
     (handle as Graphics.Element).interactable = {
       onMousedown: () => {
