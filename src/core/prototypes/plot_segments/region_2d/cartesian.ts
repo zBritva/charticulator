@@ -393,11 +393,11 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           attrs.x1,
           props.xData.side != "default" ? attrs.y2 : attrs.y1,
           AxisMode.X,
-          props.xData.scrollPosition ? props.xData.scrollPosition : 0,
+          // props.xData.scrollPosition ? props.xData.scrollPosition : 0,
+          0,
           (position) => {
             console.log(position);
             props.xData.scrollPosition = position;
-            update();
           }
         )
       );
@@ -416,11 +416,11 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           props.yData.side != "default" ? attrs.x2 : attrs.x1,
           attrs.y1,
           AxisMode.Y,
-          props.yData.scrollPosition ? props.yData.scrollPosition : 0,
+          // props.yData.scrollPosition ? props.yData.scrollPosition : 0,
+          0,
           (position) => {
             console.log(position);
             props.yData.scrollPosition = position;
-            update();
           }
         )
       );
