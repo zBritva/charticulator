@@ -15,6 +15,7 @@ import {
 import { AxisRenderer } from "./axis";
 import { utcFormat } from "d3-time-format";
 import { NumericalMode } from "../../specification/types";
+import { ReactElement } from "react";
 
 export abstract class PlotSegmentClass<
   PropertiesType extends Specification.AttributeMap = Specification.AttributeMap,
@@ -54,11 +55,7 @@ export abstract class PlotSegmentClass<
     glyphGraphics: Graphics.Element,
     manager: ChartStateManager
   ): Graphics.Element {
-    return Graphics.makeGroup([
-      glyphGraphics,
-      this.getGraphics(manager),
-      this.renderControls(manager),
-    ]);
+    return Graphics.makeGroup([glyphGraphics, this.getGraphics(manager)]);
   }
 
   /** Get the graphics that represent this layout of elements in background*/
@@ -70,7 +67,7 @@ export abstract class PlotSegmentClass<
   }
 
   // Renders interactable elements of plotsegment;
-  public renderControls(manager: ChartStateManager): Graphics.Element {
+  public renderControls(manager: ChartStateManager): ReactElement[] {
     return null;
   }
 
