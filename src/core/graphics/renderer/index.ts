@@ -186,8 +186,10 @@ export class ChartRenderer {
         const gBackgroundElements = makeGroup([]);
         const plotSegmentBackgroundElements = plotSegmentClass.getPlotSegmentBackgroundGraphics(
           this.manager
-          );
-        gBackgroundElements.key = `bg-ps-${plotSegmentBackgroundElements.key}`;
+        );
+        if (plotSegmentBackgroundElements) {
+          gBackgroundElements.key = `bg-ps-${plotSegmentBackgroundElements.key}`;
+        }
         gBackgroundElements.elements.push(plotSegmentBackgroundElements);
         const gElement = makeGroup([]);
         gElement.key = `warpper-${element._id}`
