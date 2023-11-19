@@ -40,7 +40,6 @@ import { makeDefaultDataset } from "./default_dataset";
 import { strings } from "../strings";
 import { LocalStorageKeys } from "./globals";
 
-
 import { defaultVersionOfTemplate } from "./stores/defaults";
 import { MenuBarHandlers, MenubarTabButton } from "./views/menubar";
 import { TelemetryRecorder } from "./components";
