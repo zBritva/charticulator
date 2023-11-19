@@ -868,7 +868,9 @@ export class Director {
           <MenuButton
             style={{
               flex: 1,
-            }}
+              maxHeight: '32px',
+              'text-wrap': 'nowrap'
+            } as any}
             ref={(r) => (anchor = r)}
             title={strings.mappingEditor.bindData}
             icon={<SVGImageIcon url={R.getSVGIcon(options?.icon)} />}
