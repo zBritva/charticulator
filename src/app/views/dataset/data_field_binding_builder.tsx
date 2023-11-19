@@ -879,6 +879,7 @@ export class Director {
               maxHeight: '32px',
               textWrap: 'nowrap'
             } as any}
+            className="data-field-button"
             ref={(r) => (anchor = r)}
             title={strings.mappingEditor.bindData}
             icon={typeof options?.icon === 'string' ? <SVGImageIcon url={R.getSVGIcon(options?.icon)} /> : options?.icon}

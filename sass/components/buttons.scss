@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 @use 'sass:math';
 
-.fui-Button__icon {
+.fui-Button__icon.data-field-button {
   .el-svg-icon {
     margin-top: 6px;
   }
