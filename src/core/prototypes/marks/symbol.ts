@@ -4,7 +4,7 @@
 import { strings } from "../../../strings";
 import { Color, Point, rgbToHex } from "../../common";
 import * as Graphics from "../../graphics";
-import { makeGroup } from "../../graphics";
+import { makeCross, makeGroup, makeSquare } from "../../graphics";
 import * as Specification from "../../specification";
 import { DataKind, MappingType } from "../../specification";
 import {
@@ -127,47 +127,18 @@ export class SymbolElementClass extends EmphasizableMarkClass<
       opacity: attrs.opacity,
       ...this.generateEmphasisStyle(emphasize),
     };
-
+    
+    const key = `${glyphIndex}-${this.object._id}`;
     switch (attrs.symbol) {
       case "square": {
-        const w = Math.sqrt(attrs.size);
-        const elem = <Graphics.Rect>{
-          type: "rect",
-          style,
-          x1: -w / 2,
-          y1: -w / 2,
-          x2: w / 2,
-          y2: w / 2,
-          rotation: rotation,
-          key: `${glyphIndex}-${this.object._id}`
-        };
-        const gr = makeGroup([elem]);
-        gr.transform.x = pc.x;
-        gr.transform.y = pc.y;
+        const size = attrs.size;
+        const w = Math.sqrt(size);
+        const gr = makeSquare(pc.x, pc.y, w, rotation, key, style);
         return gr;
       }
       case "cross": {
         const r = Math.sqrt(attrs.size / 5) / 2;
-        const path = Graphics.makePath(style);
-        path.moveTo(-3 * r, -r);
-        path.lineTo(-r, -r);
-        path.lineTo(-r, -3 * r);
-        path.lineTo(-r, -3 * r);
-        path.lineTo(+r, -3 * r);
-        path.lineTo(+r, -r);
-        path.lineTo(+3 * r, -r);
-        path.lineTo(+3 * r, +r);
-        path.lineTo(+r, +r);
-        path.lineTo(+r, +3 * r);
-        path.lineTo(-r, +3 * r);
-        path.lineTo(-r, +r);
-        path.lineTo(-3 * r, +r);
-        path.transformRotation(rotation);
-        path.closePath();
-        const gr = makeGroup([path.path]);
-        gr.key = `${glyphIndex}-${this.object._id}`;
-        gr.transform.x = pc.x;
-        gr.transform.y = pc.y;
+        const gr = makeCross(pc.x, pc.y, r, rotation, key, style);
         return gr;
       }
       case "diamond": {
@@ -184,7 +155,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
         path.transformRotation(rotation);
         path.closePath();
         const gr = makeGroup([path.path]);
-        gr.key = `${glyphIndex}-${this.object._id}`;
+        gr.key = key;
         gr.transform.x = pc.x;
         gr.transform.y = pc.y;
         return gr;
@@ -210,7 +181,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
         path.transformRotation(rotation);
         path.closePath();
         const gr = makeGroup([path.path]);
-        gr.key = `${glyphIndex}-${this.object._id}`;
+        gr.key = key;
         gr.transform.x = pc.x;
         gr.transform.y = pc.y;
         return gr;
@@ -227,7 +198,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
         const gr = makeGroup([path.path]);
         gr.transform.x = pc.x;
         gr.transform.y = pc.y;
-        gr.key = `${glyphIndex}-${this.object._id}`;
+        gr.key = key;
         return gr;
       }
       case "wye": {
@@ -257,7 +228,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
         const gr = makeGroup([path.path]);
         gr.transform.x = pc.x;
         gr.transform.y = pc.y;
-        gr.key = `${glyphIndex}-${this.object._id}`;
+        gr.key = key;
         return gr;
       }
       default: {
@@ -267,7 +238,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
           cx: pc.x,
           cy: pc.y,
           r: Math.sqrt(attrs.size / Math.PI),
-          key: `${glyphIndex}-${this.object._id}`
+          key: key
         };
       }
     }

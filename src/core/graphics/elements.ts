@@ -250,6 +250,56 @@ export function makeGroup(elements: Element[]): Group {
   return { type: "group", elements, transform: { x: 0, y: 0, angle: 0 } };
 }
 
+
+export function makeSquare(x: number, y: number, w: number, rotation: number,key?: string, style?: Style ) {
+  const gr = makeGroup([<Rect>{
+    type: "rect",
+    style,
+    x1: -w / 2,
+    y1: -w / 2,
+    x2: w / 2,
+    y2: w / 2,
+    rotation: rotation,
+    key: key
+  }]);
+  gr.transform.x = x;
+  gr.transform.y = y;
+  
+  return gr;
+}
+
+export function makeCross(
+  x: number,
+  y: number,
+  r: number,
+  rotation: number,
+  key?: string,
+  style?: Style) {
+  const path = makePath(style);
+  path.moveTo(-3 * r, -r);
+  path.lineTo(-r, -r);
+  path.lineTo(-r, -3 * r);
+  path.lineTo(-r, -3 * r);
+  path.lineTo(+r, -3 * r);
+  path.lineTo(+r, -r);
+  path.lineTo(+3 * r, -r);
+  path.lineTo(+3 * r, +r);
+  path.lineTo(+r, +r);
+  path.lineTo(+r, +3 * r);
+  path.lineTo(-r, +3 * r);
+  path.lineTo(-r, +r);
+  path.lineTo(-3 * r, +r);
+  path.transformRotation(rotation);
+  path.closePath();
+
+  const gr = makeGroup([path.path]);
+  gr.key = key;
+  gr.transform.x = x;
+  gr.transform.y = y;
+
+  return gr;
+}
+
 export function makeLine(
   x1: number,
   y1: number,

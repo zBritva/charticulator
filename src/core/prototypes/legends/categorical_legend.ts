@@ -11,9 +11,9 @@ import { CharticulatorPropertyAccessors } from "../../../app/views/panels/widget
 import { OrientationType } from "./types";
 
 export interface CategoricalLegendItem {
-  type: "number" | "color" | "boolean";
+  type: "number" | "color" | "boolean" | "enum";
   label: string;
-  value: number | Color | boolean;
+  value: number | Color | boolean | string;
 }
 
 export const ReservedMappingKeyNamePrefix = "reserved_";
@@ -37,7 +37,7 @@ export class CategoricalLegendClass extends LegendClass {
         {
           [name: string]: Color;
         }
-      >scaleObject.properties.mapping;
+        >scaleObject.properties.mapping;
       const items: CategoricalLegendItem[] = [];
       for (const key in mapping) {
         if (
@@ -62,6 +62,11 @@ export class CategoricalLegendClass extends LegendClass {
             case "scale.categorical<string,color>":
               {
                 items.push({ type: "color", label: key, value: mapping[key] });
+              }
+              break;
+            case "scale.categorical<string,enum>":
+              {
+                items.push({ type: "enum", label: key, value: mapping[key] });
               }
               break;
           }
@@ -165,6 +170,7 @@ export class CategoricalLegendClass extends LegendClass {
         { fillColor: this.object.properties.textColor }
       );
       const gItem = Graphics.makeGroup([textLabel]);
+      debugger;
       switch (item.type) {
         case "color":
           {
@@ -209,6 +215,43 @@ export class CategoricalLegendClass extends LegendClass {
                     lineHeight / 3,
                     {
                       fillColor: <Color>item.value,
+                    }
+                  )
+                );
+            }
+          }
+          break;
+        case "enum":
+          {
+            switch (<string>item.value) {
+              case 'cross': {
+                gItem.elements.push(
+                  Graphics.makeCross(10, 10, this.object.properties.fontSize * 0.2, 0, `legend-i-${item.value}`, {
+                    fillColor: this.object.properties.textColor,
+                  })
+                );
+                break;
+              }
+              case "square": {
+                gItem.elements.push(
+                  Graphics.makeSquare(10, 10, this.object.properties.fontSize, 0, `legend-i-${item.value}`, {
+                    fillColor: this.object.properties.textColor,
+                  })
+                );
+                break;
+              }
+              default:
+                gItem.elements.push(
+                  Graphics.makeText(10, 10,
+                    `${<string>item.value} N/A`,
+                    this.object.properties.fontFamily,
+                    this.object.properties.fontSize,
+                    {
+                      fillColor: {
+                        b: 0,
+                        g: 0,
+                        r: 255
+                      },
                     }
                   )
                 );
