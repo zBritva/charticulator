@@ -251,7 +251,7 @@ export function makeGroup(elements: Element[]): Group {
 }
 
 
-export function makeSquare(x: number, y: number, w: number, rotation: number,key?: string, style?: Style ) {
+export function makeSquare(x: number, y: number, w: number, rotation: number, key?: string, style?: Style) {
   const gr = makeGroup([<Rect>{
     type: "rect",
     style,
@@ -265,17 +265,18 @@ export function makeSquare(x: number, y: number, w: number, rotation: number,key
   gr.key = key;
   gr.transform.x = x;
   gr.transform.y = y;
-  
+
   return gr;
 }
 
 export function makeCross(
   x: number,
   y: number,
-  r: number,
+  size: number,
   rotation: number,
   key?: string,
   style?: Style) {
+  const r = Math.sqrt(size / 5) / 2;
   const path = makePath(style);
   path.moveTo(-3 * r, -r);
   path.lineTo(-r, -r);
@@ -349,7 +350,7 @@ export function makeStar(x: number, y: number, size: number, rotation: number, k
   return gr;
 }
 
-export function makeTriangle(x: number, y: number, size: number, rotation: number,  key: string, style: Style) {
+export function makeTriangle(x: number, y: number, size: number, rotation: number, key: string, style: Style) {
   const sqrt3 = Math.sqrt(3);
   const yt = -Math.sqrt(size / (sqrt3 * 3));
   const path = makePath(style);
