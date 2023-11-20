@@ -132,48 +132,38 @@ export class SymbolElementClass extends EmphasizableMarkClass<
     switch (attrs.symbol) {
       case "square": {
         const size = attrs.size;
-        const w = Math.sqrt(size);
-        const gr = makeSquare(pc.x, pc.y, w, rotation, key, style);
-        return gr;
+        return makeSquare(pc.x, pc.y, size, rotation, key, style);
       }
       case "cross": {
-        const r = Math.sqrt(attrs.size / 5) / 2;
-        const gr = makeCross(pc.x, pc.y, r, rotation, key, style);
-        return gr;
+        return makeCross(pc.x, pc.y, attrs.size, rotation, key, style);
       }
       case "diamond": {
         const size = attrs.size;
-        const gr = makeDiamond(pc.x, pc.y, size, rotation, key, style);
-        return gr;
+        return makeDiamond(pc.x, pc.y, size, rotation, key, style);
       }
       case "star": {
         const size = attrs.size;
         const x = pc.x;
         const y = pc.y;
-        const gr = makeStar(x, y, size, rotation, key, style);
-        return gr;
+        return makeStar(x, y, size, rotation, key, style);
       }
       case "triangle": {
         const size = attrs.size;
         const x = pc.x;
         const y = pc.y;
-        const gr = makeTriangle(x, y, size, rotation, key, style);
-        return gr;
+        return makeTriangle(x, y, size, rotation, key, style);
       }
       case "wye": {
         const x = pc.x;
         const y = pc.y;
         const size = attrs.size;
-        const gr = makeWye(x, y, size, rotation, key, style);
-        return gr;
+        return makeWye(x, y, size, rotation, key, style);
       }
       default: {
         const size = attrs.size;
         const x = pc.x;
         const y = pc.y;
-        const circle = makeCircleSymbol(x, y, size, key, style);
-
-        return circle;
+        return makeCircleSymbol(x, y, size, key, style);
       }
     }
   }

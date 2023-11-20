@@ -167,10 +167,11 @@ export class CategoricalLegendClass extends LegendClass {
         item.label,
         fontFamily,
         fontSize,
-        { fillColor: this.object.properties.textColor }
+        { fillColor: this.object.properties.textColor },
+        undefined,
+        `legend:${this.object._id}-label:${index}`
       );
       const gItem = Graphics.makeGroup([textLabel]);
-      debugger;
       switch (item.type) {
         case "color":
           {
@@ -223,10 +224,13 @@ export class CategoricalLegendClass extends LegendClass {
           break;
         case "enum":
           {
+            const figureHeight = this.object.properties.fontSize * this.object.properties.fontSize - 5;
+            const figureVerticalShift = lineHeight / 2;
+
             switch (<string>item.value) {
               case 'cross': {
                 gItem.elements.push(
-                  Graphics.makeCross(10, 10, this.object.properties.fontSize * 0.2, 0, `legend-i-${item.value}-${index}`, {
+                  Graphics.makeCross(10, figureVerticalShift, figureHeight, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -234,7 +238,7 @@ export class CategoricalLegendClass extends LegendClass {
               }
               case "square": {
                 gItem.elements.push(
-                  Graphics.makeSquare(10, 11, this.object.properties.fontSize, 0, `legend-i-${item.value}-${index}`, {
+                  Graphics.makeSquare(10, figureVerticalShift, figureHeight, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -242,7 +246,7 @@ export class CategoricalLegendClass extends LegendClass {
               }
               case "diamond": {
                 gItem.elements.push(
-                  Graphics.makeDiamond(10, 10, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
+                  Graphics.makeDiamond(10, figureVerticalShift, figureHeight, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -250,7 +254,7 @@ export class CategoricalLegendClass extends LegendClass {
               }
               case "star": {
                 gItem.elements.push(
-                  Graphics.makeStar(10, 10, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
+                  Graphics.makeStar(10, figureVerticalShift, figureHeight, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -258,7 +262,7 @@ export class CategoricalLegendClass extends LegendClass {
               }
               case "triangle": {
                 gItem.elements.push(
-                  Graphics.makeTriangle(10, 12, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
+                  Graphics.makeTriangle(10, figureVerticalShift, figureHeight, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -266,7 +270,7 @@ export class CategoricalLegendClass extends LegendClass {
               }
               case "wye": {
                 gItem.elements.push(
-                  Graphics.makeWye(10, 10, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
+                  Graphics.makeWye(10, figureVerticalShift, figureHeight, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -274,7 +278,7 @@ export class CategoricalLegendClass extends LegendClass {
               }
               default:
                 gItem.elements.push(
-                  Graphics.makeCircleSymbol(10, 10, this.object.properties.fontSize * 10, `legend-i-${item.value}-${index}`, {
+                  Graphics.makeCircleSymbol(10, figureVerticalShift, figureHeight, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );

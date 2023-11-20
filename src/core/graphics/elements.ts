@@ -251,7 +251,8 @@ export function makeGroup(elements: Element[]): Group {
 }
 
 
-export function makeSquare(x: number, y: number, w: number, rotation: number, key?: string, style?: Style) {
+export function makeSquare(x: number, y: number, size: number, rotation: number, key?: string, style?: Style) {
+  const w = Math.sqrt(size);
   const gr = makeGroup([<Rect>{
     type: "rect",
     style,
