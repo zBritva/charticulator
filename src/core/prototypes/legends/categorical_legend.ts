@@ -149,8 +149,8 @@ export class CategoricalLegendClass extends LegendClass {
     const items = this.getLegendItems();
     const horizontalGap = 10;
     let itemGroupOffset = 0;
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
       const metrics = this.textMeasure.measure(item.label);
       const offsets = Graphics.TextMeasurer.ComputeTextPosition(
         lineHeight,
@@ -226,7 +226,7 @@ export class CategoricalLegendClass extends LegendClass {
             switch (<string>item.value) {
               case 'cross': {
                 gItem.elements.push(
-                  Graphics.makeCross(10, 10, this.object.properties.fontSize * 0.2, 0, `legend-i-${item.value}`, {
+                  Graphics.makeCross(10, 10, this.object.properties.fontSize * 0.2, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -234,7 +234,39 @@ export class CategoricalLegendClass extends LegendClass {
               }
               case "square": {
                 gItem.elements.push(
-                  Graphics.makeSquare(10, 10, this.object.properties.fontSize, 0, `legend-i-${item.value}`, {
+                  Graphics.makeSquare(10, 11, this.object.properties.fontSize, 0, `legend-i-${item.value}-${index}`, {
+                    fillColor: this.object.properties.textColor,
+                  })
+                );
+                break;
+              }
+              case "diamond": {
+                gItem.elements.push(
+                  Graphics.makeDiamond(10, 10, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
+                    fillColor: this.object.properties.textColor,
+                  })
+                );
+                break;
+              }
+              case "star": {
+                gItem.elements.push(
+                  Graphics.makeStar(10, 10, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
+                    fillColor: this.object.properties.textColor,
+                  })
+                );
+                break;
+              }
+              case "triangle": {
+                gItem.elements.push(
+                  Graphics.makeTriangle(10, 12, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
+                    fillColor: this.object.properties.textColor,
+                  })
+                );
+                break;
+              }
+              case "wye": {
+                gItem.elements.push(
+                  Graphics.makeWye(10, 10, this.object.properties.fontSize * 10, 0, `legend-i-${item.value}-${index}`, {
                     fillColor: this.object.properties.textColor,
                   })
                 );
@@ -242,18 +274,9 @@ export class CategoricalLegendClass extends LegendClass {
               }
               default:
                 gItem.elements.push(
-                  Graphics.makeText(10, 10,
-                    `${<string>item.value} N/A`,
-                    this.object.properties.fontFamily,
-                    this.object.properties.fontSize,
-                    {
-                      fillColor: {
-                        b: 0,
-                        g: 0,
-                        r: 255
-                      },
-                    }
-                  )
+                  Graphics.makeCircleSymbol(10, 10, this.object.properties.fontSize * 10, `legend-i-${item.value}-${index}`, {
+                    fillColor: this.object.properties.textColor,
+                  })
                 );
             }
           }
@@ -269,7 +292,7 @@ export class CategoricalLegendClass extends LegendClass {
       } else {
         gItem.transform = {
           x: 0,
-          y: lineHeight * (items.length - 1 - i),
+          y: lineHeight * (items.length - 1 - index),
           angle: 0,
         };
       }
