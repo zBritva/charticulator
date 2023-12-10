@@ -80,7 +80,15 @@ export class TestApplicationView extends React.Component<
 
 export class TestApplication {
   public initialize(config: CharticulatorCoreConfig, containerID: string) {
-    return initialize(config).then(() => {
+    return initialize({
+      ...config,
+      localization: {
+        currency: "$",
+        thousandsDelimiter: ",",
+        decemalDelimiter: ".",
+        billionsFormat: "billions",
+      },
+    }).then(() => {
       ReactDOM.render(
         <TestApplicationView />,
         document.getElementById(containerID)

@@ -17,7 +17,15 @@ export class CharticulatorWorkerProcess
   }
 
   public async initialize(config: Core.CharticulatorCoreConfig) {
-    await Core.initialize(config);
+    await Core.initialize({
+      ...config,
+      localization: {
+        currency: "$",
+        thousandsDelimiter: ",",
+        decemalDelimiter: ".",
+        billionsFormat: "billions",
+      },
+    });
   }
 
   public solveChartConstraints(

@@ -17,7 +17,14 @@ import { Region2DSublayoutType } from "../../core/prototypes/plot_segments/regio
 describe("Plot segment", () => {
   // The directory containing test cases
   before(async () => {
-    await initialize();
+    await initialize({
+      localization: {
+        currency: "$",
+        thousandsDelimiter: ",",
+        decemalDelimiter: ".",
+        billionsFormat: "billions",
+      },
+    });
   });
 
   it("binding data to axis adds property", (done) => {
