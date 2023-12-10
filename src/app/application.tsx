@@ -23,6 +23,8 @@ import {
   parseSafe,
   Prototypes,
   setTimeZone,
+  getFormatOptions,
+  isUtcTimeZone,
 } from "../core";
 import { ExtensionContext, Extension } from "./extension";
 import { Action } from "./actions/actions";
@@ -142,9 +144,64 @@ export class Application {
       };
     }
   ) {
+
+    try {
+      const UtcTimeZone = parseSafe(
+        window.localStorage.getItem(LocalStorageKeys.UtcTimeZone),
+        true
+      );
+      const CurrencySymbol = parseSafe(
+        window.localStorage.getItem(LocalStorageKeys.CurrencySymbol),
+        defaultCurrency
+      );
+      const GroupSymbol = parseSafe(
+        window.localStorage.getItem(LocalStorageKeys.GroupSymbol),
+        defaultDigitsGroup
+      );
+      const NumberFormatRemove = parseSafe(
+        window.localStorage.getItem(LocalStorageKeys.NumberFormatRemove) ||
+          defaultNumberFormat.remove,
+        defaultNumberFormat.remove
+      );
+      const BillionsFormat = parseSafe(
+        window.localStorage.getItem(LocalStorageKeys.bFormat),
+        "giga"
+      );
+      setFormatOptions({
+        currency: parseSafe(CurrencySymbol, defaultCurrency),
+        grouping: parseSafe(GroupSymbol, defaultDigitsGroup),
+        decimal: NumberFormatRemove === "," ? "." : ",",
+        thousands: NumberFormatRemove === "," ? "," : ".",
+        billionsFormat: BillionsFormat
+      });
+      setTimeZone(utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone);
+    } catch (ex) {
+      setFormatOptions({
+        currency: [localizaiton?.currency, ""] ?? defaultCurrency,
+        grouping: defaultDigitsGroup,
+        decimal: localizaiton?.decemalDelimiter ?? defaultNumberFormat.decimal,
+        thousands:
+          localizaiton?.thousandsDelimiter ?? defaultNumberFormat.decimal,
+        billionsFormat: "giga"
+      });
+      console.warn("Loadin localization settings failed");
+    }
+
     this.config = config;
     this.containerID = containerID;
-    await initialize(config);
+
+    const formattingOptions = getFormatOptions();
+
+    await initialize({
+      ...config,
+      localization: {
+        billionsFormat: formattingOptions.billionsFormat,
+        currency: formattingOptions.currency[0],
+        decemalDelimiter: formattingOptions.decimal,
+        thousandsDelimiter: formattingOptions.thousands,
+        grouping: [formattingOptions.grouping[0]]
+      }
+    });
 
     this.root = ReactDOM.createRoot(document.getElementById(this.containerID));
 
@@ -153,9 +210,42 @@ export class Application {
     } else {
       this.worker = new CharticulatorWorker(workerConfig.workerScriptContent);
     }
-    await this.worker.initialize(config);
+
+    await this.worker.initialize({
+      ...config,
+      localization: {
+        billionsFormat: formattingOptions.billionsFormat,
+        currency: formattingOptions.currency[0],
+        decemalDelimiter: formattingOptions.decimal,
+        thousandsDelimiter: formattingOptions.thousands,
+        grouping: [formattingOptions.grouping[0]]
+      }
+    });
 
     this.appStore = new AppStore(this.worker, makeDefaultDataset());
+
+    let DelimiterSymbol = ",";
+    try {
+      DelimiterSymbol = parseSafe(
+        window.localStorage.getItem(LocalStorageKeys.DelimiterSymbol) ||
+          defaultDelimiter,
+        defaultDelimiter
+      );
+    } catch(e) {
+      DelimiterSymbol = ","
+    }
+
+    this.appStore.setLocaleFileFormat({
+      currency: formattingOptions.currency[0],
+      delimiter: DelimiterSymbol,
+      group: formattingOptions.grouping.toString(),
+      numberFormat: {
+        decimal: formattingOptions.decimal,
+        remove: formattingOptions.thousands,
+      },
+      utcTimeZone: isUtcTimeZone(),
+      billionsFormat: formattingOptions.billionsFormat
+    });
 
     if (handlers?.nestedEditor) {
       this.nestedEditor = handlers?.nestedEditor;
@@ -171,58 +261,6 @@ export class Application {
           }
         );
       }
-    }
-
-    try {
-      const UtcTimeZone = parseSafe(
-        window.localStorage.getItem(LocalStorageKeys.UtcTimeZone),
-        true
-      );
-      const CurrencySymbol = parseSafe(
-        window.localStorage.getItem(LocalStorageKeys.CurrencySymbol),
-        defaultCurrency
-      );
-      const DelimiterSymbol = parseSafe(
-        window.localStorage.getItem(LocalStorageKeys.DelimiterSymbol) ||
-          defaultDelimiter,
-        defaultDelimiter
-      );
-      const GroupSymbol = parseSafe(
-        window.localStorage.getItem(LocalStorageKeys.GroupSymbol),
-        defaultDigitsGroup
-      );
-      const NumberFormatRemove = parseSafe(
-        window.localStorage.getItem(LocalStorageKeys.NumberFormatRemove) ||
-          defaultNumberFormat.remove,
-        defaultNumberFormat.remove
-      );
-
-      this.appStore.setLocaleFileFormat({
-        currency: parseSafe(CurrencySymbol, defaultCurrency),
-        delimiter: DelimiterSymbol,
-        group: parseSafe(GroupSymbol, defaultDigitsGroup),
-        numberFormat: {
-          decimal: NumberFormatRemove === "," ? "." : ",",
-          remove: NumberFormatRemove === "," ? "," : ".",
-        },
-        utcTimeZone: utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone,
-      });
-      setFormatOptions({
-        currency: parseSafe(CurrencySymbol, defaultCurrency),
-        grouping: parseSafe(GroupSymbol, defaultDigitsGroup),
-        decimal: NumberFormatRemove === "," ? "." : ",",
-        thousands: NumberFormatRemove === "," ? "," : ".",
-      });
-      setTimeZone(utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone);
-    } catch (ex) {
-      setFormatOptions({
-        currency: [localizaiton?.currency, ""] ?? defaultCurrency,
-        grouping: defaultDigitsGroup,
-        decimal: localizaiton?.decemalDelimiter ?? defaultNumberFormat.decimal,
-        thousands:
-          localizaiton?.thousandsDelimiter ?? defaultNumberFormat.decimal,
-      });
-      console.warn("Loadin localization settings failed");
     }
 
     (window as any).mainStore = this.appStore;
@@ -435,6 +473,7 @@ export class Application {
         currency: null,
         group: null,
         utcTimeZone: true,
+        billionsFormat: "giga"
       };
       const spec: DatasetSourceSpecification = {
         tables: hashParsed.loadCSV

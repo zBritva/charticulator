@@ -22,7 +22,14 @@ describe("Chart Solver", () => {
   cases.forEach((filename) => {
     it(filename, async () => {
       // The solver has to be initialized, other options can be omitted
-      await initialize();
+      await initialize({
+        localization: {
+          currency: "$",
+          thousandsDelimiter: ",",
+          decemalDelimiter: ".",
+          billionsFormat: "billions",
+        },
+      });
 
       let state = (await loadJSON(filename)).state;
 

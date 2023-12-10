@@ -49,7 +49,15 @@ describe("Charticulator", () => {
     application = new Application();
     application
       .initialize(
-        config as any,
+        {
+          ...(config as any),
+          localization: {
+            currency: "$",
+            thousandsDelimiter: ",",
+            decemalDelimiter: ".",
+            billionsFormat: "billions",
+          },
+        },
         "container",
         {
           workerScriptContent: workerScript,
@@ -58,6 +66,7 @@ describe("Charticulator", () => {
           currency: "$",
           thousandsDelimiter: ",",
           decemalDelimiter: ".",
+          billionsFormat: "giga",
         },
         true
       )

@@ -22,7 +22,14 @@ import { PolarProperties } from "../../core/prototypes/plot_segments/region_2d/p
 describe("Polar plot segment", () => {
   // The directory containing test cases
   before(async () => {
-    await initialize();
+    await initialize({
+      localization: {
+        currency: "$",
+        thousandsDelimiter: ",",
+        decemalDelimiter: ".",
+        billionsFormat: "billions",
+      },
+    });
   });
 
   it("binding data to axis adds property", (done) => {
