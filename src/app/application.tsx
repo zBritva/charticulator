@@ -192,7 +192,6 @@ export class Application {
 
     const formattingOptions = getFormatOptions();
 
-    debugger;
     await initialize({
       ...config,
       localization: {
