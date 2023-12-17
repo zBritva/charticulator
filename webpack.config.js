@@ -4,6 +4,8 @@ const childProcess = require("child_process");
 const { version } = require("./package.json");
 const tsconfig = require("./tsconfig.json");
 
+const Visualizer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 let revision = "unknown";
 try {
   revision = childProcess
@@ -73,6 +75,14 @@ module.exports = (env, { mode }) => {
         libraryTarget: "var",
         library: "Charticulator"
       },
+      optimization: {
+        minimize: true,
+        usedExports: true,
+      },
+      cache: {
+        type: 'filesystem',
+        allowCollectingMemory: true,
+      },
       module: {
         rules: [
           pegjsConfig,
@@ -98,7 +108,11 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
-      plugins
+      plugins: [...plugins, mode === "production" ? new Visualizer({
+        reportFilename: 'app.static.html',
+        openAnalyzer: false,
+        analyzerMode: `static`
+      }) : null].filter(p => p)
     },
     {
       module: {
@@ -146,7 +160,11 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
-      plugins
+      plugins: [...plugins, mode === "production" ? new Visualizer({
+        reportFilename: 'worker.static.html',
+        openAnalyzer: false,
+        analyzerMode: `static`
+      }) : null].filter(p => p)
     },
     {
       module: {
@@ -178,7 +196,11 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
-      plugins
+      plugins: [...plugins, mode === "production" ? new Visualizer({
+        reportFilename: 'container.static.html',
+        openAnalyzer: false,
+        analyzerMode: `static`
+      }) : null].filter(p => p)
     }
   ];
 };

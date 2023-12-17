@@ -51,10 +51,9 @@
     ]
   },
   "dependencies": {
-    "@fluentui/react": "8.8.0",
-    "@fluentui/react-components": "^9.37.3",
-    "@fluentui/react-datepicker-compat": "^0.4.4",
-    "@fluentui/react-icons": "2.0.223",
+    "@fluentui/react-components": "9.43.0",
+    "@fluentui/react-datepicker-compat": "0.4.8",
+    "@fluentui/react-icons": "2.0.224",
     "d3-color": "1.4.1",
     "d3-dsv": "1.0.8",
     "d3-force": "1.1.0",
@@ -153,6 +152,7 @@
     "uglify-es": "^3.3.9",
     "url-loader": "^1.0.1",
     "webpack": "5.89.0",
+    "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "5.1.4"
   },
   "husky": {
