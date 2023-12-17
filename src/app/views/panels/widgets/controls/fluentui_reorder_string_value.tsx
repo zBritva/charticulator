@@ -6,11 +6,14 @@ import { ReorderListView } from "../../object_list_editor";
 import { strings } from "../../../../../strings";
 import { getRandomNumber } from "../../../../../core";
 import { DataType } from "../../../../../core/specification";
-import { Button, Label, Tooltip } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { Label } from "@fluentui/react-label";
+import { Tooltip } from "@fluentui/react-tooltip";
+
 import {
-  ArrowSort20Regular,
-  Delete20Regular,
-  TextSortDescending20Regular,
+  ArrowSortRegular,
+  DeleteRegular,
+  TextSortDescendingRegular,
 } from "@fluentui/react-icons";
 
 interface ReorderStringsValueProps {
@@ -72,7 +75,7 @@ export class FluentUIReorderStringsValue extends React.Component<
         </div>
         <div className="el-row">
           <Button
-            icon={<TextSortDescending20Regular />}
+            icon={<TextSortDescendingRegular />}
             onClick={() => {
               this.setState({
                 items: this.state.items.sort(),
@@ -84,7 +87,7 @@ export class FluentUIReorderStringsValue extends React.Component<
             {strings.reOrder.sort}
           </Button>
           <Button
-            icon={<ArrowSort20Regular />}
+            icon={<ArrowSortRegular />}
             title={strings.reOrder.reverse}
             onClick={() => {
               this.setState({
@@ -101,7 +104,7 @@ export class FluentUIReorderStringsValue extends React.Component<
           {this.props.allowReset && (
             <>
               <Button
-                icon={<Delete20Regular />}
+                icon={<DeleteRegular />}
                 onClick={() => {
                   if (this.props.onReset) {
                     const items = this.props.onReset();

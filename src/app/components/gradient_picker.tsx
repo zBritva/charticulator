@@ -16,17 +16,14 @@ import { InputField } from "./color_space_picker";
 import { TabsView } from "./tabs_view";
 import { ReorderListView } from "../views/panels/object_list_editor";
 import { Colorspace } from "./fluent_ui_gradient_picker";
-import {
-  Popover,
-  PopoverSurface,
-  Dropdown,
-  Option,
-  Button,
-} from "@fluentui/react-components";
+import { Dropdown, Option } from "@fluentui/react-combobox";
+import { Popover, PopoverSurface } from "@fluentui/react-popover";
+import { Button } from "@fluentui/react-button";
+
 import { SVGImageIcon } from "./icons";
 
 import * as R from "../resources";
-import { ArrowSort20Regular } from "@fluentui/react-icons";
+import { ArrowSortRegular } from "@fluentui/react-icons";
 
 export interface GradientPickerProps {
   defaultValue?: ColorGradient;
@@ -268,7 +265,7 @@ export class GradientPicker extends React.Component<
                 "Add"
               </Button>{" "}
               <Button
-                icon={<ArrowSort20Regular />}
+                icon={<ArrowSortRegular />}
                 onClick={() => {
                   const newGradient = deepClone(this.state.currentGradient);
                   newGradient.colors.reverse();

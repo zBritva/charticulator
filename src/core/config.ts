@@ -4,7 +4,15 @@
  * @preferred
  */
 
-import { LocalizationConfig } from "../container/container";
+export type BillionsFormat = "giga" | "billions";
+
+export interface LocalizationConfig {
+  currency: string;
+  thousandsDelimiter: string;
+  decemalDelimiter: string;
+  billionsFormat: BillionsFormat;
+  grouping?: [number];
+}
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
@@ -13,7 +21,7 @@ export interface CharticulatorCoreConfig {
     provider: string;
     apiKey: string;
   };
-  localization: LocalizationConfig
+  localization: LocalizationConfig;
 }
 
 let config: CharticulatorCoreConfig;
@@ -25,8 +33,8 @@ export function setConfig(_?: CharticulatorCoreConfig) {
         currency: "$",
         thousandsDelimiter: ",",
         decemalDelimiter: ".",
-        billionsFormat: "billions"
-      }
+        billionsFormat: "billions",
+      },
     };
   } else {
     config = _;

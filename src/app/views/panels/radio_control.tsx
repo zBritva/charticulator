@@ -4,7 +4,7 @@
 import * as React from "react";
 import { SVGImageIcon } from "../../../app/components";
 import * as R from "../../../app/resources";
-import { ToggleButton } from "@fluentui/react-components";
+import { ToggleButton } from "@fluentui/react-button";
 
 export interface PanelRadioControlProps {
   options: string[];

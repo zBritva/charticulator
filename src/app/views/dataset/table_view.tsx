@@ -10,7 +10,7 @@
 import * as React from "react";
 import { Dataset } from "../../../core";
 import { getConvertableTypes } from "../../utils";
-import { Dropdown, Option } from "@fluentui/react-components";
+import { Dropdown, Option } from "@fluentui/react-combobox";
 
 export interface TableViewProps {
   table: Dataset.Table;

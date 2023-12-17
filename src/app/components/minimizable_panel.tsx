@@ -4,11 +4,11 @@
 import * as React from "react";
 import { default as Hammer } from "hammerjs";
 import { classNames } from "../utils";
-import { Button } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
 
 import * as R from "../resources";
 import { SVGImageIcon } from "./icons";
-import { ArrowMinimize20Regular, Stack20Regular } from "@fluentui/react-icons";
+import { ArrowMinimizeRegular, StackRegular } from "@fluentui/react-icons";
 
 export class MinimizablePanelView extends React.Component<
   React.PropsWithChildren<Record<string, unknown>>,
@@ -313,7 +313,7 @@ export class FloatingPanel extends React.Component<
           <span className="buttons" onClick={(e) => e.stopPropagation()}>
             <Button
               appearance="subtle"
-              icon={<ArrowMinimize20Regular />}
+              icon={<ArrowMinimizeRegular />}
               title="Minimize"
               onClick={() =>
                 this.setState({ minimized: !this.state.minimized })
@@ -322,7 +322,7 @@ export class FloatingPanel extends React.Component<
             {this.props.onClose ? (
               <Button
                 appearance="subtle"
-                icon={<Stack20Regular />}
+                icon={<StackRegular />}
                 title="Restore to panel"
                 onClick={() => this.props.onClose()}
               />

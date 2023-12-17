@@ -6,7 +6,7 @@ import { ColorGradient } from "../../core";
 import { CustomGradientMenu } from "./gradient/custom_gradient_menu";
 import { GradientPalettes } from "./gradient/gradient_palettes";
 
-import { Tab, TabList } from "@fluentui/react-components";
+import { Tab, TabList } from "@fluentui/react-tabs";
 
 export interface GradientPickerProps {
   defaultValue?: ColorGradient;

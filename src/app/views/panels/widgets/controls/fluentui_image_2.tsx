@@ -13,13 +13,11 @@ import { classNames } from "../../../../utils";
 import { strings } from "../../../../../strings";
 import { ImageMappingDragStateWrapper } from "./styles";
 import { SVGImageIcon } from "../../../../components";
-import {
-  Button,
-  Input,
-  Label,
-  Tooltip,
-  Image as FluentUIImage,
-} from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { Input } from "@fluentui/react-input";
+import { Label } from "@fluentui/react-label";
+import { Tooltip } from "@fluentui/react-tooltip";
+import { Image as FluentUIImage } from "@fluentui/react-image";
 
 export interface ImageDescription {
   src: string;

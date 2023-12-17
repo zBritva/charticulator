@@ -22,7 +22,7 @@ import {
   PickersSection,
   PickersSectionWrapper,
 } from "./colors/styles";
-import { Label } from "@fluentui/react-components";
+import { Label } from "@fluentui/react-label";
 
 export function colorToCSS(color: Color) {
   return `rgb(${color.r.toFixed(0)},${color.g.toFixed(0)},${color.b.toFixed(

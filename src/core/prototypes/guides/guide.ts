@@ -20,12 +20,12 @@ import { RectangleChart } from "../charts";
 import { strings } from "../../../strings";
 import React from "react";
 import {
-  AlignBottom20Regular,
-  AlignCenterHorizontal20Regular,
-  AlignCenterVertical20Regular,
-  AlignLeft20Regular,
-  AlignRight20Regular,
-  AlignTop20Regular,
+  AlignBottomRegular,
+  AlignCenterHorizontalRegular,
+  AlignCenterVerticalRegular,
+  AlignLeftRegular,
+  AlignRightRegular,
+  AlignTopRegular,
 } from "@fluentui/react-icons";
 
 export type GuideAxis = "x" | "y";
@@ -408,9 +408,9 @@ export class GuideClass extends ChartElementClass<
       ];
 
       icons = [
-        React.createElement(AlignLeft20Regular),
-        React.createElement(AlignCenterVertical20Regular),
-        React.createElement(AlignRight20Regular),
+        React.createElement(AlignLeftRegular),
+        React.createElement(AlignCenterVerticalRegular),
+        React.createElement(AlignRightRegular),
       ];
     } else {
       const vOptions: Specification.baselineV[] = ["top", "middle", "bottom"];
@@ -421,9 +421,9 @@ export class GuideClass extends ChartElementClass<
         strings.alignment.bottom,
       ];
       icons = [
-        React.createElement(AlignTop20Regular),
-        React.createElement(AlignCenterHorizontal20Regular),
-        React.createElement(AlignBottom20Regular),
+        React.createElement(AlignTopRegular),
+        React.createElement(AlignCenterHorizontalRegular),
+        React.createElement(AlignBottomRegular),
       ];
     }
     widgets.push(

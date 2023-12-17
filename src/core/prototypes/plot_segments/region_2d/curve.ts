@@ -32,14 +32,14 @@ import { ChartStateManager } from "../..";
 import { strings } from "../../../../strings";
 import React from "react";
 import {
-  AlignBottom20Regular,
-  AlignCenterHorizontal20Regular,
-  AlignCenterVertical20Regular,
-  AlignLeft20Regular,
-  AlignRight20Regular,
-  AlignTop20Regular,
-  Grid20Regular,
-  Stack20Regular,
+  AlignBottomRegular,
+  AlignCenterHorizontalRegular,
+  AlignCenterVerticalRegular,
+  AlignLeftRegular,
+  AlignRightRegular,
+  AlignTopRegular,
+  GridRegular,
+  StackRegular,
 } from "@fluentui/react-icons";
 
 export type CurveAxisMode = "null" | "default" | "numerical" | "categorical";
@@ -78,15 +78,15 @@ export interface CurveObject extends Specification.PlotSegment {
 }
 
 export const icons: Region2DConfigurationIcons = {
-  xMinIcon: React.createElement(AlignLeft20Regular),
-  xMiddleIcon: React.createElement(AlignCenterVertical20Regular),
-  xMaxIcon: React.createElement(AlignRight20Regular),
-  yMinIcon: React.createElement(AlignBottom20Regular),
-  yMaxIcon: React.createElement(AlignTop20Regular),
-  dodgeXIcon: React.createElement(AlignCenterHorizontal20Regular),
-  dodgeYIcon: React.createElement(AlignCenterVertical20Regular),
-  gridIcon: React.createElement(Grid20Regular),
-  overlapIcon: React.createElement(Stack20Regular),
+  xMinIcon: React.createElement(AlignLeftRegular),
+  xMiddleIcon: React.createElement(AlignCenterVerticalRegular),
+  xMaxIcon: React.createElement(AlignRightRegular),
+  yMinIcon: React.createElement(AlignBottomRegular),
+  yMaxIcon: React.createElement(AlignTopRegular),
+  dodgeXIcon: React.createElement(AlignCenterHorizontalRegular),
+  dodgeYIcon: React.createElement(AlignCenterVerticalRegular),
+  gridIcon: React.createElement(GridRegular),
+  overlapIcon: React.createElement(StackRegular),
   yMiddleIcon: "align/y-middle",
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",

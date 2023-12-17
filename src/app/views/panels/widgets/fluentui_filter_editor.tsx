@@ -9,13 +9,12 @@ import { DataFieldSelector } from "../../dataset/data_field_selector";
 import { FluentColumnLayout } from "./controls/fluentui_customized_components";
 import { FluentInputExpression } from "./controls/fluentui_input_expression";
 import { CharticulatorPropertyAccessors } from "./types";
-import {
-  Button,
-  Checkbox,
-  Dropdown,
-  Label,
-  Option,
-} from "@fluentui/react-components";
+
+import { Button } from "@fluentui/react-button";
+import { Checkbox } from "@fluentui/react-checkbox";
+import { Dropdown } from "@fluentui/react-combobox";
+import { Label } from "@fluentui/react-label";
+import { Option } from "@fluentui/react-combobox";
 
 export interface FilterEditorProps {
   manager: Prototypes.Controls.WidgetManager & CharticulatorPropertyAccessors;

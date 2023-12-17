@@ -6,7 +6,7 @@ import { ColorPalette, predefinedPalettes } from "../../resources";
 import { ColorGradientWrapper, PalettesWrapper, TabWrapper } from "./styles";
 import { ColorGradient, interpolateColors } from "../../../core";
 import { Colorspace } from "../fluent_ui_gradient_picker";
-import { Label } from "@fluentui/react-components";
+import { Label } from "@fluentui/react-label";
 
 interface GradientPalettesProps {
   selectGradient: (gradient: ColorGradient, emit: boolean) => void;

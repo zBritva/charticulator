@@ -12,8 +12,8 @@ import { CharticulatorPropertyAccessors } from "../../../app/views/panels/widget
 import { strings } from "../../../strings";
 import { OrientationType } from "./types";
 import {
-  AlignCenterHorizontal20Regular,
-  AlignCenterVertical20Regular,
+  AlignCenterHorizontalRegular,
+  AlignCenterVerticalRegular,
 } from "@fluentui/react-icons";
 import React from "react";
 
@@ -150,8 +150,8 @@ export class NumericalColorLegendClass extends LegendClass {
               type: "radio",
               showLabel: false,
               icons: [
-                React.createElement(AlignCenterVertical20Regular),
-                React.createElement(AlignCenterHorizontal20Regular),
+                React.createElement(AlignCenterVerticalRegular),
+                React.createElement(AlignCenterHorizontalRegular),
               ],
               labels: [
                 strings.objects.legend.vertical,

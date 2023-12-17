@@ -17,11 +17,11 @@ import {
 } from "../../stores";
 import { classNames } from "../../utils";
 import {
-  Eraser20Regular,
-  Eye20Regular,
-  EyeOff20Regular,
+  EraserRegular,
+  EyeRegular,
+  EyeOffRegular,
 } from "@fluentui/react-icons";
-import { Button } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
 
 export class ObjectListEditor extends ContextedComponent<
   Record<string, unknown>,
@@ -106,9 +106,9 @@ export class ObjectListEditor extends ContextedComponent<
                 <Button
                   icon={
                     element.properties.visible ? (
-                      <Eye20Regular />
+                      <EyeRegular />
                     ) : (
-                      <EyeOff20Regular />
+                      <EyeOffRegular />
                     )
                   }
                   title="Toggle visibility"
@@ -126,7 +126,7 @@ export class ObjectListEditor extends ContextedComponent<
                   }}
                 />
                 <Button
-                  icon={<Eraser20Regular />}
+                  icon={<EraserRegular />}
                   title="Remove"
                   appearance="subtle"
                   onClick={() => {
@@ -168,14 +168,12 @@ export class ObjectListEditor extends ContextedComponent<
           />
           <span className="el-text">{glyph.properties.name}</span>
           <Button
-            icon={<Eraser20Regular />}
+            icon={<EraserRegular />}
             title="Remove"
             disabled={this.store.chart.glyphs.length === 1}
             appearance="subtle"
             onClick={() => {
-              this.dispatch(
-                new Actions.RemoveGlyph(glyph)
-              );
+              this.dispatch(new Actions.RemoveGlyph(glyph));
             }}
           />
         </div>
@@ -217,9 +215,9 @@ export class ObjectListEditor extends ContextedComponent<
                   <Button
                     icon={
                       mark.properties.visible ? (
-                        <Eye20Regular />
+                        <EyeRegular />
                       ) : (
-                        <EyeOff20Regular />
+                        <EyeOffRegular />
                       )
                     }
                     appearance="subtle"
@@ -237,7 +235,7 @@ export class ObjectListEditor extends ContextedComponent<
                     }}
                   />
                   <Button
-                    icon={<Eraser20Regular />}
+                    icon={<EraserRegular />}
                     title="Remove"
                     appearance="subtle"
                     onClick={() => {

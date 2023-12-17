@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { ColorPickerState } from "../fluentui_color_picker";
-import { ToggleButton } from "@fluentui/react-components";
+import { ToggleButton } from "@fluentui/react-button";
 
 export enum PickerType {
   HCL = "hcl",

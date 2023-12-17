@@ -3,7 +3,8 @@
 
 import { ColorPalette } from "../../resources";
 import * as React from "react";
-import { Label, ToggleButton } from "@fluentui/react-components";
+import { ToggleButton } from "@fluentui/react-button";
+import { Label } from "@fluentui/react-label";
 
 export interface PaletteListProps {
   selected: ColorPalette;

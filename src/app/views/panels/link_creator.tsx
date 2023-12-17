@@ -26,7 +26,8 @@ import {
 import { ReorderListView } from "./object_list_editor";
 import { MappingType } from "../../../core/specification";
 import { ArrowType } from "../../../core/prototypes/links";
-import { Button, Radio, RadioGroup } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { Radio, RadioGroup } from "@fluentui/react-radio";
 import { strings } from "../../../strings";
 
 export interface LinkCreationPanelProps {

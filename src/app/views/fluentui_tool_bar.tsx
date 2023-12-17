@@ -21,17 +21,15 @@ import { strings } from "../../strings";
 import { LayoutDirection, UndoRedoLocation } from "../main_view";
 import { useContext } from "react";
 
-import {
-  ToolbarButton,
-  Popover,
-  PopoverSurface,
-  MenuPopover,
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuTrigger,
-  PopoverTrigger,
-} from "@fluentui/react-components";
+import { ToolbarButton } from "@fluentui/react-toolbar";
+import { Popover } from "@fluentui/react-popover";
+import { PopoverSurface } from "@fluentui/react-popover";
+import { MenuPopover } from "@fluentui/react-menu";
+import { Menu } from "@fluentui/react-menu";
+import { MenuItem } from "@fluentui/react-menu";
+import { MenuList } from "@fluentui/react-menu";
+import { MenuTrigger } from "@fluentui/react-menu";
+import { PopoverTrigger } from "@fluentui/react-popover";
 
 import { getSVGIcon } from "../resources";
 import { EditorType } from "../stores/app_store";

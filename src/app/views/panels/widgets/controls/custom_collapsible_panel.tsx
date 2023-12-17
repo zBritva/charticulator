@@ -5,7 +5,8 @@ import * as React from "react";
 import { CSSProperties, useCallback, useMemo, useState } from "react";
 import { AppStore } from "../../../../../app/stores";
 import { getRandomNumber } from "../../../../../core";
-import { Button, Label } from "@fluentui/react-components";
+import { Label } from "@fluentui/react-label";
+import { Button } from "@fluentui/react-button";
 import { SVGImageIcon } from "../../../../components";
 import * as R from "../../../../resources";
 

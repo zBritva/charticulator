@@ -10,14 +10,13 @@ import { strings } from "../../../../strings";
 
 import { FluentUIFilterEditor } from "./fluentui_filter_editor";
 import { CharticulatorPropertyAccessors } from "./types";
-import {
-  Button,
-  Popover,
-  PopoverSurface,
-  PopoverTrigger,
-} from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { Popover } from "@fluentui/react-popover";
+import { PopoverSurface } from "@fluentui/react-popover";
+import { PopoverTrigger } from "@fluentui/react-popover";
+
 // import { SVGImageIcon } from "../../../components";
-import { Filter20Regular } from "@fluentui/react-icons";
+import { FilterRegular } from "@fluentui/react-icons";
 
 export const FilterPanel: React.FC<{
   text: string;
@@ -48,7 +47,7 @@ export const FilterPanel: React.FC<{
                 //   iconName: "Filter",
                 // }}
                 // icon={<SVGImageIcon url={R.getSVGIcon("Filter")} />}
-                icon={<Filter20Regular />}
+                icon={<FilterRegular />}
                 onClick={() => {
                   setOpen(!isOpen);
                 }}

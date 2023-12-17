@@ -2,7 +2,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { Label, Input, Slider, SpinButton } from "@fluentui/react-components";
+import { Label } from "@fluentui/react-label";
+import { SpinButton } from "@fluentui/react-spinbutton";
+import { Slider } from "@fluentui/react-slider";
+import { Input } from "@fluentui/react-input";
 
 import * as React from "react";
 import { prettyNumber } from "../../../../../core";
@@ -124,16 +127,16 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
         <SpinButton
           value={+value}
           step={tick}
-          onChange={(e, { value, displayValue: str  }) => {
+          onChange={(e, { value, displayValue: str }) => {
             // spin button click
-            if (str == undefined && typeof value === 'number') {
+            if (str == undefined && typeof value === "number") {
               setValue(value);
             }
             // value changed by user text input
             if (
               str !== undefined &&
               ((str != "" && str.indexOf(".") === str.length - 1) ||
-              (str.indexOf("-") === 0 && str.length === 1))
+                (str.indexOf("-") === 0 && str.length === 1))
             ) {
               setValue(str);
             } else {
@@ -150,11 +153,7 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
 
   return (
     <>
-      {props.showSlider ? (
-        <Label>
-          {props.label}
-        </Label>
-      ) : null}
+      {props.showSlider ? <Label>{props.label}</Label> : null}
       <FluentColumnLayout style={props.styles}>
         {props.showUpdown ? (
           renderUpdown()
@@ -193,9 +192,7 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
             />
           </>
         )}
-        {props.showSlider
-          ? renderSlider()
-          : null}
+        {props.showSlider ? renderSlider() : null}
       </FluentColumnLayout>
     </>
   );

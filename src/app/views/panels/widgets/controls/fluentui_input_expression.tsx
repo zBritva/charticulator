@@ -9,7 +9,8 @@ import {
   replaceTabBySymbol,
 } from "../../../../../core";
 
-import { Input, Label } from "@fluentui/react-components";
+import { Input } from "@fluentui/react-input";
+import { Label } from "@fluentui/react-label";
 
 import { FluentColumnLayout } from "./fluentui_customized_components";
 

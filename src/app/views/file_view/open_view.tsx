@@ -11,12 +11,12 @@ import { Actions } from "../../actions";
 import { showOpenFileDialog, readFileAsString } from "../../utils";
 import { strings } from "../../../strings";
 import { AppStore } from "../../stores";
-import { Button } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
 import {
-  ArrowDownload20Regular,
-  Copy20Regular,
-  Delete24Filled,
-  Open20Regular,
+  ArrowDownloadRegular,
+  CopyRegular,
+  DeleteFilled,
+  OpenRegular,
 } from "@fluentui/react-icons";
 
 export interface FileViewOpenState {
@@ -125,7 +125,7 @@ export class FileViewOpen extends React.Component<
                       <div className="actions">
                         <Button
                           appearance="subtle"
-                          icon={<Delete24Filled />}
+                          icon={<DeleteFilled />}
                           title={strings.fileOpen.delete}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -144,7 +144,7 @@ export class FileViewOpen extends React.Component<
                         />
                         <Button
                           appearance="subtle"
-                          icon={<Copy20Regular />}
+                          icon={<CopyRegular />}
                           title={strings.fileOpen.copy}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -159,7 +159,7 @@ export class FileViewOpen extends React.Component<
                         />
                         <Button
                           appearance="subtle"
-                          icon={<ArrowDownload20Regular />}
+                          icon={<ArrowDownloadRegular />}
                           title={strings.fileOpen.download}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -199,7 +199,7 @@ export class FileViewOpen extends React.Component<
             // iconProps={{
             //   iconName: "OpenFolderHorizontal",
             // }}
-            icon={<Open20Regular />}
+            icon={<OpenRegular />}
             // styles={primaryButtonStyles}
             title={strings.fileOpen.open}
             onClick={async () => {
