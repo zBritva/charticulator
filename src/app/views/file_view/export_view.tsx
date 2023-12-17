@@ -19,9 +19,9 @@ import { ExportTemplateTarget } from "../../template";
 import { classNames } from "../../utils";
 import { InputImageProperty } from "../panels/widgets/controls";
 import { noop } from "../../utils/noop";
-import { Button } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
 
-import { ArrowExport20Regular } from "@fluentui/react-icons";
+import { ArrowExportRegular } from "@fluentui/react-icons";
 export class InputGroup extends React.Component<
   React.PropsWithChildren<{
     value: string;
@@ -85,7 +85,7 @@ export class ExportImageView extends React.Component<
             // iconProps={{
             //   iconName: "Export",
             // }}
-            icon={<ArrowExport20Regular />}
+            icon={<ArrowExportRegular />}
             // styles={primaryButtonStyles}
             onClick={() => {
               new Actions.Export("png", { scale: this.getScaler() });
@@ -98,7 +98,7 @@ export class ExportImageView extends React.Component<
             // iconProps={{
             //   iconName: "Export",
             // }}
-            icon={<ArrowExport20Regular />}
+            icon={<ArrowExportRegular />}
             // styles={primaryButtonStyles}
             onClick={() => {
               this.props.store.dispatcher.dispatch(
@@ -113,7 +113,7 @@ export class ExportImageView extends React.Component<
             // iconProps={{
             //   iconName: "Export",
             // }}
-            icon={<ArrowExport20Regular />}
+            icon={<ArrowExportRegular />}
             // styles={primaryButtonStyles}
             onClick={() => {
               this.props.store.dispatcher.dispatch(new Actions.Export("svg"));
@@ -143,7 +143,7 @@ export class ExportHTMLView extends React.Component<
             // iconProps={{
             //   iconName: "Export",
             // }}
-            icon={<ArrowExport20Regular />}
+            icon={<ArrowExportRegular />}
             // styles={primaryButtonStyles}
             onClick={() => {
               this.props.store.dispatcher.dispatch(new Actions.Export("html"));
@@ -212,7 +212,7 @@ export class FileViewExport extends React.Component<
                   }
                 }}
               >
-                <ArrowExport20Regular />
+                <ArrowExportRegular />
                 <span className="el-text">{strings.fileExport.asImage}</span>
               </div>
               <div
@@ -228,7 +228,7 @@ export class FileViewExport extends React.Component<
                   }
                 }}
               >
-                <ArrowExport20Regular />
+                <ArrowExportRegular />
                 <span className="el-text">{strings.fileExport.asHTML}</span>
               </div>
               {this.props.store.listExportTemplateTargets().map((name) => (
@@ -246,7 +246,7 @@ export class FileViewExport extends React.Component<
                     }
                   }}
                 >
-                  <ArrowExport20Regular />
+                  <ArrowExportRegular />
                   <span className="el-text">{name}</span>
                 </div>
               ))}
@@ -836,7 +836,7 @@ export class ExportTemplateView extends React.Component<
             // iconProps={{
             //   iconName: "Export",
             // }}
-            icon={<ArrowExport20Regular />}
+            icon={<ArrowExportRegular />}
             // styles={primaryButtonStyles}
             onClick={() => {
               this.props.store.dispatcher.dispatch(

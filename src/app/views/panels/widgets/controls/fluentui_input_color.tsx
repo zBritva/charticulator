@@ -16,13 +16,11 @@ import { ColorPicker } from "../../../../components/fluentui_color_picker";
 
 import { AppStore } from "../../../../stores";
 
-import {
-  Input,
-  Popover,
-  PopoverTrigger,
-  PopoverSurface,
-  Label,
-} from "@fluentui/react-components";
+import { Input } from "@fluentui/react-input";
+import { Popover } from "@fluentui/react-popover";
+import { PopoverTrigger } from "@fluentui/react-popover";
+import { PopoverSurface } from "@fluentui/react-popover";
+import { Label } from "@fluentui/react-label";
 
 import { FluentColumnLayout } from "./fluentui_customized_components";
 import { strings } from "../../../../../strings";

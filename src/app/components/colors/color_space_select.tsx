@@ -7,7 +7,7 @@ import {
   ColorSpaceDescription,
   ColorSpacePickerState,
 } from "../color_space_picker";
-import { Combobox, Option } from "@fluentui/react-components";
+import { Combobox, Option } from "@fluentui/react-combobox";
 
 interface ColorSpaceSelectProps {
   onChange?: (newValue: Color) => void;

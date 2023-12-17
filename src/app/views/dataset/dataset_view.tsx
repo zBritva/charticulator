@@ -38,15 +38,15 @@ import { FileViewImport, MappingMode } from "../file_view/import_view";
 import { strings } from "../../../strings";
 import { EditorType } from "../../stores/app_store";
 import {
-  Button,
   Popover,
   PopoverSurface,
   PopoverTrigger,
-} from "@fluentui/react-components";
+} from "@fluentui/react-popover";
+import { Button } from "@fluentui/react-button";
 import {
-  ChevronDown20Regular,
-  ChevronLeft20Regular,
-  MoreHorizontal20Regular,
+  ChevronDownRegular,
+  ChevronLeftRegular,
+  MoreHorizontalRegular,
 } from "@fluentui/react-icons";
 
 export interface DatasetViewProps {
@@ -299,7 +299,7 @@ export class ColumnsView extends React.Component<
               <PopoverTrigger>
                 <Button
                   appearance="subtle"
-                  icon={<MoreHorizontal20Regular />}
+                  icon={<MoreHorizontalRegular />}
                   title={strings.dataset.showDataValues}
                   onClick={() => {
                     this.setState({
@@ -554,12 +554,12 @@ export class ColumnView extends React.Component<
               title={strings.dataset.showDerivedFields}
               icon={
                 this.state.isExpanded ? (
-                  <ChevronDown20Regular />
+                  <ChevronDownRegular />
                 ) : (
-                  <ChevronLeft20Regular />
+                  <ChevronLeftRegular />
                 )
               }
-              onClick={(e: { stopPropagation: () => void; }) => {
+              onClick={(e: { stopPropagation: () => void }) => {
                 this.setState({ isExpanded: !this.state.isExpanded });
                 e.stopPropagation();
               }}

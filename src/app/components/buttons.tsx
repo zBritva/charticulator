@@ -8,7 +8,8 @@ import { SVGImageIcon } from "./icons";
 
 import * as R from "../resources";
 import { strings } from "../../strings";
-import { Button, ToolbarButton } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { ToolbarButton } from "@fluentui/react-toolbar";
 
 // import { FluentButton } from "../views/panels/widgets/controls/fluentui_customized_components";
 
@@ -216,7 +217,7 @@ export class MenuButton extends BaseButton<IconButtonProps> {
           {props.text}
         </Button>
       </>
-    )
+    );
   }
 }
 

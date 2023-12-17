@@ -12,12 +12,10 @@ import { strings } from "../../../../../strings";
 import { ImageMappingDragStateWrapper } from "./styles";
 import { SVGImageIcon } from "../../../../components";
 
-import {
-  Button,
-  Input,
-  Label,
-  Image as FluentUIImage,
-} from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { Input } from "@fluentui/react-input";
+import { Label } from "@fluentui/react-label";
+import { Image as FluentUIImage } from "@fluentui/react-image";
 
 export interface ImageDescription {
   src: string;

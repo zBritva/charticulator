@@ -22,13 +22,10 @@ import { ScaleValueSelector } from "../scale_value_selector";
 import { FunctionCall } from "../../../../core/expression";
 import { FluentValueEditor } from "./fluentui_value_editor";
 import { FluentInputExpression } from "./controls/fluentui_input_expression";
-import {
-  Label,
-  Popover,
-  PopoverSurface,
-  Button,
-  ToggleButton,
-} from "@fluentui/react-components";
+import { Button, ToggleButton } from "@fluentui/react-button";
+import { Popover, PopoverSurface } from "@fluentui/react-popover";
+
+import { Label } from "@fluentui/react-label";
 
 import { FluentColumnLayout } from "./controls/fluentui_customized_components";
 import { ObjectClass } from "../../../../core/prototypes";
@@ -48,7 +45,11 @@ import { EmptyMapping } from "./controls/fluentui_empty_mapping";
 import { FluentUIWidgetManager } from "./fluentui_manager";
 import { getDropzoneAcceptTables } from "./utils";
 
-import { ArrowTrending20Regular, Eraser20Regular, LinkMultiple20Regular } from "@fluentui/react-icons";
+import {
+  ArrowTrendingRegular,
+  EraserRegular,
+  LinkMultipleRegular,
+} from "@fluentui/react-icons";
 
 export interface MappingEditorProps {
   parent: Prototypes.Controls.WidgetManager & CharticulatorPropertyAccessors;
@@ -223,8 +224,10 @@ export class FluentMappingEditor extends React.Component<
       options.acceptKinds
     );
     const menuRender = this.director.menuRender(mainMenuItems, mapping, {
-      text: this.props.type == Specification.AttributeType.Boolean ?
-      strings.attributesPanel.conditionedBy : null
+      text:
+        this.props.type == Specification.AttributeType.Boolean
+          ? strings.attributesPanel.conditionedBy
+          : null,
     });
 
     return (
@@ -409,7 +412,7 @@ export class FluentMappingEditor extends React.Component<
                   ) : null}
                   <>
                     {this.director.menuRender(mainMenuItems, scaleMapping, {
-                      icon: React.createElement(ArrowTrending20Regular),
+                      icon: React.createElement(ArrowTrendingRegular),
                     })}
                   </>
                 </FluentColumnLayout>
@@ -423,7 +426,7 @@ export class FluentMappingEditor extends React.Component<
                 ) : null}
                 <Button
                   ref={(e) => (this.mappingButton = e)}
-                  icon={<ArrowTrending20Regular />}
+                  icon={<ArrowTrendingRegular />}
                 >
                   {scaleMapping.expression}
                 </Button>
@@ -431,49 +434,48 @@ export class FluentMappingEditor extends React.Component<
             );
           }
         }
-        case Specification.MappingType.expressionScale:
-          {
-            const scaleMapping = mapping as Specification.ScaleValueExpressionMapping;
-            const table = mapping ? scaleMapping.table : options.table;
-            const builderProps = getMenuProps.bind(this)(
-              parent,
-              attribute,
-              options
-            );
-            const mainMenuItems: IContextualMenuItem[] = this.director.buildFieldsMenu(
-              builderProps.onClick,
-              builderProps.defaultValue,
-              parent.store,
-              this,
-              attribute,
-              table,
-              options.acceptKinds
-            );
-            return (
-              <>
-                <FluentColumnLayout
-                  style={{
-                    justifyContent: "center",
-                  }}
-                >
-                  {this.props.options.label ? (
-                    <Label
-                      style={{
-                        flex: 1,
-                      }}
-                    >
-                      {this.props.options.label}
-                    </Label>
-                  ) : null}
-                  <>
-                    {this.director.menuRender(mainMenuItems, scaleMapping, {
-                      icon: <ArrowTrending20Regular/>,
-                    })}
-                  </>
-                </FluentColumnLayout>
-              </>
-            );
-          }
+        case Specification.MappingType.expressionScale: {
+          const scaleMapping = mapping as Specification.ScaleValueExpressionMapping;
+          const table = mapping ? scaleMapping.table : options.table;
+          const builderProps = getMenuProps.bind(this)(
+            parent,
+            attribute,
+            options
+          );
+          const mainMenuItems: IContextualMenuItem[] = this.director.buildFieldsMenu(
+            builderProps.onClick,
+            builderProps.defaultValue,
+            parent.store,
+            this,
+            attribute,
+            table,
+            options.acceptKinds
+          );
+          return (
+            <>
+              <FluentColumnLayout
+                style={{
+                  justifyContent: "center",
+                }}
+              >
+                {this.props.options.label ? (
+                  <Label
+                    style={{
+                      flex: 1,
+                    }}
+                  >
+                    {this.props.options.label}
+                  </Label>
+                ) : null}
+                <>
+                  {this.director.menuRender(mainMenuItems, scaleMapping, {
+                    icon: <ArrowTrendingRegular />,
+                  })}
+                </>
+              </FluentColumnLayout>
+            </>
+          );
+        }
         default: {
           return <span>(...)</span>;
         }
@@ -583,7 +585,7 @@ export class FluentMappingEditor extends React.Component<
               {isDataMapping ? (
                 <>
                   <Button
-                    icon={<Eraser20Regular/>}
+                    icon={<EraserRegular />}
                     title={strings.mappingEditor.remove}
                     onClick={() => {
                       if (parent.getAttributeMapping(attribute)) {
@@ -608,7 +610,7 @@ export class FluentMappingEditor extends React.Component<
               {valueIndex !== undefined && valueIndex !== null ? (
                 <>
                   <ToggleButton
-                    icon={<LinkMultiple20Regular />}
+                    icon={<LinkMultipleRegular />}
                     id="dataFieldValueSelection"
                     title={strings.mappingEditor.bindDataValue}
                     ref={(e) => (this.mappingButton = e)}

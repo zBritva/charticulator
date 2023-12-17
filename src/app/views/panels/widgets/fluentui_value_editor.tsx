@@ -22,18 +22,21 @@ import { strings } from "../../../../strings";
 import { FluentColumnLayout } from "./controls/fluentui_customized_components";
 import { InputImage } from "./controls/fluentui_image";
 import { FluentInputNumber } from "./controls/fluentui_input_number";
-import {
-  Button,
-  Dropdown,
-  Input,
-  Label,
-  Popover,
-  PopoverSurface,
-  PopoverTrigger,
-  Option,
-} from "@fluentui/react-components";
+
+import { Button } from "@fluentui/react-button";
+import { Dropdown } from "@fluentui/react-combobox";
+import { Input } from "@fluentui/react-input";
+import { Label } from "@fluentui/react-label";
+import { Popover } from "@fluentui/react-popover";
+import { PopoverSurface } from "@fluentui/react-popover";
+import { PopoverTrigger } from "@fluentui/react-popover";
+import { Option } from "@fluentui/react-combobox";
+
 import { IContextualMenuItem } from "../../dataset/data_field_binding_builder";
-import { CheckboxChecked20Regular, CheckboxUnchecked20Filled } from "@fluentui/react-icons";
+import {
+  CheckboxCheckedRegular,
+  CheckboxUncheckedFilled,
+} from "@fluentui/react-icons";
 
 export interface ValueEditorProps {
   value: Specification.AttributeValue;
@@ -343,19 +346,19 @@ export class FluentValueEditor extends ContextedComponent<
               }}
             >
               {strings
-              .map((str) => {
-                return {
-                  key: str,
-                  text: str,
-                };
-              })
-              .map((o) => {
-                return (
-                  <Option value={o.key} text={o.key}>
-                    {o.text}
-                  </Option>
-                );
-              })}
+                .map((str) => {
+                  return {
+                    key: str,
+                    text: str,
+                  };
+                })
+                .map((o) => {
+                  return (
+                    <Option value={o.key} text={o.key}>
+                      {o.text}
+                    </Option>
+                  );
+                })}
             </Dropdown>
           </FluentColumnLayout>
         );
@@ -376,7 +379,11 @@ export class FluentValueEditor extends ContextedComponent<
                 <Label>{strings.objects.visibleOn.visibility}</Label>
                 <Button
                   icon={
-                    boolean ? <CheckboxChecked20Regular /> : <CheckboxUnchecked20Filled />
+                    boolean ? (
+                      <CheckboxCheckedRegular />
+                    ) : (
+                      <CheckboxUncheckedFilled />
+                    )
                   }
                   onClick={() => {
                     this.emitSetValue(!boolean);

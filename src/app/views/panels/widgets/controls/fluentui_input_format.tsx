@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { Input, Label } from "@fluentui/react-components";
+import { Input } from "@fluentui/react-input";
+import { Label } from "@fluentui/react-label";
 
 import * as React from "react";
 import {

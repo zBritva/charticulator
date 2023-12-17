@@ -55,21 +55,18 @@ import { getDateFormat } from "../../../../core/dataset/datetime";
 import { ScaleMapping } from "../../../../core/specification";
 import { ScaleValueSelector } from "../scale_value_selector";
 
+import { Label } from "@fluentui/react-label";
+import { Input } from "@fluentui/react-input";
+import { Checkbox } from "@fluentui/react-checkbox";
+import { Dropdown, Combobox, Option } from "@fluentui/react-combobox";
+import { Button, ToggleButton } from "@fluentui/react-button";
+import { Field } from "@fluentui/react-field";
 import {
-  Dropdown,
-  Combobox,
-  Option,
-  Checkbox,
-  Label,
-  Input,
-  Button,
-  PopoverTrigger,
   Popover,
   PopoverSurface,
-  ToggleButton,
-  Field,
-  Tooltip,
-} from "@fluentui/react-components";
+  PopoverTrigger,
+} from "@fluentui/react-popover";
+import { Tooltip } from "@fluentui/react-tooltip";
 
 import { DatePicker } from "@fluentui/react-datepicker-compat";
 
@@ -108,7 +105,7 @@ import { CustomCollapsiblePanel } from "./controls/custom_collapsible_panel";
 import { FluentUIReorderStringsValue } from "./controls/fluentui_reorder_string_value";
 import { InputColorGradient } from "./controls/input_gradient";
 import { getDropzoneAcceptTables } from "./utils";
-import { GroupList20Regular } from "@fluentui/react-icons";
+import { GroupListRegular } from "@fluentui/react-icons";
 
 export type OnEditMappingHandler = (
   attribute: string,
@@ -1280,9 +1277,7 @@ export class FluentUIWidgetManager
       <>
         <Popover>
           <PopoverTrigger disableButtonEnhancement>
-            <Button
-              icon={<SVGImageIcon url={R.getSVGIcon("SortLines")} />}
-            />
+            <Button icon={<SVGImageIcon url={R.getSVGIcon("SortLines")} />} />
           </PopoverTrigger>
           <PopoverSurface>
             <FluentUIReorderStringsValue
@@ -1402,8 +1397,7 @@ export class FluentUIWidgetManager
                 className="charticulator__widget-array-view-item"
               >
                 {options.allowReorder ? (
-                  <span className="charticulator__widget-array-view-control charticulator__widget-array-view-order">
-                  </span>
+                  <span className="charticulator__widget-array-view-control charticulator__widget-array-view-order"></span>
                 ) : null}
                 <span className="charticulator__widget-array-view-content">
                   {renderItem({
@@ -1738,7 +1732,7 @@ export class FluentUIWidgetManager
               //   iconName: "RowsGroup",
               // }}
               // icon={<SVGImageIcon url={R.getSVGIcon("RowsGroup")} />}
-              icon={<GroupList20Regular />}
+              icon={<GroupListRegular />}
               onClick={() => {
                 globals.popupController.popupAt(
                   (context) => {

@@ -45,12 +45,12 @@ import { scaleLinear } from "d3-scale";
 import { FluentUIWidgetManager } from "../../../../app/views/panels/widgets/fluentui_manager";
 import { EventType } from "../../../../app/views/panels/widgets/observer";
 import {
-  AlignBottom20Regular,
-  AlignCenterHorizontal20Regular,
-  AlignCenterVertical20Regular,
-  AlignLeft20Regular,
-  AlignRight20Regular,
-  AlignTop20Regular,
+  AlignBottomRegular,
+  AlignCenterHorizontalRegular,
+  AlignCenterVerticalRegular,
+  AlignLeftRegular,
+  AlignRightRegular,
+  AlignTopRegular,
 } from "@fluentui/react-icons";
 import React from "react";
 
@@ -75,12 +75,12 @@ export interface CartesianState extends Specification.PlotSegmentState {
 }
 
 const icons: Region2DConfigurationIcons = {
-  xMinIcon: React.createElement(AlignLeft20Regular),
-  xMiddleIcon: React.createElement(AlignCenterVertical20Regular),
-  xMaxIcon: React.createElement(AlignRight20Regular),
-  yMiddleIcon: React.createElement(AlignCenterHorizontal20Regular),
-  yMinIcon: React.createElement(AlignBottom20Regular),
-  yMaxIcon: React.createElement(AlignTop20Regular),
+  xMinIcon: React.createElement(AlignLeftRegular),
+  xMiddleIcon: React.createElement(AlignCenterVerticalRegular),
+  xMaxIcon: React.createElement(AlignRightRegular),
+  yMiddleIcon: React.createElement(AlignCenterHorizontalRegular),
+  yMinIcon: React.createElement(AlignBottomRegular),
+  yMaxIcon: React.createElement(AlignTopRegular),
   dodgeXIcon: "HorizontalDistributeCenter",
   dodgeYIcon: "VerticalDistributeCenter",
   gridIcon: "GridViewSmall",
@@ -329,12 +329,16 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     const props = this.object.properties;
     if (props.xData && props.xData.visible) {
       if (props.xData.onTop) {
-        cartesianGraphics.elements.push(this.getPlotSegmentAxisXDataGraphics(manager));
+        cartesianGraphics.elements.push(
+          this.getPlotSegmentAxisXDataGraphics(manager)
+        );
       }
     }
     if (props.yData && props.yData.visible) {
       if (props.yData.onTop) {
-        cartesianGraphics.elements.push(this.getPlotSegmentAxisYDataGraphics(manager));
+        cartesianGraphics.elements.push(
+          this.getPlotSegmentAxisYDataGraphics(manager)
+        );
       }
     }
     return cartesianGraphics;

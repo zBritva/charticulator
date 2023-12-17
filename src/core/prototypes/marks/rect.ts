@@ -32,9 +32,9 @@ import { OrientationType } from "../legends/types";
 import { CartesianCoordinates } from "../../graphics";
 import React from "react";
 import {
-  Oval20Regular,
-  RectangleLandscape20Regular,
-  Triangle20Regular,
+  OvalRegular,
+  RectangleLandscapeRegular,
+  TriangleRegular,
 } from "@fluentui/react-icons";
 
 export { RectElementAttributes, RectElementProperties };
@@ -265,9 +265,9 @@ export class RectElementClass extends EmphasizableMarkClass<
               showLabel: true,
               label: strings.objects.rect.shape,
               icons: [
-                React.createElement(RectangleLandscape20Regular),
-                React.createElement(Triangle20Regular),
-                React.createElement(Oval20Regular),
+                React.createElement(RectangleLandscapeRegular),
+                React.createElement(TriangleRegular),
+                React.createElement(OvalRegular),
               ],
               labels: [
                 strings.objects.rect.shapes.rectangle,

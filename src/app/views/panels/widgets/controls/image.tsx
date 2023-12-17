@@ -11,8 +11,8 @@ import { PopupView } from "../../../../controllers/popup_controller";
 import { classNames } from "../../../../utils";
 import { strings } from "../../../../../strings";
 import { noop } from "../../../../utils/noop";
-import { Open20Regular } from "@fluentui/react-icons";
-import { Button } from "@fluentui/react-components";
+import { OpenRegular } from "@fluentui/react-icons";
+import { Button } from "@fluentui/react-button";
 
 export interface ImageDescription {
   src: string;
@@ -365,7 +365,7 @@ export class ImageUploader extends React.Component<
               type="text"
               placeholder={this.props.placeholder || "Drop/Paste Image"}
             />
-            <Button icon={<Open20Regular />} onClick={this.handleOpenFile} />
+            <Button icon={<OpenRegular />} onClick={this.handleOpenFile} />
           </span>
         )}
       </div>

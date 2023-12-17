@@ -7,13 +7,11 @@ import { AppStore } from "../../../../../app/stores";
 import { Actions } from "../../../../../app";
 import { CollapseOrExpandPanels } from "../../../../../core/specification/types";
 
-import {
-  Label,
-  Accordion,
-  AccordionHeader,
-  AccordionItem,
-  AccordionPanel,
-} from "@fluentui/react-components";
+import { Label } from "@fluentui/react-label";
+import { Accordion } from "@fluentui/react-accordion";
+import { AccordionHeader } from "@fluentui/react-accordion";
+import { AccordionItem } from "@fluentui/react-accordion";
+import { AccordionPanel } from "@fluentui/react-accordion";
 
 interface CollapsiblePanelProps {
   header: string;

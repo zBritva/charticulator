@@ -12,7 +12,9 @@ import {
 import { DataKind, TableType } from "../../../core/dataset";
 import { AttributeType, MappingType } from "../../../core/specification";
 import { strings } from "../../../strings";
-import { Button, Radio, RadioGroup, Label } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { Radio, RadioGroup } from "@fluentui/react-radio";
+import { Label } from "@fluentui/react-label";
 
 export interface LegendCreationPanelProps {
   onFinish?: () => void;

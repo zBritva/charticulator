@@ -5,9 +5,11 @@ import * as React from "react";
 import { FluentColumnLayout } from "./fluentui_customized_components";
 import { strings } from "../../../../../strings";
 import { Prototypes, Specification } from "../../../../../core";
-import { Button, Input, Label } from "@fluentui/react-components";
-import { ColorFill20Regular } from "@fluentui/react-icons";
+import { ColorFillRegular } from "@fluentui/react-icons";
 
+import { Button } from "@fluentui/react-button";
+import { Input } from "@fluentui/react-input";
+import { Label } from "@fluentui/react-label";
 interface EmptyMappingProps {
   renderColorPicker: () => JSX.Element;
   onClick: () => void;
@@ -109,7 +111,7 @@ export const EmptyColorButton = ({
 }: EmptyColorButtonProps): JSX.Element => {
   return (
     <Button
-      icon={<ColorFill20Regular />}
+      icon={<ColorFillRegular />}
       onClick={onClick}
       title={strings.mappingEditor.chooseColor}
     />

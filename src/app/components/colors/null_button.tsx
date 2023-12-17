@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { Color } from "../../../core";
-import { Button } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
 import { SVGImageIcon } from "../icons";
 import * as R from "../../resources";
 

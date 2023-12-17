@@ -50,7 +50,8 @@ import { NestedChartEditorOptions } from "../core/prototypes/controls";
 import { EditorType } from "./stores/app_store";
 import { LocalizationConfig } from "../container/container";
 
-import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { FluentProvider } from "@fluentui/react-provider";
+import { teamsLightTheme } from "@fluentui/tokens";
 
 export class ApplicationExtensionContext implements ExtensionContext {
   constructor(public app: Application) {}
@@ -144,7 +145,6 @@ export class Application {
       };
     }
   ) {
-
     try {
       const UtcTimeZone = parseSafe(
         window.localStorage.getItem(LocalStorageKeys.UtcTimeZone),
@@ -172,7 +172,7 @@ export class Application {
         grouping: parseSafe(GroupSymbol, defaultDigitsGroup),
         decimal: NumberFormatRemove === "," ? "." : ",",
         thousands: NumberFormatRemove === "," ? "," : ".",
-        billionsFormat: BillionsFormat
+        billionsFormat: BillionsFormat,
       });
       setTimeZone(utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone);
     } catch (ex) {
@@ -182,7 +182,7 @@ export class Application {
         decimal: localizaiton?.decemalDelimiter ?? defaultNumberFormat.decimal,
         thousands:
           localizaiton?.thousandsDelimiter ?? defaultNumberFormat.decimal,
-        billionsFormat: "giga"
+        billionsFormat: "giga",
       });
       console.warn("Loadin localization settings failed");
     }
@@ -199,8 +199,8 @@ export class Application {
         currency: formattingOptions.currency[0],
         decemalDelimiter: formattingOptions.decimal,
         thousandsDelimiter: formattingOptions.thousands,
-        grouping: [formattingOptions.grouping[0]]
-      }
+        grouping: [formattingOptions.grouping[0]],
+      },
     });
 
     this.root = ReactDOM.createRoot(document.getElementById(this.containerID));
@@ -218,8 +218,8 @@ export class Application {
         currency: formattingOptions.currency[0],
         decemalDelimiter: formattingOptions.decimal,
         thousandsDelimiter: formattingOptions.thousands,
-        grouping: [formattingOptions.grouping[0]]
-      }
+        grouping: [formattingOptions.grouping[0]],
+      },
     });
 
     this.appStore = new AppStore(this.worker, makeDefaultDataset());
@@ -231,8 +231,8 @@ export class Application {
           defaultDelimiter,
         defaultDelimiter
       );
-    } catch(e) {
-      DelimiterSymbol = ","
+    } catch (e) {
+      DelimiterSymbol = ",";
     }
 
     this.appStore.setLocaleFileFormat({
@@ -244,7 +244,7 @@ export class Application {
         remove: formattingOptions.thousands,
       },
       utcTimeZone: isUtcTimeZone(),
-      billionsFormat: formattingOptions.billionsFormat
+      billionsFormat: formattingOptions.billionsFormat,
     });
 
     if (handlers?.nestedEditor) {
@@ -473,7 +473,7 @@ export class Application {
         currency: null,
         group: null,
         utcTimeZone: true,
-        billionsFormat: "giga"
+        billionsFormat: "giga",
       };
       const spec: DatasetSourceSpecification = {
         tables: hashParsed.loadCSV

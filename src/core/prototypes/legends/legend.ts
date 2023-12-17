@@ -21,12 +21,12 @@ import {
   TemplateParameters,
 } from "../common";
 import {
-  AlignBottom20Regular,
-  AlignCenterHorizontal20Regular,
-  AlignCenterVertical20Regular,
-  AlignLeft20Regular,
-  AlignRight20Regular,
-  AlignTop20Regular,
+  AlignBottomRegular,
+  AlignCenterHorizontalRegular,
+  AlignCenterVerticalRegular,
+  AlignLeftRegular,
+  AlignRightRegular,
+  AlignTopRegular,
 } from "@fluentui/react-icons";
 import React from "react";
 
@@ -302,9 +302,9 @@ export abstract class LegendClass extends ChartElementClass {
                   {
                     type: "radio",
                     icons: [
-                      React.createElement(AlignLeft20Regular),
-                      React.createElement(AlignCenterVertical20Regular),
-                      React.createElement(AlignRight20Regular),
+                      React.createElement(AlignLeftRegular),
+                      React.createElement(AlignCenterVerticalRegular),
+                      React.createElement(AlignRightRegular),
                     ],
                     labels: [
                       strings.alignment.left,
@@ -321,9 +321,9 @@ export abstract class LegendClass extends ChartElementClass {
                     type: "radio",
                     options: ["start", "middle", "end"],
                     icons: [
-                      React.createElement(AlignBottom20Regular),
-                      React.createElement(AlignCenterHorizontal20Regular),
-                      React.createElement(AlignTop20Regular),
+                      React.createElement(AlignBottomRegular),
+                      React.createElement(AlignCenterHorizontalRegular),
+                      React.createElement(AlignTopRegular),
                     ],
                     labels: [
                       strings.alignment.bottom,

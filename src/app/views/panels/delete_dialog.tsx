@@ -3,7 +3,12 @@
 import * as React from "react";
 import { useCallback, useState } from "react";
 
-import { Button, Popover, PopoverSurface, PopoverTrigger } from "@fluentui/react-components";
+import {
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+} from "@fluentui/react-popover";
+import { Button } from "@fluentui/react-button";
 
 import * as R from "../../resources";
 import { strings } from "../../../strings";
@@ -51,17 +56,13 @@ export const DeleteDialog = ({ context }: DeleteDialogProps): JSX.Element => {
             appearance="transparent"
             className="charticulator__button-menu-fluent"
           >
-          {strings.menuBar.reset}
+            {strings.menuBar.reset}
           </Button>
         </PopoverTrigger>
         <PopoverSurface>
-          {strings.fileOpen.deleteConfirmation('')}
-          <br/>
-          <Button
-            onClick={onDeleteChart}
-          >
-            {strings.button.yes}
-          </Button>
+          {strings.fileOpen.deleteConfirmation("")}
+          <br />
+          <Button onClick={onDeleteChart}>{strings.button.yes}</Button>
           <Button onClick={toggleHideDialog}>{strings.button.no}</Button>
         </PopoverSurface>
       </Popover>

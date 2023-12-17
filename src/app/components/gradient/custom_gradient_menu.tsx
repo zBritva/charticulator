@@ -14,12 +14,9 @@ import { ColorPicker, colorToCSS } from "../fluentui_color_picker";
 import { ColorCell, ColorRowWrapper } from "./styles";
 import { GradientView } from "./gradient_palettes";
 import { CustomGradientButtons } from "./custom_gradient_buttons";
-import {
-  Button,
-  Input,
-  Popover,
-  PopoverSurface,
-} from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
+import { Input } from "@fluentui/react-input";
+import { Popover, PopoverSurface } from "@fluentui/react-popover";
 import { SVGImageIcon } from "../icons";
 
 import * as R from "../../resources";

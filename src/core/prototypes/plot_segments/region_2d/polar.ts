@@ -42,11 +42,11 @@ import {
   setRadiiByCenter,
 } from "./utils";
 import {
-  AlignBottom20Regular,
-  AlignCenterVertical20Regular,
-  AlignLeft20Regular,
-  AlignRight20Regular,
-  AlignTop20Regular,
+  AlignBottomRegular,
+  AlignCenterVerticalRegular,
+  AlignLeftRegular,
+  AlignRightRegular,
+  AlignTopRegular,
 } from "@fluentui/react-icons";
 import React from "react";
 export type PolarAxisMode = "null" | "default" | "numerical" | "categorical";
@@ -94,12 +94,12 @@ export interface PolarObject extends Specification.PlotSegment {
 }
 
 export const icons: Region2DConfigurationIcons = {
-  xMinIcon: React.createElement(AlignLeft20Regular),
-  xMiddleIcon: React.createElement(AlignCenterVertical20Regular),
-  xMaxIcon: React.createElement(AlignRight20Regular),
-  yMiddleIcon: React.createElement(AlignRight20Regular),
-  yMinIcon: React.createElement(AlignBottom20Regular),
-  yMaxIcon: React.createElement(AlignTop20Regular),
+  xMinIcon: React.createElement(AlignLeftRegular),
+  xMiddleIcon: React.createElement(AlignCenterVerticalRegular),
+  xMaxIcon: React.createElement(AlignRightRegular),
+  yMiddleIcon: React.createElement(AlignRightRegular),
+  yMinIcon: React.createElement(AlignBottomRegular),
+  yMaxIcon: React.createElement(AlignTopRegular),
   dodgeXIcon: "CharticulatorArrangePolar",
   dodgeYIcon: "CharticulatorStackRadial",
   gridIcon: "sublayout/polar-grid",

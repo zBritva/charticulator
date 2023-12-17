@@ -28,8 +28,8 @@ import { TableType } from "../../../core/dataset";
 import { AppStore } from "../../stores";
 import { AddMessage, RemoveMessage } from "../../actions/actions";
 import { strings } from "../../../strings";
-import { Button } from "@fluentui/react-components";
-import { Check20Regular } from "@fluentui/react-icons";
+import { Button } from "@fluentui/react-button";
+import { CheckRegular } from "@fluentui/react-icons";
 
 export interface FileUploaderProps {
   onChange: (file: File) => void;
@@ -283,7 +283,7 @@ export class ImportDataView extends React.Component<
               currency: null,
               group: null,
               utcTimeZone: true,
-              billionsFormat: 'giga'
+              billionsFormat: "giga",
             }),
             null,
           ];
@@ -550,7 +550,7 @@ export class ImportDataView extends React.Component<
             // iconProps={{
             //   iconName: "CheckMark",
             // }}
-            icon={<Check20Regular />}
+            icon={<CheckRegular />}
             // styles={primaryButtonStyles}
             title={strings.fileImport.doneButtonTitle}
             disabled={

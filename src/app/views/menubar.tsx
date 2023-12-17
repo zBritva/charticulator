@@ -6,7 +6,8 @@ import * as ReactDOM from "react-dom";
 import * as globals from "../globals";
 import * as R from "../resources";
 
-import { Dialog, DialogActions, DialogTitle, Button } from "@fluentui/react-components";
+import { Dialog, DialogActions, DialogTitle } from "@fluentui/react-dialog";
+import { Button } from "@fluentui/react-button";
 
 import { deepClone, EventSubscription } from "../../core";
 import { Actions } from "../actions";
@@ -317,7 +318,8 @@ export class MenuBar extends ContextedComponent<
                 );
               }}
               // text={strings.menuBar.saveButton}
-            >{strings.menuBar.saveButton}
+            >
+              {strings.menuBar.saveButton}
             </Button>
             <Button
               onClick={() => {
@@ -327,7 +329,9 @@ export class MenuBar extends ContextedComponent<
                 this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE);
               }}
               // text={strings.menuBar.dontSaveButton}
-            >{strings.menuBar.dontSaveButton}</Button>
+            >
+              {strings.menuBar.dontSaveButton}
+            </Button>
           </DialogActions>
         </Dialog>
         <MenuButton

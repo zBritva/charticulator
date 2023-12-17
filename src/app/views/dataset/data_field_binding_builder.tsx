@@ -29,17 +29,19 @@ import { AggregationFunctionDescription } from "../../../core/expression";
 import { FluentRowLayout } from "../panels/widgets/controls/fluentui_customized_components";
 import * as React from "react";
 import {
-  Button,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+} from "@fluentui/react-popover";
+import {
   Menu,
-  MenuButton,
   MenuItem,
   MenuList,
   MenuPopover,
   MenuTrigger,
-  Popover,
-  PopoverSurface,
-  PopoverTrigger,
-} from "@fluentui/react-components";
+} from "@fluentui/react-menu";
+import { MenuButton } from "@fluentui/react-button";
+import { Button } from "@fluentui/react-button";
 import { SVGImageIcon } from "../../components";
 import * as R from "../../resources";
 
@@ -483,7 +485,7 @@ class MenuItemsCreator {
             items: [
               {
                 data: {
-                  mapping
+                  mapping,
                 },
                 key: "mapping",
                 onRender: () => this.renderScaleEditor(this.parent, this.store),
@@ -844,8 +846,9 @@ export class Director {
         })
         .find(
           (item: any) =>
-            item.subMenuProps.items.filter((i: any) => i.isChecked && i.subMenuProps)
-              .length > 0
+            item.subMenuProps.items.filter(
+              (i: any) => i.isChecked && i.subMenuProps
+            ).length > 0
         ); // Exclude unselected columns
 
       if (currentColumn) {
@@ -854,7 +857,7 @@ export class Director {
         );
 
         const currentMapping = aggregationFunction.subMenuProps.items.find(
-          (i: { key: string; }) => i.key === "mapping"
+          (i: { key: string }) => i.key === "mapping"
         ); // Select mapping of column
 
         // set current mapping
@@ -864,43 +867,51 @@ export class Director {
       return { mapping, currentColumn };
     }
 
-    const { mapping, currentColumn } = getCurrentMapping(
-      mainMenuItems
-    );
+    const { mapping, currentColumn } = getCurrentMapping(mainMenuItems);
 
     return (
       <Popover trapFocus>
         <PopoverTrigger>
           <Button
-            style={{
-              flex: 1,
-              maxHeight: '32px',
-              textWrap: 'nowrap'
-            } as any}
+            style={
+              {
+                flex: 1,
+                maxHeight: "32px",
+                textWrap: "nowrap",
+              } as any
+            }
             className="data-field-button"
             title={strings.mappingEditor.bindData}
-            icon={typeof options?.icon === 'string' ? <SVGImageIcon url={R.getSVGIcon(options?.icon)} /> : options?.icon}
-          >
-            {
-              options.text ? options.text :
-              scaleMapping ? (scaleMapping as Specification.ScaleMapping)?.expression :
-              mapping ? (mapping as Specification.ScaleMapping)?.expression : ''
+            icon={
+              typeof options?.icon === "string" ? (
+                <SVGImageIcon url={R.getSVGIcon(options?.icon)} />
+              ) : (
+                options?.icon
+              )
             }
+          >
+            {options.text
+              ? options.text
+              : scaleMapping
+              ? (scaleMapping as Specification.ScaleMapping)?.expression
+              : mapping
+              ? (mapping as Specification.ScaleMapping)?.expression
+              : ""}
           </Button>
         </PopoverTrigger>
         <PopoverSurface>
           {/* <MenuList> */}
-            {mainMenuItems.map((menuItemParent) => {
-              if (menuItemParent.subMenuProps) {
-                return (
-                  // <MenuItem key={menuItemParent.key}>
-                    <FluentRowLayout
-                      style={{
-                        alignItems: "center",
-                      }}
-                      key={menuItemParent.key}
-                    >
-                      {/* {!mapping ? (
+          {mainMenuItems.map((menuItemParent) => {
+            if (menuItemParent.subMenuProps) {
+              return (
+                // <MenuItem key={menuItemParent.key}>
+                <FluentRowLayout
+                  style={{
+                    alignItems: "center",
+                  }}
+                  key={menuItemParent.key}
+                >
+                  {/* {!mapping ? (
                         <Button
                           style={{
                             flex: 1,
@@ -910,92 +921,104 @@ export class Director {
                           ???{menuItemParent.text}
                         </Button>
                       ) : null} */}
-                      {mapping != null ?
-                      <Popover trapFocus
-                        // open={mapping != null && menuItemParent === currentColumn}
+                  {mapping != null ? (
+                    <Popover
+                      trapFocus
+                      // open={mapping != null && menuItemParent === currentColumn}
+                    >
+                      <PopoverTrigger disableButtonEnhancement>
+                        <Button
+                          style={{
+                            flex: 1,
+                          }}
+                          appearance="subtle"
+                          disabled={
+                            !mapping || menuItemParent !== currentColumn
+                          }
                         >
-                        <PopoverTrigger disableButtonEnhancement>
-                          <Button
-                            style={{
-                              flex: 1,
-                            }}
-                            appearance="subtle"
-                            disabled={!mapping || menuItemParent !== currentColumn}
-                          >
-                            {menuItemParent.text}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverSurface>
-                            {mapping && menuItemParent === currentColumn ? mapping.onRender(mapping, () => null) : null}
-                        </PopoverSurface>
-                      </Popover>
-                      : 
-                      <Button
-                        style={{
-                          flex: 1,
-                        }}
-                        appearance="subtle"
-                      >
-                        {menuItemParent.text}
-                      </Button>
-                      }
-                      <Menu>
-                        <MenuTrigger>
-                          <MenuButton
-                            style={{
-                              flex: 1,
-                            }}
-                          >
-                            {menuItemParent.subMenuProps.items.find((i) => i.isChecked)
-                              ?.text || "Unselected"}
-                          </MenuButton>
-                        </MenuTrigger>
-                        <MenuPopover>
-                          <MenuList>
-                            {menuItemParent.subMenuProps.items.map((menuItemChild) => {
-                              return (
-                                <MenuItem
-                                  key={`${menuItemParent}-${menuItemChild.key}`}
-                                  onClick={(e) => {
-                                    menuItemChild.onClick(e, menuItemChild);
-                                  }}
-                                >
-                                  {menuItemChild.text}
-                                </MenuItem>
-                              );
-                            })}
-                          </MenuList>
-                        </MenuPopover>
-                      </Menu>
-                    </FluentRowLayout>
-                  // </MenuItem>
-                );
-              } else {
-                return (
-                  <>
+                          {menuItemParent.text}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverSurface>
+                        {mapping && menuItemParent === currentColumn
+                          ? mapping.onRender(mapping, () => null)
+                          : null}
+                      </PopoverSurface>
+                    </Popover>
+                  ) : (
                     <Button
-                      appearance="subtle"
-                      key={menuItemParent.key}
-                      onClick={(e: React.MouseEvent<HTMLElement, MouseEvent> | React.KeyboardEvent<HTMLElement>) => {
-                        if (
-                          scaleMapping &&
-                          (scaleMapping as Specification.ScaleMapping).expression.startsWith(
-                            "get"
-                          )
-                        ) {
-                          event.preventDefault();
-                          // this.changeDataFieldValueSelectionState();
-                        } else {
-                          menuItemParent.onClick(e, menuItemParent);
-                        }
+                      style={{
+                        flex: 1,
                       }}
+                      appearance="subtle"
                     >
                       {menuItemParent.text}
                     </Button>
-                  </>
-                );
-              }
-            })}
+                  )}
+                  <Menu>
+                    <MenuTrigger>
+                      <MenuButton
+                        style={{
+                          flex: 1,
+                        }}
+                      >
+                        {menuItemParent.subMenuProps.items.find(
+                          (i) => i.isChecked
+                        )?.text || "Unselected"}
+                      </MenuButton>
+                    </MenuTrigger>
+                    <MenuPopover>
+                      <MenuList>
+                        {menuItemParent.subMenuProps.items.map(
+                          (menuItemChild) => {
+                            return (
+                              <MenuItem
+                                key={`${menuItemParent}-${menuItemChild.key}`}
+                                onClick={(e) => {
+                                  menuItemChild.onClick(e, menuItemChild);
+                                }}
+                              >
+                                {menuItemChild.text}
+                              </MenuItem>
+                            );
+                          }
+                        )}
+                      </MenuList>
+                    </MenuPopover>
+                  </Menu>
+                </FluentRowLayout>
+                // </MenuItem>
+              );
+            } else {
+              return (
+                <>
+                  <Button
+                    appearance="subtle"
+                    key={menuItemParent.key}
+                    onClick={(
+                      e:
+                        | React.MouseEvent<HTMLElement, MouseEvent>
+                        | React.KeyboardEvent<HTMLElement>
+                    ) => {
+                      if (
+                        scaleMapping &&
+                        (scaleMapping as Specification.ScaleMapping).expression.startsWith(
+                          "get"
+                        )
+                      ) {
+                        event.preventDefault();
+                        // this.changeDataFieldValueSelectionState();
+                      } else {
+                        menuItemParent.onClick(e, menuItemParent);
+                      }
+                    }}
+                  >
+                    {menuItemParent.text}
+                  </Button>
+                </>
+              );
+            }
+          })}
           {/* </MenuList> */}
         </PopoverSurface>
       </Popover>

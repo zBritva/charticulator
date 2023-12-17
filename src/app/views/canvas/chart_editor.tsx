@@ -48,15 +48,15 @@ import { SnappingGuidesVisualTypes } from "../../../core/prototypes";
 import { classNames } from "../../utils";
 import { FluentUIWidgetManager } from "../panels/widgets/fluentui_manager";
 import {
-  Button,
   Popover,
   PopoverSurface,
   PopoverTrigger,
-} from "@fluentui/react-components";
+} from "@fluentui/react-popover";
+import { Button } from "@fluentui/react-button";
 import {
-  ZoomFit20Regular,
-  ZoomIn20Regular,
-  ZoomOut20Regular,
+  ZoomFitRegular,
+  ZoomInRegular,
+  ZoomOutRegular,
 } from "@fluentui/react-icons";
 import { SVGImageIcon } from "../../components";
 
@@ -1461,7 +1461,7 @@ export class ChartEditorView
             <Button
               size="small"
               appearance="subtle"
-              icon={<ZoomIn20Regular />}
+              icon={<ZoomInRegular />}
               title={strings.canvas.zoomIn}
               onClick={() => {
                 this.doZoom(1.1);
@@ -1470,7 +1470,7 @@ export class ChartEditorView
             <Button
               size="small"
               appearance="subtle"
-              icon={<ZoomOut20Regular />}
+              icon={<ZoomOutRegular />}
               title={strings.canvas.zoomOut}
               onClick={() => {
                 this.doZoom(1 / 1.1);
@@ -1479,7 +1479,7 @@ export class ChartEditorView
             <Button
               size="small"
               appearance="subtle"
-              icon={<ZoomFit20Regular />}
+              icon={<ZoomFitRegular />}
               onClick={() => {
                 const newZoom = this.getFitViewZoom(
                   this.state.viewWidth,
@@ -1496,7 +1496,9 @@ export class ChartEditorView
             <Button
               size="small"
               appearance="subtle"
-              icon={<SVGImageIcon height={20} url={R.getSVGIcon("rect-zoom")} />}
+              icon={
+                <SVGImageIcon height={20} url={R.getSVGIcon("rect-zoom")} />
+              }
               title={"Rectangle zoom"}
               onClick={() => {
                 new Actions.SetCurrentTool("rectangle-zoom").dispatch(

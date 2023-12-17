@@ -7,8 +7,8 @@ import * as R from "../../resources";
 import { AppStore } from "../../stores";
 import { classNames } from "../../utils";
 import { kind2Icon, type2DerivedColumns, isKindAcceptable } from "./common";
-import { MoreVertical20Regular } from "@fluentui/react-icons";
-import { Button } from "@fluentui/react-components";
+import { MoreVerticalRegular } from "@fluentui/react-icons";
+import { Button } from "@fluentui/react-button";
 import { Select } from "../panels/widgets/controls";
 
 export interface DataFieldSelectorProps {
@@ -395,7 +395,7 @@ export class DataFieldSelector extends React.Component<
           ) : null}
           {item.derived && item.derived.length > 0 ? (
             <Button
-              icon={<MoreVertical20Regular />}
+              icon={<MoreVerticalRegular />}
               onClick={() => {
                 if (elDerived) {
                   if (elDerived.style.display == "none") {

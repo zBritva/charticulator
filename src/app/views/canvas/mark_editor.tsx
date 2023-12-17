@@ -47,11 +47,11 @@ import {
 } from "../../../core/specification";
 import { SnappingGuidesVisualTypes } from "../../../core/prototypes";
 import {
-  ZoomFit20Regular,
-  ZoomIn20Regular,
-  ZoomOut20Regular,
+  ZoomFitRegular,
+  ZoomInRegular,
+  ZoomOutRegular,
 } from "@fluentui/react-icons";
-import { Button } from "@fluentui/react-components";
+import { Button } from "@fluentui/react-button";
 
 export interface MarkEditorViewProps {
   height?: number;
@@ -197,7 +197,7 @@ export class MarkEditorView extends ContextedComponent<
             <Button
               size="small"
               appearance="subtle"
-              icon={<ZoomIn20Regular />}
+              icon={<ZoomInRegular />}
               title={strings.canvas.zoomIn}
               onClick={() => {
                 this.refSingleMarkView.doZoom(1.1);
@@ -206,7 +206,7 @@ export class MarkEditorView extends ContextedComponent<
             <Button
               size="small"
               appearance="subtle"
-              icon={<ZoomOut20Regular />}
+              icon={<ZoomOutRegular />}
               title={strings.canvas.zoomOut}
               onClick={() => {
                 this.refSingleMarkView.doZoom(1 / 1.1);
@@ -215,7 +215,7 @@ export class MarkEditorView extends ContextedComponent<
             <Button
               size="small"
               appearance="subtle"
-              icon={<ZoomFit20Regular />}
+              icon={<ZoomFitRegular />}
               title={strings.canvas.zoomAuto}
               onClick={() => {
                 this.refSingleMarkView.doZoomAuto();
@@ -224,7 +224,9 @@ export class MarkEditorView extends ContextedComponent<
             <Button
               size="small"
               appearance="subtle"
-              icon={<SVGImageIcon height={20} url={R.getSVGIcon("rect-zoom")} />}
+              icon={
+                <SVGImageIcon height={20} url={R.getSVGIcon("rect-zoom")} />
+              }
               title={"Rectangle zoom"}
               onClick={() => {
                 this.dispatch(new Actions.SetCurrentTool("rectangle-zoom"));
@@ -235,7 +237,9 @@ export class MarkEditorView extends ContextedComponent<
             <Button
               size="small"
               appearance="subtle"
-              icon={<SVGImageIcon height={20} url={R.getSVGIcon("general/plus")} />}
+              icon={
+                <SVGImageIcon height={20} url={R.getSVGIcon("general/plus")} />
+              }
               title={strings.canvas.newGlyph}
               onClick={() => {
                 this.dispatch(new Actions.AddGlyph("glyph.rectangle"));

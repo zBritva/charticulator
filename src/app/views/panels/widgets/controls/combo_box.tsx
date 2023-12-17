@@ -3,7 +3,8 @@
 
 import * as React from "react";
 import { fontList } from "../../../../../core";
-import { Combobox, Option, Label } from "@fluentui/react-components";
+import { Combobox, Option } from "@fluentui/react-combobox";
+import { Label } from "@fluentui/react-label";
 
 export interface ComboBoxFontFamilyProps {
   defaultValue: string;

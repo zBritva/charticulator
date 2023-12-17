@@ -9,8 +9,8 @@ import { SVGImageIcon } from "../../components";
 import { Actions } from "../../actions";
 import { strings } from "../../../strings";
 import { AppStore } from "../../stores";
-import { Button } from "@fluentui/react-components";
-import { Save20Regular } from "@fluentui/react-icons";
+import { Button } from "@fluentui/react-button";
+import { SaveRegular } from "@fluentui/react-icons";
 
 export interface FileViewSaveAsProps {
   onClose: () => void;
@@ -55,7 +55,7 @@ export class FileViewSaveAs extends React.Component<
               // iconProps={{
               //   iconName: "Save",
               // }}
-              icon={<Save20Regular />}
+              icon={<SaveRegular />}
               // styles={primaryButtonStyles}
               title={strings.fileSave.saveButton}
               onClick={() => {
