@@ -28,7 +28,7 @@ const cases: string[] = fs
   .map((testCase: string) => path.join(pathPrefix, testCase));
 
 process.env.CHROME_BIN = require("puppeteer").executablePath();
-const webpackConfig = webpack(undefined, { mode: "developement" });
+const webpackConfig = webpack(undefined, { mode: "development" });
 
 module.exports = (config: Config) => {
   config.set({
