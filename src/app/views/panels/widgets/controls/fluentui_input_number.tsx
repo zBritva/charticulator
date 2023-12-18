@@ -131,6 +131,8 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
             // spin button click
             if (str == undefined && typeof value === "number") {
               setValue(value);
+              reportValue(value);
+              return;
             }
             // value changed by user text input
             if (
@@ -140,9 +142,15 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
             ) {
               setValue(str);
             } else {
-              const num = parseNumber(str);
-              if (reportValue(num)) {
-                setValue(num);
+              if (str !== undefined) {
+                try {
+                  const num = parseNumber(str);
+                  if (reportValue(num)) {
+                    setValue(num);
+                  }
+                } catch (e) {
+                  // do nothing
+                }
               }
             }
           }}
