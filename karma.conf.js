@@ -1,6 +1,6 @@
+/* eslint-disable */
 "use strict";
 
-import { Config, ConfigOptions } from "karma";
 const path = require("path");
 const fs = require("fs");
 
@@ -10,11 +10,10 @@ const testRecursivePath = "./tests/karma/**/*.ts";
 const coreTestsRecursivePath = "./tests/unit/**/*.ts";
 
 const browser = "ChromeHeadless";
-const devBrowser = "ChromeHeadless";
 const karmaSnapshotsDirectory = `tests/karma/${browser}/__snapshots__/**/*.md`;
 const styles = ["../dist/styles/app.css", "../dist/styles/page.css"];
 
-function resolve(basePath: string, suiteName: string) {
+function resolve(basePath, suiteName) {
   return path.join(
     basePath,
     `tests/karma/${browser}/__snapshots__`,
@@ -23,14 +22,12 @@ function resolve(basePath: string, suiteName: string) {
 }
 
 const pathPrefix = "tests/unit/charts";
-const cases: string[] = fs
-  .readdirSync("./src/" + pathPrefix)
-  .map((testCase: string) => path.join(pathPrefix, testCase));
+const cases = fs.readdirSync("./src/" + pathPrefix).map((testCase) => path.join(pathPrefix, testCase));
 
 process.env.CHROME_BIN = require("puppeteer").executablePath();
-const webpackConfig = webpack(undefined, { mode: "development" });
+const webpackConfig = webpack(webpack, { mode: "development" });
 
-module.exports = (config: Config) => {
+module.exports = (config) => {
   config.set({
     mode: "development",
     browserNoActivityTimeout: 100000,
@@ -73,7 +70,7 @@ module.exports = (config: Config) => {
         served: true,
         included: false,
       },
-      ...cases.map((cases: string) => {
+      ...cases.map((cases) => {
         return {
           pattern: cases,
           watched: false,
@@ -118,5 +115,5 @@ module.exports = (config: Config) => {
     webpackMiddleware: {
       stats: "errors-only",
     },
-  } as ConfigOptions);
+  });
 };
