@@ -196,6 +196,7 @@ export class FileViewOpen extends React.Component<
         <h1>{strings.mainTabs.open}</h1>
         <div style={{ marginBottom: "12px" }}>
           <Button
+            data-testid="fileOpenButton"
             // iconProps={{
             //   iconName: "OpenFolderHorizontal",
             // }}

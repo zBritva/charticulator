@@ -142,6 +142,7 @@ export class AppButton extends BaseButton<AppButtonProps> {
     return (
       <span
         tabIndex={0}
+        data-testid="appbutton"
         className="charticulator__button-menu-app charticulator-title__button"
         title={this.props.title}
         onClick={this._doClick}

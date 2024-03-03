@@ -174,7 +174,7 @@ export class FileView extends React.Component<
     return (
       <MainReactContext.Provider value={{ store: this.props.store }}>
         <div className="charticulator__file-view">
-          <div className="charticulator__file-view-tabs">
+          <div className="charticulator__file-view-tabs" data-testid="file-view-tabs">
             <div
               ref={(r) => (this.buttonBack = r)}
               tabIndex={0}

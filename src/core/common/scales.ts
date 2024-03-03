@@ -4,7 +4,7 @@
 
 import { scaleUtc, scaleLinear, scaleLog, scaleTime } from "d3-scale";
 import { timeFormat, utcFormat } from "d3-time-format";
-import { getSortFunctionByData, isUtcTimeZone } from ".";
+import { getSortFunctionByData, isUtcTimeZone } from "./utils";
 import { OrderMode } from "../specification/types";
 
 export namespace Scale {
