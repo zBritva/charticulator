@@ -15,8 +15,6 @@ import { OrderMode } from "../../core/specification/types";
 import { strings } from "../../strings";
 import {
   clickOnButtonByTitle,
-  clickOnToolbarButton,
-  closeStartMenuPanel,
   findElementsByClassID,
   getChartCanvas,
   getLinkTypePanel,

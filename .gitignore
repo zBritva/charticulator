@@ -11,3 +11,7 @@ key.pem
 .tmp/
 .env
 .idea/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
