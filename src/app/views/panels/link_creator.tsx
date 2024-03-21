@@ -81,10 +81,10 @@ export class LinkCreationPanel extends ContextedComponent<
         <div className="el-row">
           <h2>Link using:</h2>
           <RadioGroup
-            onChange={(ev, data) =>
+            onChange={(ev, data) => {
               this.setState({ linkType: data.value as "line" | "band" })
-            }
-            value={this.state.linkMode}
+            }}
+            defaultValue={this.state.linkType}
           >
             <Radio value="line" label="Line" />
             <Radio value="link/band" label="Band" />

@@ -26,7 +26,7 @@
     "prettify": "prettier \"./src/**/*.{ts,tsx}\" \"./sass/**/*.{scss,sass}\"",
     "postinstall": "npx playwright install --with-deps chromium",
     "unit_test": "npx playwright test",
-    "test": "yarn run eslint && yarn run dev && yarn run unit_test",
+    "test": "npm run eslint && npm run dev && npm run unit_test",
     "add_licenses": "license-check-and-add",
     "create_cert": "openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes",
     "typedoc": "typedoc --options ./typedoc.json",
