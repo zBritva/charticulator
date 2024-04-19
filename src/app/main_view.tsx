@@ -26,6 +26,7 @@ import { ScalesPanel } from "./views/panels/scales_panel";
 import { strings } from "../strings";
 import { FluentUIToolbar } from "./views/fluentui_tool_bar";
 import { MainReactContext } from "./context_component";
+import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 
 export enum UndoRedoLocation {
   MenuBar = "menubar",
@@ -278,96 +279,128 @@ export class MainView extends React.Component<
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => e.preventDefault()}
       >
-        <MainReactContext.Provider
-          value={{
-            store: this.props.store,
-          }}
-        >
-          <TelemetryContext.Provider value={this.props.telemetry}>
-            <MenuBar
-              alignButtons={this.viewConfiguration.MenuBarButtons}
-              alignSaveButton={this.viewConfiguration.MenuBarSaveButtons}
-              undoRedoLocation={this.viewConfiguration.UndoRedoLocation}
-              name={this.viewConfiguration.Name}
-              ref={(e) => (this.refMenuBar = e)}
-              handlers={this.props.menuBarHandlers}
-              tabButtons={this.props.tabButtons}
-            />
-            {this.viewConfiguration.ToolbarPosition ==
-              PositionsLeftRightTop.Top &&
-              toolBarCreator({
-                layout: LayoutDirection.Horizontal,
-                toolbarLabels: this.viewConfiguration.ToolbarLabels,
-                undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
-              })}
-            <section className="charticulator__panel-container">
-              {this.viewConfiguration.ColumnsPosition ==
-                PositionsLeftRight.Left && datasetPanel()}
-              <div className="charticulator__panel charticulator__panel-editor">
-                <div className="charticulator__panel-editor-panel-container">
-                  {this.viewConfiguration.EditorPanelsPosition ==
-                    PositionsLeftRight.Left && editorPanels()}
-                  {this.viewConfiguration.ToolbarPosition ==
-                    PositionsLeftRightTop.Left &&
-                    toolBarCreator({
-                      layout: LayoutDirection.Vertical,
-                      toolbarLabels: this.viewConfiguration.ToolbarLabels,
-                      undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
-                    })}
-                  {chartPanel()}
-                  {this.viewConfiguration.ToolbarPosition ==
-                    PositionsLeftRightTop.Right &&
-                    toolBarCreator({
-                      layout: LayoutDirection.Vertical,
-                      toolbarLabels: this.viewConfiguration.ToolbarLabels,
-                      undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
-                    })}
-                  {this.viewConfiguration.EditorPanelsPosition ==
-                    PositionsLeftRight.Right && editorPanels()}
+        <FluentProvider theme={teamsLightTheme}>
+          <MainReactContext.Provider
+            value={{
+              store: this.props.store,
+            }}
+          >
+            <TelemetryContext.Provider value={this.props.telemetry}>
+              <MenuBar
+                alignButtons={this.viewConfiguration.MenuBarButtons}
+                alignSaveButton={this.viewConfiguration.MenuBarSaveButtons}
+                undoRedoLocation={this.viewConfiguration.UndoRedoLocation}
+                name={this.viewConfiguration.Name}
+                ref={(e) => (this.refMenuBar = e)}
+                handlers={this.props.menuBarHandlers}
+                tabButtons={this.props.tabButtons}
+              />
+              {this.viewConfiguration.ToolbarPosition ==
+                PositionsLeftRightTop.Top &&
+                toolBarCreator({
+                  layout: LayoutDirection.Horizontal,
+                  toolbarLabels: this.viewConfiguration.ToolbarLabels,
+                  undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
+                })}
+              <section className="charticulator__panel-container">
+                {this.viewConfiguration.ColumnsPosition ==
+                  PositionsLeftRight.Left && datasetPanel()}
+                <div className="charticulator__panel charticulator__panel-editor">
+                  <div className="charticulator__panel-editor-panel-container">
+                    {this.viewConfiguration.EditorPanelsPosition ==
+                      PositionsLeftRight.Left && editorPanels()}
+                    {this.viewConfiguration.ToolbarPosition ==
+                      PositionsLeftRightTop.Left &&
+                      toolBarCreator({
+                        layout: LayoutDirection.Vertical,
+                        toolbarLabels: this.viewConfiguration.ToolbarLabels,
+                        undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
+                      })}
+                    {chartPanel()}
+                    {this.viewConfiguration.ToolbarPosition ==
+                      PositionsLeftRightTop.Right &&
+                      toolBarCreator({
+                        layout: LayoutDirection.Vertical,
+                        toolbarLabels: this.viewConfiguration.ToolbarLabels,
+                        undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
+                      })}
+                    {this.viewConfiguration.EditorPanelsPosition ==
+                      PositionsLeftRight.Right && editorPanels()}
+                  </div>
                 </div>
+                {this.viewConfiguration.ColumnsPosition ==
+                  PositionsLeftRight.Right && datasetPanel()}
+              </section>
+              <div className="charticulator__floating-panels">
+                {this.state.glyphViewMaximized ? (
+                  <FloatingPanel
+                    peerGroup="panels"
+                    title={strings.mainView.glyphPaneltitle}
+                    onClose={() => this.setState({ glyphViewMaximized: false })}
+                  >
+                    <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                      <MarkEditorView />
+                    </ErrorBoundary>
+                  </FloatingPanel>
+                ) : null}
+                {this.state.layersViewMaximized ? (
+                  <FloatingPanel
+                    scroll={true}
+                    peerGroup="panels"
+                    title={strings.mainView.layersPanelTitle}
+                    onClose={() => this.setState({ layersViewMaximized: false })}
+                  >
+                    <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                      <ObjectListEditor />
+                    </ErrorBoundary>
+                  </FloatingPanel>
+                ) : null}
+                {this.state.attributeViewMaximized ? (
+                  <FloatingPanel
+                    scroll={true}
+                    peerGroup="panels"
+                    title={strings.mainView.attributesPaneltitle}
+                    onClose={() =>
+                      this.setState({ attributeViewMaximized: false })
+                    }
+                  >
+                    <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                      <AttributePanel store={this.props.store} />
+                    </ErrorBoundary>
+                    <PopupContainer controller={globals.popupController} />
+                  </FloatingPanel>
+                ) : null}
+                {this.props.store.messageState.size ? (
+                  <div className="charticulator__floating-panels_errors">
+                    <FloatingPanel
+                      floatInCenter={true}
+                      scroll={true}
+                      peerGroup="messages"
+                      title={strings.mainView.errorsPanelTitle}
+                      closeButtonIcon={"ChromeClose"}
+                      height={200}
+                      width={350}
+                    >
+                      <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                        <MessagePanel store={this.props.store} />
+                      </ErrorBoundary>
+                    </FloatingPanel>
+                  </div>
+                ) : null}
+                {this.state.scaleViewMaximized ? (
+                  <FloatingPanel
+                    scroll={true}
+                    peerGroup="panels"
+                    title={strings.mainView.scalesPanelTitle}
+                    onClose={() => this.setState({ scaleViewMaximized: false })}
+                  >
+                    <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                      <ScalesPanel store={this.props.store} />
+                    </ErrorBoundary>
+                  </FloatingPanel>
+                ) : null}
               </div>
-              {this.viewConfiguration.ColumnsPosition ==
-                PositionsLeftRight.Right && datasetPanel()}
-            </section>
-            <div className="charticulator__floating-panels">
-              {this.state.glyphViewMaximized ? (
-                <FloatingPanel
-                  peerGroup="panels"
-                  title={strings.mainView.glyphPaneltitle}
-                  onClose={() => this.setState({ glyphViewMaximized: false })}
-                >
-                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
-                    <MarkEditorView />
-                  </ErrorBoundary>
-                </FloatingPanel>
-              ) : null}
-              {this.state.layersViewMaximized ? (
-                <FloatingPanel
-                  scroll={true}
-                  peerGroup="panels"
-                  title={strings.mainView.layersPanelTitle}
-                  onClose={() => this.setState({ layersViewMaximized: false })}
-                >
-                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
-                    <ObjectListEditor />
-                  </ErrorBoundary>
-                </FloatingPanel>
-              ) : null}
-              {this.state.attributeViewMaximized ? (
-                <FloatingPanel
-                  scroll={true}
-                  peerGroup="panels"
-                  title={strings.mainView.attributesPaneltitle}
-                  onClose={() =>
-                    this.setState({ attributeViewMaximized: false })
-                  }
-                >
-                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
-                    <AttributePanel store={this.props.store} />
-                  </ErrorBoundary>
-                  <PopupContainer controller={globals.popupController} />
-                </FloatingPanel>
-              ) : null}
+              <PopupContainer controller={globals.popupController} />
               {this.props.store.messageState.size ? (
                 <div className="charticulator__floating-panels_errors">
                   <FloatingPanel
@@ -375,7 +408,7 @@ export class MainView extends React.Component<
                     scroll={true}
                     peerGroup="messages"
                     title={strings.mainView.errorsPanelTitle}
-                    closeButtonIcon={"ChromeClose"}
+                    closeButtonIcon={"general/cross"}
                     height={200}
                     width={350}
                   >
@@ -385,40 +418,10 @@ export class MainView extends React.Component<
                   </FloatingPanel>
                 </div>
               ) : null}
-              {this.state.scaleViewMaximized ? (
-                <FloatingPanel
-                  scroll={true}
-                  peerGroup="panels"
-                  title={strings.mainView.scalesPanelTitle}
-                  onClose={() => this.setState({ scaleViewMaximized: false })}
-                >
-                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
-                    <ScalesPanel store={this.props.store} />
-                  </ErrorBoundary>
-                </FloatingPanel>
-              ) : null}
-            </div>
-            <PopupContainer controller={globals.popupController} />
-            {this.props.store.messageState.size ? (
-              <div className="charticulator__floating-panels_errors">
-                <FloatingPanel
-                  floatInCenter={true}
-                  scroll={true}
-                  peerGroup="messages"
-                  title={strings.mainView.errorsPanelTitle}
-                  closeButtonIcon={"general/cross"}
-                  height={200}
-                  width={350}
-                >
-                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
-                    <MessagePanel store={this.props.store} />
-                  </ErrorBoundary>
-                </FloatingPanel>
-              </div>
-            ) : null}
-            <DragStateView controller={globals.dragController} />
-          </TelemetryContext.Provider>
-        </MainReactContext.Provider>
+              <DragStateView controller={globals.dragController} />
+            </TelemetryContext.Provider>
+          </MainReactContext.Provider>
+        </FluentProvider>
       </div>
     );
   }
