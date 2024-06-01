@@ -172,6 +172,8 @@ li::marker {
     // box-shadow: 0 0 5px black;
     z-index: 5;
     overflow: hidden;
+
+    height: calc(100vh - 72px);
   }
 
   &__panel-editor,
