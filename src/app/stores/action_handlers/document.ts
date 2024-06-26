@@ -337,48 +337,49 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       "nested_chart_" + options.specification._id
     );
     const listener = (e: MessageEvent) => {
-      if (e.origin == document.location.origin) {
-        const data = <NestedEditorMessage>e.data;
-        if (data.id == editorID) {
-          switch (data.type) {
-            case NestedEditorMessageType.Initialized:
-              {
-                const builder = new ChartTemplateBuilder(
-                  options.specification,
-                  options.dataset,
-                  this.chartManager,
-                  CHARTICULATOR_PACKAGE.version
-                );
+      if (e.origin != document.location.origin) {
+        return;
+      }
+      const data = <NestedEditorMessage>e.data;
+      if (data.id == editorID) {
+        switch (data.type) {
+          case NestedEditorMessageType.Initialized:
+            {
+              const builder = new ChartTemplateBuilder(
+                options.specification,
+                options.dataset,
+                this.chartManager,
+                CHARTICULATOR_PACKAGE.version
+              );
 
-                const template = builder.build();
-                newWindow.postMessage(
-                  {
-                    id: editorID,
-                    type: NestedEditorEventType.Load,
-                    specification: options.specification,
-                    dataset: options.dataset,
-                    width: options.width,
-                    template,
-                    height: options.height,
-                    filterCondition: options.filterCondition,
-                  },
-                  document.location.origin
-                );
-              }
-              break;
-            case NestedEditorMessageType.Save:
-              {
-                this.setProperty({
-                  object,
-                  property: property.property,
-                  field: property.field,
-                  value: data.specification,
-                  noUpdateState: property.noUpdateState,
-                  noComputeLayout: property.noComputeLayout,
-                });
-              }
-              break;
-          }
+              const template = builder.build();
+              newWindow.postMessage(
+                {
+                  id: editorID,
+                  type: NestedEditorEventType.Load,
+                  specification: options.specification,
+                  dataset: options.dataset,
+                  width: options.width,
+                  template,
+                  height: options.height,
+                  filterCondition: options.filterCondition,
+                },
+                document.location.origin
+              );
+            }
+            break;
+          case NestedEditorMessageType.Save:
+            {
+              this.setProperty({
+                object,
+                property: property.property,
+                field: property.field,
+                value: data.specification,
+                noUpdateState: property.noUpdateState,
+                noComputeLayout: property.noComputeLayout,
+              });
+            }
+            break;
         }
       }
     };

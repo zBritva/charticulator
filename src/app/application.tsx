@@ -416,6 +416,9 @@ export class Application {
       }, type);
     }).bind(this);
     window.addEventListener("message", (e: MessageEvent) => {
+      if (e.origin != document.location.origin) {
+        return;
+      }
       if (e.data.id != id) {
         return;
       }
