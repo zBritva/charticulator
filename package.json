@@ -146,7 +146,7 @@
     "ts-loader": "8.0.18",
     "ts-node": "10.2.1",
     "typedoc": "0.25.7",
-    "typescript": "5.3.3",
+    "typescript": "5.2.2",
     "uglify-es": "3.3.9",
     "url-loader": "4.1.1",
     "webpack": "5.89.0",
