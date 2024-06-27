@@ -11,6 +11,9 @@
     "David Tittsworth <datittsw@microsoft.com>",
     "Ilfat Galiev <zbritva@gmail.com>"
   ],
+  "engines": {
+    "node": ">=20.1.0"
+  },
   "scripts": {
     "dev": "node build.js",
     "prebuild": "pegjs --format commonjs --allowed-start-rules start,start_text -o src/core/expression/parser.js src/core/expression/parser.pegjs",
@@ -52,9 +55,9 @@
     ]
   },
   "dependencies": {
-    "@fluentui/react-components": "9.43.0",
-    "@fluentui/react-datepicker-compat": "0.4.8",
-    "@fluentui/react-icons": "2.0.224",
+    "@fluentui/react-components": "9.54.2",
+    "@fluentui/react-datepicker-compat": "0.4.41",
+    "@fluentui/react-icons": "2.0.245",
     "d3-color": "3.1.0",
     "d3-dsv": "1.0.8",
     "d3-force": "1.1.0",
