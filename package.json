@@ -139,7 +139,7 @@
     "pegjs": "0.10.0",
     "pegjs-loader": "0.5.8",
     "prettier": "2.1.2",
-    "puppeteer": "^20.3.0",
+    "puppeteer": "^22.12.1",
     "raw-loader": "4.0.2",
     "sass": "1.69.5",
     "svgson": "5.2.1",
