@@ -59,8 +59,8 @@ export function parseDerivedColumnsExpression(expression: string): string {
 
 export function transformOrderByExpression(expression: string): string {
   if (
-    (expression.indexOf("`") < 0 && expression.split(" ").length >= 2) ||
-    Variable.isNonEnglishVariableName(expression)
+    (expression && expression.indexOf("`") < 0 && expression.split(" ").length >= 2) ||
+    (expression && Variable.isNonEnglishVariableName(expression))
   ) {
     return Variable.VariableNameToString(expression);
   } else {

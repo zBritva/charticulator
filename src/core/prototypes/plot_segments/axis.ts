@@ -2579,8 +2579,10 @@ function getOrderByAnotherColumnWidgets(
   const derivedColumnsNames = [];
   for (let i = 0; i < tableColumns.length; i++) {
     if (!tableColumns[i].metadata?.isRaw) {
-      derivedColumns.push(type2DerivedColumns[tableColumns[i].type]);
-      derivedColumnsNames.push(tableColumns[i].name);
+      if (type2DerivedColumns[tableColumns[i].type] && tableColumns[i].name) {
+        derivedColumns.push(type2DerivedColumns[tableColumns[i].type]);
+        derivedColumnsNames.push(tableColumns[i].name);
+      }
     }
   }
 
@@ -2622,6 +2624,9 @@ function getOrderByAnotherColumnWidgets(
     table: string,
     groupBy?: Specification.Types.GroupBy
   ): any[] => {
+    if (!expression) {
+      return []
+    }
     const newExpression = transformOrderByExpression(expression);
     groupBy.expression = transformOrderByExpression(groupBy.expression);
 
@@ -2655,9 +2660,9 @@ function getOrderByAnotherColumnWidgets(
     expression: groupByExpression,
   }).map((item, idx) => [item, idx]);
 
-  const isNumberValueType = Array.isArray(items_idx[0][0])
+  const isNumberValueType = items_idx.length > 0 && Array.isArray(items_idx[0][0])
     ? typeof items_idx[0][0][0] === "number"
-    : typeof items_idx[0][0] === "number";
+    : items_idx.length > 0 && typeof items_idx[0][0] === "number";
 
   const onResetAxisCategories = transformOnResetCategories(items_idx);
   const sortedCategories = getSortedCategories(items_idx);

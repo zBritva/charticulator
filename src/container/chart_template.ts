@@ -354,6 +354,9 @@ export class ChartTemplate {
       table: string,
       groupBy?: Specification.Types.GroupBy
     ): any[] => {
+      if (!expression) {
+        return null;
+      }
       const expr = Expression.parse(expression);
       const tableContext = df.getTable(table);
       const indices = groupBy
