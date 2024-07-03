@@ -1034,7 +1034,6 @@ export class AxisRenderer {
         angle: 0,
       };
     }
-    debugger;
     return axisGraphics;
   }
 

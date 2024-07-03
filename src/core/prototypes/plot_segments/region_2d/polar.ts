@@ -485,7 +485,6 @@ export class PolarPlotSegment extends PlotSegmentClass<
         )
       );
     }
-    debugger;
     if (angularData && angularData.visible) {
       const axisRenderer = new AxisRenderer().setAxisDataBinding(
         angularData,
