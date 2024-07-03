@@ -527,53 +527,56 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         false,
         this.getDisplayFormat(props.xData, props.xData.tickFormat, manager)
       );
-      g.push(
-        axisRenderer.renderVirtualScrollBar(
-          attrs.x1,
-          (props.xData.side != "default" ? attrs.y2 : attrs.y1) +
-            (props.xData.barOffset
-              ? (props.xData.side === "default" ? -1 : 1) *
-                <number>props.xData.barOffset
-              : 0),
-          AxisMode.X,
-          props.xData.scrollPosition ? props.xData.scrollPosition : 0,
-          (position) => {
-            if (props.xData.type === AxisDataBindingType.Categorical) {
-              if (!props.xData.allCategories) {
-                return;
-              }
-              props.xData.scrollPosition = 100 - position;
+      const scrollBarRenderTree = axisRenderer.renderVirtualScrollBar(
+        attrs.x1,
+        (props.xData.side != "default" ? attrs.y2 : attrs.y1) +
+          (props.xData.barOffset
+            ? (props.xData.side === "default" ? -1 : 1) *
+              <number>props.xData.barOffset
+            : 0),
+        AxisMode.X,
+        props.xData.scrollPosition ? props.xData.scrollPosition : 0,
+        (position) => {
+          if (props.xData.type === AxisDataBindingType.Categorical) {
+            if (!props.xData.allCategories) {
+              return;
+            }
+            props.xData.scrollPosition = 100 - position;
 
-              const start = Math.floor(
-                ((props.xData.allCategories.length - props.xData.windowSize) /
-                  100) *
-                  props.xData.scrollPosition
-              );
-              props.xData.categories = props.xData.allCategories.slice(
-                start,
+            const start = Math.floor(
+              ((props.xData.allCategories.length - props.xData.windowSize) /
+                100) *
+                props.xData.scrollPosition
+            );
+            props.xData.categories = props.xData.allCategories.slice(
+              start,
+              start + props.xData.windowSize
+            );
+
+            if (props.xData.categories.length === 0) {
+              props.xData.allCategories.slice(
+                start - 1,
                 start + props.xData.windowSize
               );
-
-              if (props.xData.categories.length === 0) {
-                props.xData.allCategories.slice(
-                  start - 1,
-                  start + props.xData.windowSize
-                );
-              }
-            } else if (props.xData.type === AxisDataBindingType.Numerical) {
-              const scale = scaleLinear()
-                .domain([100, 0])
-                .range([props.xData.dataDomainMin, props.xData.dataDomainMax]);
-              props.xData.scrollPosition = position;
-              const start = scale(position);
-              props.xData.domainMin = start;
-              props.xData.domainMax = start + props.xData.windowSize;
             }
-            manager.remapPlotSegmentGlyphs(this.object);
-            manager.solveConstraints();
-          },
-          zoom
-        )
+          } else if (props.xData.type === AxisDataBindingType.Numerical) {
+            const scale = scaleLinear()
+              .domain([100, 0])
+              .range([props.xData.dataDomainMin, props.xData.dataDomainMax]);
+            props.xData.scrollPosition = position;
+            const start = scale(position);
+            props.xData.domainMin = start;
+            props.xData.domainMax = start + props.xData.windowSize;
+          }
+          manager.remapPlotSegmentGlyphs(this.object);
+          manager.solveConstraints();
+        },
+        zoom
+      );
+      scrollBarRenderTree.key = `scroll-bar-x-${this.object._id}`;
+
+      g.push(
+        scrollBarRenderTree
       );
     }
     if (
@@ -593,52 +596,55 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         true,
         this.getDisplayFormat(props.yData, props.yData.tickFormat, manager)
       );
-      g.push(
-        axisRenderer.renderVirtualScrollBar(
-          (props.yData.side != "default" ? attrs.x2 : attrs.x1) +
-            (props.yData.barOffset
-              ? (props.yData.side === "default" ? -1 : 1) *
-                <number>props.yData.barOffset
-              : 0),
-          attrs.y1,
-          AxisMode.Y,
-          props.yData.scrollPosition ? props.yData.scrollPosition : 0,
-          (position) => {
-            if (props.yData?.type === AxisDataBindingType.Categorical) {
-              if (!props.yData.allCategories) {
-                return;
-              }
-              props.yData.scrollPosition = position;
-              const start = Math.floor(
-                ((props.yData.allCategories.length - props.yData.windowSize) /
-                  100) *
-                  position
-              );
-              props.yData.categories = props.yData.allCategories.slice(
-                start,
+      const scrollBarRenderTree = axisRenderer.renderVirtualScrollBar(
+        (props.yData.side != "default" ? attrs.x2 : attrs.x1) +
+          (props.yData.barOffset
+            ? (props.yData.side === "default" ? -1 : 1) *
+              <number>props.yData.barOffset
+            : 0),
+        attrs.y1,
+        AxisMode.Y,
+        props.yData.scrollPosition ? props.yData.scrollPosition : 0,
+        (position) => {
+          if (props.yData?.type === AxisDataBindingType.Categorical) {
+            if (!props.yData.allCategories) {
+              return;
+            }
+            props.yData.scrollPosition = position;
+            const start = Math.floor(
+              ((props.yData.allCategories.length - props.yData.windowSize) /
+                100) *
+                position
+            );
+            props.yData.categories = props.yData.allCategories.slice(
+              start,
+              start + props.yData.windowSize
+            );
+
+            if (props.yData.categories.length === 0) {
+              props.yData.allCategories.slice(
+                start - 1,
                 start + props.yData.windowSize
               );
-
-              if (props.yData.categories.length === 0) {
-                props.yData.allCategories.slice(
-                  start - 1,
-                  start + props.yData.windowSize
-                );
-              }
-            } else if (props.yData.type === AxisDataBindingType.Numerical) {
-              const scale = scaleLinear()
-                .domain([100, 0])
-                .range([props.yData.dataDomainMin, props.yData.dataDomainMax]);
-              props.yData.scrollPosition = position;
-              const start = scale(position);
-              props.yData.domainMin = start;
-              props.yData.domainMax = start + props.yData.windowSize;
             }
-            manager.remapPlotSegmentGlyphs(this.object);
-            manager.solveConstraints();
-          },
-          zoom
-        )
+          } else if (props.yData.type === AxisDataBindingType.Numerical) {
+            const scale = scaleLinear()
+              .domain([100, 0])
+              .range([props.yData.dataDomainMin, props.yData.dataDomainMax]);
+            props.yData.scrollPosition = position;
+            const start = scale(position);
+            props.yData.domainMin = start;
+            props.yData.domainMax = start + props.yData.windowSize;
+          }
+          manager.remapPlotSegmentGlyphs(this.object);
+          manager.solveConstraints();
+        },
+        zoom
+      );
+      scrollBarRenderTree.key = `scroll-bar-y-${this.object._id}`;
+
+      g.push(
+        scrollBarRenderTree
       );
     }
 

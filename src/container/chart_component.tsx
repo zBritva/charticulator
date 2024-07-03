@@ -302,12 +302,14 @@ export class ChartComponent extends React.Component<
       <>
         <defs>{renderSVGDefs(this.state.graphics)}</defs>
         <g
+          key={'innerRootGroup'}
           transform={`translate(${this.props.width / 2}, ${
             this.props.height / 2
           })`}
         >
           {this.props.onGlyphClick ? (
             <rect
+              key={'onGlyphClickHandler'}
               x={-this.props.width / 2}
               y={-this.props.height / 2}
               width={this.props.width}
@@ -334,6 +336,7 @@ export class ChartComponent extends React.Component<
           )}
           {this.state.working ? (
             <rect
+              key={'onLoadingIndicator'}
               x={-this.props.width / 2}
               y={-this.props.height / 2}
               width={this.props.width}
@@ -351,6 +354,7 @@ export class ChartComponent extends React.Component<
       case "svg": {
         return (
           <svg
+            key={'rootSvg'}
             x={0}
             y={0}
             width={this.props.width}
@@ -365,7 +369,7 @@ export class ChartComponent extends React.Component<
         );
       }
       case "g": {
-        return <g className={this.props.className}>{inner}</g>;
+        return <g key={'rootGroup'} className={this.props.className}>{inner}</g>;
       }
     }
   }

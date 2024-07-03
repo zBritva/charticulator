@@ -456,6 +456,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
   public getGraphics(manager: ChartStateManager): Graphics.Group {
     const builder = this.createBuilder();
     const g = Graphics.makeGroup([]);
+    g.key = `plot-segment-g-${this.object._id}`;
     const attrs = this.state.attributes;
     const props = this.object.properties;
     const radialData = props.yData;
@@ -484,6 +485,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
         )
       );
     }
+    debugger;
     if (angularData && angularData.visible) {
       const axisRenderer = new AxisRenderer().setAxisDataBinding(
         angularData,

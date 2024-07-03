@@ -616,7 +616,7 @@ export class AxisRenderer {
     if (style.showBaseline) {
       const line = makeLine(x1, y1, x2, y2, lineStyle);
       line.key = `${axisGraphics.key}-line`;
-      axisGraphics.elements.push();
+      axisGraphics.elements.push(line);
     }
     // Ticks
     const visibleTicks = this.ticks.map((x) => x.position);
@@ -631,7 +631,7 @@ export class AxisRenderer {
         const dy = -side * tickSize * cos;
         const tickGraphics = makeLine(tx, ty, tx + dx, ty + dy, lineStyle);
         tickGraphics.key = `${axisGraphics.key}-tick-${tickPosition}`;
-        axisGraphics.elements.push();
+        axisGraphics.elements.push(tickGraphics);
       }
     }
     // Tick texts
@@ -723,11 +723,11 @@ export class AxisRenderer {
                 backgroundColorId: style.tickTextBackgroudColorId,
               }
             );
-            text.key = `${axisGraphics.key}-tick-text-${tick.position}-i-${index}`;
+            text.key = `${axisGraphics.key}-tick-text-${tick.position}-i-${index}-side-${side}`;
             lines.push(text);
           }
           const gText = makeGroup(lines);
-          gText.key = `${axisGraphics.key}-tick-${tick.position}`;
+          gText.key = `${axisGraphics.key}-tick-${tick.position}-side-${side}`;
           gText.transform = {
             x: tx + dx,
             y: ty + dy,
@@ -1034,6 +1034,7 @@ export class AxisRenderer {
         angle: 0,
       };
     }
+    debugger;
     return axisGraphics;
   }
 
@@ -1147,6 +1148,7 @@ export class AxisRenderer {
       strokeColor: style.lineColor,
     };
     const g = makeGroup([]);
+    g.key = `polar-x-${cx}-y-${cy}-r-${radius}-s-${side}`;
     g.transform.x = cx;
     g.transform.y = cy;
 
@@ -1212,6 +1214,7 @@ export class AxisRenderer {
               backgroundColorId: style.tickTextBackgroudColorId,
             }
           );
+          gt.key = `${g.key}-text-${tick.position}-i-${index}`;
           lines.push(gt);
         }
 
@@ -1221,6 +1224,7 @@ export class AxisRenderer {
         gt.transform.angle = -angle;
         gt.transform.x = tx;
         gt.transform.y = ty;
+        gt.key = `${g.key}-group-${tick.position}-tx-${tx}-ty-${ty}`;
         g.elements.push(gt);
       } else {
         const [textX, textY] = TextMeasurer.ComputeTextPosition(
@@ -1245,6 +1249,7 @@ export class AxisRenderer {
         gt.transform.angle = -angle;
         gt.transform.x = tx;
         gt.transform.y = ty;
+        gt.key = `${g.key}-group-${tick.position}-tx-${tx}-ty-${ty}`;
         g.elements.push(gt);
       }
     }
