@@ -146,6 +146,7 @@ export class CategoricalLegendClass extends LegendClass {
     this.textMeasure.setFontSize(fontSize);
 
     const g = Graphics.makeGroup([]);
+    g.key = `legend-root-g-${this.object._id}`;
     const items = this.getLegendItems();
     const horizontalGap = 10;
     let itemGroupOffset = 0;
@@ -172,19 +173,21 @@ export class CategoricalLegendClass extends LegendClass {
         `legend:${this.object._id}-label:${index}`
       );
       const gItem = Graphics.makeGroup([textLabel]);
+      gItem.key = `legend-text-g-${this.object._id}-${index}`;
       switch (item.type) {
         case "color":
           {
             switch (this.object.properties.markerShape) {
-              case "rectangle":
-                gItem.elements.push(
-                  Graphics.makeRect(8, 4, lineHeight, lineHeight - 4, {
+              case "rectangle": {
+                  const rect = Graphics.makeRect(8, 4, lineHeight, lineHeight - 4, {
                     fillColor: <Color>item.value,
                   })
-                );
+                  rect.key = `legend-text-rect-${this.object._id}-${index}`;
+                  gItem.elements.push(rect);
+                }
                 break;
-              case "triangle":
-                gItem.elements.push(
+              case "triangle": {
+                  const polygon = 
                   Graphics.makePolygon(
                     [
                       {
@@ -203,22 +206,25 @@ export class CategoricalLegendClass extends LegendClass {
                     {
                       fillColor: <Color>item.value,
                     }
-                  )
-                );
+                  );
+                  polygon.key = `legend-text-polygon-${this.object._id}-${index}`;
+                  gItem.elements.push(polygon);
+                }
 
                 break;
               case "circle":
-              default:
-                gItem.elements.push(
-                  Graphics.makeCircle(
-                    lineHeight / 2,
-                    lineHeight / 2,
-                    lineHeight / 3,
-                    {
-                      fillColor: <Color>item.value,
-                    }
-                  )
+              default: {
+                const circle = Graphics.makeCircle(
+                  lineHeight / 2,
+                  lineHeight / 2,
+                  lineHeight / 3,
+                  {
+                    fillColor: <Color>item.value,
+                  }
                 );
+                circle.key = `legend-text-circle-${this.object._id}-${index}`;
+                gItem.elements.push(circle);
+              }
             }
           }
           break;
