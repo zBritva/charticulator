@@ -1218,6 +1218,7 @@ export class AxisRenderer {
         }
 
         const line = makeLine(0, 0, 0, style.tickSize * side, lineStyle);
+        line.key = `${g.key}-line-${tick.position}-tx-${tx}-ty-${ty}-side-${side}`;
         const gt = makeGroup([style.showTicks ? line : null, ...lines]);
 
         gt.transform.angle = -angle;
@@ -1236,13 +1237,14 @@ export class AxisRenderer {
           2
         );
         const line = makeLine(0, 0, 0, style.tickSize * side, lineStyle);
+        line.key = `${g.key}-line-${tick.position}-tx-${tx}-ty-${ty}-side-${side}`;
         const gt = makeGroup([
           style.showTicks ? line : null,
           makeText(textX, textY, tick.label, style.fontFamily, style.fontSize, {
             fillColor: style.tickColor,
             backgroundColor: style.tickTextBackgroudColor,
             backgroundColorId: style.tickTextBackgroudColorId,
-          }),
+          }, undefined, `${g.key}-text-${tick.position}-tx-${tx}-ty-${ty}-side-${side}`),
         ]);
 
         gt.transform.angle = -angle;
