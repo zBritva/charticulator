@@ -1541,7 +1541,9 @@ export class FluentUIWidgetManager
         defaultValue,
         this.store
       );
-      const menuRender = this.director.menuRender(menu, undefined, {}, () => {});
+      const menuRender = this.director.menuRender(menu, undefined, {
+        icon: "general/bind-data"
+      }, () => {});
 
       const className = options.noLineHeight
         ? "charticulator__widget-section-header-no-height charticulator__widget-section-header-dropzone"
