@@ -1229,7 +1229,7 @@ export class FluentUIWidgetManager
     );
     const menuRender = this.director.menuRender(menu, null, {
       icon: "SortLines",
-    });
+    }, () => {});
 
     return (
       <DropZoneView
@@ -1541,7 +1541,7 @@ export class FluentUIWidgetManager
         defaultValue,
         this.store
       );
-      const menuRender = this.director.menuRender(menu, undefined, {});
+      const menuRender = this.director.menuRender(menu, undefined, {}, () => {});
 
       const className = options.noLineHeight
         ? "charticulator__widget-section-header-no-height charticulator__widget-section-header-dropzone"

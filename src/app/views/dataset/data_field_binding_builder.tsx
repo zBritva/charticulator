@@ -827,7 +827,8 @@ export class Director {
     options?: {
       icon?: string | React.ReactElement;
       text?: string;
-    }
+    },
+    setMappingButton?: (e: HTMLElement) => void
   ) {
     function getCurrentMapping(items: any[]) {
       // find current mapping
@@ -880,6 +881,7 @@ export class Director {
                 textWrap: "nowrap",
               } as any
             }
+            ref={(e) => (setMappingButton(e))}
             className="data-field-button"
             title={strings.mappingEditor.bindData}
             icon={

@@ -176,7 +176,7 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
                   ((value as string).indexOf("-") === 0 && value.length === 1))
                   ? value
                   : value == null
-                  ? null
+                  ? ""
                   : formatNumber(+value)
               }
               onChange={(event, { value: str }) => {

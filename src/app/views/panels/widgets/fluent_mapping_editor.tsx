@@ -200,7 +200,7 @@ export class FluentMappingEditor extends React.Component<
     this.director.setBuilder(new MenuItemBuilder());
   }
 
-  private renderValueEditor(value: Specification.AttributeValue) {
+  private renderValueEditor(value: Specification.AttributeValue, setMappingButton?: (e: HTMLElement) => void){
     let placeholderText = this.props.options.defaultAuto
       ? strings.core.auto
       : strings.core.none;
@@ -228,7 +228,7 @@ export class FluentMappingEditor extends React.Component<
         this.props.type == Specification.AttributeType.Boolean
           ? strings.attributesPanel.conditionedBy
           : null,
-    });
+    }, setMappingButton);
 
     return (
       <>
@@ -288,14 +288,14 @@ export class FluentMappingEditor extends React.Component<
     );
   }
 
-  private renderCurrentAttributeMapping() {
+  private renderCurrentAttributeMapping(setMappingButton?: (e: HTMLElement) => void){
     const parent = this.props.parent;
     const attribute = this.props.attribute;
     const options = this.props.options;
     const mapping = parent.getAttributeMapping(attribute);
     if (!mapping) {
       if (options.defaultValue != undefined) {
-        return this.renderValueEditor(options.defaultValue);
+        return this.renderValueEditor(options.defaultValue, setMappingButton);
       } else {
         let alwaysShowNoneAsValue = false;
         if (
@@ -306,7 +306,7 @@ export class FluentMappingEditor extends React.Component<
           alwaysShowNoneAsValue = true;
         }
         if (this.state.showNoneAsValue || alwaysShowNoneAsValue) {
-          return this.renderValueEditor(null);
+          return this.renderValueEditor(null, setMappingButton);
         } else {
           const onClick = () => {
             if (!mapping || (mapping as any).valueIndex == undefined) {
@@ -327,7 +327,7 @@ export class FluentMappingEditor extends React.Component<
       switch (mapping.type) {
         case Specification.MappingType.value: {
           const valueMapping = mapping as Specification.ValueMapping;
-          return this.renderValueEditor(valueMapping.value);
+          return this.renderValueEditor(valueMapping.value, setMappingButton);
         }
         case Specification.MappingType.text: {
           const textMapping = mapping as Specification.TextMapping;
@@ -413,7 +413,7 @@ export class FluentMappingEditor extends React.Component<
                   <>
                     {this.director.menuRender(mainMenuItems, scaleMapping, {
                       icon: React.createElement(ArrowTrendingRegular),
-                    })}
+                    }, setMappingButton)}
                   </>
                 </FluentColumnLayout>
               </>
@@ -470,7 +470,7 @@ export class FluentMappingEditor extends React.Component<
                 <>
                   {this.director.menuRender(mainMenuItems, scaleMapping, {
                     icon: <ArrowTrendingRegular />,
-                  })}
+                  }, setMappingButton)}
                 </>
               </FluentColumnLayout>
             </>
@@ -526,6 +526,8 @@ export class FluentMappingEditor extends React.Component<
       options.acceptLinksTable
     );
 
+    const setMappingButton = (e) => (this.mappingButton = e);
+
     return (
       <div ref={(e) => (this.noneLabel = e)} key={attribute}>
         <DropZoneView
@@ -575,7 +577,7 @@ export class FluentMappingEditor extends React.Component<
               alignItems: "flex-end",
             },
             [1, 0],
-            this.renderCurrentAttributeMapping(),
+            this.renderCurrentAttributeMapping(setMappingButton),
             <div
               style={{
                 display: "flex",
@@ -585,8 +587,8 @@ export class FluentMappingEditor extends React.Component<
               {isDataMapping ? (
                 <>
                   <Button
+                    ref={(e) => (this.mappingButton = e)}
                     icon={<EraserRegular />}
-                    title={strings.mappingEditor.remove}
                     onClick={() => {
                       if (parent.getAttributeMapping(attribute)) {
                         this.clearMapping();
@@ -604,7 +606,7 @@ export class FluentMappingEditor extends React.Component<
                 <>
                   {this.director.menuRender(mainMenuItems, null, {
                     icon: "general/bind-data",
-                  })}
+                  }, setMappingButton)}
                 </>
               ) : null}
               {valueIndex !== undefined && valueIndex !== null ? (
