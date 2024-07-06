@@ -517,17 +517,27 @@ export class RectangleChart extends ChartClass {
         numberOptions: {
           minimum: 1,
         },
+        searchSection: [strings.objects.width, strings.objects.dimensions]
       }),
       manager.mappingEditor(strings.objects.height, "height", {
         numberOptions: {
           minimum: 1,
         },
+        searchSection: [strings.objects.height, strings.objects.dimensions]
       }),
       manager.sectionHeader(strings.margins.margins),
-      manager.mappingEditor(strings.margins.left, "marginLeft", {}),
-      manager.mappingEditor(strings.margins.right, "marginRight", {}),
-      manager.mappingEditor(strings.margins.top, "marginTop", {}),
-      manager.mappingEditor(strings.margins.bottom, "marginBottom", {}),
+      manager.mappingEditor(strings.margins.left, "marginLeft", {
+        searchSection: [strings.margins.left, strings.margins.margins]
+      }),
+      manager.mappingEditor(strings.margins.right, "marginRight", {
+        searchSection: [strings.margins.right, strings.margins.margins]
+      }),
+      manager.mappingEditor(strings.margins.top, "marginTop", {
+        searchSection: [strings.margins.top, strings.margins.margins]
+      }),
+      manager.mappingEditor(strings.margins.bottom, "marginBottom", {
+        searchSection: [strings.margins.bottom, strings.margins.margins]
+      }),
       manager.sectionHeader(strings.objects.background),
       manager.inputColor(
         { property: "backgroundColor" },
@@ -535,6 +545,7 @@ export class RectangleChart extends ChartClass {
           allowNull: true,
           label: strings.objects.color,
           labelKey: strings.objects.color,
+          searchSection: [strings.objects.color, strings.objects.background]
         }
       ),
       manager.sectionHeader(strings.objects.interactivity),
@@ -543,6 +554,7 @@ export class RectangleChart extends ChartClass {
         {
           type: "checkbox",
           label: strings.objects.contextMenu,
+          searchSection: [strings.objects.contextMenu, strings.objects.interactivity]
         }
       ),
     ];
@@ -557,6 +569,7 @@ export class RectangleChart extends ChartClass {
             updownTick: 0.1,
             percentage: true,
             step: 0.1,
+            searchSection: [strings.objects.opacity, strings.objects.background]
           }
         )
       );
