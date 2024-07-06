@@ -1859,11 +1859,11 @@ export class FluentUIWidgetManager
   public vertical(...widgets: JSX.Element[]) {
     return (
       <div className="charticulator__widget-vertical">
-        {widgets.map((x, id) => (
+        {widgets.map((x, id) => x ? (
           <span className="el-layout-item" key={`${id}-${x.key}`}>
             {x}
           </span>
-        ))}
+        ) : null)}
       </div>
     );
   }
@@ -1871,11 +1871,11 @@ export class FluentUIWidgetManager
   public styledVertical(styles: CSSProperties, ...widgets: JSX.Element[]) {
     return (
       <div className="charticulator__widget-vertical" style={styles}>
-        {widgets.map((x, id) => (
-          <span className="el-layout-item" key={id}>
+        {widgets.map((x, id) => x ? (
+          <span className="el-layout-item" key={`${id}-${x.key}`}>
             {x}
           </span>
-        ))}
+        ) : null)}
       </div>
     );
   }
