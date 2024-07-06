@@ -587,8 +587,8 @@ export class FluentMappingEditor extends React.Component<
               {isDataMapping ? (
                 <>
                   <Button
-                    ref={(e) => (this.mappingButton = e)}
                     icon={<EraserRegular />}
+                    title={strings.mappingEditor.remove}
                     onClick={() => {
                       if (parent.getAttributeMapping(attribute)) {
                         this.clearMapping();
@@ -674,6 +674,7 @@ export class FluentMappingEditor extends React.Component<
   ) {
     setTimeout(() => {
       if (clickOnButton) {
+        mappingButton?.scrollIntoView();
         mappingButton?.click();
       }
       setTimeout(() => {
@@ -703,18 +704,25 @@ export class FluentMappingEditor extends React.Component<
           expression = expression?.split("`").join("");
           try {
             const aggContainer = document.querySelector(
-              "body :last-child.ms-Layer"
+              "body :last-child.fui-PopoverSurface"
             );
-            const xpath = `//ul//span[contains(text(), "${expression}")]`;
-            const menuItem = document.evaluate(
-              xpath,
-              aggContainer,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              null
-            ).singleNodeValue as HTMLSpanElement;
+            // const xpath = `//button[contains(text(), "${expression}")]`;
+            // const button = document.evaluate(
+            //   xpath,
+            //   aggContainer,
+            //   null,
+            //   XPathResult.FIRST_ORDERED_NODE_TYPE,
+            //   null
+            // ).singleNodeValue as HTMLSpanElement;
+            let clicked = false;
+            aggContainer.querySelectorAll("button").forEach((button) => {
+              if (button.textContent === expression && !clicked) {
+                button.click();
+                clicked = true;
+              }
+            });
 
-            if (menuItem == null) {
+            if (!clicked) {
               const derSubXpath = `//ul//span[contains(text(), "${derivedExpression}")]`;
               const derElement = document.evaluate(
                 derSubXpath,
@@ -727,11 +735,6 @@ export class FluentMappingEditor extends React.Component<
                 derElement?.click();
                 FluentMappingEditor.menuKeyClick(derivedExpression);
               });
-            } else {
-              setTimeout(() => {
-                menuItem?.click();
-                FluentMappingEditor.menuKeyClick(derivedExpression);
-              }, 0);
             }
           } catch (e) {
             console.log(e);
