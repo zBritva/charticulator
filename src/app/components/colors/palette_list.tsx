@@ -37,18 +37,23 @@ export class PaletteList extends React.PureComponent<
         {groups.map((group, index) => {
           return (
             <React.Fragment key={`palette-group-wrapper-${index}`}>
-              <Label key={`palette-label-${index}`}>{group[0]}</Label>
-              {group[1].map((x) => (
-                <ToggleButton
-                  key={x.name}
-                  onClick={() => this.props.onClick(x)}
-                  title={x.name.split("/")[1]}
-                  // styles={defaultPaletteButtonsStyles}
-                  checked={this.props.selected == x}
-                >
-                  {x.name.split("/")[1]}
-                </ToggleButton>
-              ))}
+              <div>
+              <Label style={{
+                display: "flex",
+                flexDirection: "row",
+              }} key={`palette-label-${index}`}>{group[0]}</Label>
+                {group[1].map((x) => (
+                  <ToggleButton
+                    key={x.name}
+                    onClick={() => this.props.onClick(x)}
+                    title={x.name.split("/")[1]}
+                    // styles={defaultPaletteButtonsStyles}
+                    checked={this.props.selected == x}
+                  >
+                    {x.name.split("/")[1]}
+                  </ToggleButton>
+                ))}
+              </div>
             </React.Fragment>
           );
         })}
