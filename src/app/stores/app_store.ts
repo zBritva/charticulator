@@ -1557,6 +1557,10 @@ export class AppStore extends BaseStore {
               : null,
             order:
               yDataProperty.order !== undefined ? yDataProperty.order : null,
+            orderByExpression:
+              yDataProperty.orderByExpression !== undefined
+                ? yDataProperty.orderByExpression
+                : null,
           },
           yDataProperty.rawExpression as string
         );
@@ -1599,6 +1603,10 @@ export class AppStore extends BaseStore {
               ? OrderMode.order
               : null,
             order: axisProperty.order !== undefined ? axisProperty.order : null,
+            orderByExpression:
+            axisProperty.orderByExpression !== undefined
+                ? axisProperty.orderByExpression
+                : null,
           },
           axisProperty.rawExpression as string
         );
