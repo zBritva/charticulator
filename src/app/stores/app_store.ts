@@ -1973,7 +1973,13 @@ export class AppStore extends BaseStore {
               dataExpression.valueType,
               values
             );
-            dataBinding.orderByCategories = deepClone(categories);
+            try {
+              dataBinding.orderByCategories = this.getCategoriesForOrderByColumn(
+                dataBinding
+              );
+            } catch (e) {
+              dataBinding.orderByCategories = deepClone(categories);
+            }
             dataBinding.order = order != undefined ? order : null;
             dataBinding.allCategories = deepClone(categories);
 
@@ -2190,11 +2196,9 @@ export class AppStore extends BaseStore {
   }
 
   public getCategoriesForOrderByColumn(
-    orderExpression: string,
-    expression: string,
     data: AxisDataBinding
   ) {
-    const parsed = Expression.parse(expression);
+    const parsed = Expression.parse(data.expression);
     let groupByExpression: string = null;
     if (parsed instanceof Expression.FunctionCall) {
       groupByExpression = parsed.args[0].toString();
@@ -2211,11 +2215,13 @@ export class AppStore extends BaseStore {
       groupBy?: Specification.Types.GroupBy
     ): any[] => {
       const newExpression = transformOrderByExpression(expression);
-      groupBy.expression = transformOrderByExpression(groupBy.expression);
+      if (groupBy && groupBy.expression) {
+        groupBy.expression = transformOrderByExpression(groupBy.expression);
+      }
 
       const expr = Expression.parse(newExpression);
       const tableContext = df.getTable(table);
-      const indices = groupBy
+      const indices = groupBy && groupBy.expression
         ? new CompiledGroupBy(groupBy, df.cache).groupBy(tableContext)
         : makeRange(0, tableContext.rows.length).map((x) => [x]);
       return indices.map((is) =>

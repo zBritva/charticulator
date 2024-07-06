@@ -2634,7 +2634,9 @@ function getOrderByAnotherColumnWidgets(
       return []
     }
     const newExpression = transformOrderByExpression(expression);
-    groupBy.expression = transformOrderByExpression(groupBy.expression);
+    if (groupBy) {
+      groupBy.expression = transformOrderByExpression(groupBy.expression);
+    }
 
     const expr = Expression.parse(newExpression);
     const tableContext = df.getTable(table);
