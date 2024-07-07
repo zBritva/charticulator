@@ -2658,9 +2658,7 @@ function getOrderByAnotherColumnWidgets(
   }
 
   const isOriginalColumn = groupByExpression === data.orderByExpression;
-  const vectorData = getExpressionVector(data.orderByExpression, table, {
-    expression: groupByExpression,
-  });
+  const vectorData = getExpressionVector(data.orderByExpression, table);
   const items = vectorData.map((item) => [...new Set(item)]);
 
   const items_idx: CategoryItemsWithIds = items.map((item, idx) => [item, idx]);

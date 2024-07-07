@@ -2228,9 +2228,7 @@ export class AppStore extends BaseStore {
         expr.getValue(tableContext.getGroupedContext(is))
       );
     };
-    const vectorData = getExpressionVector(data.orderByExpression, table, {
-      expression: groupByExpression,
-    });
+    const vectorData = getExpressionVector(data.orderByExpression, table);
     const items = vectorData.map((item) => [...new Set(item)]);
     const newData = updateWidgetCategoriesByExpression(items);
     return [...new Set(newData)];
