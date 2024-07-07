@@ -183,7 +183,10 @@ export class MainView extends React.Component<
     const datasetPanel = () => {
       return (
         <div className="charticulator__panel charticulator__panel-dataset">
-          <MinimizablePanelView>
+          <MinimizablePanelView
+            title={strings.mainView.datasetPanelTitle}
+            width={'200px'}
+          >
             <MinimizablePane
               title={strings.mainView.datasetPanelTitle}
               scroll={true}
@@ -222,7 +225,10 @@ export class MainView extends React.Component<
                 : undefined,
           }}
         >
-          <MinimizablePanelView>
+          <MinimizablePanelView
+            title={strings.mainView.properties}
+            width="300px"
+          >
             {this.state.glyphViewMaximized ? null : (
               <MinimizablePane
                 title={strings.mainView.glyphPaneltitle}

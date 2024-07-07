@@ -247,6 +247,7 @@ export const strings = {
     datasetPanelTitle: "Dataset",
     errorsPanelTitle: "Errors",
     glyphPaneltitle: "Glyph",
+    properties: "Properties",
     layersPanelTitle: "Layers",
     scalesPanelTitle: "Scales",
   },

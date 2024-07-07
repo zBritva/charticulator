@@ -4,19 +4,94 @@
 import * as React from "react";
 import { default as Hammer } from "hammerjs";
 import { classNames } from "../utils";
-import { Button } from "@fluentui/react-button";
 
 import * as R from "../resources";
 import { SVGImageIcon } from "./icons";
-import { ArrowMinimizeRegular, StackRegular } from "@fluentui/react-icons";
+import { ArrowLeft12Regular, ArrowMinimizeRegular, ArrowRight12Regular, StackRegular } from "@fluentui/react-icons";
 
-export class MinimizablePanelView extends React.Component<
-  React.PropsWithChildren<Record<string, unknown>>,
-  Record<string, unknown>
-> {
-  public render() {
-    return <div className="minimizable-panel-view">{this.props.children}</div>;
-  }
+import {
+  DrawerBody,
+  DrawerHeader,
+  DrawerHeaderTitle,
+  InlineDrawer,
+  Button,
+  useRestoreFocusSource,
+  Label
+} from "@fluentui/react-components";
+
+export const MinimizablePanelView: React.FC<
+  React.PropsWithChildren<{
+    [key: string]: unknown,
+    title?: string;
+    width?: string;
+  }>
+> = ({ children, title, width }) => {
+  const [isOpen, setOpen] = React.useState(true);
+  
+  const restoreFocusSourceAttributes = useRestoreFocusSource();
+
+    return (
+      <>
+        <div className="minimizable-panel-view">
+            {!isOpen ? (
+                <>
+                    <Button
+                        style={{
+                            margin: '2px'
+                        }}
+                        appearance="subtle"
+                        size="small"
+                        icon={<ArrowLeft12Regular />}
+                        onClick={() => setOpen(true)}
+                    />
+                    <Label style={{
+                        writingMode: 'vertical-rl',
+                        textOrientation: 'mixed'
+                    }}>{title}</Label>
+                </>
+            ) : null}
+            <InlineDrawer
+                {...restoreFocusSourceAttributes}
+                open={isOpen}
+                position="end"
+                style={{
+                    width: width
+                }}
+                separator>
+                <DrawerHeader
+                    style={{
+                        padding: '2px'
+                    }}>
+                    <DrawerHeaderTitle
+                    style={{
+                        padding: '2px',
+                        fontSize: '16px'
+                    }}
+                    action={
+                        <Button
+                            appearance="subtle"
+                            aria-label="Close"
+                            size="small"
+                            style={{
+                                marginRight: '15px'
+                            }}
+                            icon={<ArrowRight12Regular />}
+                            onClick={() => setOpen(false)}
+                        />
+                    }
+                    >
+                    {title}
+                    </DrawerHeaderTitle>
+                </DrawerHeader>
+                <DrawerBody style={{
+                    padding: '5px'
+                }}>
+                    {children}
+                </DrawerBody>
+            </InlineDrawer>
+        </div>
+      </>
+    );
 }
 
 export interface MinimizablePaneProps {
