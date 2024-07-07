@@ -65,7 +65,7 @@ export const MinimizablePanelView: React.FC<
                     <DrawerHeaderTitle
                     style={{
                         padding: '2px',
-                        fontSize: '16px'
+                        fontSize: '14px'
                     }}
                     action={
                         <Button
