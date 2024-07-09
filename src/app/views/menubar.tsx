@@ -656,6 +656,8 @@ export class MenuBar extends ContextedComponent<
         {/* {this.context.store.editorType === EditorType.Nested || this.context.store.editorType === EditorType.NestedEmbedded
           ? this.renderSaveNested()
           : null} */}
+        <span className="charticulator__menu-bar-separator" />
+        {this.renderSponsorButton(props)}
         {this.context.store.editorType === EditorType.Chart
           ? this.renderNewOpenSave()
           : null}
