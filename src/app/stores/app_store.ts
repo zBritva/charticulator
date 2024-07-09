@@ -2198,14 +2198,14 @@ export class AppStore extends BaseStore {
   public getCategoriesForOrderByColumn(
     data: AxisDataBinding
   ) {
-    const parsed = Expression.parse(data.expression);
-    let groupByExpression: string = null;
-    if (parsed instanceof Expression.FunctionCall) {
-      groupByExpression = parsed.args[0].toString();
-      groupByExpression = groupByExpression?.split("`").join("");
-      //need to provide date.year() etc.
-      groupByExpression = parseDerivedColumnsExpression(groupByExpression);
-    }
+    // const parsed = Expression.parse(data.expression);
+    // let groupByExpression: string = null;
+    // if (parsed instanceof Expression.FunctionCall) {
+    //   groupByExpression = parsed.args[0].toString();
+    //   groupByExpression = groupByExpression?.split("`").join("");
+    //   //need to provide date.year() etc.
+    //   groupByExpression = parseDerivedColumnsExpression(groupByExpression);
+    // }
     const table = this.getTables()[0].name;
 
     const df = new Prototypes.Dataflow.DataflowManager(this.dataset);
