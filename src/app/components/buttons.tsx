@@ -168,43 +168,6 @@ export interface IconButtonProps extends ButtonProps {
 export class MenuButton extends BaseButton<IconButtonProps> {
   public render() {
     const props = this.props;
-    // if (props.text) {
-    //   return (
-    //     <span
-    //       tabIndex={0}
-    //       className={classNames("charticulator__button-menu-text", [
-    //         "is-disabled",
-    //         this.props.disabled,
-    //       ])}
-    //       title={props.title}
-    //       onClick={this._doClick}
-    //       onKeyPress={(e) => {
-    //         if (e.key === "Enter") {
-    //           this._doClick();
-    //         }
-    //       }}
-    //     >
-    //       <SVGImageIcon url={props.url} />
-    //       <span className="el-text">{props.text}</span>
-    //     </span>
-    //   );
-    // } else {
-    //   return (
-    //     <span
-    //       tabIndex={0}
-    //       className="charticulator__button-menu"
-    //       title={props.title}
-    //       onClick={this._doClick}
-    //       onKeyPress={(e) => {
-    //         if (e.key === "Enter") {
-    //           this._doClick();
-    //         }
-    //       }}
-    //     >
-    //       <SVGImageIcon url={props.url} />
-    //     </span>
-    //   );
-    // }
 
     return (
       <>

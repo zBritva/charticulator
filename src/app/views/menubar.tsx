@@ -75,6 +75,7 @@ export class HelpButton extends React.Component<
                       <a
                         target="_blank"
                         href="https://ilfat-galiev.im/docs/charticulator/"
+                        onClick={this.props.handlers?.onGettingStartedClick}
                       >
                         {strings.help.gettingStarted}
                       </a>
@@ -83,6 +84,7 @@ export class HelpButton extends React.Component<
                       <a
                         target="_blank"
                         href="https://charticulator.com/gallery/index.html"
+                        onClick={this.props.handlers?.onGalleryClick}
                       >
                         {strings.help.gallery}
                       </a>
@@ -92,18 +94,24 @@ export class HelpButton extends React.Component<
                         <a
                           target="_blank"
                           href="https://github.com/zbritva/charticulator/issues/new"
+                          onClick={this.props.handlers?.onIssuesClick}
                         >
                           {strings.help.issues}
                         </a>
                       </div>
                     )}
                     <div className="el-item">
-                      <a target="_blank" href="https://ilfat-galiev.im/">
+                      <a
+                        target="_blank"
+                        href="https://ilfat-galiev.im/"
+                        onClick={this.props.handlers?.onHomeClick}
+                        >
                         {strings.help.home}
                       </a>
                     </div>
                     <div className="el-item">
-                      <a onClick={contactUsLinkProps.onClick}>
+                      <a onClick={contactUsLinkProps.onClick}
+                      >
                         {strings.help.contact}
                       </a>
                     </div>
@@ -129,7 +137,12 @@ export interface MenuBarHandlers {
   onContactUsLink?: () => void;
   onImportTemplateClick?: () => void;
   onExportTemplateClick?: () => void;
+  onSupportDevClick?: () => void;
   onCopyToClipboardClick?: () => void;
+  onGettingStartedClick?: () => void;
+  onGalleryClick?: () => void;
+  onIssuesClick?: () => void;
+  onHomeClick?: () => void;
 }
 
 export interface MenubarTabButton {
@@ -544,6 +557,21 @@ export class MenuBar extends ContextedComponent<
     );
   }
 
+  public renderSponsorButton(props: MenuBarProps) {
+    return (
+      <>
+        <MenuButton
+          url={R.getSVGIcon("toolbar/support-dev")}
+          text="DONATE"
+          title={strings.menuBar.supportDev}
+          onClick={
+            props.handlers?.onSupportDevClick || (() => window.open("https://github.com/sponsors/zBritva", "_blank"))
+          }
+        />
+      </>
+    );
+  }
+
   public renderCopyToClipboard(props: MenuBarProps) {
     return (
       <>
@@ -638,6 +666,8 @@ export class MenuBar extends ContextedComponent<
         {this.context.store.editorType === EditorType.Embedded ||
         this.context.store.editorType === EditorType.NestedEmbedded ? (
           <>
+            <span className="charticulator__menu-bar-separator" />
+            {this.renderSponsorButton(props)}
             <span className="charticulator__menu-bar-separator" />
             {this.renderImportButton(props)}
             {this.renderExportButton(props)}

@@ -116,6 +116,10 @@ addSVGIcon(
   require("resources/icons/icons_toolbar-export-template.svg")
 );
 addSVGIcon(
+  "toolbar/support-dev",
+  require("resources/icons/support-dev.svg")
+);
+addSVGIcon(
   "toolbar/export",
   require("resources/icons/icons_toolbar-export.svg")
 );

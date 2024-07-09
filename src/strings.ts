@@ -255,6 +255,7 @@ export const strings = {
     defaultTemplateName: "Charticulator Template",
     export: "Export",
     exportTemplate: "Export template",
+    supportDev: "Support development",
     copyTemplate: "Copy template",
     help: "Help",
     home: "Open file menu",
