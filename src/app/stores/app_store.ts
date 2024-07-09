@@ -89,7 +89,6 @@ import { DataAxisProperties } from "../../core/prototypes/marks/data_axis.attrs"
 import { isBase64Image } from "../../core/dataset/data_types";
 import {
   getColumnNameByExpression,
-  parseDerivedColumnsExpression,
   transformOrderByExpression,
   updateWidgetCategoriesByExpression,
 } from "../../core/prototypes/plot_segments/utils";
