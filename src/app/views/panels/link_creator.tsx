@@ -87,7 +87,7 @@ export class LinkCreationPanel extends ContextedComponent<
             defaultValue={this.state.linkType}
           >
             <Radio value="line" label="Line" />
-            <Radio value="link/band" label="Band" />
+            <Radio value="band" label="Band" />
           </RadioGroup>
         </div>
         {this.state.plotSegments.length > 1 ? (

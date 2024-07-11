@@ -72,6 +72,12 @@ export interface LinksProperties extends Specification.AttributeMap {
   endArrowType?: ArrowType;
 }
 
+export interface LinksAttributes extends Specification.AttributeMap {
+  color: Color;
+  opacity: number;
+  strokeWidth: number;
+}
+
 export enum ArrowType {
   NO_ARROW = "NO_ARROW",
   ARROW = "ARROW",
@@ -132,9 +138,9 @@ export interface RenderState {
   ) => Specification.AttributeValue;
 }
 
-export abstract class LinksClass extends ChartElementClass {
+export abstract class LinksClass extends ChartElementClass<LinksProperties, LinksAttributes> {
   public readonly object: LinksObject;
-  public readonly state: Specification.ObjectState;
+  public readonly state: Specification.ObjectState<LinksAttributes>;
 
   public static metadata: ObjectClassMetadata = {
     iconPath: "CharticulatorLine",
@@ -154,14 +160,14 @@ export abstract class LinksClass extends ChartElementClass {
       name: "color",
       type: Specification.AttributeType.Color,
       solverExclude: true,
-      defaultValue: null,
+      defaultValue: "#000000",
       stateExclude: true,
     },
     strokeWidth: {
       name: "strokeWidth",
       type: Specification.AttributeType.Number,
       solverExclude: true,
-      defaultValue: null,
+      defaultValue: "#000000",
       stateExclude: true,
     },
     opacity: {
@@ -849,13 +855,7 @@ export abstract class LinksClass extends ChartElementClass {
           attribute: "color",
         },
         type: Specification.AttributeType.Color,
-        default:
-          this.object.mappings.color &&
-          rgbToHex(
-            <Color>(
-              (<Specification.ValueMapping>this.object.mappings.color).value
-            )
-          ), // TODO fix it
+        default: rgbToHex(this.state.attributes.color),
       });
     }
 
