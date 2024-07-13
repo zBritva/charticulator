@@ -2634,9 +2634,7 @@ function getOrderByAnotherColumnWidgets(
       return []
     }
     const newExpression = transformOrderByExpression(expression);
-    if (groupBy) {
-      groupBy.expression = transformOrderByExpression(groupBy.expression);
-    }
+    groupBy.expression = transformOrderByExpression(groupBy.expression);
 
     const expr = Expression.parse(newExpression);
     const tableContext = df.getTable(table);
@@ -2658,7 +2656,9 @@ function getOrderByAnotherColumnWidgets(
   }
 
   const isOriginalColumn = groupByExpression === data.orderByExpression;
-  const vectorData = getExpressionVector(data.orderByExpression, table);
+  const vectorData = getExpressionVector(data.orderByExpression, table, {
+    expression: groupByExpression,
+  });
   const items = vectorData.map((item) => [...new Set(item)]);
 
   const items_idx: CategoryItemsWithIds = items.map((item, idx) => [item, idx]);

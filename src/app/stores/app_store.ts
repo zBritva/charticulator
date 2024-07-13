@@ -89,6 +89,7 @@ import { DataAxisProperties } from "../../core/prototypes/marks/data_axis.attrs"
 import { isBase64Image } from "../../core/dataset/data_types";
 import {
   getColumnNameByExpression,
+  parseDerivedColumnsExpression,
   transformOrderByExpression,
   updateWidgetCategoriesByExpression,
 } from "../../core/prototypes/plot_segments/utils";
@@ -1972,13 +1973,7 @@ export class AppStore extends BaseStore {
               dataExpression.valueType,
               values
             );
-            try {
-              dataBinding.orderByCategories = this.getCategoriesForOrderByColumn(
-                dataBinding
-              );
-            } catch (e) {
-              dataBinding.orderByCategories = deepClone(categories);
-            }
+            dataBinding.orderByCategories = deepClone(categories);
             dataBinding.order = order != undefined ? order : null;
             dataBinding.allCategories = deepClone(categories);
 
@@ -2195,16 +2190,18 @@ export class AppStore extends BaseStore {
   }
 
   public getCategoriesForOrderByColumn(
+    orderExpression: string,
+    expression: string,
     data: AxisDataBinding
   ) {
-    // const parsed = Expression.parse(data.expression);
-    // let groupByExpression: string = null;
-    // if (parsed instanceof Expression.FunctionCall) {
-    //   groupByExpression = parsed.args[0].toString();
-    //   groupByExpression = groupByExpression?.split("`").join("");
-    //   //need to provide date.year() etc.
-    //   groupByExpression = parseDerivedColumnsExpression(groupByExpression);
-    // }
+    const parsed = Expression.parse(expression);
+    let groupByExpression: string = null;
+    if (parsed instanceof Expression.FunctionCall) {
+      groupByExpression = parsed.args[0].toString();
+      groupByExpression = groupByExpression?.split("`").join("");
+      //need to provide date.year() etc.
+      groupByExpression = parseDerivedColumnsExpression(groupByExpression);
+    }
     const table = this.getTables()[0].name;
 
     const df = new Prototypes.Dataflow.DataflowManager(this.dataset);
@@ -2214,20 +2211,20 @@ export class AppStore extends BaseStore {
       groupBy?: Specification.Types.GroupBy
     ): any[] => {
       const newExpression = transformOrderByExpression(expression);
-      if (groupBy && groupBy.expression) {
-        groupBy.expression = transformOrderByExpression(groupBy.expression);
-      }
+      groupBy.expression = transformOrderByExpression(groupBy.expression);
 
       const expr = Expression.parse(newExpression);
       const tableContext = df.getTable(table);
-      const indices = groupBy && groupBy.expression
+      const indices = groupBy
         ? new CompiledGroupBy(groupBy, df.cache).groupBy(tableContext)
         : makeRange(0, tableContext.rows.length).map((x) => [x]);
       return indices.map((is) =>
         expr.getValue(tableContext.getGroupedContext(is))
       );
     };
-    const vectorData = getExpressionVector(data.orderByExpression, table);
+    const vectorData = getExpressionVector(data.orderByExpression, table, {
+      expression: groupByExpression,
+    });
     const items = vectorData.map((item) => [...new Set(item)]);
     const newData = updateWidgetCategoriesByExpression(items);
     return [...new Set(newData)];
