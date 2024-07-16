@@ -332,9 +332,7 @@ export class ChartComponent extends React.Component<
               centerX: 0,
               centerY: 0,
               scale: 1,
-            },
-            this.props.width,
-            this.props.height
+            }
           )}
           {this.state.working ? (
             <rect

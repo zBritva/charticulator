@@ -255,9 +255,7 @@ export class ChartRenderer {
   public renderControls(
     chart: Specification.Chart,
     chartState: Specification.ChartState,
-    zoom: ZoomInfo,
-    width: number,
-    height: number
+    zoom: ZoomInfo
   ) {
     const elementsAndStates = zipArray(chart.elements, chartState.elements);
 
@@ -276,9 +274,7 @@ export class ChartRenderer {
         );
         const plotSegmentBackgroundControlElements = plotSegmentClass.renderControls(
           this.manager,
-          zoom,
-          width,
-          height
+          zoom
         );
 
         controls = controls.concat(plotSegmentBackgroundControlElements);

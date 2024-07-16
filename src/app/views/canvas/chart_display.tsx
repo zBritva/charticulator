@@ -51,9 +51,7 @@ export class ChartDisplayView extends React.Component<
               centerX: 0,
               centerY: 0,
               scale: 1,
-            },
-            width,
-            height
+            }
           )}
         </g>
       </svg>

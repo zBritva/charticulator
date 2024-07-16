@@ -1313,13 +1313,11 @@ export class AxisRenderer {
     axis: AxisMode,
     scrollPosition: number,
     onScroll: (position: number) => void,
-    zoom: ZoomInfo,
-    width: number,
-    height: number
+    zoom: ZoomInfo
   ) {
     switch (axis) {
       case AxisMode.X: {
-        return this.renderScrollBar(x, y, 0, 1, scrollPosition, onScroll, zoom, width, height);
+        return this.renderScrollBar(x, y, 0, 1, scrollPosition, onScroll, zoom);
       }
       case AxisMode.Y: {
         return this.renderScrollBar(
@@ -1329,9 +1327,7 @@ export class AxisRenderer {
           -1,
           scrollPosition,
           onScroll,
-          zoom,
-          width,
-          height
+          zoom
         );
       }
     }
@@ -1344,9 +1340,7 @@ export class AxisRenderer {
     side: number,
     handlePosition: number,
     onScroll: (position: number) => void,
-    zoom: ZoomInfo,
-    defaultWidth: number,
-    defaultHeight: number
+    zoom: ZoomInfo
   ): React.ReactElement<any> {
     if (!this.scrollRequired) {
       return null;
@@ -1380,16 +1374,16 @@ export class AxisRenderer {
     let width = 0;
     let height = 0;
     if (angle === 90) {
-      height += defaultHeight ?? Math.abs(y2 - y1);
+      height += Math.abs(y2 - y1);
       width = AxisRenderer.SCROLL_BAR_SIZE;
     }
     if (angle === 0) {
-      width += defaultWidth ?? Math.abs(x2 - x1);
+      width += Math.abs(x2 - x1);
       height = AxisRenderer.SCROLL_BAR_SIZE;
     }
 
     return React.createElement(VirtualScrollBar, <VirtualScrollBarPropertes>{
-      key: `scroll-x:${x}-y:${y}-${side}-${angle}-${height}-${width}-${handlePosition}`,
+      key: `scroll-x:${x}-y:${y}`,
       onScroll,
       handlerBarWidth: AxisRenderer.SCROLL_BAR_SIZE,
       height,
