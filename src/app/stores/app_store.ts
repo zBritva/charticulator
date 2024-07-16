@@ -2189,47 +2189,6 @@ export class AppStore extends BaseStore {
     }
   }
 
-  public getCategoriesForOrderByColumn(
-    orderExpression: string,
-    expression: string,
-    data: AxisDataBinding
-  ) {
-    const parsed = Expression.parse(expression);
-    let groupByExpression: string = null;
-    if (parsed instanceof Expression.FunctionCall) {
-      groupByExpression = parsed.args[0].toString();
-      groupByExpression = groupByExpression?.split("`").join("");
-      //need to provide date.year() etc.
-      groupByExpression = parseDerivedColumnsExpression(groupByExpression);
-    }
-    const table = this.getTables()[0].name;
-
-    const df = new Prototypes.Dataflow.DataflowManager(this.dataset);
-    const getExpressionVector = (
-      expression: string,
-      table: string,
-      groupBy?: Specification.Types.GroupBy
-    ): any[] => {
-      const newExpression = transformOrderByExpression(expression);
-      groupBy.expression = transformOrderByExpression(groupBy.expression);
-
-      const expr = Expression.parse(newExpression);
-      const tableContext = df.getTable(table);
-      const indices = groupBy
-        ? new CompiledGroupBy(groupBy, df.cache).groupBy(tableContext)
-        : makeRange(0, tableContext.rows.length).map((x) => [x]);
-      return indices.map((is) =>
-        expr.getValue(tableContext.getGroupedContext(is))
-      );
-    };
-    const vectorData = getExpressionVector(data.orderByExpression, table, {
-      expression: groupByExpression,
-    });
-    const items = vectorData.map((item) => [...new Set(item)]);
-    const newData = updateWidgetCategoriesByExpression(items);
-    return [...new Set(newData)];
-  }
-
   public getCategoriesForDataBinding(
     metadata: Dataset.ColumnMetadata,
     type: DataType,
