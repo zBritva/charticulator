@@ -1496,26 +1496,39 @@ export function buildAxisAppearanceWidgets(
             header: strings.objects.visibilityAndPosition,
           },
           [
+            manager.label(strings.objects.visibleOn.visible, {
+              ignoreSearch: false,
+              searchSection: strings.objects.visibleOn.visible,
+            }),
             manager.inputBoolean(
               { property: axisProperty, field: "visible" },
               {
                 type: "checkbox",
-                label: strings.objects.visibleOn.visible,
+                label: strings.objects.visibleOn.visibleDescription,
                 searchSection: [
                   strings.objects.visibilityAndPosition,
                   options.mainCollapsePanelHeader,
+                  strings.objects.visibleOn.visible
                 ],
               }
             ),
-            options.isOnTop
+            options.isVisible
+              ?
+            manager.label(strings.objects.onTop, {
+              ignoreSearch: false,
+              searchSection: strings.objects.onTop,
+            })
+              : null,
+            options.isVisible
               ? manager.inputBoolean(
                   { property: axisProperty, field: "onTop" },
                   {
                     type: "checkbox",
-                    label: strings.objects.onTop,
+                    label: strings.objects.onTopDescription,
                     searchSection: [
                       strings.objects.visibilityAndPosition,
                       options.mainCollapsePanelHeader,
+                      strings.objects.onTop
                     ],
                   }
                 )

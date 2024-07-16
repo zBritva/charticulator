@@ -417,6 +417,7 @@ export const strings = {
     appearance: "Appearance",
     visibilityAndPosition: "Visibility & Position",
     onTop: "On Top",
+    onTopDescription: "Axis renders on foreground",
     invalidFormat: "Invalid format",
     roundX: "Round X",
     roundY: "Round Y",
@@ -492,6 +493,7 @@ export const strings = {
       first: "First",
       last: "Last",
       visible: "Visible",
+      visibleDescription: "Axis visibility on chart",
     },
     guides: {
       guideCoordinator: "Guide Coordinator",

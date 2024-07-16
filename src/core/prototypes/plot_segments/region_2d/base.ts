@@ -2839,6 +2839,10 @@ export class Region2DConstraintBuilder {
           header: strings.objects.plotSegment.subLayout,
         },
         [
+          m.label(strings.objects.plotSegment.type, {
+            ignoreSearch: false,
+            searchSection: strings.objects.plotSegment.subLayout,
+          }),
           m.inputSelect(
             { property: "sublayout", field: "type" },
             {
@@ -2846,7 +2850,7 @@ export class Region2DConstraintBuilder {
               options: options.map((x) => x.value),
               icons: options.map((x) => x.icon),
               labels: options.map((x) => x.label),
-              label: strings.objects.plotSegment.type,
+              // label: strings.objects.plotSegment.type,
               searchSection: strings.objects.plotSegment.subLayout,
             }
           ),
