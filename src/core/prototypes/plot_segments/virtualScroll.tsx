@@ -277,7 +277,7 @@ export const VirtualScrollBar: React.FC<VirtualScrollBarPropertes> = ({
                 d="M1955 1533l-931-930-931 930-90-90L1024 421l1021 1022-90 90z"
               />
             </g>
-            <rect
+            {/* <rect
               className={"interaction-handler"}
               x={Math.min(x, x + width) - height}
               y={-Math.max(y, y + height) - height}
@@ -287,7 +287,7 @@ export const VirtualScrollBar: React.FC<VirtualScrollBarPropertes> = ({
               onMouseOut={() => {
                 setActive(false);
               }}
-            />
+            /> */}
           </>
         ) : (
           <>
@@ -341,7 +341,7 @@ export const VirtualScrollBar: React.FC<VirtualScrollBarPropertes> = ({
                 d="M1955 1533l-931-930-931 930-90-90L1024 421l1021 1022-90 90z"
               />
             </g>
-            <rect
+            {/* <rect
               className={"interaction-handler"}
               x={Math.min(x, x + width) - width}
               y={-Math.max(y, y + height) - width}
@@ -351,7 +351,7 @@ export const VirtualScrollBar: React.FC<VirtualScrollBarPropertes> = ({
               onMouseOut={() => {
                 setActive(false);
               }}
-            />
+            /> */}
           </>
         )}
       </g>
