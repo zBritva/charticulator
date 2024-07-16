@@ -235,6 +235,9 @@ export class MarkEditorView extends ContextedComponent<
           </div>
           <div className="canvas-controls-right">
             <Button
+              style={{
+                height: "20px",
+              }}
               size="small"
               appearance="subtle"
               icon={
