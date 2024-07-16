@@ -503,7 +503,9 @@ export class CartesianPlotSegment extends PlotSegmentClass<
 
   public renderControls(
     manager: ChartStateManager,
-    zoom: ZoomInfo
+    zoom: ZoomInfo,
+    width: number,
+    height: number
   ): React.ReactElement<any>[] {
     this.chartManager = manager;
     const attrs = this.state.attributes;
@@ -522,7 +524,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       const axisRenderer = new AxisRenderer().setAxisDataBinding(
         props.xData,
         0,
-        attrs.x2 - attrs.x1,
+        width ?? (attrs.x2 - attrs.x1),
         false,
         false,
         this.getDisplayFormat(props.xData, props.xData.tickFormat, manager)
@@ -571,7 +573,9 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           manager.remapPlotSegmentGlyphs(this.object);
           manager.solveConstraints();
         },
-        zoom
+        zoom,
+        width,
+        height
       );
       // scrollBarRenderTree.key = `scroll-bar-x-${this.object._id}`;
 
@@ -591,7 +595,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       const axisRenderer = new AxisRenderer().setAxisDataBinding(
         props.yData,
         0,
-        attrs.y2 - attrs.y1,
+        height ?? (attrs.y2 - attrs.y1),
         false,
         true,
         this.getDisplayFormat(props.yData, props.yData.tickFormat, manager)
@@ -639,9 +643,11 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           manager.remapPlotSegmentGlyphs(this.object);
           manager.solveConstraints();
         },
-        zoom
+        zoom,
+        width,
+        height
       );
-      scrollBarRenderTree.key = `scroll-bar-y-${this.object._id}`;
+      // scrollBarRenderTree.key = `scroll-bar-y-${this.object._id}`;
 
       g.push(
         scrollBarRenderTree

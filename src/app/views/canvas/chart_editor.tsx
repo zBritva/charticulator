@@ -361,7 +361,9 @@ export class ChartEditorView
           {renderer.renderControls(
             this.props.store.chart,
             this.props.store.chartState,
-            this.state.zoom
+            this.state.zoom,
+            this.state.viewWidth,
+            this.state.viewHeight
           )}
         </g>
       </React.Fragment>

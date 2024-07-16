@@ -77,7 +77,11 @@ export abstract class PlotSegmentClass<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _manager: ChartStateManager,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _zoom: ZoomInfo
+    _zoom: ZoomInfo,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _width: number,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _height: number
   ): ReactElement<any>[] {
     return null;
   }
