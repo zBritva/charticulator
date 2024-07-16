@@ -10,7 +10,6 @@ import {
   getById,
   getByName,
   ImageKeyColumn,
-  makeRange,
   MessageType,
   Prototypes,
   Scale,
@@ -61,7 +60,6 @@ import {
 } from "../../core/specification";
 import { RenderEvents } from "../../core/graphics";
 import {
-  AxisDataBinding,
   AxisDataBindingType,
   AxisRenderingStyle,
   CollapseOrExpandPanels,
@@ -89,12 +87,8 @@ import { DataAxisProperties } from "../../core/prototypes/marks/data_axis.attrs"
 import { isBase64Image } from "../../core/dataset/data_types";
 import {
   getColumnNameByExpression,
-  parseDerivedColumnsExpression,
-  transformOrderByExpression,
-  updateWidgetCategoriesByExpression,
 } from "../../core/prototypes/plot_segments/utils";
 import { AxisRenderer } from "../../core/prototypes/plot_segments/axis";
-import { CompiledGroupBy } from "../../core/prototypes/group_by";
 
 export interface ChartStoreStateSolverStatus {
   solving: boolean;
