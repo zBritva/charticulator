@@ -641,7 +641,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         },
         zoom
       );
-      scrollBarRenderTree.key = `scroll-bar-y-${this.object._id}`;
+      // scrollBarRenderTree.key = `scroll-bar-y-${this.object._id}`;
 
       g.push(
         scrollBarRenderTree

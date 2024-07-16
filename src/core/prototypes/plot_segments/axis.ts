@@ -1383,7 +1383,7 @@ export class AxisRenderer {
     }
 
     return React.createElement(VirtualScrollBar, <VirtualScrollBarPropertes>{
-      key: `scroll-x:${x}-y:${y}`,
+      key: `scroll-x:${x}-y:${y}-${side}-${angle}-${height}-${width}-${handlePosition}`,
       onScroll,
       handlerBarWidth: AxisRenderer.SCROLL_BAR_SIZE,
       height,
