@@ -315,9 +315,9 @@ export class MenuBar extends ContextedComponent<
           open={this.state.showSaveDialog}
           // minWidth="80%"
         >
-          <DialogTitle>
+          {/* <DialogTitle>
             {strings.dialogs.saveChanges.saveChangesTitle}
-          </DialogTitle>
+          </DialogTitle> */}
           <DialogActions>
             <Button
               // styles={primaryButtonStyles}
@@ -658,6 +658,7 @@ export class MenuBar extends ContextedComponent<
           : null} */}
         <span className="charticulator__menu-bar-separator" />
         {this.renderSponsorButton(props)}
+        <span className="charticulator__menu-bar-separator" />
         {this.context.store.editorType === EditorType.Chart
           ? this.renderNewOpenSave()
           : null}
@@ -668,8 +669,6 @@ export class MenuBar extends ContextedComponent<
         {this.context.store.editorType === EditorType.Embedded ||
         this.context.store.editorType === EditorType.NestedEmbedded ? (
           <>
-            <span className="charticulator__menu-bar-separator" />
-            {this.renderSponsorButton(props)}
             <span className="charticulator__menu-bar-separator" />
             {this.renderImportButton(props)}
             {this.renderExportButton(props)}

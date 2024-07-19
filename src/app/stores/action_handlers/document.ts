@@ -10,7 +10,7 @@ import {
   stringToDataURL,
   convertColumns,
 } from "../../utils";
-import { AppStore } from "../app_store";
+import { AppStore, EditorType } from "../app_store";
 import { Migrator } from "../migrator";
 import { ActionHandlerRegistry } from "./registry";
 import { getConfig } from "../../config";
@@ -332,10 +332,14 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
   REG.add(Actions.OpenNestedEditor, function ({ options, object, property }) {
     this.emit(AppStore.EVENT_OPEN_NESTED_EDITOR, options, object, property);
     const editorID = uniqueID();
-    const newWindow = window.open(
-      "index.html#!nestedEditor=" + editorID,
-      "nested_chart_" + options.specification._id
-    );
+    // don't open nested editor if the current editor is embedded
+    let newWindow = null;
+    if (this.editorType == EditorType.Chart || this.editorType == EditorType.Nested) {
+      newWindow = window.open(
+        "index.html#!nestedEditor=" + editorID,
+        "nested_chart_" + options.specification._id
+      );
+    }
     const listener = (e: MessageEvent) => {
       if (e.origin != document.location.origin) {
         return;
@@ -353,7 +357,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
               );
 
               const template = builder.build();
-              newWindow.postMessage(
+              newWindow?.postMessage(
                 {
                   id: editorID,
                   type: NestedEditorEventType.Load,
