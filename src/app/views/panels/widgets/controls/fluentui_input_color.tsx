@@ -124,7 +124,6 @@ export class FluentInputColor extends React.Component<
     return (
       <span className="charticulator__widget-control-input-color">
         {this.props.pickerBeforeTextField && (hex == "" ? emptyPicker : picker)}
-        {/* <FluentTextField> */}
         <>
           <FluentColumnLayout
             style={{
@@ -133,8 +132,6 @@ export class FluentInputColor extends React.Component<
           >
             <Label>{this.props.label}</Label>
             <Input
-              // label={this.props.label}
-              // onRenderLabel={labelRender}
               onChange={(event, { value: newValue }) => {
                 newValue = newValue.trim();
                 if (newValue == "") {
@@ -165,51 +162,9 @@ export class FluentInputColor extends React.Component<
                   e.stopPropagation();
                 }
               }}
-              // styles={{
-              //   ...defaultStyle,
-              //   fieldGroup: {
-              //     ...defultComponentsHeight,
-              //     width: this.props.width,
-              //   },
-              //   root: {
-              //     ...defultComponentsHeight,
-              //   },
-              //   subComponentStyles: {
-              //     label: {
-              //       ...defaultLabelStyle,
-              //     },
-              //   },
-              // }}
-              // underlined={this.props.underline ?? false}
             />
           </FluentColumnLayout>
         </>
-        {/* </FluentTextField> */}
-        {/* {!this.props.pickerBeforeTextField &&
-          (hex == "" ? emptyPicker : picker)}
-        {this.state.open && (
-          <Callout
-            target={`#${ID_PREFIX}${pickerId}`}
-            onDismiss={() => this.setState({ open: !this.state.open })}
-          >
-            <ColorPicker
-              store={this.props.store}
-              allowNull={true}
-              onPick={(color) => {
-                if (color == null) {
-                  this.props.onEnter(null);
-                } else {
-                  this.props.onEnter(color);
-                }
-              }}
-              defaultValue={colorFromHTMLColor(hex)}
-              parent={this}
-              closePicker={() => {
-                this.setState({ open: !this.state.open });
-              }}
-            />
-          </Callout>
-        )} */}
         <Popover open={this.state.open}>
           <PopoverTrigger>
             {!this.props.pickerBeforeTextField &&

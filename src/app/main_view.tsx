@@ -227,7 +227,7 @@ export class MainView extends React.Component<
         >
           <MinimizablePanelView
             title={strings.mainView.properties}
-            width="300px"
+            width="326px"
           >
             {this.state.glyphViewMaximized ? null : (
               <MinimizablePane

@@ -186,30 +186,6 @@ export class FluentValueEditor extends ContextedComponent<
                 }}
               />
             </FluentColumnLayout>
-            {/* </FluentTextField> */}
-            {/* {this.state.open && (
-              <Callout
-                target={`#color_picker`}
-                onDismiss={() => this.setState({ open: !this.state.open })}
-              >
-                <ColorPicker
-                  store={this.store}
-                  allowNull={true}
-                  defaultValue={colorFromHTMLColor(hex)}
-                  onPick={(color) => {
-                    if (color == null) {
-                      this.emitClearValue();
-                    } else {
-                      this.emitSetValue(color);
-                    }
-                  }}
-                  parent={this}
-                  closePicker={() => {
-                    this.setState({ open: !this.state.open });
-                  }}
-                />
-              </Callout>
-            )} */}
             <Popover open={this.state.open}>
               <PopoverTrigger>
                 <span

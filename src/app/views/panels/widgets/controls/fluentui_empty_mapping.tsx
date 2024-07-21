@@ -84,6 +84,7 @@ const EmptyColorInput = ({
       <FluentColumnLayout
         style={{
           flex: 1,
+          width: "100%",
         }}
       >
         <Label>{label}</Label>
