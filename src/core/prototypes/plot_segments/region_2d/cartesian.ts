@@ -372,6 +372,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     xDataGraphics.key = `x-gr-${this.object._id}`;
     const attrs = this.state.attributes;
     const props = this.object.properties;
+    const objectID = this.object._id;
     if (props.xData && props.xData.visible) {
       const axisRenderer = new AxisRenderer().setAxisDataBinding(
         props.xData,
@@ -394,7 +395,8 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           attrs.x1,
           props.xData.side != "default" ? attrs.y2 : attrs.y1,
           AxisMode.X,
-          props.xData?.offset
+          props.xData?.offset,
+          objectID
         )
       );
     }
@@ -433,7 +435,8 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           props.yData.side != "default" ? attrs.x2 : attrs.x1,
           attrs.y1,
           AxisMode.Y,
-          props.yData?.offset
+          props.yData?.offset,
+          this.object._id
         )
       );
     }

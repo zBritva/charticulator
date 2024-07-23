@@ -577,10 +577,11 @@ export class AxisRenderer {
     y: number,
     angle: number,
     side: number,
-    axisOffset?: number
+    axisOffset?: number,
+    objectID?: string
   ): Group {
     const axisGraphics = makeGroup([]);
-    axisGraphics.key = `text-x-${x}-y-${y}-ang-${angle}-side-${side}-${axisOffset}`;
+    axisGraphics.key = `${objectID ?? ""}-text-x-${x}-y-${y}-ang-${angle}-side-${side}-${axisOffset}`;
     const style = this.style;
     const rangeMin = this.rangeMin;
     const rangeMax = this.rangeMax;
@@ -1041,14 +1042,15 @@ export class AxisRenderer {
     x: number,
     y: number,
     axis: AxisMode,
-    offset?: number
+    offset?: number,
+    objectID?: string
   ): Group {
     switch (axis) {
       case AxisMode.X: {
-        return this.renderLine(x, y, 0, 1, offset);
+        return this.renderLine(x, y, 0, 1, offset, objectID);
       }
       case AxisMode.Y: {
-        return this.renderLine(x, y, 90, -1, offset);
+        return this.renderLine(x, y, 90, -1, offset, objectID);
       }
     }
   }
