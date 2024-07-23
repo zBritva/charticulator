@@ -6,7 +6,7 @@ import * as ReactDOM from "react-dom";
 import * as globals from "../globals";
 import * as R from "../resources";
 
-import { Dialog, DialogActions, DialogTitle } from "@fluentui/react-dialog";
+import { Dialog, DialogActions } from "@fluentui/react-dialog";
 import { Button } from "@fluentui/react-button";
 
 import { deepClone, EventSubscription } from "../../core";
@@ -653,9 +653,6 @@ export class MenuBar extends ContextedComponent<
   public toolbarButtons(props: MenuBarProps) {
     return (
       <>
-        {/* {this.context.store.editorType === EditorType.Nested || this.context.store.editorType === EditorType.NestedEmbedded
-          ? this.renderSaveNested()
-          : null} */}
         <span className="charticulator__menu-bar-separator" />
         {this.renderSponsorButton(props)}
         <span className="charticulator__menu-bar-separator" />
