@@ -723,7 +723,8 @@ export const tickFormatParserExpression = () => /\{([^}]+)\}/g;
 export function getFormat() {
   return (format: string) => {
     return (n: number | { valueOf(): number; }) => {
-      const formattedValue = formatLocale(formatOptions).format(format)(n);
+      const parsedFormat = format.replace(tickFormatParserExpression(), "$1") || '%x';
+      const formattedValue = formatLocale(formatOptions).format(parsedFormat)(n);
       if (format === 's' && formatOptions.billionsFormat === 'billions') {
         return formattedValue.replace('G', 'B') 
       }
