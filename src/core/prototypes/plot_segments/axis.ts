@@ -351,7 +351,7 @@ export class AxisRenderer {
     }
     const ticks = scale.ticks(tickNumber);
 
-    const defaultFormat = scale.tickFormat(tickNumber, tickFormat);
+    const defaultFormat = scale.tickFormat(tickNumber, tickFormat.replace(tickFormatParserExpression(), "$1") || '%x');
 
     const resolvedFormat = AxisRenderer.getTickFormat(
       tickFormat,
