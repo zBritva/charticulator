@@ -315,7 +315,7 @@ export abstract class PlotSegmentClass<
       if (tickFormat) {
         return (value: any) => {
           return getTimeFormatFunction()(
-            tickFormat.replace(tickFormatParserExpression(), "$1")
+            tickFormat?.replace(tickFormatParserExpression(), "$1")
           )(value);
         };
       } else {

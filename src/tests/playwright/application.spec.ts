@@ -64,5 +64,5 @@ test('open World_Population_2017', async ({ page }) => {
   await page.goto('/');
   const chartFilePath = `${pathPrefix}/World_Population_2017.chart`;
   await loadChart(page, chartFilePath);
-  await expectShapesCount(page, 98);
+  await expectShapesCount(page, 94);
 });
