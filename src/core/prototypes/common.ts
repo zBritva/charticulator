@@ -490,6 +490,14 @@ export function* forEachMapping(
   }
 }
 
+export function* forEachAttributes(
+  attributes: Specification.AttributeMap
+): Iterable<[string, Specification.AttributeValue]> {
+  for (const key of Object.keys(attributes)) {
+    yield [key, attributes[key]];
+  }
+}
+
 export function setProperty(
   object: Specification.IObject,
   property: Specification.Template.PropertyField,

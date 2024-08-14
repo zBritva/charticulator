@@ -24,9 +24,10 @@ export const MinimizablePanelView: React.FC<
     [key: string]: unknown,
     title?: string;
     width?: string;
+    open?: boolean;
   }>
-> = ({ children, title, width }) => {
-  const [isOpen, setOpen] = React.useState(true);
+> = ({ children, title, width, open }) => {
+  const [isOpen, setOpen] = React.useState(open === undefined ? true : open);
   
   const restoreFocusSourceAttributes = useRestoreFocusSource();
 

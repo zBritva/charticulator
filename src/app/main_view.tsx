@@ -27,6 +27,7 @@ import { strings } from "../strings";
 import { FluentUIToolbar } from "./views/fluentui_tool_bar";
 import { MainReactContext } from "./context_component";
 import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { ConstraintsPanel } from "./views/panels/constraints_panel";
 
 export enum UndoRedoLocation {
   MenuBar = "menubar",
@@ -69,6 +70,7 @@ export interface MainViewProps {
 }
 
 export interface MainViewState {
+  constraintsViewMaximized: boolean;
   glyphViewMaximized: boolean;
   layersViewMaximized: boolean;
   attributeViewMaximized: boolean;
@@ -102,6 +104,7 @@ export class MainView extends React.Component<
     }
 
     this.state = {
+      constraintsViewMaximized: false,
       glyphViewMaximized: false,
       layersViewMaximized: false,
       attributeViewMaximized: false,
@@ -269,6 +272,36 @@ export class MainView extends React.Component<
       );
     };
 
+    const constraintsPanels = () => {
+      return (
+        <div
+          className="charticulator__panel-editor-panel charticulator__panel-editor-panel-panes"
+          style={{
+            display:
+              this.state.constraintsViewMaximized
+                ? "none"
+                : undefined,
+          }}
+        >
+          <MinimizablePanelView
+            title={strings.mainView.constraints}
+            width="326px"
+            open={false}
+          >
+            <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+              <div style={{
+                height: '100%',
+                display: 'flex',
+                width: '100%',
+              }}>
+                <ConstraintsPanel store={this.props.store} />
+              </div>
+            </ErrorBoundary>
+          </MinimizablePanelView>
+        </div>
+      );
+    };
+
     const chartPanel = () => {
       return (
         <div className="charticulator__panel-editor-panel charticulator__panel-editor-panel-chart">
@@ -315,6 +348,8 @@ export class MainView extends React.Component<
                   <div className="charticulator__panel-editor-panel-container">
                     {this.viewConfiguration.EditorPanelsPosition ==
                       PositionsLeftRight.Left && editorPanels()}
+                    {this.viewConfiguration.EditorPanelsPosition ==
+                      PositionsLeftRight.Left && constraintsPanels()}
                     {this.viewConfiguration.ToolbarPosition ==
                       PositionsLeftRightTop.Left &&
                       toolBarCreator({
@@ -332,6 +367,8 @@ export class MainView extends React.Component<
                       })}
                     {this.viewConfiguration.EditorPanelsPosition ==
                       PositionsLeftRight.Right && editorPanels()}
+                    {this.viewConfiguration.EditorPanelsPosition ==
+                      PositionsLeftRight.Right && constraintsPanels()}
                   </div>
                 </div>
                 {this.viewConfiguration.ColumnsPosition ==

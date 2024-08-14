@@ -1713,27 +1713,8 @@ export class FluentUIWidgetManager
             }
           }
           return (
-            // <FluentButton
-            //   marginTop={"0px"}
-            //   key={
-            //     this.getKeyFromProperty(options.target?.property) +
-            //     options?.table +
-            //     options?.value
-            //   }
-            // >
             <Button
-              // styles={{
-              //   root: {
-              //     minWidth: "unset",
-              //     ...defultComponentsHeight,
-              //   },
-              // }}
-              // text={text}
               ref={(e) => (button = e)}
-              // iconProps={{
-              //   iconName: "RowsGroup",
-              // }}
-              // icon={<SVGImageIcon url={R.getSVGIcon("RowsGroup")} />}
               icon={<GroupListRegular />}
               onClick={() => {
                 globals.popupController.popupAt(
