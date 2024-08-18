@@ -15,7 +15,7 @@ import {
 import * as DragData from "./drag_data";
 import { ExportTemplateTarget } from "../template";
 import { DataType } from "../../core/dataset";
-import { Constraints, ObjectClass } from "../../core/prototypes";
+import { ObjectClass } from "../../core/prototypes";
 import {
   AxisDataBindingType,
   CollapseOrExpandPanels,
