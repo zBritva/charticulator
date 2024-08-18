@@ -52,7 +52,7 @@ export class HelpButton extends React.Component<
     };
     if (!contactUsLinkProps.onClick) {
       contactUsLinkProps.href =
-        getConfig().ContactUsHref || "mailto:charticulator@microsoft.com";
+        getConfig().ContactUsHref || "https://www.linkedin.com/in/ilfat-galiev/";
     }
     return (
       <MenuButton
@@ -74,7 +74,7 @@ export class HelpButton extends React.Component<
                     <div className="el-item">
                       <a
                         target="_blank"
-                        href="https://ilfat-galiev.im/docs/charticulator/"
+                        href="https://ilfat-galiev.im/docs/charticulator/intro/"
                         onClick={this.props.handlers?.onGettingStartedClick}
                       >
                         {strings.help.gettingStarted}
@@ -83,7 +83,7 @@ export class HelpButton extends React.Component<
                     <div className="el-item">
                       <a
                         target="_blank"
-                        href="https://charticulator.com/gallery/index.html"
+                        href="https://ilfat-galiev.im/docs/category/gallery"
                         onClick={this.props.handlers?.onGalleryClick}
                       >
                         {strings.help.gallery}
@@ -110,7 +110,10 @@ export class HelpButton extends React.Component<
                       </a>
                     </div>
                     <div className="el-item">
-                      <a onClick={contactUsLinkProps.onClick}
+                      <a
+                        target="_blank"
+                        href="https://www.linkedin.com/in/ilfat-galiev/"
+                        onClick={contactUsLinkProps.onClick}
                       >
                         {strings.help.contact}
                       </a>

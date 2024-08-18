@@ -227,7 +227,7 @@ export const strings = {
     windings: "Windings",
   },
   help: {
-    contact: "Contact Us",
+    contact: "Contact Me",
     gallery: "Example Gallery",
     gettingStarted: "Getting Started",
     home: "Charticulator Home",
