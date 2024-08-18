@@ -400,7 +400,33 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     this.emit(AppStore.EVENT_GRAPHICS);
   });
 
-  REG.add(Actions.SolveConstraints, function (action) {
+  REG.add(Actions.UpdateConstraints, function ({ constraints }) {
+    this.saveHistory();
+
+    this.chartManager.chart.constraints = [];
+
+    const glyphs = this.chartManager.chart.glyphs.filter(
+      (glyph) => constraints.find((constraint) => constraint.objectID === glyph._id)
+    );
+
+    glyphs.forEach((glyph) => {
+      glyph.constraints = [];
+    });
+
+    constraints.forEach((constraint) => {
+      if (constraint.objectType === "chart") {
+        this.chartManager.chart.constraints.push(constraint);
+      }
+      if (constraint.objectType === "glyph") {
+        const glyph = this.chartManager.chart.glyphs.find(
+          (glyph) => glyph._id === constraint.objectID
+        );
+        if (glyph) {
+          glyph.constraints.push(constraint);
+        }
+      }
+    });
+
     this.solveConstraintsAndUpdateGraphics();
     this.emit(AppStore.EVENT_GRAPHICS);
   });

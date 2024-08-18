@@ -15,7 +15,7 @@ import {
 import * as DragData from "./drag_data";
 import { ExportTemplateTarget } from "../template";
 import { DataType } from "../../core/dataset";
-import { ObjectClass } from "../../core/prototypes";
+import { Constraints, ObjectClass } from "../../core/prototypes";
 import {
   AxisDataBindingType,
   CollapseOrExpandPanels,
@@ -999,12 +999,12 @@ export class ExpandOrCollapsePanelsUpdated extends Action {
   }
 }
 
-export class SolveConstraints extends Action {
-  constructor() {
+export class UpdateConstraints extends Action {
+  constructor(public constraints: Specification.ObjectConstraint[]) {
     super();
   }
 
   public digest(): { name: string } {
-    return { name: "SolveConstraints" };
+    return { name: "UpdateConstraints" };
   }
 }

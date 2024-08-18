@@ -206,6 +206,14 @@ export interface Constraint {
   attributes: ConstraintAttributes;
 }
 
+/** Constraint */
+export interface ObjectConstraint extends Constraint{
+  objectID: string;
+  objectType: ConstraintObjectType;
+}
+
+export type ConstraintObjectType = "chart" | "glyph";
+
 // ===========================================================================
 // Object
 // ===========================================================================

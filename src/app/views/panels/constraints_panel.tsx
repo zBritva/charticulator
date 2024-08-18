@@ -14,13 +14,7 @@ import {
 } from "../../../core/specification";
 import { Button, Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { SVGImageIcon } from "../../components/icons";
-import { Actions } from "../../../app";
-import { set } from "d3";
-
-interface ObjectConstraint extends Specification.Constraint {
-    objectID: string;
-    objectType: string;
-}
+import { Actions } from "../../actions";
 
 interface ChartObjectWithState {
     persistent: boolean;
@@ -32,17 +26,17 @@ interface ChartObjectWithState {
 export const ConstraintsPanel: React.FC<{
     store: AppStore;
 }> = ({ store }) => {
-    const glyphConstraints: ObjectConstraint[] = store.chartManager.chart.glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
+    const glyphConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
         ...constraint,
         objectID: glyph._id,
         objectType: "glyph"
     })));
-    const generalConstraints: ObjectConstraint[] = store.chartManager.chart.constraints.map((constraint) => ({
+    const generalConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.constraints.map((constraint) => ({
         ...constraint,
         objectID: store.chartManager.chart._id,
         objectType: "chart"
     }));
-    const [constraints, setConstraints]: [ObjectConstraint[], React.Dispatch<React.SetStateAction<ObjectConstraint[]>>] = React.useState([].concat(glyphConstraints, generalConstraints));
+    const [constraints, setConstraints]: [Specification.ObjectConstraint[], React.Dispatch<React.SetStateAction<Specification.ObjectConstraint[]>>] = React.useState([].concat(glyphConstraints, generalConstraints));
     const tokens = React.useRef([]);
     // eslint-disable-next-line powerbi-visuals/insecure-random
     const [_, forceUpdate] = React.useState(Math.random());
@@ -108,16 +102,26 @@ export const ConstraintsPanel: React.FC<{
             <div style={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-between"
+                justifyContent: "space-around"
             }}>
-                <Button onClick={() => {
-                    console.log('constraints', constraints);
-                    debugger;
-                    // TODO for each constraint, update the chart
-                }}>
+                <Button
+                    size="small"
+                    appearance="primary"
+                    onClick={() => {
+                        store.dispatcher.dispatch(
+                            new Actions.UpdateConstraints(constraints)
+                        );
+                    }}
+                    style={{
+                        flex: 1,
+                        marginRight: "5px"
+                    }}>
                     Save
                 </Button>
-                <Button onClick={() => {
+                <Button
+                    size="small"
+                    appearance="secondary"
+                    onClick={() => {
                     const newConstraints = [...constraints];
                     setConstraints([
                         {
@@ -135,6 +139,9 @@ export const ConstraintsPanel: React.FC<{
                         },
                         ...newConstraints
                     ]);
+                }}
+                style={{
+                    flex: 1
                 }}>
                     Add constraint
                 </Button>
@@ -215,11 +222,11 @@ const ConstraintView: React.FC<{
         element: Specification.ChartElement<Specification.ObjectProperties>;
         attributes: Specification.AttributeMap;
     }[],
-    constraint: ObjectConstraint,
+    constraint: Specification.ObjectConstraint,
     elementWithState: ChartObjectWithState,
     targetWithState: ChartObjectWithState
-    onConstraintChange: (constraint: ObjectConstraint) => void;
-    onRemove: (constraint: ObjectConstraint) => void;
+    onConstraintChange: (constraint: Specification.ObjectConstraint) => void;
+    onRemove: (constraint: Specification.ObjectConstraint) => void;
 }> = ({ parents, objects, constraint, elementWithState, targetWithState, onConstraintChange, onRemove }) => {
 
     return (
@@ -420,12 +427,14 @@ const ConstraintView: React.FC<{
                 marginTop: "5px"
             }}>
                 <Button
-                style={{
-                    flex: 1
-                }}
-                onClick={() => {
-                    onRemove(constraint);
-                }}>
+                    size="small"
+                    appearance="secondary"
+                    style={{
+                        flex: 1
+                    }}
+                    onClick={() => {
+                        onRemove(constraint);
+                    }}>
                     Remove
                 </Button>
             </div>
