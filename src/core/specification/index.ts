@@ -200,6 +200,7 @@ export interface ConstraintAttributes {
 
 /** Constraint */
 export interface Constraint {
+  _id: string;
   /** Constraint type */
   type: string;
   attributes: ConstraintAttributes;

@@ -998,3 +998,13 @@ export class ExpandOrCollapsePanelsUpdated extends Action {
     return { name: "ExpandOrCollapsePanelsUpdated" };
   }
 }
+
+export class SolveConstraints extends Action {
+  constructor() {
+    super();
+  }
+
+  public digest(): { name: string } {
+    return { name: "SolveConstraints" };
+  }
+}

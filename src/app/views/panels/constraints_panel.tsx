@@ -6,17 +6,16 @@
 import * as React from "react";
 import * as R from "../../resources";
 
-import { EventSubscription, indexOf, Prototypes, Specification, zipArray } from "../../../core";
+import { indexOf, Prototypes, Specification, uniqueID, zipArray } from "../../../core";
 
 import { AppStore } from "../../stores";
-import { ContextedComponent } from "../../context_component";
 import {
-    Element,
     IObject,
 } from "../../../core/specification";
 import { Button, Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { SVGImageIcon } from "../../components/icons";
-import glyph from "src/app/stores/action_handlers/glyph";
+import { Actions } from "../../../app";
+import { set } from "d3";
 
 interface ObjectConstraint extends Specification.Constraint {
     objectID: string;
@@ -24,6 +23,7 @@ interface ObjectConstraint extends Specification.Constraint {
 }
 
 interface ChartObjectWithState {
+    persistent: boolean;
     parent: IObject<Specification.ObjectProperties>;
     element: Specification.Element<Specification.ObjectProperties>;
     attributes: Specification.AttributeMap;
@@ -42,14 +42,13 @@ export const ConstraintsPanel: React.FC<{
         objectID: store.chartManager.chart._id,
         objectType: "chart"
     }));
-    debugger;
     const [constraints, setConstraints]: [ObjectConstraint[], React.Dispatch<React.SetStateAction<ObjectConstraint[]>>] = React.useState([].concat(glyphConstraints, generalConstraints));
-    const [tokens, setToken] = React.useState([]);
+    const tokens = React.useRef([]);
     // eslint-disable-next-line powerbi-visuals/insecure-random
     const [_, forceUpdate] = React.useState(Math.random());
 
     React.useEffect(() => {
-        setToken([
+        tokens.current = [
             store.addListener(AppStore.EVENT_GRAPHICS, () => {
                 // eslint-disable-next-line powerbi-visuals/insecure-random
                 forceUpdate(Math.random());
@@ -62,11 +61,11 @@ export const ConstraintsPanel: React.FC<{
                 // eslint-disable-next-line powerbi-visuals/insecure-random
                 forceUpdate(Math.random());
             })
-        ]);
+        ];
         return () => {
-            tokens.forEach((token) => token.remove());
+            tokens.current.forEach((token) => token.remove());
         };
-    }, [tokens, store, forceUpdate]);
+    }, [store]);
 
     const getGlyphState = React.useCallback((glyph: Specification.Glyph) => {
         const chartStore = store;
@@ -106,26 +105,40 @@ export const ConstraintsPanel: React.FC<{
             height: "100%",
             overflowY: "scroll"
         }} className="charticulator__object-list-editor charticulator__object-constraints">
-            <Button onClick={() => {
-                const newConstraints = [...constraints];
-                setConstraints([
-                    {
-                        type: "snap",
-                        objectID: store.chartManager.chart._id,
-                        objectType: "chart",
-                        attributes: {
-                            element: "",
-                            attribute: "",
-                            targetElement: "",
-                            targetAttribute: "",
-                            gap: 0
-                        }
-                    },
-                    ...newConstraints
-                ]);
+            <div style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between"
             }}>
-                Add constraint
-            </Button>
+                <Button onClick={() => {
+                    console.log('constraints', constraints);
+                    debugger;
+                    // TODO for each constraint, update the chart
+                }}>
+                    Save
+                </Button>
+                <Button onClick={() => {
+                    const newConstraints = [...constraints];
+                    setConstraints([
+                        {
+                            _id: uniqueID(),
+                            type: "snap",
+                            objectID: store.chartManager.chart._id,
+                            objectType: "chart",
+                            attributes: {
+                                element: "",
+                                attribute: "",
+                                targetElement: "",
+                                targetAttribute: "",
+                                gap: 0
+                            }
+                        },
+                        ...newConstraints
+                    ]);
+                }}>
+                    Add constraint
+                </Button>
+            </div>
             <h3>Constraints</h3>
             {
                 (constraints.map((constraint) => {
@@ -137,6 +150,7 @@ export const ConstraintsPanel: React.FC<{
                         store.chartState.elements
                     ).map(([element, elementState]) => {
                         return {
+                            persistent: true,
                             parent: store.chart,
                             element: element,
                             attributes: elementState.attributes
@@ -151,13 +165,13 @@ export const ConstraintsPanel: React.FC<{
                         markStates
                     ).map(([element, elementState]) => {
                         return {
+                            persistent: true,
                             parent: element.glyph,
                             element: element.mark,
                             attributes: elementState.mark.attributes
                         } as ChartObjectWithState
                     });
 
-                    debugger;
                     const objects = chartObjects.concat(glyphObjects);
 
                     const elementObject = objects.find(o => element && o.element._id === element._id);
@@ -175,10 +189,17 @@ export const ConstraintsPanel: React.FC<{
                         targetWithState={targetObject}
                         onConstraintChange={(constraint) => {
                             debugger;
-                            // const newConstraints = [...constraints];
-                            // const index = constraints.indexOf(constraint);
-                            // constraints[index] = constraint;
-                            // setConstraints(newConstraints);
+                            const newConstraints = [...constraints];
+                            const index = newConstraints.findIndex(c => c._id === constraint._id);
+                            newConstraints[index] = constraint;
+                            setConstraints(newConstraints);
+                        }}
+                        onRemove={() => {
+                            debugger
+                            const newConstraints = [...constraints];
+                            const index = newConstraints.findIndex(c => c._id === constraint._id);
+                            newConstraints.splice(index, 1);
+                            setConstraints(newConstraints);
                         }}
                     />);
                 }))
@@ -198,7 +219,9 @@ const ConstraintView: React.FC<{
     elementWithState: ChartObjectWithState,
     targetWithState: ChartObjectWithState
     onConstraintChange: (constraint: ObjectConstraint) => void;
-}> = ({ parents, objects, constraint, elementWithState, targetWithState }) => {
+    onRemove: (constraint: ObjectConstraint) => void;
+}> = ({ parents, objects, constraint, elementWithState, targetWithState, onConstraintChange, onRemove }) => {
+
     return (
         <div style={{
             border: "2px solid #ccc",
@@ -206,16 +229,20 @@ const ConstraintView: React.FC<{
             borderRadius: "5px",
             display: "flex",
             flexDirection: "column",
-            justifyItems: "start"
+            justifyItems: "start",
+            marginBottom: "5px"
         }}>
             <h4>{`${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.attribute} = ${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.targetAttribute}`}</h4>
             <Label>Parent object</Label>
             <Dropdown
+                disabled={elementWithState?.persistent}
                 title="Place where the constraint is defined"
-                value={elementWithState.parent.properties.name}
-                selectedOptions={[elementWithState.parent.properties.name]}
+                value={elementWithState?.parent.properties.name}
+                selectedOptions={[elementWithState?.parent.properties.name]}
                 onOptionSelect={(_, { optionValue: value }) => {
-                    constraint.objectID = value;
+                    const newConstraint = { ...constraint };
+                    newConstraint.objectID = value;
+                    onConstraintChange(newConstraint);
                 }}
             >
                 {parents
@@ -239,7 +266,9 @@ const ConstraintView: React.FC<{
                 value={constraint.type}
                 selectedOptions={[constraint.type]}
                 onOptionSelect={(_, { optionValue: value }) => {
-                    constraint.type = value;
+                    const newConstraint = { ...constraint };
+                    newConstraint.type = value;
+                    onConstraintChange(newConstraint);
                 }}
             >
                 {["snap", "move", "property", "value-mapping"]
@@ -262,16 +291,20 @@ const ConstraintView: React.FC<{
                 type="number"
                 value={constraint.attributes.gap.toString()}
                 onChange={(input, { value }) => {
-                    constraint.attributes.gap = parseFloat(value);
+                    const newConstraint = { ...constraint };
+                    newConstraint.attributes.gap = parseFloat(value);
+                    onConstraintChange(newConstraint);
                 }}
             />
             <Label>Element</Label>
             <Dropdown
                 title="Element"
-                value={targetWithState?.element.properties?.name}
+                value={objects.find(o => o.element._id === constraint.attributes.element)?.element.properties.name}
                 selectedOptions={[constraint.attributes.element]}
                 onOptionSelect={(_, { optionValue: value }) => {
-                    debugger;
+                    const newConstraint = { ...constraint };
+                    newConstraint.attributes.element = value;
+                    onConstraintChange(newConstraint);
                 }}
             >
                 {objects
@@ -301,10 +334,12 @@ const ConstraintView: React.FC<{
                 value={constraint.attributes.attribute}
                 selectedOptions={[constraint.attributes.attribute]}
                 onOptionSelect={(_, { optionValue: value }) => {
-                    debugger;
+                    const newConstraint = { ...constraint };
+                    newConstraint.attributes.attribute = value;
+                    onConstraintChange(newConstraint);
                 }}
             >
-                {Object.keys(targetWithState.attributes)
+                {elementWithState && Object.keys(elementWithState?.attributes)
                     .map((key) => {
                         return {
                             key: key,
@@ -322,10 +357,12 @@ const ConstraintView: React.FC<{
             <Label>Target</Label>
             <Dropdown
                 title="Target"
-                value={targetWithState?.element.properties?.name}
+                value={objects.find(o => o.element._id === constraint.attributes.targetElement)?.element.properties.name}
                 selectedOptions={[constraint.attributes.targetElement]}
                 onOptionSelect={(_, { optionValue: value }) => {
-                    debugger;
+                    const newConstraint = { ...constraint };
+                    newConstraint.attributes.targetElement = value;
+                    onConstraintChange(newConstraint);
                 }}
             >
                 {objects
@@ -352,13 +389,15 @@ const ConstraintView: React.FC<{
             <Label>Target attribute</Label>
             <Dropdown
                 title="Target attribute"
-                value={constraint.attributes.attribute}
-                selectedOptions={[constraint.attributes.attribute]}
+                value={constraint.attributes.targetAttribute}
+                selectedOptions={[constraint.attributes.targetAttribute]}
                 onOptionSelect={(_, { optionValue: value }) => {
-                    debugger;
+                    const newConstraint = { ...constraint };
+                    newConstraint.attributes.targetAttribute = value;
+                    onConstraintChange(newConstraint);
                 }}
             >
-                {Object.keys(targetWithState.attributes)
+                {targetWithState && Object.keys(targetWithState?.attributes)
                     .map((key) => {
                         return {
                             key: key,
@@ -374,6 +413,22 @@ const ConstraintView: React.FC<{
                     })}
             </Dropdown>
             {/* <pre>{JSON.stringify(constraint.attributes, null, " ")}</pre> */}
+            <div style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "stretch",
+                marginTop: "5px"
+            }}>
+                <Button
+                style={{
+                    flex: 1
+                }}
+                onClick={() => {
+                    onRemove(constraint);
+                }}>
+                    Remove
+                </Button>
+            </div>
         </div>
     );
 } 

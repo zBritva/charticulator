@@ -399,4 +399,9 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     this.collapseOrExpandPanelsType = action.type;
     this.emit(AppStore.EVENT_GRAPHICS);
   });
+
+  REG.add(Actions.SolveConstraints, function (action) {
+    this.solveConstraintsAndUpdateGraphics();
+    this.emit(AppStore.EVENT_GRAPHICS);
+  });
 }
