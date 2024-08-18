@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -26,17 +25,8 @@ interface ChartObjectWithState {
 export const ConstraintsPanel: React.FC<{
     store: AppStore;
 }> = ({ store }) => {
-    const glyphConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
-        ...constraint,
-        objectID: glyph._id,
-        objectType: "glyph"
-    })));
-    const generalConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.constraints.map((constraint) => ({
-        ...constraint,
-        objectID: store.chartManager.chart._id,
-        objectType: "chart"
-    }));
-    const [constraints, setConstraints]: [Specification.ObjectConstraint[], React.Dispatch<React.SetStateAction<Specification.ObjectConstraint[]>>] = React.useState([].concat(glyphConstraints, generalConstraints));
+
+    const [constraints, setConstraints]: [Specification.ObjectConstraint[], React.Dispatch<React.SetStateAction<Specification.ObjectConstraint[]>>] = React.useState([]);
     const tokens = React.useRef([]);
     // eslint-disable-next-line powerbi-visuals/insecure-random
     const [_, forceUpdate] = React.useState(Math.random());
@@ -45,11 +35,17 @@ export const ConstraintsPanel: React.FC<{
         tokens.current = [
             store.addListener(AppStore.EVENT_GRAPHICS, () => {
                 // eslint-disable-next-line powerbi-visuals/insecure-random
-                forceUpdate(Math.random());
-            }),
-            store.addListener(AppStore.EVENT_SELECTION, () => {
-                // eslint-disable-next-line powerbi-visuals/insecure-random
-                forceUpdate(Math.random());
+                const glyphConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
+                    ...constraint,
+                    parentObjectID: glyph._id,
+                    parentObjectType: "glyph"
+                })));
+                const generalConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.constraints.map((constraint) => ({
+                    ...constraint,
+                    parentObjectID: store.chartManager.chart._id,
+                    parentObjectType: "chart"
+                }));
+                setConstraints([].concat(glyphConstraints, generalConstraints))
             }),
             store.addListener(AppStore.EVENT_SAVECHART, () => {
                 // eslint-disable-next-line powerbi-visuals/insecure-random
@@ -127,8 +123,8 @@ export const ConstraintsPanel: React.FC<{
                         {
                             _id: uniqueID(),
                             type: "snap",
-                            objectID: store.chartManager.chart._id,
-                            objectType: "chart",
+                            parentObjectID: store.chartManager.chart._id,
+                            parentObjectType: "chart",
                             attributes: {
                                 element: "",
                                 attribute: "",
@@ -195,14 +191,12 @@ export const ConstraintsPanel: React.FC<{
                         elementWithState={elementObject}
                         targetWithState={targetObject}
                         onConstraintChange={(constraint) => {
-                            debugger;
                             const newConstraints = [...constraints];
                             const index = newConstraints.findIndex(c => c._id === constraint._id);
                             newConstraints[index] = constraint;
                             setConstraints(newConstraints);
                         }}
                         onRemove={() => {
-                            debugger
                             const newConstraints = [...constraints];
                             const index = newConstraints.findIndex(c => c._id === constraint._id);
                             newConstraints.splice(index, 1);
@@ -244,11 +238,11 @@ const ConstraintView: React.FC<{
             <Dropdown
                 disabled={elementWithState?.persistent}
                 title="Place where the constraint is defined"
-                value={elementWithState?.parent.properties.name}
-                selectedOptions={[elementWithState?.parent.properties.name]}
+                value={parents.find(p => p._id === constraint.parentObjectID)?.properties.name}
+                selectedOptions={[elementWithState?.parent._id]}
                 onOptionSelect={(_, { optionValue: value }) => {
                     const newConstraint = { ...constraint };
-                    newConstraint.objectID = value;
+                    newConstraint.parentObjectID = value;
                     onConstraintChange(newConstraint);
                 }}
             >
@@ -256,6 +250,7 @@ const ConstraintView: React.FC<{
                     .map((parent) => {
                         return {
                             key: parent._id,
+                            type: parent.classID,
                             text: parent.properties.name
                         };
                     })
@@ -270,11 +265,13 @@ const ConstraintView: React.FC<{
             <Label>Constraint type</Label>
             <Dropdown
                 title="Type"
+                disabled={true}
                 value={constraint.type}
-                selectedOptions={[constraint.type]}
+                // selectedOptions={[constraint.type]}
+                selectedOptions={["snap"]}
                 onOptionSelect={(_, { optionValue: value }) => {
                     const newConstraint = { ...constraint };
-                    newConstraint.type = value;
+                    newConstraint.type = value as Specification.ConstraintType;
                     onConstraintChange(newConstraint);
                 }}
             >
@@ -314,7 +311,7 @@ const ConstraintView: React.FC<{
                     onConstraintChange(newConstraint);
                 }}
             >
-                {objects
+                {objects.filter(o => o.parent._id === constraint.parentObjectID)
                     .map((object) => {
                         return {
                             key: object.element._id,
@@ -372,7 +369,7 @@ const ConstraintView: React.FC<{
                     onConstraintChange(newConstraint);
                 }}
             >
-                {objects
+                {objects.filter(o => o.parent._id === constraint.parentObjectID)
                     .map((object) => {
                         return {
                             key: object.element._id,

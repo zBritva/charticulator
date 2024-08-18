@@ -198,18 +198,20 @@ export interface ConstraintAttributes {
   targetAttribute: string;
 }
 
+export type ConstraintType = "snap" | "move" | "property" | "value-mapping";
+
 /** Constraint */
 export interface Constraint {
   _id: string;
   /** Constraint type */
-  type: string;
+  type: ConstraintType;
   attributes: ConstraintAttributes;
 }
 
 /** Constraint */
 export interface ObjectConstraint extends Constraint{
-  objectID: string;
-  objectType: ConstraintObjectType;
+  parentObjectID: string;
+  parentObjectType: ConstraintObjectType;
 }
 
 export type ConstraintObjectType = "chart" | "glyph";

@@ -406,7 +406,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     this.chartManager.chart.constraints = [];
 
     const glyphs = this.chartManager.chart.glyphs.filter(
-      (glyph) => constraints.find((constraint) => constraint.objectID === glyph._id)
+      (glyph) => constraints.find((constraint) => constraint.parentObjectID === glyph._id)
     );
 
     glyphs.forEach((glyph) => {
@@ -414,12 +414,12 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     });
 
     constraints.forEach((constraint) => {
-      if (constraint.objectType === "chart") {
+      if (constraint.parentObjectType === "chart") {
         this.chartManager.chart.constraints.push(constraint);
       }
-      if (constraint.objectType === "glyph") {
+      if (constraint.parentObjectType === "glyph") {
         const glyph = this.chartManager.chart.glyphs.find(
-          (glyph) => glyph._id === constraint.objectID
+          (glyph) => glyph._id === constraint.parentObjectID
         );
         if (glyph) {
           glyph.constraints.push(constraint);
