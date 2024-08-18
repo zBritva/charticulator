@@ -248,6 +248,7 @@ export const strings = {
     errorsPanelTitle: "Errors",
     glyphPaneltitle: "Glyph",
     properties: "Properties",
+    constraints: "Constraints",
     layersPanelTitle: "Layers",
     scalesPanelTitle: "Scales",
   },

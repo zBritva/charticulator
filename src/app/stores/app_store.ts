@@ -1091,6 +1091,7 @@ export class AppStore extends BaseStore {
       legendAttributes.forEach((attribute, i) => {
         // //snap legend to plot segment
         this.chartManager.chart.constraints.push({
+          _id: uniqueID(),
           type: "snap",
           attributes: {
             element: newLegend._id,

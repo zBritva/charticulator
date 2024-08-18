@@ -998,3 +998,13 @@ export class ExpandOrCollapsePanelsUpdated extends Action {
     return { name: "ExpandOrCollapsePanelsUpdated" };
   }
 }
+
+export class UpdateConstraints extends Action {
+  constructor(public constraints: Specification.ObjectConstraint[]) {
+    super();
+  }
+
+  public digest(): { name: string } {
+    return { name: "UpdateConstraints" };
+  }
+}

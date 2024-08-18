@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { Expression, Prototypes, Solver, Specification } from "../../../core";
+import { Expression, Prototypes, Solver, Specification, uniqueID } from "../../../core";
 import { Actions } from "../../actions";
 import { AppStore } from "../app_store";
 import { ChartElementSelection } from "../selection";
@@ -107,6 +107,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
           if (mapping.type == MappingType._element) {
             const elementMapping = mapping as SnappingElementMapping;
             this.chartManager.chart.constraints.push({
+              _id: uniqueID(),
               type: "snap",
               attributes: {
                 element: newChartElement._id,
@@ -249,6 +250,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     });
     this.chart.constraints.push({
       type: "snap",
+      _id: uniqueID(),
       attributes: {
         element: action.element._id,
         attribute: action.attribute,

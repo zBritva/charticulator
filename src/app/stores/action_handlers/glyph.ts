@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { Prototypes, Solver, Specification } from "../../../core";
+import { Prototypes, Solver, Specification, uniqueID } from "../../../core";
 import {
   MappingType,
   SnappingElementMapping,
@@ -106,6 +106,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
             const elementMapping = mapping as SnappingElementMapping;
             action.glyph.constraints.push({
               type: "snap",
+              _id: uniqueID(),
               attributes: {
                 element: mark._id,
                 attribute: attr,

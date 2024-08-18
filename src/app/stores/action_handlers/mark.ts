@@ -8,6 +8,7 @@ import {
   Specification,
   Expression,
   ImageKeyColumn,
+  uniqueID,
 } from "../../../core";
 import { DataKind } from "../../../core/dataset";
 import { MappingType } from "../../../core/specification";
@@ -133,6 +134,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       return true;
     });
     action.glyph.constraints.push({
+      _id: uniqueID(),
       type: "snap",
       attributes: {
         element: action.mark._id,

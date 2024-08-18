@@ -399,4 +399,35 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     this.collapseOrExpandPanelsType = action.type;
     this.emit(AppStore.EVENT_GRAPHICS);
   });
+
+  REG.add(Actions.UpdateConstraints, function ({ constraints }) {
+    this.saveHistory();
+
+    this.chartManager.chart.constraints = [];
+
+    const glyphs = this.chartManager.chart.glyphs.filter(
+      (glyph) => constraints.find((constraint) => constraint.parentObjectID === glyph._id)
+    );
+
+    glyphs.forEach((glyph) => {
+      glyph.constraints = [];
+    });
+
+    constraints.forEach((constraint) => {
+      if (constraint.parentObjectType === "chart") {
+        this.chartManager.chart.constraints.push(constraint);
+      }
+      if (constraint.parentObjectType === "glyph") {
+        const glyph = this.chartManager.chart.glyphs.find(
+          (glyph) => glyph._id === constraint.parentObjectID
+        );
+        if (glyph) {
+          glyph.constraints.push(constraint);
+        }
+      }
+    });
+
+    this.solveConstraintsAndUpdateGraphics();
+    this.emit(AppStore.EVENT_GRAPHICS);
+  });
 }
