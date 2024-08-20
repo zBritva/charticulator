@@ -313,6 +313,7 @@ export const strings = {
   },
   toolbar: {
     symbol: "Symbol",
+    polygon: "Polygon",
     marks: "Marks",
     curve: "Custom Curve",
     dataAxis: "Data Axis",

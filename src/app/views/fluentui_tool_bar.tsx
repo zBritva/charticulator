@@ -99,6 +99,12 @@ export const FluentUIToolbar: React.FC<{
                 icon: "TriangleShape",
                 options: '{"shape":"triangle"}',
               },
+              {
+                classID: "mark.polygon",
+                title: strings.toolbar.polygon,
+                icon: "Polygon",
+                options: '{"closed":"true"}',
+              }
             ]}
           />
           <ObjectButton
@@ -106,6 +112,7 @@ export const FluentUIToolbar: React.FC<{
             title={strings.toolbar.symbol}
             icon="Shapes"
           />
+
           <ObjectButton
             classID="mark.line"
             title={strings.toolbar.line}
@@ -444,6 +451,12 @@ export const FluentUIToolbar: React.FC<{
               title: strings.toolbar.triangle,
               icon: "TriangleShape",
               options: '{"shape":"triangle"}',
+            },
+            {
+              classID: "mark.polygon",
+              title: strings.toolbar.polygon,
+              icon: "Polygon",
+              options: '{"closed":"true"}',
             },
           ]}
         />

@@ -1,3 +1,5 @@
+/* eslint-disable no-debugger */
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import * as React from "react";
@@ -28,6 +30,7 @@ export interface CreatingComponentProps {
 
 export interface CreatingComponentState {
   points?: Point[];
+  currentPoint?: Point;
   draggingPoint?: Point;
   activeGuides: SnappableGuide<any>[];
   hoverCandidateX: [number, Specification.Mapping];
@@ -209,6 +212,41 @@ export class CreatingComponent extends React.Component<
           });
         }
         break;
+      case "polygon": {
+        const points: [number, Specification.Mapping][] = [];
+
+        const singleTap = new Hammer.Tap({ event: 'singletap' });
+        const doubleTap = new Hammer.Tap({ event: 'doubletap', taps: 2 });
+        const tripleTap = new Hammer.Tap({ event: 'tripletap', taps: 3 });
+
+        this.hammer.add([tripleTap, doubleTap, singleTap]);
+
+        tripleTap.recognizeWith([doubleTap, singleTap]);
+        doubleTap.recognizeWith(singleTap);
+
+        doubleTap.requireFailure(tripleTap);
+        singleTap.requireFailure([tripleTap, doubleTap]);
+
+        this.hammer.on("doubletap", () => {
+          this.props.onCreate(...points);
+        });
+        this.hammer.on("singletap", (e) => {
+          const p = this.getPointFromEvent(e.center);
+          let p0X = this.state.hoverCandidateX;
+          let p0Y = this.state.hoverCandidateY;
+          if (p0X == null) {
+            p0X = [p.x, null];
+          }
+          if (p0Y == null) {
+            p0Y = [p.y, null];
+          }
+          this.setState({
+            points: (this.state.points ?? []).concat([{ x: p0X[0], y: p0Y[0] }]),
+          });
+          points.push(p0X, p0Y);
+        });
+        break;
+      }
       case "line":
       case "rectangle": {
         this.hammer.add(new Hammer.Pan());
@@ -537,6 +575,34 @@ export class CreatingComponentFromCreatingInteraction extends React.Component<
           mode = "line";
           onCreate = (x1, y1, x2, y2) => {
             this.doCreate({ x1, y1, x2, y2 });
+          };
+        }
+        break;
+      case "line-polygon":
+        {
+          mode = "polygon";
+          onCreate = (...points: [number, Specification.Mapping][]) => {
+            const mapping = {};
+            // TODO move this.props.description.mapping to state
+            points.forEach((p, idx) => {
+              mapping[`x${idx + 1}`] = `x${idx + 1}`;
+              mapping[`y${idx + 1}`] = `y${idx + 1}`;
+            });
+            this.props.description.mapping = mapping;
+            
+            const inMapping = {};
+            let index = 1;
+            for (let idx = 0; idx < points.length; idx = idx+2) {
+              inMapping[`x${index}`] = points[idx];
+              index++;
+            }
+            index = 1;
+            for (let idx = 1; idx < points.length; idx = idx+2) {
+              inMapping[`y${index}`] = points[idx];
+              index++;
+            }
+
+            this.doCreate(inMapping);
           };
         }
         break;
