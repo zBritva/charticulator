@@ -391,17 +391,20 @@ export class CreatingComponent extends React.Component<
         ) {
           return null;
         }
-        // const { points, draggingPoint } = this.state;
-        // if (points == null || points.length != 1 || draggingPoint == null) {
-        //   return null;
-        // }
-        // const p = this.getPixelPoint(points[points.length - 1]);
+        const { points } = this.state;
+        let pixelPoints = [];
+        if (points !== null && points.length > 0) {
+          pixelPoints = points.map(point => this.getPixelPoint(point));
+        }
         const pp = this.getPixelPoint({
           x: this.state.hoverCandidateX[0],
           y: this.state.hoverCandidateY[0],
         });
         return (<>
-          {/* <line x1={p.x} y1={p.y} x2={pp.x} y2={pp.y} /> */}
+          {pixelPoints.map((p, idx) => (<>
+            <circle key={idx} cx={p.x} cy={p.y} r={3} />
+            {idx == pixelPoints.length - 1 ? <line x1={p.x} y1={p.y} x2={pp.x} y2={pp.y} /> : <line x1={p.x} y1={p.y} x2={pixelPoints[idx + 1].x} y2={pixelPoints[idx + 1].y} />}
+          </>))}
           <circle cx={pp.x} cy={pp.y} r={3} />;
         </>);
       }
