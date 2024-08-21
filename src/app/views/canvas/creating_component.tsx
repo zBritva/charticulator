@@ -228,6 +228,11 @@ export class CreatingComponent extends React.Component<
         singleTap.requireFailure([tripleTap, doubleTap]);
 
         this.hammer.on("doubletap", () => {
+          // x, y pairs should be for 3 points at least
+          if ((points.length / 2) < 3) {
+            this.props.onCancel();
+            return;
+          }
           this.props.onCreate(...points);
         });
         this.hammer.on("singletap", (e) => {
@@ -583,15 +588,21 @@ export class CreatingComponentFromCreatingInteraction extends React.Component<
           mode = "polygon";
           onCreate = (...points: [number, Specification.Mapping][]) => {
             const mapping = {};
+            let index = 1;
             // TODO move this.props.description.mapping to state
-            points.forEach((p, idx) => {
-              mapping[`x${idx + 1}`] = `x${idx + 1}`;
-              mapping[`y${idx + 1}`] = `y${idx + 1}`;
-            });
+            for (let idx = 0; idx < points.length; idx = idx+2) {
+              mapping[`x${index}`] = `x${index}`
+              index++;
+            }
+            index = 1;
+            for (let idx = 1; idx < points.length; idx = idx+2) {
+              mapping[`y${index}`] = `y${index}`;
+              index++;
+            }
             this.props.description.mapping = mapping;
             
             const inMapping = {};
-            let index = 1;
+            index = 1;
             for (let idx = 0; idx < points.length; idx = idx+2) {
               inMapping[`x${index}`] = points[idx];
               index++;
