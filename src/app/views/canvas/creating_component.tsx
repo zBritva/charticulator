@@ -384,6 +384,27 @@ export class CreatingComponent extends React.Component<
         const p2 = this.getPixelPoint(draggingPoint);
         return <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} />;
       }
+      case "polygon": {
+        if (
+          this.state.hoverCandidateX == null ||
+          this.state.hoverCandidateY == null
+        ) {
+          return null;
+        }
+        // const { points, draggingPoint } = this.state;
+        // if (points == null || points.length != 1 || draggingPoint == null) {
+        //   return null;
+        // }
+        // const p = this.getPixelPoint(points[points.length - 1]);
+        const pp = this.getPixelPoint({
+          x: this.state.hoverCandidateX[0],
+          y: this.state.hoverCandidateY[0],
+        });
+        return (<>
+          {/* <line x1={p.x} y1={p.y} x2={pp.x} y2={pp.y} /> */}
+          <circle cx={pp.x} cy={pp.y} r={3} />;
+        </>);
+      }
       case "rectangle": {
         const { points, draggingPoint } = this.state;
         if (points == null || points.length != 1 || draggingPoint == null) {
