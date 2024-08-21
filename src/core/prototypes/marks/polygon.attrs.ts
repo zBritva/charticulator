@@ -15,10 +15,6 @@ export const polygonAttributes: AttributeDescriptions = {
 };
 
 export interface PolygonElementAttributes extends AttributeMap {
-  // pointsX: number[];
-  // pointsY: number[];
-  cx: number;
-  cy: number;
   stroke: Color;
   strokeWidth: number;
   opacity: number;

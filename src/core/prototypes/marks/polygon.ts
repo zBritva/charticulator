@@ -49,7 +49,10 @@ export class PolygonElementClass extends EmphasizableMarkClass<
         x1: "x1",
         y1: "y1",
         x2: "x2",
-        y2: "y2"
+        y2: "y2",
+        x3: "x3",
+        y3: "y3"
+        ///....
       },
     },
   };
@@ -118,10 +121,12 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     //     return false;
     //   }
     // });
-    attrs.cx = 0;
-    attrs.cy = 0;
-    attrs.dx = 0;
-    attrs.dy = 0;
+    attrs.dx1 = 0;
+    attrs.dy1 = 0;
+    attrs.dx2 = 0;
+    attrs.dy2 = 0;
+    attrs.dx3 = 0;
+    attrs.dy3 = 0;
     attrs.stroke = { r: 0, g: 0, b: 0 };
     attrs.strokeWidth = 1;
     attrs.opacity = 1;
@@ -137,18 +142,6 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     const points = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
 
     return [
-      {
-        element: this.object._id,
-        points: [
-          {
-            x: attrs.cx,
-            y: attrs.cy,
-            xAttribute: "cx",
-            yAttribute: "cy",
-            direction: { x: mode == "begin" ? 1 : -1, y: 0 },
-          },
-        ],
-      },
       ...points.map(([x, y]) => {
         return {
           element: this.object._id,
@@ -168,46 +161,67 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
   /** Get intrinsic constraints between attributes (e.g., x2 - x1 = width for rectangles) */
   public buildConstraints(solver: ConstraintSolver): void {
-    const [x1, y1, x2, y2, cx, cy, dx, dy] = solver.attrs(
+    debugger;
+    const xkeys = Object.keys(this.attributes).filter((key) => key.startsWith("x"));
+    const xi = xkeys.map((x, index) => `x${index + 1}`);
+    const dxi = xkeys.map((x, index) => `dx${index + 1}`);
+
+    const ykeys = Object.keys(this.attributes).filter((key) => key.startsWith("y"));
+    const yi = ykeys.map((x, index) => `y${index + 1}`);
+    const dyi = ykeys.map((x, index) => `dy${index + 1}`);
+
+    const xivariable = solver.attrs(
       this.state.attributes,
-      ["x1", "y1", "x2", "y2", "cx", "cy", "dx", "dy"]
+      xi
     );
-    solver.addLinear(
-      ConstraintStrength.HARD,
-      0,
-      [[2, cx]],
-      [
-        [1, x1],
-        [1, x2],
-      ]
+
+    const yivariable = solver.attrs(
+      this.state.attributes,
+      yi
     );
-    solver.addLinear(
-      ConstraintStrength.HARD,
-      0,
-      [[2, cy]],
-      [
-        [1, y1],
-        [1, y2],
-      ]
+    
+    const dxivariable = solver.attrs(
+      this.state.attributes,
+      dxi
     );
-    solver.addLinear(
-      ConstraintStrength.HARD,
-      0,
-      [[1, dx]],
-      [
-        [1, x2],
-        [-1, x1],
-      ]
+    
+    const dyivariable = solver.attrs(
+      this.state.attributes,
+      dyi
     );
-    solver.addLinear(
-      ConstraintStrength.HARD,
-      0,
-      [[1, dy]],
-      [
-        [1, y2],
-        [-1, y1],
-      ]
-    );
+
+    for (let attributeIndex = 0; attributeIndex < xivariable.length - 1; attributeIndex++) {
+      const dx = dxivariable[attributeIndex];
+      const x1 = xivariable[attributeIndex];
+      const x2 = xivariable[attributeIndex + 1];
+      
+      // dx = x2 - x1
+      solver.addLinear(
+        ConstraintStrength.HARD,
+        0,
+        [[1, dx]],
+        [
+          [1, x2],
+          [-1, x1],
+        ]
+      );
+    }
+    for (let attributeIndex = 0; attributeIndex < yivariable.length - 1; attributeIndex++) {
+      const dy = dyivariable[attributeIndex];
+      const y1 = yivariable[attributeIndex];
+      const y2 = yivariable[attributeIndex + 1];
+      
+      // dx = x2 - x1
+      solver.addLinear(
+        ConstraintStrength.HARD,
+        0,
+        [[1, dy]],
+        [
+          [1, y2],
+          [-1, y1],
+        ]
+      );
+    }
   }
 
   /** Get the graphical element from the element */
@@ -220,7 +234,6 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     manager: ChartStateManager,
     emphasize?: boolean
   ): Graphics.Element {
-    debugger;
     const attrs = this.state.attributes;
     if (!attrs.visible || !this.object.properties.visible) {
       return null;
@@ -238,7 +251,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
       points.push(points[0]);
     }
 
-    for(let index = 0; index < points.length - 1; index++) {
+    for (let index = 0; index < points.length - 1; index++) {
       const x = points[index][0];
       const y = points[index][1];
       const x2 = points[index + 1][0];
@@ -312,39 +325,29 @@ export class PolygonElementClass extends EmphasizableMarkClass<
   /** Get bounding rectangle given current state */
   public getHandles(): Handles.Description[] {
     const attrs = <PolygonElementAttributes>this.state.attributes;
-    const { cx, cy } = attrs;
-    debugger;
-    
-    const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
-    const points = keys.map((x, index) => [attrs[`x${index + 1}`], attrs[`y${index + 1}`]]);
+
+    const xkeys = Object.keys(attrs).filter((key) => key.startsWith("x"));
+    const ykeys = Object.keys(attrs).filter((key) => key.startsWith("y"));
+
+    const points = zipArray(xkeys, ykeys).map(([x, y], index) => [attrs[x], attrs[y]]);
 
     return [
-      ...points.map(([x, y]) => {
+      ...points.map(([x, y], index) => {
         return (<Handles.Point>{
           type: "point",
           x: x,
           y: y,
           actions: [
-            { type: "attribute", source: "x", attribute: "x1" },
-            { type: "attribute", source: "y", attribute: "y1" },
+            { type: "attribute", source: "x", attribute: `x${index + 1}` },
+            { type: "attribute", source: "y", attribute: `y${index + 1}` },
           ],
         });
-      }),
-      <Handles.Point>{
-        type: "point",
-        x: cx,
-        y: cy,
-        actions: [
-          { type: "attribute", source: "x", attribute: "cx" },
-          { type: "attribute", source: "y", attribute: "cy" },
-        ],
-      },
+      })
     ];
   }
 
   public getBoundingBox(): BoundingBox.Description {
     const attrs = <PolygonElementAttributes>this.state.attributes;
-    debugger;
     const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
     const points = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
 
@@ -359,16 +362,16 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
   public getSnappingGuides(): SnappingGuides.Description[] {
     const attrs = <PolygonElementAttributes>this.state.attributes;
-    
+
     const { cx, cy } = attrs;
     const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
     const points = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
 
     return [
-        ...points.flatMap(([x, y], index) => {
+      ...points.flatMap(([x, y], index) => {
         return [
-            <SnappingGuides.Axis>{ type: "x", value: x, attribute: `x[${index}]` },
-            <SnappingGuides.Axis>{ type: "y", value: y, attribute: `y[${index}]` },
+          <SnappingGuides.Axis>{ type: "x", value: x, attribute: `x[${index}]` },
+          <SnappingGuides.Axis>{ type: "y", value: y, attribute: `y[${index}]` },
         ]
       }),
       <SnappingGuides.Axis>{ type: "x", value: cx, attribute: "cx" },
