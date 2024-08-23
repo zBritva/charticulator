@@ -352,12 +352,17 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
     const points = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
 
+    // Calculate average point of points
+    const averageX = points.reduce((sum, [x, y]) => sum + x, 0) / points.length;
+    const averageY = points.reduce((sum, [x, y]) => sum + y, 0) / points.length;
+
     // TODO repalce by rect bounding box
-    return <BoundingBox.Circle>{
-      type: "circle",
-      cx: attrs.cx,
-      cy: attrs.cy,
-      radius: max(points, (p) => Math.sqrt(p[0] * p[0] + p[1] * p[1])),
+    return <BoundingBox.Rectangle>{
+      type: "rectangle",
+      cx: averageX,
+      cy: averageY,
+      width: max(points.map(([x, y]) => x)) - Math.min(...points.map(([x, y]) => x)),
+      height: max(points.map(([x, y]) => y)) - Math.min(...points.map(([x, y]) => y)),
     };
   }
 
