@@ -162,6 +162,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
   /** Get intrinsic constraints between attributes (e.g., x2 - x1 = width for rectangles) */
   public buildConstraints(solver: ConstraintSolver): void {
     debugger;
+    return;
     const xkeys = Object.keys(this.attributes).filter((key) => key.startsWith("x"));
     const xi = xkeys.map((x, index) => `x${index + 1}`);
     const dxi = xkeys.map((x, index) => `dx${index + 1}`);
