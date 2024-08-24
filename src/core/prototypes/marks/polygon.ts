@@ -13,6 +13,8 @@ import {
 } from "./polygon.attrs";
 
 import {
+  AttributeDescription,
+  AttributeDescriptions,
   BoundingBox,
   Controls,
   DropZones,
@@ -70,8 +72,57 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     visible: true,
   };
 
-  public attributes = polygonAttributes;
-  public attributeNames = Object.keys(polygonAttributes);
+  public _attributes = polygonAttributes;
+
+  public get attributes() {
+    const attributes = {
+      ...this._attributes,
+    }
+
+    const dynamic = Object.keys(this.state.attributes)
+    .filter(a => a.startsWith("x") || a.startsWith("y"));
+    
+    const dynamicXY = dynamic.map((key) => {
+      return <AttributeDescription>{
+        name: key,
+        type: Specification.AttributeType.Number,
+        editableInGlyphStage: true,
+      }
+    });
+
+    dynamicXY.pop();
+    const dynamicD = dynamicXY.map((key) => {
+      return <AttributeDescription>{
+        name: `d${key}`,
+        type: Specification.AttributeType.Number,
+        editableInGlyphStage: true,
+      }
+    });
+
+    for (const attr of dynamicXY) {
+      attributes[attr.name] = attr;
+    }
+
+    for (const attr of dynamicD) {
+      attributes[attr.name] = attr;
+    }
+
+    return attributes;
+  }
+
+  public set attributes(value) {
+    this._attributes = value;
+  }
+
+  public _attributeNames = Object.keys(polygonAttributes);
+
+  public set attributeNames(value: string[]) {
+    this.attributeNames = value;
+  }
+
+  public get attributeNames(): string[] {
+    return Object.keys(this.state.attributes);
+  }
 
   // Initialize the state of an element so that everything has a valid value
   public initializeState(): void {
@@ -125,8 +176,6 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     attrs.dy1 = 0;
     attrs.dx2 = 0;
     attrs.dy2 = 0;
-    attrs.dx3 = 0;
-    attrs.dy3 = 0;
     attrs.stroke = { r: 0, g: 0, b: 0 };
     attrs.strokeWidth = 1;
     attrs.opacity = 1;
@@ -142,15 +191,15 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     const points = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
 
     return [
-      ...points.map(([x, y]) => {
+      ...points.map(([x, y, index]) => {
         return {
           element: this.object._id,
           points: [
             {
               x: x,
               y: y,
-              xAttribute: "x1",
-              yAttribute: "y1",
+              xAttribute: `x${index + 1}`,
+              yAttribute: `t${index + 1}`,
               direction: { x: mode == "begin" ? 1 : -1, y: 0 },
             },
           ],
@@ -161,68 +210,74 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
   /** Get intrinsic constraints between attributes (e.g., x2 - x1 = width for rectangles) */
   public buildConstraints(solver: ConstraintSolver): void {
-    debugger;
     return;
-    const xkeys = Object.keys(this.attributes).filter((key) => key.startsWith("x"));
-    const xi = xkeys.map((x, index) => `x${index + 1}`);
-    const dxi = xkeys.map((x, index) => `dx${index + 1}`);
+    // const xkeys = Object.keys(this.state.attributes).filter((key) => key.startsWith("x"));
+    // const xi = xkeys.map((x, index) => `x${index + 1}`);
+    // const dxi = xkeys.map((x, index) => `dx${index + 1}`);
+    // dxi.pop();
 
-    const ykeys = Object.keys(this.attributes).filter((key) => key.startsWith("y"));
-    const yi = ykeys.map((x, index) => `y${index + 1}`);
-    const dyi = ykeys.map((x, index) => `dy${index + 1}`);
+    // const ykeys = Object.keys(this.state.attributes).filter((key) => key.startsWith("y"));
+    // const yi = ykeys.map((x, index) => `y${index + 1}`);
+    // const dyi = ykeys.map((x, index) => `dy${index + 1}`);
+    // dyi.pop();
 
-    const xivariable = solver.attrs(
-      this.state.attributes,
-      xi
-    );
+    // console.log('xi', xi);
+    // console.log('yi', yi);
+    // console.log('dxi', dxi);
+    // console.log('dyi', dyi);
 
-    const yivariable = solver.attrs(
-      this.state.attributes,
-      yi
-    );
+    // const xivariable = solver.attrs(
+    //   this.state.attributes,
+    //   xi
+    // );
+
+    // const yivariable = solver.attrs(
+    //   this.state.attributes,
+    //   yi
+    // );
     
-    const dxivariable = solver.attrs(
-      this.state.attributes,
-      dxi
-    );
+    // const dxivariable = solver.attrs(
+    //   this.state.attributes,
+    //   dxi
+    // );
     
-    const dyivariable = solver.attrs(
-      this.state.attributes,
-      dyi
-    );
+    // const dyivariable = solver.attrs(
+    //   this.state.attributes,
+    //   dyi
+    // );
 
-    for (let attributeIndex = 0; attributeIndex < xivariable.length - 1; attributeIndex++) {
-      const dx = dxivariable[attributeIndex];
-      const x1 = xivariable[attributeIndex];
-      const x2 = xivariable[attributeIndex + 1];
+    // for (let attributeIndex = 0; attributeIndex < dxivariable.length; attributeIndex++) {
+    //   const dx = dxivariable[attributeIndex];
+    //   const x1 = xivariable[attributeIndex];
+    //   const x2 = xivariable[attributeIndex + 1];
       
-      // dx = x2 - x1
-      solver.addLinear(
-        ConstraintStrength.HARD,
-        0,
-        [[1, dx]],
-        [
-          [1, x2],
-          [-1, x1],
-        ]
-      );
-    }
-    for (let attributeIndex = 0; attributeIndex < yivariable.length - 1; attributeIndex++) {
-      const dy = dyivariable[attributeIndex];
-      const y1 = yivariable[attributeIndex];
-      const y2 = yivariable[attributeIndex + 1];
+    //   // dx = x2 - x1
+    //   solver.addLinear(
+    //     ConstraintStrength.HARD,
+    //     0,
+    //     [[1, dx]],
+    //     [
+    //       [1, x2],
+    //       [-1, x1],
+    //     ]
+    //   );
+    // }
+    // for (let attributeIndex = 0; attributeIndex < dyivariable.length; attributeIndex++) {
+    //   const dy = dyivariable[attributeIndex];
+    //   const y1 = yivariable[attributeIndex];
+    //   const y2 = yivariable[attributeIndex + 1];
       
-      // dx = x2 - x1
-      solver.addLinear(
-        ConstraintStrength.HARD,
-        0,
-        [[1, dy]],
-        [
-          [1, y2],
-          [-1, y1],
-        ]
-      );
-    }
+    //   // dx = x2 - x1
+    //   solver.addLinear(
+    //     ConstraintStrength.HARD,
+    //     0,
+    //     [[1, dy]],
+    //     [
+    //       [1, y2],
+    //       [-1, y1],
+    //     ]
+    //   );
+    // }
   }
 
   /** Get the graphical element from the element */
@@ -247,6 +302,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     // const points = zipArray(attrs.pointsX, attrs.pointsY);
     const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
     const points = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
+
 
     if (this.object.properties.closed) {
       points.push(points[0]);
@@ -356,7 +412,6 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     const averageX = points.reduce((sum, [x, y]) => sum + x, 0) / points.length;
     const averageY = points.reduce((sum, [x, y]) => sum + y, 0) / points.length;
 
-    // TODO repalce by rect bounding box
     return <BoundingBox.Rectangle>{
       type: "rectangle",
       cx: averageX,
@@ -395,18 +450,18 @@ export class PolygonElementClass extends EmphasizableMarkClass<
           header: strings.toolbar.line,
         },
         [
-          manager.mappingEditor(strings.objects.line.xSpan, "dx", {
-            hints: { autoRange: true, startWithZero: "always" },
-            acceptKinds: [Specification.DataKind.Numerical],
-            defaultAuto: true,
-            searchSection: strings.toolbar.line,
-          }),
-          manager.mappingEditor(strings.objects.line.ySpan, "dy", {
-            hints: { autoRange: true, startWithZero: "always" },
-            acceptKinds: [Specification.DataKind.Numerical],
-            defaultAuto: true,
-            searchSection: strings.toolbar.line,
-          }),
+          // manager.mappingEditor(strings.objects.line.xSpan, "dx", {
+          //   hints: { autoRange: true, startWithZero: "always" },
+          //   acceptKinds: [Specification.DataKind.Numerical],
+          //   defaultAuto: true,
+          //   searchSection: strings.toolbar.line,
+          // }),
+          // manager.mappingEditor(strings.objects.line.ySpan, "dy", {
+          //   hints: { autoRange: true, startWithZero: "always" },
+          //   acceptKinds: [Specification.DataKind.Numerical],
+          //   defaultAuto: true,
+          //   searchSection: strings.toolbar.line,
+          // }),
           manager.mappingEditor(
             strings.objects.visibleOn.visibility,
             "visible",

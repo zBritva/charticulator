@@ -9,8 +9,6 @@ import { StrokeStyle } from "../common";
 
 export const polygonAttributes: AttributeDescriptions = {
   ...AttrBuilder.line(),
-  ...AttrBuilder.center(),
-  ...AttrBuilder.dXdY(),
   ...AttrBuilder.style(),
 };
 
