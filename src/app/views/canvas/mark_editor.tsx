@@ -1393,13 +1393,16 @@ export class SingleMarkView
           zoom={this.state.zoom}
           guides={this.getSnappingGuides()}
           description={metadata.creatingInteraction}
-          onCreate={(mappings, attributes) => {
+          onCreate={(mappings, properties) => {
             this.dispatch(new Actions.SetCurrentTool(null));
             const opt = JSON.parse(currentCreationOptions);
             for (const key in opt) {
               if (Object.prototype.hasOwnProperty.call(opt, key)) {
-                attributes[key] = opt[key];
+                properties[key] = opt[key];
               }
+            }
+            if (classID == "mark.polygon") {
+              properties.pointsCount = Object.keys(mappings).length / 2;
             }
             this.dispatch(
               new Actions.AddMarkToGlyph(
@@ -1407,7 +1410,7 @@ export class SingleMarkView
                 classID,
                 { x: 0, y: 0 },
                 mappings,
-                attributes
+                properties
               )
             );
           }}

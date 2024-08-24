@@ -63,6 +63,8 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     ...ObjectClass.defaultProperties,
     strokeStyle: "solid",
     visible: true,
+    closed: true,
+    pointsCount: 3,
   };
 
   public static defaultMappingValues: Partial<PolygonElementAttributes> = {
@@ -129,53 +131,14 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     super.initializeState();
 
     const attrs = this.state.attributes;
-    // attrs.pointsX = new Proxy([0], {
-    //   get: (target, name) => {
-    //     if (typeof name === "string" && Number.isInteger(+name)) {
-    //       return attrs[`x${(+name) + 1}`];
-    //     } else
-    //     if (typeof name === "string" && name === "length") {
-    //       return Object.keys(attrs).filter((key) => key.startsWith("x")).length;
-    //     }
-    //     else {
-    //       return target[name];
-    //     }
-    //   },
-    //   set: (target, name, value) => {
-    //     if (typeof name === "string" && Number.isInteger(+name)) {
-    //       attrs[`x${(+name) + 1}`] = value;
-    //       return true;
-    //     } else {
-    //       target[name] = value;
-    //     }
-    //     return false;
-    //   }
-    // });
-    // attrs.pointsY = 
-    // new Proxy([0], {
-    //   get: (target, name) => {
-    //     if (typeof name === "string" && Number.isInteger(+name)) {
-    //       return attrs[`y${(+name) + 1}`]
-    //     } else
-    //     if (typeof name === "string" && name === "length") {
-    //       return Object.keys(attrs).filter((key) => key.startsWith("y")).length;
-    //     }
-    //     else {
-    //       return target[name];
-    //     }
-    //   },
-    //   set: (target, name, value) => {
-    //     if (typeof name === "string") {
-    //       attrs[`y${(+name) + 1}`] = value;
-    //       return true;
-    //     }
-    //     return false;
-    //   }
-    // });
-    attrs.dx1 = 0;
-    attrs.dy1 = 0;
-    attrs.dx2 = 0;
-    attrs.dy2 = 0;
+
+    const pointsCount = this.object.properties.pointsCount;
+
+    for(let i = 0; i < pointsCount; i++) {
+      attrs[`x${i + 1}`] = 0;
+      attrs[`y${i + 1}`] = 0;
+    }
+
     attrs.stroke = { r: 0, g: 0, b: 0 };
     attrs.strokeWidth = 1;
     attrs.opacity = 1;

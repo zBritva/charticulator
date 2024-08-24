@@ -406,17 +406,20 @@ export class ChartEditorView
           zoom={this.state.zoom}
           guides={this.getSnappingGuides()}
           description={metadata.creatingInteraction}
-          onCreate={(mappings, attributes) => {
+          onCreate={(mappings, properties) => {
             new Actions.SetCurrentTool(null).dispatch(
               this.props.store.dispatcher
             );
             const opt = JSON.parse(options);
             for (const key in opt) {
               if (Object.prototype.hasOwnProperty.call(opt, key)) {
-                attributes[key] = opt[key];
+                properties[key] = opt[key];
               }
             }
-            new Actions.AddChartElement(classID, mappings, attributes).dispatch(
+            if (classID == "mark.polygon") {
+              properties.pointsCount = Object.keys(mappings).length / 2;
+            }
+            new Actions.AddChartElement(classID, mappings, properties).dispatch(
               this.props.store.dispatcher
             );
           }}

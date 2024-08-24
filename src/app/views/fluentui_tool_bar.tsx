@@ -103,7 +103,7 @@ export const FluentUIToolbar: React.FC<{
                 classID: "mark.polygon",
                 title: strings.toolbar.polygon,
                 icon: "Polygon",
-                options: '{"closed":"true"}',
+                options: '{"closed":"true", "pointsCount": "3"}',
               }
             ]}
           />
@@ -456,7 +456,7 @@ export const FluentUIToolbar: React.FC<{
               classID: "mark.polygon",
               title: strings.toolbar.polygon,
               icon: "Polygon",
-              options: '{"closed":"true"}',
+              options: '{"closed":"true", "pointsCount": "3"}',
             },
           ]}
         />

@@ -22,4 +22,5 @@ export interface PolygonElementAttributes extends AttributeMap {
 export interface PolygonElementProperties extends AttributeMap {
   strokeStyle: StrokeStyle;
   closed: boolean;
+  pointsCount: number;
 }
