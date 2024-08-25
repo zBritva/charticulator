@@ -9,11 +9,14 @@ import { StrokeStyle } from "../common";
 
 export const polygonAttributes: AttributeDescriptions = {
   ...AttrBuilder.line(),
-  ...AttrBuilder.style(),
+  ...AttrBuilder.style({ fill: true }),
 };
 
 export interface PolygonElementAttributes extends AttributeMap {
   stroke: Color;
+  fill: Color;
+  fillStart: Color;
+  fillStop: Color;
   strokeWidth: number;
   opacity: number;
   visible: boolean;

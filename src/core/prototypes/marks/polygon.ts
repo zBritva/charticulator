@@ -69,6 +69,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
   public static defaultMappingValues: Partial<PolygonElementAttributes> = {
     stroke: { r: 0, g: 0, b: 0 },
+    fill: { r: 0, g: 0, b: 0 },
     strokeWidth: 1,
     opacity: 1,
     visible: true,
@@ -82,11 +83,11 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     }
 
     const dynamic = (new Array(this.object.properties.pointsCount))
-    .fill(0)
-    .map((_, i) => `x${i + 1}`)
-    .concat((new Array(this.object.properties.pointsCount))
-    .fill(0).map((_, i) => `y${i + 1}`));
-    
+      .fill(0)
+      .map((_, i) => `x${i + 1}`)
+      .concat((new Array(this.object.properties.pointsCount))
+        .fill(0).map((_, i) => `y${i + 1}`));
+
     const dynamicXY = dynamic.map((key) => {
       return <AttributeDescription>{
         name: key,
@@ -135,7 +136,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
     const pointsCount = this.object.properties.pointsCount;
 
-    for(let i = 1; i <= pointsCount; i++) {
+    for (let i = 1; i <= pointsCount; i++) {
       attrs[`x${i}`] = 0;
       attrs[`y${i}`] = 0;
     }
@@ -199,12 +200,12 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     //   this.state.attributes,
     //   yi
     // );
-    
+
     // const dxivariable = solver.attrs(
     //   this.state.attributes,
     //   dxi
     // );
-    
+
     // const dyivariable = solver.attrs(
     //   this.state.attributes,
     //   dyi
@@ -214,7 +215,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     //   const dx = dxivariable[attributeIndex];
     //   const x1 = xivariable[attributeIndex];
     //   const x2 = xivariable[attributeIndex + 1];
-      
+
     //   // dx = x2 - x1
     //   solver.addLinear(
     //     ConstraintStrength.HARD,
@@ -230,7 +231,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     //   const dy = dyivariable[attributeIndex];
     //   const y1 = yivariable[attributeIndex];
     //   const y2 = yivariable[attributeIndex + 1];
-      
+
     //   // dx = x2 - x1
     //   solver.addLinear(
     //     ConstraintStrength.HARD,
@@ -265,24 +266,17 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     polygon.key = `polygon-${glyphIndex}-${this.object._id}`;
     // const points = zipArray(attrs.pointsX, attrs.pointsY);
     const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
-    const points = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
+    const points: [x: number, y: number][] = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
 
 
     if (this.object.properties.closed) {
-      points.push(points[0]);
-    }
-
-    for (let index = 0; index < points.length - 1; index++) {
-      const x = points[index][0];
-      const y = points[index][1];
-      const x2 = points[index + 1][0];
-      const y2 = points[index + 1][1];
-      const part = helper.line(
-        x + offset.x,
-        y + offset.y,
-        x2 + offset.x,
-        y2 + offset.y,
+      return helper.polygon(
+        points,
+        `polygon-${glyphIndex}-${this.object._id}`,
         {
+          fillColor: attrs.fill,
+          fillStartColor: attrs.fillStart,
+          fillStopColor: attrs.fillStop,
           strokeColor: attrs.stroke,
           strokeOpacity: attrs.opacity,
           strokeWidth: attrs.strokeWidth,
@@ -291,9 +285,31 @@ export class PolygonElementClass extends EmphasizableMarkClass<
           ),
           ...this.generateEmphasisStyle(emphasize),
         },
-        `polygon-${glyphIndex}-${this.object._id}-${x}-${y}-${x2}-${y2}-${index}`
-      );
-      lines.push(part);
+      )
+    } else {
+      for (let index = 0; index < points.length - 1; index++) {
+        const x = points[index][0];
+        const y = points[index][1];
+        const x2 = points[index + 1][0];
+        const y2 = points[index + 1][1];
+        const part = helper.line(
+          x + offset.x,
+          y + offset.y,
+          x2 + offset.x,
+          y2 + offset.y,
+          {
+            strokeColor: attrs.stroke,
+            strokeOpacity: attrs.opacity,
+            strokeWidth: attrs.strokeWidth,
+            strokeDasharray: strokeStyleToDashArray(
+              this.object.properties.strokeStyle
+            ),
+            ...this.generateEmphasisStyle(emphasize),
+          },
+          `polygon-${glyphIndex}-${this.object._id}-${x}-${y}-${x2}-${y2}-${index}`
+        );
+        lines.push(part);
+      }
     }
 
     return polygon;
