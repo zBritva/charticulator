@@ -10,6 +10,7 @@ import { StrokeStyle } from "../common";
 export const polygonAttributes: AttributeDescriptions = {
   ...AttrBuilder.line(),
   ...AttrBuilder.style({ fill: true }),
+  ...AttrBuilder.gradientRotation(),
 };
 
 export interface PolygonElementAttributes extends AttributeMap {
@@ -17,6 +18,7 @@ export interface PolygonElementAttributes extends AttributeMap {
   fill: Color;
   fillStart: Color;
   fillStop: Color;
+  gradientRotation: number;
   strokeWidth: number;
   opacity: number;
   visible: boolean;

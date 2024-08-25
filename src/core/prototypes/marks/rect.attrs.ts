@@ -3,7 +3,7 @@
 
 import { AttributeDescriptions } from "../object";
 import { Color } from "../../common";
-import { AttributeMap, AttributeType } from "../../specification/index";
+import { AttributeMap, } from "../../specification/index";
 import { AttrBuilder } from "../attrs";
 import { StrokeStyle } from "../common";
 import { ShapeType } from "./rect";
@@ -14,11 +14,7 @@ export const rectAttributes: AttributeDescriptions = {
   ...AttrBuilder.center(),
   ...AttrBuilder.size(),
   ...AttrBuilder.style({ fill: true }),
-  gradientRotation: {
-    name: "gradientRotation",
-    type: AttributeType.Number,
-    defaultValue: 0,
-  },
+  ...AttrBuilder.gradientRotation(),
 };
 
 /**

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 /* eslint-disable no-debugger */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -69,7 +70,9 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
   public static defaultMappingValues: Partial<PolygonElementAttributes> = {
     stroke: { r: 0, g: 0, b: 0 },
-    fill: { r: 0, g: 0, b: 0 },
+    fill: { r: 17, g: 141, b: 255 },
+    fillStart: { r: 17, g: 141, b: 255 },
+    fillStop: { r: 255, g: 255, b: 255 },
     strokeWidth: 1,
     opacity: 1,
     visible: true,
@@ -140,12 +143,15 @@ export class PolygonElementClass extends EmphasizableMarkClass<
       attrs[`x${i}`] = 0;
       attrs[`y${i}`] = 0;
     }
-    console.log('attrs init', attrs);
 
     attrs.stroke = { r: 0, g: 0, b: 0 };
     attrs.strokeWidth = 1;
     attrs.opacity = 1;
     attrs.visible = true;
+    attrs.fill = { r: 200, g: 200, b: 200 };
+    attrs.fillStart = { r: 200, g: 200, b: 200 };
+    attrs.fillStop = { r: 255, g: 255, b: 255 };
+    attrs.gradientRotation = 0;
   }
 
   /** Get link anchors for this mark */
@@ -262,15 +268,13 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     const helper = new Graphics.CoordinateSystemHelper(cs);
 
     const lines = [];
-    const polygon = Graphics.makeGroup(lines);
-    polygon.key = `polygon-${glyphIndex}-${this.object._id}`;
     // const points = zipArray(attrs.pointsX, attrs.pointsY);
     const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
     const points: [x: number, y: number][] = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
 
-
+    debugger;
     if (this.object.properties.closed) {
-      return helper.polygon(
+      const path = helper.polygon(
         points,
         `polygon-${glyphIndex}-${this.object._id}`,
         {
@@ -285,8 +289,26 @@ export class PolygonElementClass extends EmphasizableMarkClass<
           ),
           ...this.generateEmphasisStyle(emphasize),
         },
+        this.object.properties.closed
       )
+
+      path.style = {
+        strokeColor: attrs.stroke,
+        strokeWidth: attrs.strokeWidth,
+        strokeLinejoin: "miter",
+        strokeDasharray: strokeStyleToDashArray(this.object.properties.strokeStyle),
+        fillColor: attrs.fill,
+        fillStartColor: attrs.fillStart,
+        fillStopColor: attrs.fillStop,
+        gradientRotation: attrs.gradientRotation,
+        opacity: attrs.opacity,
+        ...this.generateEmphasisStyle(emphasize),
+      };
+
+      return path;
     } else {
+      const polygon = Graphics.makeGroup(lines);
+      polygon.key = `polygon-${glyphIndex}-${this.object._id}`;
       for (let index = 0; index < points.length - 1; index++) {
         const x = points[index][0];
         const y = points[index][1];
@@ -310,9 +332,9 @@ export class PolygonElementClass extends EmphasizableMarkClass<
         );
         lines.push(part);
       }
-    }
 
-    return polygon;
+      return polygon;
+    }
   }
 
   /** Get DropZones given current state */
@@ -457,6 +479,51 @@ export class PolygonElementClass extends EmphasizableMarkClass<
           header: strings.objects.style,
         },
         [
+          manager.inputBoolean(
+            {
+              property: "closed",
+            },
+            {
+              headerLabel: strings.objects.closed,
+              type: "checkbox",
+            }
+          ),
+          manager.mappingEditor(strings.objects.fill, "fill", {
+            searchSection: strings.objects.style,
+          }),
+          this.object.mappings.fill == null
+            ? manager.mappingEditor(
+              strings.objects.gradientStart,
+              "fillStart",
+              {
+                searchSection: strings.objects.style,
+              }
+            )
+            : null,
+          this.object.mappings.fill == null
+            ? manager.mappingEditor(strings.objects.gradientStop, "fillStop", {
+              searchSection: strings.objects.style,
+            })
+            : null,
+          this.object.mappings.fill == null
+            ? manager.mappingEditor(
+              strings.objects.gradientRotation,
+              "gradientRotation",
+              {
+                hints: { rangeNumber: [0, 360] },
+                defaultValue: 0,
+                numberOptions: {
+                  showSlider: false,
+                  showUpdown: true,
+                  minimum: 0,
+                  maximum: 360,
+                  step: 1,
+                  updownTick: 1,
+                },
+                searchSection: strings.objects.style,
+              }
+            )
+            : null,
           manager.mappingEditor(strings.objects.stroke, "stroke", {
             searchSection: strings.objects.style,
           }),

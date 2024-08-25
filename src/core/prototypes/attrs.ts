@@ -59,6 +59,17 @@ export class AttrBuilder {
     });
   }
 
+  public static gradientRotation() : AttributeDescriptions
+  {
+    return {
+      gradientRotation: {
+        name: "gradientRotation",
+        type: AttributeType.Number,
+        defaultValue: 0,
+      }
+    }
+  }
+
   public static line(): AttributeDescriptions {
     return {
       ...this.number("x1"),

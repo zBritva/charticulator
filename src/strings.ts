@@ -404,6 +404,7 @@ export const strings = {
     style: "Style",
     rotation: "Rotation",
     anchorAndRotation: "Anchor & Rotation",
+    closed: "Closed",
     fill: "Fill",
     gradientStart: "Gradient start",
     gradientStop: "Gradient stop",
