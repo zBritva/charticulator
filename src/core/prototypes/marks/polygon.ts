@@ -81,23 +81,24 @@ export class PolygonElementClass extends EmphasizableMarkClass<
       ...this._attributes,
     }
 
-    const dynamic = Object.keys(this.state.attributes)
-    .filter(a => a.startsWith("x") || a.startsWith("y"));
+    const dynamic = (new Array(this.object.properties.pointsCount))
+    .fill(0)
+    .map((_, i) => `x${i + 1}`)
+    .concat((new Array(this.object.properties.pointsCount))
+    .fill(0).map((_, i) => `y${i + 1}`));
     
     const dynamicXY = dynamic.map((key) => {
       return <AttributeDescription>{
         name: key,
         type: Specification.AttributeType.Number,
-        editableInGlyphStage: true,
       }
     });
 
-    dynamicXY.pop();
+    dynamic.pop();
     const dynamicD = dynamicXY.map((key) => {
       return <AttributeDescription>{
         name: `d${key}`,
         type: Specification.AttributeType.Number,
-        editableInGlyphStage: true,
       }
     });
 
@@ -134,16 +135,16 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
     const pointsCount = this.object.properties.pointsCount;
 
-    for(let i = 0; i < pointsCount; i++) {
-      attrs[`x${i + 1}`] = 0;
-      attrs[`y${i + 1}`] = 0;
+    for(let i = 1; i <= pointsCount; i++) {
+      attrs[`x${i}`] = 0;
+      attrs[`y${i}`] = 0;
     }
+    console.log('attrs init', attrs);
 
     attrs.stroke = { r: 0, g: 0, b: 0 };
     attrs.strokeWidth = 1;
     attrs.opacity = 1;
     attrs.visible = true;
-    attrs.closed = true;
   }
 
   /** Get link anchors for this mark */
@@ -162,7 +163,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
               x: x,
               y: y,
               xAttribute: `x${index + 1}`,
-              yAttribute: `t${index + 1}`,
+              yAttribute: `y${index + 1}`,
               direction: { x: mode == "begin" ? 1 : -1, y: 0 },
             },
           ],

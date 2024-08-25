@@ -214,6 +214,11 @@ export class ChartConstraintSolver {
     const objectClass = this.manager.getClass(objectState);
     for (const attr of objectClass.attributeNames) {
       const info = objectClass.attributes[attr];
+      if (info == null) {
+        // debugger;
+        console.error(`Attribute ${attr} not found in class ${objectClass}`, objectClass.attributes[attr]);
+        continue;
+      }
       if (!info.solverExclude) {
         if (objectState.attributes[attr] == null) {
           objectState.attributes[attr] = 0;
@@ -738,7 +743,11 @@ export class GlyphConstraintAnalyzer extends ConstraintSolver {
 
     for (const attr of glyphClass.attributeNames) {
       const info = glyphClass.attributes[attr];
-      if (info.solverExclude) {
+      if (!info) {
+        // debugger;
+        console.error(`Attribute ${attr} not found in class ${glyphClass}`, glyphClass.attributes[attr]);
+      }
+      if (!info || info.solverExclude) {
         continue;
       }
       this.addAttribute(glyphState.attributes, attr, glyph._id);
@@ -758,7 +767,11 @@ export class GlyphConstraintAnalyzer extends ConstraintSolver {
       );
       for (const attr of markClass.attributeNames) {
         const info = markClass.attributes[attr];
-        if (info.solverExclude) {
+        if (!info) {
+          // debugger;
+          console.error(`Attribute ${attr} not found in class ${glyphClass}`, glyphClass.attributes[attr]);
+        }
+        if (!info || info.solverExclude) {
           continue;
         }
         this.addAttribute(markState.attributes, attr, mark._id);
