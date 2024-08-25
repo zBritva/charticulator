@@ -102,7 +102,7 @@ export const FluentUIToolbar: React.FC<{
               {
                 classID: "mark.polygon",
                 title: strings.toolbar.polygon,
-                icon: "Polygon",
+                icon: "Design",
                 options: '{"closed":"true", "pointsCount": "3"}',
               }
             ]}

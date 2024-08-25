@@ -228,6 +228,10 @@ addSVGIcon(
   "TriangleShape",
   require("resources/icons/icons_element-triangle.svg")
 );
+addSVGIcon(
+  "Polygon",
+  require("resources/icons/icons_element-polygon.svg")
+);
 addSVGIcon("FileImage", require("resources/icons/icons_element-image.svg"));
 addSVGIcon("ImagePixel", require("resources/icons/icons_element-icon.svg"));
 addSVGIcon("Shapes", require("resources/icons/icons_element-symbol.svg"));
