@@ -433,12 +433,12 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     return [
       ...points.flatMap(([x, y], index) => {
         return [
-          <SnappingGuides.Axis>{ type: "x", value: x, attribute: `x[${index}]` },
-          <SnappingGuides.Axis>{ type: "y", value: y, attribute: `y[${index}]` },
+          <SnappingGuides.Axis>{ type: "x", value: x, attribute: `x${index + 1}` },
+          <SnappingGuides.Axis>{ type: "y", value: y, attribute: `y${index + 1}` },
         ]
       }),
-      <SnappingGuides.Axis>{ type: "x", value: cx, attribute: "cx" },
-      <SnappingGuides.Axis>{ type: "y", value: cy, attribute: "cy" },
+      // <SnappingGuides.Axis>{ type: "x", value: cx, attribute: "cx" },
+      // <SnappingGuides.Axis>{ type: "y", value: cy, attribute: "cy" },
     ];
   }
 
