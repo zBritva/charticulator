@@ -60,6 +60,7 @@ import { AnchorElement } from "./anchor";
 import { DataAxisClass } from "./data_axis";
 import { ImageElementClass } from "./image";
 import { LineElementClass } from "./line";
+import { PolygonElementClass } from "./polygon";
 import { NestedChartElementClass } from "./nested_chart";
 import { RectElementClass } from "./rect";
 import { SymbolElementClass, symbolTypesList } from "./symbol";
@@ -71,6 +72,7 @@ export function registerClasses() {
   ObjectClasses.Register(AnchorElement);
   ObjectClasses.Register(RectElementClass);
   ObjectClasses.Register(LineElementClass);
+  ObjectClasses.Register(PolygonElementClass);
   ObjectClasses.Register(SymbolElementClass);
   ObjectClasses.Register(TextElementClass);
   ObjectClasses.Register(TextboxElementClass);

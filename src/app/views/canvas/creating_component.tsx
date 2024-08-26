@@ -1,3 +1,5 @@
+/* eslint-disable no-debugger */
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import * as React from "react";
@@ -28,6 +30,7 @@ export interface CreatingComponentProps {
 
 export interface CreatingComponentState {
   points?: Point[];
+  currentPoint?: Point;
   draggingPoint?: Point;
   activeGuides: SnappableGuide<any>[];
   hoverCandidateX: [number, Specification.Mapping];
@@ -209,6 +212,46 @@ export class CreatingComponent extends React.Component<
           });
         }
         break;
+      case "polygon": {
+        const points: [number, Specification.Mapping][] = [];
+
+        const singleTap = new Hammer.Tap({ event: 'singletap' });
+        const doubleTap = new Hammer.Tap({ event: 'doubletap', taps: 2 });
+        const tripleTap = new Hammer.Tap({ event: 'tripletap', taps: 3 });
+
+        this.hammer.add([tripleTap, doubleTap, singleTap]);
+
+        tripleTap.recognizeWith([doubleTap, singleTap]);
+        doubleTap.recognizeWith(singleTap);
+
+        doubleTap.requireFailure(tripleTap);
+        singleTap.requireFailure([tripleTap, doubleTap]);
+
+        this.hammer.on("doubletap", () => {
+          // x, y pairs should be for 3 points at least
+          if ((points.length / 2) < 3) {
+            this.props.onCancel();
+            return;
+          }
+          this.props.onCreate(...points);
+        });
+        this.hammer.on("singletap", (e) => {
+          const p = this.getPointFromEvent(e.center);
+          let p0X = this.state.hoverCandidateX;
+          let p0Y = this.state.hoverCandidateY;
+          if (p0X == null) {
+            p0X = [p.x, null];
+          }
+          if (p0Y == null) {
+            p0Y = [p.y, null];
+          }
+          this.setState({
+            points: (this.state.points ?? []).concat([{ x: p0X[0], y: p0Y[0] }]),
+          });
+          points.push(p0X, p0Y);
+        });
+        break;
+      }
       case "line":
       case "rectangle": {
         this.hammer.add(new Hammer.Pan());
@@ -340,6 +383,30 @@ export class CreatingComponent extends React.Component<
         const p1 = this.getPixelPoint(points[0]);
         const p2 = this.getPixelPoint(draggingPoint);
         return <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} />;
+      }
+      case "polygon": {
+        if (
+          this.state.hoverCandidateX == null ||
+          this.state.hoverCandidateY == null
+        ) {
+          return null;
+        }
+        const { points } = this.state;
+        let pixelPoints = [];
+        if (points !== null && points.length > 0) {
+          pixelPoints = points.map(point => this.getPixelPoint(point));
+        }
+        const pp = this.getPixelPoint({
+          x: this.state.hoverCandidateX[0],
+          y: this.state.hoverCandidateY[0],
+        });
+        return (<>
+          {pixelPoints.map((p, idx) => (<>
+            <circle key={idx} cx={p.x} cy={p.y} r={3} />
+            {idx == pixelPoints.length - 1 ? <line x1={p.x} y1={p.y} x2={pp.x} y2={pp.y} /> : <line x1={p.x} y1={p.y} x2={pixelPoints[idx + 1].x} y2={pixelPoints[idx + 1].y} />}
+          </>))}
+          <circle cx={pp.x} cy={pp.y} r={3} />;
+        </>);
       }
       case "rectangle": {
         const { points, draggingPoint } = this.state;
@@ -537,6 +604,40 @@ export class CreatingComponentFromCreatingInteraction extends React.Component<
           mode = "line";
           onCreate = (x1, y1, x2, y2) => {
             this.doCreate({ x1, y1, x2, y2 });
+          };
+        }
+        break;
+      case "line-polygon":
+        {
+          mode = "polygon";
+          onCreate = (...points: [number, Specification.Mapping][]) => {
+            const mapping = {};
+            let index = 1;
+            // TODO move this.props.description.mapping to state
+            for (let idx = 0; idx < points.length; idx = idx+2) {
+              mapping[`x${index}`] = `x${index}`
+              index++;
+            }
+            index = 1;
+            for (let idx = 1; idx < points.length; idx = idx+2) {
+              mapping[`y${index}`] = `y${index}`;
+              index++;
+            }
+            this.props.description.mapping = mapping;
+            
+            const inMapping = {};
+            index = 1;
+            for (let idx = 0; idx < points.length; idx = idx+2) {
+              inMapping[`x${index}`] = points[idx];
+              index++;
+            }
+            index = 1;
+            for (let idx = 1; idx < points.length; idx = idx+2) {
+              inMapping[`y${index}`] = points[idx];
+              index++;
+            }
+
+            this.doCreate(inMapping);
           };
         }
         break;

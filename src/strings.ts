@@ -313,6 +313,7 @@ export const strings = {
   },
   toolbar: {
     symbol: "Symbol",
+    polygon: "Polygon",
     marks: "Marks",
     curve: "Custom Curve",
     dataAxis: "Data Axis",
@@ -403,6 +404,7 @@ export const strings = {
     style: "Style",
     rotation: "Rotation",
     anchorAndRotation: "Anchor & Rotation",
+    closed: "Closed",
     fill: "Fill",
     gradientStart: "Gradient start",
     gradientStop: "Gradient stop",

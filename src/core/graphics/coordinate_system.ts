@@ -263,6 +263,30 @@ export class BezierCurveCoordinates extends CoordinateSystem {
 export class CoordinateSystemHelper {
   constructor(public coordinateSystem: CoordinateSystem) {}
 
+  public polygon(
+    points: [
+      x: number,
+      y: number,
+    ][],
+    key: string,
+    style: Style = {},
+    close: boolean = true
+  ): Element {
+    const path = makePath(style);
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const p = points[i];
+      const pp = points[i+ 1];
+
+      this.lineTo(path, p[0], p[1], pp[0], pp[1], i == 0);
+    }
+    if (close) {
+      path.closePath();
+    }
+    path.path.key = key;
+    return path.path;
+  }
+
   public rect(
     x1: number,
     y1: number,
