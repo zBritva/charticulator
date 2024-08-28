@@ -104,6 +104,8 @@ export enum AxisMode {
   Y = "y",
 }
 
+export const DEFAULT_SCROLL_WINDOW = 1;
+
 export class AxisRenderer {
   public ticks: TickDescription[] = [];
   public style: Specification.Types.AxisRenderingStyle = defaultAxisStyle;
@@ -126,7 +128,7 @@ export class AxisRenderer {
   private shiftAxis: boolean = true;
   private hiddenCategoriesRatio: number = 0;
   private dataType: AxisDataBindingType = AxisDataBindingType.Default;
-  private windowSize: number = 1;
+  private windowSize: number = DEFAULT_SCROLL_WINDOW;
 
   public setStyle(style?: Partial<Specification.Types.AxisRenderingStyle>) {
     if (!style) {
@@ -172,17 +174,18 @@ export class AxisRenderer {
       (data.allCategories
         ? data.allCategories.length
         : Math.abs(data.dataDomainMax - data.dataDomainMin));
-    if (this.shiftAxis) {
-      if (
-        data.windowSize > data.allCategories?.length ||
-        data.windowSize > Math.abs(data.dataDomainMax - data.dataDomainMin)
-      ) {
-        this.windowSize = data.allCategories
-          ? Math.max(data.allCategories.length, 1)
-          : Math.abs(data.dataDomainMax - data.dataDomainMin);
-      } else {
-        this.windowSize = Math.max(data.windowSize, 1);
-      }
+
+    if (
+      data.windowSize > data.allCategories?.length ||
+      (data.windowSize > Math.abs(data.dataDomainMax - data.dataDomainMin) && data.dataDomainMax != null && data.dataDomainMin != null)
+    ) {
+      this.windowSize = data.allCategories
+        ? Math.max(data.allCategories.length, DEFAULT_SCROLL_WINDOW)
+        : Math.abs(data.dataDomainMax - data.dataDomainMin);
+      this.scrollRequired = false;
+    } else {
+      this.windowSize = Math.max(data.windowSize, DEFAULT_SCROLL_WINDOW);
+      this.scrollRequired = true;
     }
 
     switch (data.type) {
@@ -1385,7 +1388,7 @@ export class AxisRenderer {
     }
 
     return React.createElement(VirtualScrollBar, <VirtualScrollBarPropertes>{
-      key: `scroll-x:${x}-y:${y}-${side}-${angle}-${height}-${width}-${handlePosition}`,
+      key: `scroll-x:${x}-y:${y}-${side}-${angle}-${height}-${width}`,
       onScroll,
       handlerBarWidth: AxisRenderer.SCROLL_BAR_SIZE,
       height,
