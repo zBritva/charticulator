@@ -59,6 +59,7 @@ export class CDNBackend extends AbstractBackend {
 
     public list(
         type: string,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         orderBy: string = "timeCreated",
         start: number = 0,
         count: number = 50
@@ -121,7 +122,7 @@ export class CDNBackend extends AbstractBackend {
     ): Promise<string> {
         return this.open().then(
             () =>
-                new Promise<string>((resolve, reject) => {
+                new Promise<string>((resolve) => {
                     fetch(this.updateUrl, {
                         method: "POST",
                         mode: "cors",
@@ -147,7 +148,7 @@ export class CDNBackend extends AbstractBackend {
     public delete(id: string): Promise<void> {
         return this.open().then(
             () =>
-                new Promise<void>((resolve, reject) => {
+                new Promise<void>((resolve) => {
                     fetch(this.updateUrl, {
                         method: "DELETE",
                         mode: "cors",
