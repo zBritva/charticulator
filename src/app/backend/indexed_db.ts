@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import { ItemData, ItemDescription, ItemMetadata } from "./abstract";
+import { AbstractBackend, ItemData, ItemDescription, ItemMetadata } from "./abstract";
 
 function s4() {
   // eslint-disable-next-line
@@ -27,11 +27,12 @@ export function uuid() {
 }
 
 /** Responsible to manage saving, loading, storing charts created by user in IndexedDB of the browser */
-export class IndexedDBBackend {
+export class IndexedDBBackend extends AbstractBackend {
   private databaseName: string;
   private database: IDBDatabase;
 
   constructor(db: string = "charticulator") {
+    super();
     this.databaseName = db;
     this.database = null;
   }
@@ -92,7 +93,11 @@ export class IndexedDBBackend {
                   (a, b) =>
                     <number>b.metadata[orderBy] - <number>a.metadata[orderBy]
                 );
-                resultFiltered = resultFiltered.slice(start, start + count);
+                resultFiltered = resultFiltered.slice(start, start + count).map(res => {
+                  res.source = "indexed";
+                  res.metadata.allowDelete = true;
+                  return res;
+                });
                 resolve({
                   items: resultFiltered,
                   totalCount: result.length,
@@ -117,6 +122,10 @@ export class IndexedDBBackend {
           const request = itemsStore.get(id);
           request.onsuccess = () => {
             const item = request.result;
+            if (item == null) {
+              reject('item not found');
+              return;
+            }
             const request2 = dataStore.get(item.dataID);
             request2.onsuccess = () => {
               item.data = request2.result.data;

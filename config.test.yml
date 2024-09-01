@@ -3,6 +3,8 @@ MainView:
   EditorPanelsPosition: "left"
   ToolbarPosition: "top"
 
+Backend: "indexed"
+
 #------------------------------------------------
 # Configure the display of legal notices
 #------------------------------------------------
