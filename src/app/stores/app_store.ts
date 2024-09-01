@@ -210,7 +210,7 @@ export class AppStore extends BaseStore {
 
   public messageState: Map<MessageType | string, string>;
 
-  constructor(worker: CharticulatorWorkerInterface, dataset: Dataset.Dataset) {
+  constructor(worker: CharticulatorWorkerInterface, dataset: Dataset.Dataset, backend: AbstractBackend = new IndexedDBBackend()) {
     super(null);
 
     /** Register action handlers */
@@ -218,7 +218,7 @@ export class AppStore extends BaseStore {
 
     this.worker = worker;
 
-    this.backend = new IndexedDBBackend();
+    this.backend = backend;
 
     this.historyManager = new HistoryManager<AppStoreState>();
 

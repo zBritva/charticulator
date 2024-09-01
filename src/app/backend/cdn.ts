@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import { ItemData, ItemDescription, ItemMetadata } from "./abstract";
+import { AbstractBackend, ItemData, ItemDescription, ItemMetadata } from "./abstract";
 
 export interface IResourceDescription extends ItemData {
     id: string;
@@ -22,7 +22,7 @@ export interface ICDNBackendOptions {
 }
 
 /** Responsible to manage saving, loading, storing charts created by user in IndexedDB of the browser */
-export class CDNBackend {
+export class CDNBackend extends AbstractBackend {
     private resourcesDescriptionUrl: string;
     createUrl: string;
     updateUrl: string;
@@ -31,6 +31,7 @@ export class CDNBackend {
     private resources: IResourceDescription[]
 
     constructor(options: ICDNBackendOptions) {
+        super();
         this.resourcesDescriptionUrl = options.resourcesDescriptionUrl;
         this.createUrl = options.createUrl;
         this.updateUrl = options.updateUrl;

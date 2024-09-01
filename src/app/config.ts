@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import { CharticulatorCoreConfig, getConfig as coreGetConfig } from "../core";
+import { ICDNBackendOptions } from "./backend/cdn";
 export { MainViewConfig } from "./main_view";
 import { MainViewConfig } from "./main_view";
 
@@ -39,6 +40,7 @@ export interface CharticulatorAppConfig extends CharticulatorCoreConfig {
     TargetOrigins: string;
     Embedded: boolean;
   };
+  CDNBackend: ICDNBackendOptions;
   MainView: MainViewConfig;
 }
 

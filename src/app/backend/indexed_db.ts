@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import { ItemData, ItemDescription, ItemMetadata } from "./abstract";
+import { AbstractBackend, ItemData, ItemDescription, ItemMetadata } from "./abstract";
 
 function s4() {
   // eslint-disable-next-line
@@ -27,11 +27,12 @@ export function uuid() {
 }
 
 /** Responsible to manage saving, loading, storing charts created by user in IndexedDB of the browser */
-export class IndexedDBBackend {
+export class IndexedDBBackend extends AbstractBackend {
   private databaseName: string;
   private database: IDBDatabase;
 
   constructor(db: string = "charticulator") {
+    super();
     this.databaseName = db;
     this.database = null;
   }
