@@ -38,7 +38,7 @@ export class HybridBackend extends AbstractBackend {
         return Promise.all([
             this.indexed.open(),
             this.cdn.open()
-        ]).then(([indexed, cdn]) => {
+        ]).then(() => {
             return;
         });
     }
@@ -62,7 +62,7 @@ export class HybridBackend extends AbstractBackend {
     }
 
     public get(id: string): Promise<ItemData> {
-        return new Promise<ItemData>((resolve, reject) => {
+        return new Promise<ItemData>((resolve) => {
             let firstBackend: AbstractBackend = null;
             let secondBackend: AbstractBackend = null;
     
