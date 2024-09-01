@@ -21,7 +21,7 @@ export interface ICDNBackendOptions {
     deleteUrl: string;
 }
 
-/** Responsible to manage saving, loading, storing charts created by user in IndexedDB of the browser */
+/** Responsible to manage saving, loading, storing charts created by user in backend */
 export class CDNBackend extends AbstractBackend {
     private resourcesDescriptionUrl: string;
     createUrl: string;

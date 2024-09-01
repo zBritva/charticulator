@@ -55,6 +55,7 @@ import { teamsLightTheme } from "@fluentui/tokens";
 import { CDNBackend } from "./backend/cdn";
 import { IndexedDBBackend } from "./backend/indexed_db";
 import { AbstractBackend } from "./backend/abstract";
+import { HybridBackend, IHybridBackendOptions } from "./backend/hybrid";
 
 export class ApplicationExtensionContext implements ExtensionContext {
   constructor(public app: Application) {}
@@ -226,9 +227,22 @@ export class Application {
       },
     });
 
-    if (config.CDNBackend) {
-      this.backend = new CDNBackend(config.CDNBackend)
-    } else {
+    if (config.Backend == null) {
+      throw new Error("Backend is not set");
+    }
+    if (config.Backend === "cdn") {
+      if (config.CDNBackend == null) {
+        throw new Error("CDN backend options is not set");
+      }
+      this.backend = new CDNBackend(config.CDNBackend);
+    }
+    if (config.Backend === "hybrid") {
+      if (config.CDNBackend == null) {
+        throw new Error("CDN backend options is not set");
+      }
+      this.backend = new HybridBackend(config.CDNBackend as IHybridBackendOptions);
+    }
+    if (config.Backend === "indexed") {
       this.backend = new IndexedDBBackend();
     }
 

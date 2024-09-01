@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 import { CharticulatorCoreConfig, getConfig as coreGetConfig } from "../core";
 import { ICDNBackendOptions } from "./backend/cdn";
+import { IHybridBackendOptions } from "./backend/hybrid";
 export { MainViewConfig } from "./main_view";
 import { MainViewConfig } from "./main_view";
 
@@ -16,6 +17,8 @@ export interface AppExtension {
   style: string;
   initialize: string;
 }
+
+export type Backend = "indexed" | "cdn" | "hybrid";
 
 export interface CharticulatorAppConfig extends CharticulatorCoreConfig {
   ContactUsHref?: string;
@@ -40,7 +43,8 @@ export interface CharticulatorAppConfig extends CharticulatorCoreConfig {
     TargetOrigins: string;
     Embedded: boolean;
   };
-  CDNBackend: ICDNBackendOptions;
+  Backend: Backend;
+  CDNBackend: ICDNBackendOptions | IHybridBackendOptions;
   MainView: MainViewConfig;
 }
 
