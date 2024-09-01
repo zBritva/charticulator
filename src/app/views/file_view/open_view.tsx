@@ -124,6 +124,7 @@ export class FileViewOpen extends React.Component<
                       </div>
                       <div className="actions">
                         <Button
+                          disabled={!chart.metadata.allowDelete}
                           appearance="subtle"
                           icon={<DeleteFilled />}
                           title={strings.fileOpen.delete}

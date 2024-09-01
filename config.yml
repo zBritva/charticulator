@@ -58,8 +58,9 @@ CorsPolicy:
 #------------------------------------------------
 # Backend configuration
 #------------------------------------------------
-Backend: "indexed"
-
+Backend: "hybrid"
+CDNBackend:
+  resourcesDescriptionUrl: https://raw.githubusercontent.com/zBritva/zbritva.github.io/master/static/charts.json
 #------------------------------------------------
 # Configure panels layout
 #------------------------------------------------

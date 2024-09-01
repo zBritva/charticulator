@@ -5,6 +5,7 @@ export interface ItemMetadata {
   name?: string;
   timeCreated?: number;
   timeModified?: number;
+  allowDelete?: boolean;
 }
 
 export interface ItemDescription {

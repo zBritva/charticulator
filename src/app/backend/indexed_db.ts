@@ -93,7 +93,11 @@ export class IndexedDBBackend extends AbstractBackend {
                   (a, b) =>
                     <number>b.metadata[orderBy] - <number>a.metadata[orderBy]
                 );
-                resultFiltered = resultFiltered.slice(start, start + count);
+                resultFiltered = resultFiltered.slice(start, start + count).map(res => {
+                  res.metadata.source = "indexed";
+                  res.metadata.allowDelete = true;
+                  return res;
+                });
                 resolve({
                   items: resultFiltered,
                   totalCount: result.length,

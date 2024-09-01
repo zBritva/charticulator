@@ -46,8 +46,7 @@ export class CDNBackend extends AbstractBackend {
                 return;
             }
             fetch(this.resourcesDescriptionUrl, {
-                method: "GET",
-                credentials: "include"
+                method: "GET"
             }).then(response => {
                 return response.json();
             }).then(json => {
@@ -70,7 +69,7 @@ export class CDNBackend extends AbstractBackend {
                     (resolve) => {
                         const filtered = this.resources
                             .filter(res => res.type === type)
-                            .sort((i1, i2) => i1.metadata.timeCreated - i2.metadata.timeCreated)
+                            .sort((i1, i2) => <number>i1.metadata[orderBy] - <number>i2.metadata[orderBy])
                             .slice(start, start + count);
                         resolve({
                             items: filtered,
