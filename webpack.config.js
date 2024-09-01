@@ -76,7 +76,7 @@ module.exports = (env, { mode }) => {
         library: "Charticulator"
       },
       optimization: {
-        minimize: true,
+        minimize: false,
         usedExports: true,
       },
       cache: {

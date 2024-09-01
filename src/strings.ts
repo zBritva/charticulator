@@ -203,6 +203,9 @@ export const strings = {
     delete: "Delete this chart",
     download: "Download this chart",
     open: "Open Chart",
+    filterText: "Filter chart by name",
+    private: "Private",
+    public: "Public",
     noChart: "(no chart to show)",
   },
   fileSave: {

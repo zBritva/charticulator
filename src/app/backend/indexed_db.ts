@@ -94,7 +94,7 @@ export class IndexedDBBackend extends AbstractBackend {
                     <number>b.metadata[orderBy] - <number>a.metadata[orderBy]
                 );
                 resultFiltered = resultFiltered.slice(start, start + count).map(res => {
-                  res.metadata.source = "indexed";
+                  res.source = "indexed";
                   res.metadata.allowDelete = true;
                   return res;
                 });
@@ -122,6 +122,10 @@ export class IndexedDBBackend extends AbstractBackend {
           const request = itemsStore.get(id);
           request.onsuccess = () => {
             const item = request.result;
+            if (item == null) {
+              reject('item not found');
+              return;
+            }
             const request2 = dataStore.get(item.dataID);
             request2.onsuccess = () => {
               item.data = request2.result.data;

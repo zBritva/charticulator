@@ -8,10 +8,18 @@ export interface ItemMetadata {
   allowDelete?: boolean;
 }
 
+export type ItemSource = "cdn" | "indexed";
+
+export interface ItemAuthor {
+  name: string;
+}
+
 export interface ItemDescription {
   id: string;
   type: string;
   metadata: ItemMetadata;
+  author: ItemAuthor;
+  source: ItemSource;
 }
 
 export interface ItemData extends ItemDescription {

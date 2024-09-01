@@ -85,7 +85,18 @@ export class CDNBackend extends AbstractBackend {
             () =>
                 new Promise<ItemData>((resolve) => {
                     const item = this.resources.find(res => res.id == id);
-                    resolve(item);
+
+                    fetch(item.url, {
+                        method: "GET"
+                    }).then(response => {
+                        return response.json();
+                    }).then(json => {
+                        resolve({
+                            ...item,
+                            data: json
+                        });
+                    })
+                    
                 })
         );
     }

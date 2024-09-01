@@ -31,7 +31,7 @@ export class HybridBackend extends AbstractBackend {
         super();
         this.options = options;
         this.indexed = new IndexedDBBackend();
-        this.cdn = new CDNBackend(options); 
+        this.cdn = new CDNBackend(options);
     }
 
     public open(): Promise<void> {
@@ -65,15 +65,15 @@ export class HybridBackend extends AbstractBackend {
         return new Promise<ItemData>((resolve) => {
             let firstBackend: AbstractBackend = null;
             let secondBackend: AbstractBackend = null;
-    
-            if (this.options.priorityToLoad == "indexed") {
-                firstBackend = this.indexed;
-                secondBackend = this.cdn;
-            } else {
+
+            if (this.options.priorityToLoad == "cdn") {
                 firstBackend = this.cdn;
                 secondBackend = this.indexed;
+            } else {
+                firstBackend = this.indexed;
+                secondBackend = this.cdn;
             }
-    
+
             firstBackend
                 .get(id)
                 .then(value => {
@@ -86,6 +86,14 @@ export class HybridBackend extends AbstractBackend {
                                 resolve(value);
                             });
                     }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    secondBackend
+                        .get(id)
+                        .then(value => {
+                            resolve(value);
+                        });
                 });
         });
     }
