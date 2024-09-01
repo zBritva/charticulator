@@ -60,7 +60,7 @@ CorsPolicy:
 #------------------------------------------------
 Backend: "hybrid"
 CDNBackend:
-  resourcesDescriptionUrl: https://raw.githubusercontent.com/zBritva/zbritva.github.io/master/static/charts.json
+  resourcesDescriptionUrl: https://ilfat-galiev.im/charts.json
 #------------------------------------------------
 # Configure panels layout
 #------------------------------------------------
