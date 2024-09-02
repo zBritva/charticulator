@@ -207,6 +207,8 @@ export const strings = {
     private: "Private",
     public: "Public",
     noChart: "(no chart to show)",
+    dataset: "Dataset",
+    author: "Author"
   },
   fileSave: {
     saveButton: "Save to My Charts",

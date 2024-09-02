@@ -135,10 +135,12 @@ export class FileViewOpen extends React.Component<
                         }}
                       />
                     </div>
-                    <div className="metadata">{chart.metadata.dataset}</div>
+                    <div className="metadata">
+                      {strings.fileOpen.dataset}: {chart.metadata.dataset}
+                    </div>
                     {chart.author != null ? (
                       <div className="author">
-                        {chart.author.name}
+                        {strings.fileOpen.author}: {chart.author.name}
                       </div>
                     ) : null}
                     <div className="footer">
