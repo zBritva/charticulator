@@ -128,7 +128,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
       ...this.generateEmphasisStyle(emphasize),
     };
     
-    const key = `${glyphIndex}-${this.object._id}`;
+    const key = `glyph:${glyphIndex}-symbol:${this.object._id}`;
     switch (attrs.symbol) {
       case "square": {
         const size = attrs.size;

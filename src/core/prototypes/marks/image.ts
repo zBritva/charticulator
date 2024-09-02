@@ -357,6 +357,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
 
     const helper = new Graphics.CoordinateSystemHelper(cs);
     const g = Graphics.makeGroup([]);
+    g.key = `glyph:${glyphIndex}-img:${this.object._id}-group`
 
     // If fill color is specified, draw a background rect
     if (attrs.fill) {
@@ -366,7 +367,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
           attrs.y1 + offset.y,
           attrs.x2 + offset.x,
           attrs.y2 + offset.y,
-          `${this.object._id}`,
+          `glyph:${glyphIndex}-img:${this.object._id}`,
           {
             strokeColor: null,
             fillColor: attrs.fill,
@@ -453,7 +454,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
             ? `alpha(opacity=${DEFAULT_POWER_BI_OPACITY * 100})`
             : null,
         },
-        key: `${glyphIndex}-${this.object._id}-image-main`,
+        key: `glyph:${glyphIndex}-img:${this.object._id}-main`,
       },
     ]);
     gImage.transform = cs.getLocalTransform(px + offset.x, py + offset.y);
@@ -467,7 +468,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
           attrs.y1 + offset.y,
           attrs.x2 + offset.x,
           attrs.y2 + offset.y,
-          `${glyphIndex}-${this.object._id}-image-stroke`,
+          `glyph:${glyphIndex}-img:${this.object._id}-stroke`,
           {
             strokeColor: attrs.stroke,
             strokeWidth: attrs.strokeWidth,
@@ -482,7 +483,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
     g.style = {
       opacity: attrs.opacity,
     };
-    g.key = `${glyphIndex}-${this.object._id}-image-gr`;
+    g.key = `glyph:${glyphIndex}-img:${this.object._id}-group`;
     return g;
   }
 

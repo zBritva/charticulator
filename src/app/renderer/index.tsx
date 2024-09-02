@@ -578,6 +578,7 @@ export function renderGraphicalElementSVG(
             ) : null}
           </defs>
           <rect
+            data-key={element.key || options.key}
             key={element.key || options.key}
             {...mouseEvents}
             className={options.className || null}
@@ -597,6 +598,7 @@ export function renderGraphicalElementSVG(
       const circle = element as Graphics.Circle;
       return (
         <circle
+          data-key={element.key || options.key}
           key={element.key || options.key}
           {...mouseEvents}
           className={options.className || null}
@@ -654,6 +656,7 @@ export function renderGraphicalElementSVG(
             ) : null}
           </defs>
           <ellipse
+            data-key={element.key || options.key}
             key={element.key || options.key}
             {...mouseEvents}
             className={options.className || null}
@@ -670,6 +673,7 @@ export function renderGraphicalElementSVG(
       const line = element as Graphics.Line;
       return (
         <line
+          data-key={element.key || options.key}
           key={element.key || options.key}
           {...mouseEvents}
           className={options.className || null}
@@ -685,6 +689,7 @@ export function renderGraphicalElementSVG(
       const polygon = element as Graphics.Polygon;
       return (
         <polygon
+          data-key={element.key || options.key}
           key={element.key || options.key}
           {...mouseEvents}
           className={options.className || null}
@@ -751,6 +756,7 @@ export function renderGraphicalElementSVG(
             ) : null}
           </defs>
           <path
+            data-key={element.key || options.key}
             key={element.key || options.key}
             {...mouseEvents}
             className={options.className || null}
@@ -789,6 +795,7 @@ export function renderGraphicalElementSVG(
         style2.fill = style.stroke;
         const e1 = (
           <text
+            data-key={text.key}
             key={text.key}
             {...mouseEvents}
             className={options.className || null}
@@ -803,6 +810,7 @@ export function renderGraphicalElementSVG(
         style.stroke = "none";
         const e2 = (
           <text
+            data-key={text.key}
             key={text.key}
             {...mouseEvents}
             className={options.className || null}
@@ -814,7 +822,7 @@ export function renderGraphicalElementSVG(
           </text>
         );
         return (
-          <g key={element.key}>
+          <g key={element.key} data-key={element.key}>
             {e1}
             {e2}
           </g>
@@ -822,6 +830,7 @@ export function renderGraphicalElementSVG(
       } else {
         return (
           <text
+            data-key={element.key}
             key={element.key}
             {...mouseEvents}
             className={options.className || null}
@@ -848,6 +857,7 @@ export function renderGraphicalElementSVG(
       }
       return (
         <image
+          data-key={element.key || options.key}
           key={element.key || options.key}
           {...mouseEvents}
           className={options.className || null}

@@ -200,7 +200,7 @@ export class LineElementClass extends EmphasizableMarkClass<
         ),
         ...this.generateEmphasisStyle(emphasize),
       },
-      `${glyphIndex}-${this.object._id}`
+      `glyph:${glyphIndex}-line:${this.object._id}`
     );
   }
 

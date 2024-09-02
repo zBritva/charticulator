@@ -542,7 +542,7 @@ export class TextboxElementClass extends EmphasizableMarkClass<
 
         const textElement = applyStyles(
           <Graphics.TextOnPath>{
-            key: `${glyphIndex}-${this.object._id}-line-${index}`,
+            key: `glyph:${glyphIndex}-textbox:${this.object._id}-idx:${index}`,
             type: "text-on-path",
             pathCmds: cmds,
             text: textContentList[index],
@@ -556,7 +556,7 @@ export class TextboxElementClass extends EmphasizableMarkClass<
       }
 
       const gr = Graphics.makeGroup(lines);
-      gr.key = `${glyphIndex}-${this.object._id}-bgr`;
+      gr.key = `glyph:${glyphIndex}-textbox:${this.object._id}-bgr`;
       return gr;
     } else {
       const pathMaker = new Graphics.PathMaker();
@@ -570,7 +570,7 @@ export class TextboxElementClass extends EmphasizableMarkClass<
       );
       const cmds = pathMaker.path.cmds;
       textElement = <Graphics.TextOnPath>{
-        key: `${glyphIndex}-${this.object._id}`,
+        key: `glyph:${glyphIndex}-textbox:${this.object._id}`,
         type: "text-on-path",
         pathCmds: cmds,
         text: attrs.text,
@@ -587,12 +587,14 @@ export class TextboxElementClass extends EmphasizableMarkClass<
         style: {
           fillColor: attrs.backgroundColor,
         },
-        key: `${glyphIndex}-${this.object._id}-bgr`,
+        key: `glyph:${glyphIndex}-textbox:${this.object._id}-bgr`,
       };
-      return Graphics.makeGroup([
+      const group = Graphics.makeGroup([
         background,
         applyStyles(<Graphics.TextOnPath>textElement, attrs),
       ]);
+      group.key = `glyph:${glyphIndex}-textbox:${this.object._id}-group`
+      return group;
     }
   }
 

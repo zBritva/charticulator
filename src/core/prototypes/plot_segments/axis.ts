@@ -584,7 +584,7 @@ export class AxisRenderer {
     objectID?: string
   ): Group {
     const axisGraphics = makeGroup([]);
-    axisGraphics.key = `${objectID ?? ""}-text-x-${x}-y-${y}-ang-${angle}-side-${side}-${axisOffset}`;
+    axisGraphics.key = `line:${objectID ?? ""}-text-x:${x}-y:${y}-ang:${angle}-side:${side}-offset:${axisOffset}`;
     const style = this.style;
     const rangeMin = this.rangeMin;
     const rangeMax = this.rangeMax;
@@ -634,7 +634,7 @@ export class AxisRenderer {
         const dx = side * tickSize * sin;
         const dy = -side * tickSize * cos;
         const tickGraphics = makeLine(tx, ty, tx + dx, ty + dy, lineStyle);
-        tickGraphics.key = `${axisGraphics.key}-tick-${tickPosition}`;
+        tickGraphics.key = `${axisGraphics.key}-tick:${tickPosition}`;
         axisGraphics.elements.push(tickGraphics);
       }
     }
@@ -727,11 +727,11 @@ export class AxisRenderer {
                 backgroundColorId: style.tickTextBackgroudColorId,
               }
             );
-            text.key = `${axisGraphics.key}-tick-text-${tick.position}-i-${index}-side-${side}`;
+            text.key = `${axisGraphics.key}-tick-text:${tick.position}-idx:${index}-side:${side}`;
             lines.push(text);
           }
           const gText = makeGroup(lines);
-          gText.key = `${axisGraphics.key}-tick-${tick.position}-side-${side}`;
+          gText.key = `${axisGraphics.key}-tick-group:${tick.position}-side:${side}`;
           gText.transform = {
             x: tx + dx,
             y: ty + dy,

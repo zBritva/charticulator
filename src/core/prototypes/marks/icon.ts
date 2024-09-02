@@ -192,7 +192,7 @@ export class IconElementClass extends EmphasizableMarkClass<
         width: layout.width,
         height: layout.height,
         mode: "stretch",
-        key: `${glyphIndex}-${this.object._id}`,
+        key: `glyph:${glyphIndex}-icon:${this.object._id}`,
       },
     ]);
     gImage.transform = cs.getLocalTransform(

@@ -215,7 +215,6 @@ export class ChartConstraintSolver {
     for (const attr of objectClass.attributeNames) {
       const info = objectClass.attributes[attr];
       if (info == null) {
-        // debugger;
         console.error(`Attribute ${attr} not found in class ${objectClass}`, objectClass.attributes[attr]);
         continue;
       }
@@ -744,7 +743,6 @@ export class GlyphConstraintAnalyzer extends ConstraintSolver {
     for (const attr of glyphClass.attributeNames) {
       const info = glyphClass.attributes[attr];
       if (!info) {
-        // debugger;
         console.error(`Attribute ${attr} not found in class ${glyphClass}`, glyphClass.attributes[attr]);
       }
       if (!info || info.solverExclude) {
@@ -768,7 +766,6 @@ export class GlyphConstraintAnalyzer extends ConstraintSolver {
       for (const attr of markClass.attributeNames) {
         const info = markClass.attributes[attr];
         if (!info) {
-          // debugger;
           console.error(`Attribute ${attr} not found in class ${glyphClass}`, glyphClass.attributes[attr]);
         }
         if (!info || info.solverExclude) {

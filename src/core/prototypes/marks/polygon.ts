@@ -275,7 +275,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     if (this.object.properties.closed) {
       const path = helper.polygon(
         points,
-        `polygon-${glyphIndex}-${this.object._id}`,
+        `glyph:${glyphIndex}-polygon:${this.object._id}`,
         {
           fillColor: attrs.fill,
           fillStartColor: attrs.fillStart,
@@ -307,7 +307,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
       return path;
     } else {
       const polygon = Graphics.makeGroup(lines);
-      polygon.key = `polygon-${glyphIndex}-${this.object._id}`;
+      polygon.key = `glyph:${glyphIndex}-polygon:${this.object._id}`;
       for (let index = 0; index < points.length - 1; index++) {
         const x = points[index][0];
         const y = points[index][1];
@@ -327,7 +327,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
             ),
             ...this.generateEmphasisStyle(emphasize),
           },
-          `polygon-${glyphIndex}-${this.object._id}-${x}-${y}-${x2}-${y2}-${index}`
+          `glyph:${glyphIndex}-polygon:${this.object._id}-x:${x}-y:${y}-x2:${x2}-y2:${y2}-idx:${index}`
         );
         lines.push(part);
       }

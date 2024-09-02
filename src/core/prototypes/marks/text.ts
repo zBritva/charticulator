@@ -172,7 +172,7 @@ export class TextElementClass extends EmphasizableMarkClass<
               ...this.generateEmphasisStyle(empasized),
             },
             undefined,
-            `${glyphIndex}-${this.object._id}-line-${index}`
+            `glyph:${glyphIndex}-text:${this.object._id}-value:${textContent[index].replace(/\W/,"_")}-idx:${index}`
           )
         );
       }
@@ -193,12 +193,12 @@ export class TextElementClass extends EmphasizableMarkClass<
           ...this.generateEmphasisStyle(empasized),
         },
         undefined,
-        `${this.object._id}`
+        `glyph:${glyphIndex}-text:${this.object._id}-value:${attrs.text.replace(/\W/,"_")}`
       );
     }
-    text.key = `${glyphIndex}-${this.object._id}-tobj`;
+    text.key = `${glyphIndex}-${this.object._id}-${attrs.text.replace(/\W/,"_")}`;
     const g = Graphics.makeGroup([text]);
-    g.key = `${glyphIndex}-${this.object._id}-tobj-gr`;
+    g.key = `group:glyph:${glyphIndex}-text:${this.object._id}-value:${attrs.text.replace(/\W/,"_")}`;
     g.transform = p;
     return g;
   }
