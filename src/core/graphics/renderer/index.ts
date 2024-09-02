@@ -110,7 +110,7 @@ export class ChartRenderer {
       } else {
         return null;
       }
-    }).filter(g => g !== null);
+    });
   }
 
   /**
@@ -171,7 +171,7 @@ export class ChartRenderer {
             mark,
             glyphState,
             glyphIndex
-          ).filter(g => g !== null);
+          );
           if (g !== null) {
             glyphArrays.push(g);
           }
