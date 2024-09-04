@@ -233,7 +233,7 @@ const ConstraintView: React.FC<{
             justifyItems: "start",
             marginBottom: "5px"
         }}>
-            <h4>{`${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.attribute} = ${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.targetAttribute}`}</h4>
+            <h4>{`${elementWithState ? elementWithState.element.properties.name : ""}.${constraint.attributes.attribute} = ${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.targetAttribute}`}</h4>
             <Label>Parent object</Label>
             <Dropdown
                 disabled={elementWithState?.persistent}
