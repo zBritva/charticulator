@@ -86,6 +86,19 @@ export const strings = {
     no: "No",
     yes: "Yes",
   },
+  constraints: {
+    constraints: "Constraints",
+    add: "Add constraint",
+    parentObject: "Parent object",
+    type: "Constraint type",
+    gap: "Gap",
+    element: "Element",
+    elementAttribute: "Element attribute",
+    target: "Element",
+    targetAttribute: "Element attribute",
+    remove: "Remove",
+    save: "Save"
+  },
   canvas: {
     markContainer: "To edit this glyph, please create a plot segment with it.",
     newGlyph: "New glyph",
