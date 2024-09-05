@@ -23,9 +23,10 @@ import {
 
 import { FileView, MainTabs } from "./file_view";
 import { AppStore } from "../stores";
-import { classNames, readFileAsString } from "../utils";
+import { classNames, readFileAsString, showOpenFileDialog } from "../utils";
 import {
   ChartTemplate,
+  Dataset,
   // primaryButtonStyles,
   Specification,
 } from "../../container";
@@ -409,113 +410,67 @@ export class MenuBar extends ContextedComponent<
                   if (file) {
                     // eslint-disable-next-line
                     readFileAsString(file).then((str) => {
-                      const data = JSON.parse(
+                      const template = JSON.parse(
                         str
                       ) as Specification.Template.ChartTemplate;
+                      
+                      this.store.dispatcher.dispatch(
+                        new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolve) => {
+                          this.popupController.showModal(
+                            (context) => {
+                              return (
+                                <ModalView context={context}>
+                                  <div onClick={(e) => e.stopPropagation()}>
+                                    <FileViewImport
+                                      mode={MappingMode.ImportTemplate}
+                                      tables={tables}
+                                      datasetTables={datasetTables}
+                                      tableMapping={tableMapping}
+                                      unmappedColumns={unmappedColumns}
+                                      format={this.store.getLocaleFileFormat()}
+                                      onSave={(mapping) => {
+                                        resolve(mapping);
+                                        context.close();
+                                      }}
+                                      onClose={() => {
+                                        context.close();
+                                      }}
+                                      onImportDataClick={(type: TableType) => {
+                                        showOpenFileDialog(["csv"]).then((file) => {
+                                          const loader = new Dataset.DatasetLoader();
+                                          const reader = new FileReader();
 
-                      let unmappedColumns: Specification.Template.Column[] = [];
-                      data.tables[0].columns.forEach((column) => {
-                        unmappedColumns = unmappedColumns.concat(
-                          this.store.checkColumnsMapping(
-                            column,
-                            TableType.Main,
-                            this.store.dataset
-                          )
-                        );
-                      });
-                      if (data.tables[1]) {
-                        data.tables[1].columns.forEach((column) => {
-                          unmappedColumns = unmappedColumns.concat(
-                            this.store.checkColumnsMapping(
-                              column,
-                              TableType.Links,
-                              this.store.dataset
-                            )
+                                          reader.onload = () => {
+                                            const newTable = loader.loadDSVFromContents(
+                                              file.name,
+                                              reader.result as string,
+                                              this.store.getLocaleFileFormat()
+                                            );
+                                            const newDataset: Dataset.Dataset = {
+                                              name: this.store.dataset.name,
+                                              tables: this.store.dataset.tables.map((x) => {
+                                                // replace old table with new table type
+                                                if (x.type == type) {
+                                                  return newTable;
+                                                } else {
+                                                  return x;
+                                                }
+                                              }),
+                                            };
+
+                                            this.store.dispatcher.dispatch(new Actions.ReplaceDataset(newDataset, true))
+                                          }
+                                        });
+                                      }}
+                                    />
+                                  </div>
+                                </ModalView>
+                              );
+                            },
+                            { anchor: null }
                           );
-                        });
-                      }
-
-                      const tableMapping = new Map<string, string>();
-                      tableMapping.set(
-                        data.tables[0].name,
-                        this.store.dataset.tables[0].name
+                        })
                       );
-                      if (data.tables[1] && this.store.dataset.tables[1]) {
-                        tableMapping.set(
-                          data.tables[1].name,
-                          this.store.dataset.tables[1].name
-                        );
-                      }
-
-                      const loadTemplateIntoState = (
-                        tableMapping: Map<string, string>,
-                        columnMapping: Map<string, string>
-                      ) => {
-                        const template = new ChartTemplate(data);
-
-                        for (const table of template.getDatasetSchema()) {
-                          template.assignTable(
-                            table.name,
-                            tableMapping.get(table.name) || table.name
-                          );
-                          for (const column of table.columns) {
-                            template.assignColumn(
-                              table.name,
-                              column.name,
-                              columnMapping.get(column.name) || column.name
-                            );
-                          }
-                        }
-                        const instance = template.instantiate(
-                          this.store.dataset,
-                          false // no scale inference
-                        );
-
-                        this.store.dispatcher.dispatch(
-                          new Actions.ImportChartAndDataset(
-                            instance.chart,
-                            this.store.dataset,
-                            {}
-                          )
-                        );
-                        this.store.dispatcher.dispatch(
-                          new Actions.ReplaceDataset(this.store.dataset)
-                        );
-                      };
-
-                      if (unmappedColumns.length > 0) {
-                        // mapping show dialog then call loadTemplateIntoState
-                        this.popupController.showModal(
-                          (context) => {
-                            return (
-                              <ModalView context={context}>
-                                <div onClick={(e) => e.stopPropagation()}>
-                                  <FileViewImport
-                                    mode={MappingMode.ImportTemplate}
-                                    tables={data.tables}
-                                    datasetTables={this.store.dataset.tables}
-                                    tableMapping={tableMapping}
-                                    unmappedColumns={unmappedColumns}
-                                    onSave={(mapping) => {
-                                      loadTemplateIntoState(
-                                        tableMapping,
-                                        mapping
-                                      );
-                                      context.close();
-                                    }}
-                                    onClose={() => {
-                                      context.close();
-                                    }}
-                                  />
-                                </div>
-                              </ModalView>
-                            );
-                          },
-                          { anchor: null }
-                        );
-                      } else {
-                        loadTemplateIntoState(tableMapping, new Map());
-                      }
                     });
                   }
                 }

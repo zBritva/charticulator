@@ -19,6 +19,12 @@ import {
   DeleteFilled,
   OpenRegular,
 } from "@fluentui/react-icons";
+import { FileViewImport, MappingMode } from "./import_view";
+import { ModalView } from "../../controllers";
+
+import * as globals from "../../globals";
+
+import { TableType } from "../../../core/dataset";
 
 export interface FileViewOpenState {
   chartList: ItemDescription[];
@@ -51,7 +57,7 @@ export class FileViewOpen extends React.Component<
 
   public updateChartList() {
     const store = this.props.store;
-    store.backend.list("chart", "timeCreated", 0, 1000).then((result) => {
+    store.backend.list(null, "timeCreated", 0, 1000).then((result) => {
       this.setState({
         chartList: result.items,
         chartCount: result.totalCount
@@ -60,11 +66,13 @@ export class FileViewOpen extends React.Component<
   }
 
   public applyUserFilter() {
-    this.setState({
-      currentChartList: this.state.chartList
-        .filter(chart => this.state.displayPublic || chart.source !== "cdn")
-        .filter(chart => this.state.displayPrivate || chart.source !== "indexed")
-        .filter(chart => this.state.filterText == "" || chart.metadata.name.includes(this.state.filterText))
+    this.setState(state => {
+      return {
+        currentChartList: state.chartList
+          .filter(chart => state.displayPublic || chart.source !== "cdn")
+          .filter(chart => state.displayPrivate || chart.source !== "indexed")
+          .filter(chart => state.filterText == "" || chart.metadata.name.includes(state.filterText))
+      }
     })
   }
 
@@ -92,6 +100,44 @@ export class FileViewOpen extends React.Component<
                   key={chart.id}
                   tabIndex={0}
                   onClick={() => {
+                    if (chart.type === "tmplt") {
+                      backend.get(chart.id).then((templateString) => {
+                        const template = templateString.data;
+                        this.props.store.dispatcher.dispatch(
+                          new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolve) => {
+                            globals.popupController.showModal(
+                              (context) => {
+                                return (
+                                  <ModalView context={context}>
+                                    <div onClick={(e) => e.stopPropagation()}>
+                                      <FileViewImport
+                                        mode={MappingMode.ImportTemplate}
+                                        tables={tables}
+                                        datasetTables={datasetTables}
+                                        tableMapping={tableMapping}
+                                        unmappedColumns={unmappedColumns}
+                                        format={store.getLocaleFileFormat()}
+                                        onSave={(mapping) => {
+                                          resolve(mapping);
+                                          context.close();
+                                        }}
+                                        onClose={() => {
+                                          context.close();
+                                        }}
+                                        onImportDataClick={(type: TableType) => {}}
+                                      />
+                                    </div>
+                                  </ModalView>
+                                );
+                              },
+                              { anchor: null }
+                            );
+                          })
+                        );
+                      })
+
+                      return;
+                    }
                     this.props.store.dispatcher.dispatch(
                       new Actions.Open(chart.id, (error) => {
                         if (error) {
@@ -218,75 +264,77 @@ export class FileViewOpen extends React.Component<
 
   public render() {
     return (
-      <section className="charticulator__file-view-content is-fix-width">
-        <h1>{strings.mainTabs.open}</h1>
-        <div style={{
-            marginBottom: "12px",
-            display: "flex",
-            flexDirection: "row"
-          }}>
-          <Button
-            style={{
-              minWidth: "130px"
-            }}
-            data-testid="fileOpenButton"
-            icon={<OpenRegular />}
-            title={strings.fileOpen.open}
-            onClick={async () => {
-              const file = await showOpenFileDialog(["chart"]);
-              const str = await readFileAsString(file);
-              const data = JSON.parse(str);
-              this.props.store.dispatcher.dispatch(
-                new Actions.Load(data.state)
-              );
-              this.props.onClose();
-            }}
-          >
-            {strings.fileOpen.open}
-          </Button>
-          <Input
-            style={{
-              marginLeft: "5px"
-            }}
-            placeholder={strings.fileOpen.filterText}
-            onChange={(e, data) => {
-              this.setState({
-                filterText: data.value
-              }, () => this.applyUserFilter());
-            }}
-          />
-          <ToggleButton
-            style={{
-              marginLeft: "5px"
-            }}
-            checked={this.state.displayPrivate}
-            onClick={() => {
-              this.setState((prev) => {
-                return {
-                  displayPrivate: !prev.displayPrivate
-                }
-              }, () => this.applyUserFilter())
+      <>
+        <section className="charticulator__file-view-content is-fix-width">
+          <h1>{strings.mainTabs.open}</h1>
+          <div style={{
+              marginBottom: "12px",
+              display: "flex",
+              flexDirection: "row"
             }}>
-            {strings.fileOpen.private}
-          </ToggleButton>
-          <ToggleButton
-            style={{
-              marginLeft: "5px"
-            }}
-            checked={this.state.displayPublic}
-            onClick={() => {
-              this.setState((prev) => {
-                return {
-                  displayPublic: !prev.displayPublic
-                }
-              }, () => this.applyUserFilter())
-            }}>
-            {strings.fileOpen.public}
-          </ToggleButton>
-        </div>
+            <Button
+              style={{
+                minWidth: "130px"
+              }}
+              data-testid="fileOpenButton"
+              icon={<OpenRegular />}
+              title={strings.fileOpen.open}
+              onClick={async () => {
+                const file = await showOpenFileDialog(["chart"]);
+                const str = await readFileAsString(file);
+                const data = JSON.parse(str);
+                this.props.store.dispatcher.dispatch(
+                  new Actions.Load(data.state)
+                );
+                this.props.onClose();
+              }}
+            >
+              {strings.fileOpen.open}
+            </Button>
+            <Input
+              style={{
+                marginLeft: "5px"
+              }}
+              placeholder={strings.fileOpen.filterText}
+              onChange={(e, data) => {
+                this.setState({
+                  filterText: data.value
+                }, () => this.applyUserFilter());
+              }}
+            />
+            <ToggleButton
+              style={{
+                marginLeft: "5px"
+              }}
+              checked={this.state.displayPrivate}
+              onClick={() => {
+                this.setState((prev) => {
+                  return {
+                    displayPrivate: !prev.displayPrivate
+                  }
+                }, () => this.applyUserFilter())
+              }}>
+              {strings.fileOpen.private}
+            </ToggleButton>
+            <ToggleButton
+              style={{
+                marginLeft: "5px"
+              }}
+              checked={this.state.displayPublic}
+              onClick={() => {
+                this.setState((prev) => {
+                  return {
+                    displayPublic: !prev.displayPublic
+                  }
+                }, () => this.applyUserFilter())
+              }}>
+              {strings.fileOpen.public}
+            </ToggleButton>
+          </div>
 
-        {this.renderChartList()}
-      </section>
+          {this.renderChartList()}
+        </section>
+      </>
     );
   }
 }

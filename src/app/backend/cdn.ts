@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import { AbstractBackend, ItemData, ItemDescription, ItemMetadata } from "./abstract";
+import { AbstractBackend, ItemData, ItemDescription, ItemMetadata, ItemType } from "./abstract";
 
 export interface IResourceDescription extends ItemData {
     id: string;
     url: string;
     name: string;
     img: string;
-    type: "chart" | "tmplt";
+    type: ItemType;
     author: {
         name: string;
         contact: string;
@@ -68,7 +68,7 @@ export class CDNBackend extends AbstractBackend {
                 new Promise<{ items: ItemDescription[]; totalCount: number }>(
                     (resolve) => {
                         const filtered = this.resources
-                            .filter(res => res.type === type)
+                            .filter(res => res.type === type || type === null)
                             .sort((i1, i2) => <number>i1.metadata[orderBy] - <number>i2.metadata[orderBy])
                             .slice(start, start + count);
                         resolve({

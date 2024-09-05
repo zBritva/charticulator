@@ -114,8 +114,6 @@ export class ColumnsView extends React.Component<
   React.PropsWithChildren<ColumnsViewProps>,
   ColumnsViewState
 > {
-  private popupController: PopupController = new PopupController();
-
   constructor(props: ColumnsViewProps) {
     super(props);
     this.state = {
@@ -129,7 +127,6 @@ export class ColumnsView extends React.Component<
     const table = this.props.table;
     return (
       <>
-        <PopupContainer controller={this.popupController} />
         <div className="charticulator__dataset-view-columns">
           <h2 className="el-title">
             <span className="el-text">
@@ -252,7 +249,7 @@ export class ColumnsView extends React.Component<
                         };
 
                         if (unmappedColumns.length > 0) {
-                          this.popupController.showModal(
+                          globals.popupController.showModal(
                             (context) => {
                               return (
                                 <ModalView context={context}>
@@ -263,7 +260,8 @@ export class ColumnsView extends React.Component<
                                       datasetTables={newDataset.tables}
                                       tableMapping={tableMapping}
                                       unmappedColumns={unmappedColumns}
-                                      onSave={(mapping) => {
+                                      format={store.getLocaleFileFormat()}
+                                      onSave={(mapping, datasetTables) => {
                                         loadTemplateIntoState(
                                           store,
                                           tableMapping,
@@ -276,6 +274,7 @@ export class ColumnsView extends React.Component<
                                       onClose={() => {
                                         context.close();
                                       }}
+                                      onImportDataClick={null}
                                     />
                                   </div>
                                 </ModalView>

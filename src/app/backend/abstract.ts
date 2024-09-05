@@ -10,13 +10,15 @@ export interface ItemMetadata {
 
 export type ItemSource = "cdn" | "indexed";
 
+export type ItemType = "chart" | "tmplt";
+
 export interface ItemAuthor {
   name: string;
 }
 
 export interface ItemDescription {
   id: string;
-  type: string;
+  type: ItemType;
   metadata: ItemMetadata;
   author: ItemAuthor;
   source: ItemSource;

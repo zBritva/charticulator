@@ -315,6 +315,8 @@ export const strings = {
     y: "Y",
   },
   templateImport: {
+    importData: "Import data",
+    importLinksData: "Import links data",
     columnNameTemplate: "Column name from the template",
     columnNameChart: "Column name from the chart design",
     dataType: "Required data type",

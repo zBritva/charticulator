@@ -5,10 +5,13 @@ import * as React from "react";
 
 import { ButtonRaised, FloatingPanel } from "../../components";
 import { ContextedComponent } from "../../context_component";
-import { Specification } from "../../../core";
+import { Dataset, Specification } from "../../../core";
 import { Select } from "../panels/widgets/controls";
-import { DataType, Table } from "../../../core/dataset/dataset";
+import { DataType, Table, TableType } from "../../../core/dataset/dataset";
 import { strings } from "../../../strings";
+import { showOpenFileDialog } from "../../utils";
+import { LocaleFileFormat } from "../../../core/dataset/dsv_parser";
+import { debug } from "console";
 
 export enum MappingMode {
   ImportTemplate,
@@ -21,13 +24,16 @@ export interface FileViewImportProps {
   datasetTables: Table[];
   tableMapping: Map<string, string>;
   unmappedColumns: Specification.Template.Column[];
-  onSave: (columnMapping: Map<string, string>) => void;
+  format: LocaleFileFormat;
+  onSave: (columnMapping: Map<string, string>, datasetTables: Table[]) => void;
+  onImportDataClick: (type: TableType) => void;
   onClose: () => void;
 }
 export interface FileViewImportState {
   saving?: boolean;
   error?: string;
   columnMappings: Map<string, string>;
+  datasetTables: Table[];
 }
 
 export class FileViewImport extends ContextedComponent<
@@ -36,6 +42,7 @@ export class FileViewImport extends ContextedComponent<
 > {
   public state: FileViewImportState = {
     columnMappings: new Map(),
+    datasetTables: this.props.datasetTables
   };
 
   // eslint-disable-next-line
@@ -63,7 +70,7 @@ export class FileViewImport extends ContextedComponent<
     };
 
     tables.forEach((table, tableIndex) => {
-      const filteredByTableColumns = this.props.datasetTables[tableIndex]
+      const filteredByTableColumns = this.state.datasetTables[tableIndex]
         ?.columns;
       if (!filteredByTableColumns) {
         return;
@@ -143,11 +150,10 @@ export class FileViewImport extends ContextedComponent<
                       </thead>
                       <tbody>
                         {table.columns.map((column) => {
-                          const datasetTable = this.props.datasetTables.find(
+                          const datasetTable = this.state.datasetTables.find(
                             (t) =>
                               t.name ===
-                              (this.props.tableMapping.get(table.name) ||
-                                table.name)
+                              this.props.tableMapping.get(table.name) || table.name || t.type === table.type
                           );
 
                           const optionValues =
@@ -206,6 +212,7 @@ export class FileViewImport extends ContextedComponent<
                 text={strings.button.cancel}
               />
               <ButtonRaised
+              
                 onClick={() => {
                   if (
                     this.props.unmappedColumns.filter(
@@ -214,7 +221,7 @@ export class FileViewImport extends ContextedComponent<
                         undefined
                     ).length === 0
                   ) {
-                    this.props.onSave(this.state.columnMappings);
+                    this.props.onSave(this.state.columnMappings, this.state.datasetTables);
                   }
                 }}
                 text={strings.templateImport.save}
@@ -224,6 +231,72 @@ export class FileViewImport extends ContextedComponent<
                       this.state.columnMappings.get(unmapped.name) === undefined
                   ).length !== 0
                 }
+              />
+              <ButtonRaised
+                disabled={this.props.mode === MappingMode.ImportDataset}
+                onClick={() => {
+                  showOpenFileDialog(["csv"]).then((file) => {
+                    const loader = new Dataset.DatasetLoader();
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                      const newTable = loader.loadDSVFromContents(
+                        file.name,
+                        reader.result as string,
+                        this.props.format
+                      );
+                      const datasetTables = this.state.datasetTables.map((x) => {
+                        if (x.type == TableType.Main) {
+                          return newTable;
+                        } else {
+                          return x;
+                        }
+                      });
+
+                      this.setState({
+                        datasetTables: [...datasetTables]
+                      });
+                  
+                      this.props.onImportDataClick(TableType.Main)
+                    }
+
+                    reader.readAsText(file);
+                  });
+                }}
+                text={strings.templateImport.importData}
+              />
+              <ButtonRaised
+                disabled={this.props.mode === MappingMode.ImportDataset}
+                onClick={() => {
+                  showOpenFileDialog(["csv"]).then((file) => {
+                    const loader = new Dataset.DatasetLoader();
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                      const newTable = loader.loadDSVFromContents(
+                        file.name,
+                        reader.result as string,
+                        this.props.format,
+                      );
+                      const datasetTables = this.state.datasetTables.map((x) => {
+                        if (x.type == TableType.Links) {
+                          return newTable;
+                        } else {
+                          return x;
+                        }
+                      });
+
+                      this.setState({
+                        datasetTables: [...datasetTables]
+                      });
+
+                      this.props.onImportDataClick(TableType.Links)
+                    }
+
+                    reader.readAsText(file);
+                  });
+                }}
+                text={strings.templateImport.importLinksData}
               />
             </div>
           </section>

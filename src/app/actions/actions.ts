@@ -157,6 +157,22 @@ export class ImportChartAndDataset extends Action {
   }
 }
 
+export class ImportTemplate extends Action {
+  constructor(
+    public template: Specification.Template.ChartTemplate,
+    public mappingCallback: (unmappedColumns, tableMapping, datasetTables, tables, resolve) => void,
+    public options?: {
+      [key: string]: any;
+    } 
+  ) {
+    super();
+  }
+
+  public digest() {
+    return { name: "ImportTemplate" };
+  }
+}
+
 export class ReplaceDataset extends Action {
   constructor(
     public dataset: Dataset.Dataset,
