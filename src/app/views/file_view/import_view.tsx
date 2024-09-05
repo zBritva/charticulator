@@ -118,11 +118,12 @@ export class FileViewImport extends ContextedComponent<
                 tables.map((table) => {
                   return (
                     <>
-                      <h4>
+                      <h4>{table.type} table: {table.name}</h4>
+                      <h5>
                         {this.props.mode === MappingMode.ImportTemplate
                           ? strings.templateImport.usbtitleImportTemplate
                           : strings.templateImport.usbtitleImportData}
-                      </h4>
+                      </h5>
                       <FTable>
                         <TableHeader>
                           <TableRow>
