@@ -322,7 +322,7 @@ export const strings = {
     dataType: "Required data type",
     examples: "Example data values",
     mapped: "Column name in the dataset",
-    save: "Save mapping",
+    save: "Save",
     tableName: "Table name",
     title: "Map your data",
     usbtitleImportTemplate:

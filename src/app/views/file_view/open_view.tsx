@@ -11,7 +11,7 @@ import { Actions } from "../../actions";
 import { showOpenFileDialog, readFileAsString } from "../../utils";
 import { strings } from "../../../strings";
 import { AppStore } from "../../stores";
-import { Button, ToggleButton, Input } from "@fluentui/react-components";
+import { Button, ToggleButton, Input, Dialog, DialogTrigger, DialogSurface, DialogBody, DialogTitle, DialogContent, DialogActions } from "@fluentui/react-components";
 
 import {
   ArrowDownloadRegular,
@@ -33,6 +33,8 @@ export interface FileViewOpenState {
   displayPrivate: boolean;
   displayPublic: boolean;
   filterText: string;
+  importTemplateDialog: boolean;
+  dialogOptions: any;
 }
 
 export class FileViewOpen extends React.Component<
@@ -48,7 +50,9 @@ export class FileViewOpen extends React.Component<
     currentChartList: [],
     displayPrivate: true,
     displayPublic: true,
-    filterText: ""
+    filterText: "",
+    importTemplateDialog: false,
+    dialogOptions: null
   };
 
   public componentDidMount() {
@@ -76,6 +80,27 @@ export class FileViewOpen extends React.Component<
     })
   }
 
+  public renderFileViewDialog(options: any) {
+    return (
+      <FileViewImport
+        mode={MappingMode.ImportTemplate}
+        tables={options.tables}
+        datasetTables={options.datasetTables}
+        tableMapping={options.tableMapping}
+        unmappedColumns={options.unmappedColumns}
+        format={options.format}
+        onSave={(mapping, datasetTable) => {
+          options.resolve(mapping, datasetTable);
+          options.close();
+        }}
+        onClose={() => {
+          options.close();
+        }}
+        onImportDataClick={(type: TableType) => { }}
+      />
+    );
+  }
+
   // eslint-disable-next-line
   public renderChartList() {
     const store = this.props.store;
@@ -94,6 +119,7 @@ export class FileViewOpen extends React.Component<
         return (
           <ul className="chart-list">
             {/* eslint-disable-next-line */}
+            {this.state.dialogOptions ? this.renderFileViewDialog(this.state.dialogOptions) : null}
             {this.state.currentChartList.map((chart) => {
               return (
                 <li
@@ -105,33 +131,22 @@ export class FileViewOpen extends React.Component<
                         const template = templateString.data;
                         this.props.store.dispatcher.dispatch(
                           new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolve) => {
-                            globals.popupController.showModal(
-                              (context) => {
-                                return (
-                                  <ModalView context={context}>
-                                    <div onClick={(e) => e.stopPropagation()}>
-                                      <FileViewImport
-                                        mode={MappingMode.ImportTemplate}
-                                        tables={tables}
-                                        datasetTables={datasetTables}
-                                        tableMapping={tableMapping}
-                                        unmappedColumns={unmappedColumns}
-                                        format={store.getLocaleFileFormat()}
-                                        onSave={(mapping) => {
-                                          resolve(mapping);
-                                          context.close();
-                                        }}
-                                        onClose={() => {
-                                          context.close();
-                                        }}
-                                        onImportDataClick={(type: TableType) => {}}
-                                      />
-                                    </div>
-                                  </ModalView>
-                                );
-                              },
-                              { anchor: null }
-                            );
+                            this.setState({
+                              importTemplateDialog: true,
+                              dialogOptions: {
+                                unmappedColumns,
+                                tableMapping,
+                                datasetTables,
+                                tables,
+                                resolve,
+                                format: store.getLocaleFileFormat(),
+                                close: () => {
+                                  this.setState({
+                                    dialogOptions: null
+                                  })
+                                }
+                              }
+                            })
                           })
                         );
                       })
@@ -268,10 +283,10 @@ export class FileViewOpen extends React.Component<
         <section className="charticulator__file-view-content is-fix-width">
           <h1>{strings.mainTabs.open}</h1>
           <div style={{
-              marginBottom: "12px",
-              display: "flex",
-              flexDirection: "row"
-            }}>
+            marginBottom: "12px",
+            display: "flex",
+            flexDirection: "row"
+          }}>
             <Button
               style={{
                 minWidth: "130px"

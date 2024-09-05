@@ -98,6 +98,7 @@ export interface ColumnsViewProps {
 export interface ColumnsViewState {
   selectedColumn: string;
   tableViewIsOpened: boolean;
+  dialogOptions: any;
 }
 
 // const buttonStyles = {
@@ -119,7 +120,28 @@ export class ColumnsView extends React.Component<
     this.state = {
       selectedColumn: null,
       tableViewIsOpened: false,
+      dialogOptions: null
     };
+  }
+
+  private renderFileViewImport(options: any) {
+    return (
+      <FileViewImport
+        mode={MappingMode.ImportDataset}
+        tables={options.tables}
+        datasetTables={options.datasetTables}
+        tableMapping={options.tableMapping}
+        unmappedColumns={options.unmappedColumns}
+        format={options.format}
+        onSave={(mapping, datasetTables) => {
+          options.onSave(mapping, datasetTables);
+        }}
+        onClose={() => {
+          options.onClose();
+        }}
+        onImportDataClick={null}
+      />
+    )
   }
 
   // eslint-disable-next-line
@@ -127,6 +149,7 @@ export class ColumnsView extends React.Component<
     const table = this.props.table;
     return (
       <>
+        {this.state.dialogOptions ? this.renderFileViewImport(this.state.dialogOptions) : null}
         <div className="charticulator__dataset-view-columns">
           <h2 className="el-title">
             <span className="el-text">
@@ -214,8 +237,10 @@ export class ColumnsView extends React.Component<
                           store: AppStore,
                           tableMapping: Map<string, string>,
                           columnMapping: Map<string, string>,
-                          template: Specification.Template.ChartTemplate
+                          template: Specification.Template.ChartTemplate,
+                          datasetTables: Dataset.Table[]
                         ) => {
+                          newDataset.tables = datasetTables;
                           const templateInstance = new ChartTemplate(template);
 
                           for (const table of templateInstance.getDatasetSchema()) {
@@ -249,39 +274,41 @@ export class ColumnsView extends React.Component<
                         };
 
                         if (unmappedColumns.length > 0) {
-                          globals.popupController.showModal(
-                            (context) => {
-                              return (
-                                <ModalView context={context}>
-                                  <div onClick={(e) => e.stopPropagation()}>
-                                    <FileViewImport
-                                      mode={MappingMode.ImportDataset}
-                                      tables={template.tables}
-                                      datasetTables={newDataset.tables}
-                                      tableMapping={tableMapping}
-                                      unmappedColumns={unmappedColumns}
-                                      format={store.getLocaleFileFormat()}
-                                      onSave={(mapping, datasetTables) => {
-                                        loadTemplateIntoState(
-                                          store,
-                                          tableMapping,
-                                          mapping,
-                                          template
-                                        );
-                                        // TODO check mappings
-                                        context.close();
-                                      }}
-                                      onClose={() => {
-                                        context.close();
-                                      }}
-                                      onImportDataClick={null}
-                                    />
-                                  </div>
-                                </ModalView>
-                              );
-                            },
-                            { anchor: null }
-                          );
+                          // globals.popupController.showModal(
+                          //   (context) => {
+                          //     return (
+                          //       <ModalView context={context}>
+                          //         <div onClick={(e) => e.stopPropagation()}>
+
+                          //         </div>
+                          //       </ModalView>
+                          //     );
+                          //   },
+                          //   { anchor: null }
+                          // );
+                          this.setState({
+                            dialogOptions: {
+                              tables: template.tables,
+                              datasetTables: newDataset.tables,
+                              tableMapping: tableMapping,
+                              unmappedColumns: unmappedColumns,
+                              format: store.getLocaleFileFormat(),
+                              onClose: () => {
+                                this.setState({
+                                  dialogOptions: null
+                                });
+                              },
+                              onSave: (mapping, datasetTables) => {
+                                loadTemplateIntoState(
+                                  store,
+                                  tableMapping,
+                                  mapping,
+                                  template,
+                                  datasetTables
+                                );
+                              }
+                            }
+                          })
                         } else {
                           store.dispatcher.dispatch(
                             new Actions.ReplaceDataset(newDataset)
@@ -321,16 +348,16 @@ export class ColumnsView extends React.Component<
                     onTypeChange={
                       this.props.store.editorType === EditorType.Chart
                         ? (column, type) => {
-                            const store = this.props.store;
+                          const store = this.props.store;
 
-                            store.dispatcher.dispatch(
-                              new Actions.ConvertColumnDataType(
-                                table.name,
-                                column,
-                                type as DataType
-                              )
-                            );
-                          }
+                          store.dispatcher.dispatch(
+                            new Actions.ConvertColumnDataType(
+                              table.name,
+                              column,
+                              type as DataType
+                            )
+                          );
+                        }
                         : null
                     }
                   />
@@ -510,10 +537,10 @@ export class ColumnView extends React.Component<
               },
               rawColumnExpr
                 ? this.applyAggregation(
-                    rawColumnExpr,
-                    DataType.String,
-                    metadata.kind
-                  )
+                  rawColumnExpr,
+                  DataType.String,
+                  metadata.kind
+                )
                 : this.applyAggregation(expr, type, metadata.kind)
             );
             return r;
