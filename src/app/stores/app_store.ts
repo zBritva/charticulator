@@ -2314,4 +2314,58 @@ export class AppStore extends BaseStore {
       this.solveConstraintsAndUpdateGraphics(config.noComputeLayout);
     }
   }
+
+  public importChartAndDataset(action: Actions.ImportChartAndDataset) {
+    this.currentChartID = null;
+    this.currentSelection = null;
+    this.dataset = action.dataset;
+    this.originDataset = deepClone(this.dataset);
+  
+    this.chart = action.specification;
+  
+    this.chartManager = new Prototypes.ChartStateManager(
+      this.chart,
+      this.dataset,
+      null,
+      {},
+      {},
+      action.originSpecification
+        ? deepClone(action.originSpecification)
+        : this.chartManager.getOriginChart()
+    );
+    this.chartManager.onUpdate(() => {
+      this.solveConstraintsAndUpdateGraphics();
+    });
+    this.chartState = this.chartManager.chartState;
+  
+    this.emit(AppStore.EVENT_DATASET);
+    this.emit(AppStore.EVENT_SELECTION);
+    this.solveConstraintsAndUpdateGraphics();
+  }
+
+  public replaceDataset(action: Actions.ReplaceDataset) {
+    this.currentChartID = null;
+    this.currentSelection = null;
+    this.dataset = action.dataset;
+    this.originDataset = deepClone(this.dataset);
+
+    this.chartManager = new Prototypes.ChartStateManager(
+      this.chart,
+      this.dataset,
+      null,
+      {},
+      {},
+      action.keepState ? this.chartManager.getOriginChart() : null
+    );
+    this.chartManager.onUpdate(() => {
+      this.solveConstraintsAndUpdateGraphics();
+    });
+    this.chartState = this.chartManager.chartState;
+    this.updatePlotSegments();
+    this.updateDataAxes();
+    this.updateScales();
+    this.solveConstraintsAndUpdateGraphics();
+    this.emit(AppStore.EVENT_DATASET);
+    this.emit(AppStore.EVENT_SELECTION);
+  }
 }

@@ -45,6 +45,10 @@ export interface LocaleFileFormat {
   billionsFormat: "giga" | "billions";
 }
 
+export function getTableName(fileName: string) {
+  return fileName.replace(/\W/g, "_");
+}
+
 /**
  * Parses data from file. Returns converted rows and list of colum names with types.
  * Calls {@link inferAndConvertColumn} method from {@link "core/dataset/data_types"} for convert types.
@@ -58,7 +62,7 @@ export function parseDataset(
   localeFileFormat: LocaleFileFormat
 ): Table {
   let rows: string[][];
-  const tableName = fileName.replace(/\W/g, "_");
+  const tableName = getTableName(fileName);
   rows = dsvFormat(localeFileFormat.delimiter).parseRows(content);
 
   // Remove empty rows if any

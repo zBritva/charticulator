@@ -3,12 +3,13 @@
 
 import * as React from "react";
 
-import { ButtonRaised, FloatingPanel } from "../../components";
 import { ContextedComponent } from "../../context_component";
-import { Specification } from "../../../core";
-import { Select } from "../panels/widgets/controls";
-import { DataType, Table } from "../../../core/dataset/dataset";
+import { Dataset, Specification } from "../../../core";
+import { DataType, Table, TableType } from "../../../core/dataset/dataset";
 import { strings } from "../../../strings";
+import { showOpenFileDialog } from "../../utils";
+import { getTableName, LocaleFileFormat } from "../../../core/dataset/dsv_parser";
+import { Button, Dialog, DialogBody, DialogContent, DialogSurface, DialogTitle, Dropdown, Option, Table as FTable, TableHeader, TableRow, TableHeaderCell, TableBody, TableCell, DialogActions } from "@fluentui/react-components";
 
 export enum MappingMode {
   ImportTemplate,
@@ -21,13 +22,17 @@ export interface FileViewImportProps {
   datasetTables: Table[];
   tableMapping: Map<string, string>;
   unmappedColumns: Specification.Template.Column[];
-  onSave: (columnMapping: Map<string, string>) => void;
+  format: LocaleFileFormat;
+  onSave: (columnMapping: Map<string, string>, tableMapping: Map<string, string>, datasetTables: Table[]) => void;
+  onImportDataClick: (type: TableType) => void;
   onClose: () => void;
 }
 export interface FileViewImportState {
   saving?: boolean;
   error?: string;
   columnMappings: Map<string, string>;
+  tableMapping: Map<string, string>;
+  datasetTables: Table[];
 }
 
 export class FileViewImport extends ContextedComponent<
@@ -36,6 +41,8 @@ export class FileViewImport extends ContextedComponent<
 > {
   public state: FileViewImportState = {
     columnMappings: new Map(),
+    datasetTables: this.props.datasetTables,
+    tableMapping: this.props.tableMapping
   };
 
   // eslint-disable-next-line
@@ -43,10 +50,7 @@ export class FileViewImport extends ContextedComponent<
     const tables = this.props.tables;
     const newMapping = new Map(this.state.columnMappings);
 
-    const getDefaultValue = (name: string) => ():
-      | string
-      | number
-      | string[] => {
+    const getDefaultValue = (name: string) => {
       const mapped = newMapping.get(name) as any;
       if (mapped) {
         return mapped;
@@ -63,7 +67,7 @@ export class FileViewImport extends ContextedComponent<
     };
 
     tables.forEach((table, tableIndex) => {
-      const filteredByTableColumns = this.props.datasetTables[tableIndex]
+      const filteredByTableColumns = this.state.datasetTables[tableIndex]
         ?.columns;
       if (!filteredByTableColumns) {
         return;
@@ -98,114 +102,215 @@ export class FileViewImport extends ContextedComponent<
     });
 
     return (
-      <FloatingPanel
-        floatInCenter={true}
-        scroll={true}
-        peerGroup="import"
-        title={strings.templateImport.title}
-        closeButtonIcon={"ChromeClose"}
-        height={600}
-        width={800}
-        onClose={this.props.onClose}
-      >
-        <section className="charticulator__file-view-mapping_view">
-          <section>
-            {tables &&
-              tables.map((table) => {
-                return (
-                  <div
-                    className="charticulator__file-view-mapping_table"
-                    key={table.name}
-                  >
-                    <h4>
-                      {this.props.mode === MappingMode.ImportTemplate
-                        ? strings.templateImport.usbtitleImportTemplate
-                        : strings.templateImport.usbtitleImportData}
-                    </h4>
-                    <table className="charticulator__file-view-mapping_table">
-                      <thead>
-                        <tr className="charticulator__file-view-mapping_rows">
-                          <th className="charticulator__file-view-mapping_row_item">
-                            {this.props.mode === MappingMode.ImportTemplate
-                              ? strings.templateImport.columnNameTemplate
-                              : strings.templateImport.columnNameChart}
-                          </th>
-                          <th className="charticulator__file-view-mapping_row_item">
-                            {strings.templateImport.dataType}
-                          </th>
-                          <th className="charticulator__file-view-mapping_row_item">
-                            {strings.templateImport.examples}
-                          </th>
-                          <th className="charticulator__file-view-mapping_row_item">
-                            {strings.templateImport.mapped}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {table.columns.map((column) => {
-                          const datasetTable = this.props.datasetTables.find(
-                            (t) =>
-                              t.name ===
-                              (this.props.tableMapping.get(table.name) ||
-                                table.name)
-                          );
+      <Dialog
+        open={true}>
+        <DialogSurface
+          style={{
+            maxWidth: "100vh"
+          }}
+        >
+          <DialogBody>
+            <DialogTitle>{strings.templateImport.title}</DialogTitle>
+            <DialogContent>
+              {tables &&
+                tables.map((table) => {
+                  return (
+                    <React.Fragment key={`table-${table.name}`}>
+                      <h4>{table.type} table: {table.name}</h4>
+                      <h5>
+                        {this.props.mode === MappingMode.ImportTemplate
+                          ? strings.templateImport.usbtitleImportTemplate
+                          : strings.templateImport.usbtitleImportData}
+                      </h5>
+                      <FTable>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHeaderCell>
+                              {this.props.mode === MappingMode.ImportTemplate
+                                ? strings.templateImport.columnNameTemplate
+                                : strings.templateImport.columnNameChart}
+                            </TableHeaderCell>
+                            <TableHeaderCell>
+                              {strings.templateImport.dataType}
+                            </TableHeaderCell>
+                            <TableHeaderCell>
+                              {strings.templateImport.examples}
+                            </TableHeaderCell>
+                            <TableHeaderCell>
+                              {strings.templateImport.mapped}
+                            </TableHeaderCell>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {table.columns.map((column) => {
+                            const datasetTable = this.state.datasetTables.find(
+                              (t) =>
+                                t.name ===
+                                this.props.tableMapping.get(table.name) ||  t.type === table.type
+                            );
 
-                          const optionValues =
-                            datasetTable?.columns
-                              .filter(
-                                (pbiColumn) =>
-                                  pbiColumn.type === column.type ||
-                                  column.type === DataType.String
-                              )
-                              .map((pbiColumn) => {
-                                return pbiColumn.displayName;
-                              }) || [];
+                            const optionValues =
+                              datasetTable?.columns
+                                .filter(
+                                  (pbiColumn) =>
+                                    pbiColumn.type === column.type ||
+                                    column.type === DataType.String
+                                )
+                                .map((pbiColumn) => {
+                                  return pbiColumn.displayName;
+                                }) || [];
 
-                          return (
-                            <React.Fragment
-                              key={`${table.name}-${column.name}`}
-                            >
-                              <tr className="charticulator__file-view-mapping_rows">
-                                {" "}
-                                {/*  className="charticulator__file-view-mapping_row_item" */}
-                                <td className="charticulator__file-view-mapping_row_item">
-                                  {column.name}
-                                </td>
-                                <td className="charticulator__file-view-mapping_row_item">
-                                  {strings.typeDisplayNames[column.type]}
-                                </td>
-                                <td className="charticulator__file-view-mapping_row_item">
-                                  {column.metadata.examples}
-                                </td>
-                                <td className="charticulator__file-view-mapping_row_item">
-                                  <Select
-                                    labels={optionValues}
-                                    icons={null}
-                                    options={optionValues}
-                                    value={getDefaultValue(
-                                      column.name
-                                    )().toString()}
-                                    showText={true}
-                                    onChange={onChange(column.name)}
-                                  />
-                                </td>
-                              </tr>
-                            </React.Fragment>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                );
-              })}
-            <div className="charticulator__file-view-mapping_row_button_toolbar">
-              <ButtonRaised
+                            const defaultValue = getDefaultValue(
+                              column.name
+                            );
+
+                            return (
+                              <React.Fragment
+                                key={`column-${table.name}-${column.name}`}
+                              >
+                                <TableRow>
+                                  <TableCell>
+                                    {column.name}
+                                  </TableCell>
+                                  <TableCell>
+                                    {strings.typeDisplayNames[column.type]}
+                                  </TableCell>
+                                  <TableCell>
+                                    {column.metadata.examples}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Dropdown
+                                      style={{
+                                        minWidth: "unset",
+                                        width: "100%",
+                                      }}
+                                      value={defaultValue}
+                                      onOptionSelect={(e, data) => {
+                                        onChange(column.name)(data.optionValue);
+                                      }}
+                                    >
+                                      {optionValues.map(option => {
+                                        return (<Option value={option} text={option}>
+                                          {option}
+                                        </Option>);
+                                      })}
+                                    </Dropdown>
+                                  </TableCell>
+                                </TableRow>
+                              </React.Fragment>
+                            );
+                          })}
+                        </TableBody>
+                      </FTable>
+                    </React.Fragment>
+                  );
+                })}
+            </DialogContent>
+            <DialogActions
+              style={{
+                gridColumnStart: 1
+              }}
+            >
+              <Button
+                disabled={this.props.mode === MappingMode.ImportDataset}
+                onClick={() => {
+                  showOpenFileDialog(["csv"]).then((file) => {
+                    const loader = new Dataset.DatasetLoader();
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                      const newTable = loader.loadDSVFromContents(
+                        file.name,
+                        reader.result as string,
+                        this.props.format
+                      );
+                      newTable.type = TableType.Main;
+                      const datasetTables = this.state.datasetTables.map((x) => {
+                        if (x.type == TableType.Main) {
+                          return newTable;
+                        } else {
+                          return x;
+                        }
+                      });
+                      if (!datasetTables.find(t => t.type === TableType.Main)) {
+                        datasetTables.push(newTable);
+                      }      
+                      const newTableMapping = new Map(this.state.tableMapping.entries());
+                      const mainTableName = this.props.tables.find(t => t.type === TableType.Main).name;
+
+                      newTableMapping.set(mainTableName, getTableName(file.name));
+
+                      this.setState({
+                        datasetTables: [...datasetTables],
+                        tableMapping: newTableMapping
+                      });
+
+                      this.props.onImportDataClick(TableType.Main)
+                    }
+
+                    reader.readAsText(file);
+                  });
+                }}
+                title={strings.templateImport.importData}
+              >
+                {strings.templateImport.importData}
+              </Button>
+              <Button
+                disabled={this.props.mode === MappingMode.ImportDataset}
+                onClick={() => {
+                  showOpenFileDialog(["csv"]).then((file) => {
+                    const loader = new Dataset.DatasetLoader();
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                      const newTable = loader.loadDSVFromContents(
+                        file.name,
+                        reader.result as string,
+                        this.props.format,
+                      );
+                      newTable.type = TableType.Links;
+                      const datasetTables = this.state.datasetTables.map((x) => {
+                        if (x.type == TableType.Links) {
+                          return newTable;
+                        } else {
+                          return x;
+                        }
+                      });
+                      if (!datasetTables.find(t => t.type === TableType.Links)) {
+                        datasetTables.push(newTable);
+                      }                      
+                      const newTableMapping = new Map(this.state.tableMapping.entries());
+                      const linksTableName = this.props.tables.find(t => t.type === TableType.Links)?.name;
+                      if (linksTableName) {
+                        newTableMapping.set(linksTableName, getTableName(file.name));
+                      } else {
+                        newTableMapping.set(getTableName(file.name), getTableName(file.name));
+                      }
+
+                      this.setState({
+                        datasetTables: [...datasetTables],
+                        tableMapping: newTableMapping
+                      });
+
+                      this.props.onImportDataClick(TableType.Links)
+                    }
+
+                    reader.readAsText(file);
+                  });
+                }}
+                title={strings.templateImport.importLinksData}
+              >
+                {strings.templateImport.importLinksData}
+              </Button>
+              <Button
                 onClick={() => {
                   this.props.onClose();
                 }}
-                text={strings.button.cancel}
-              />
-              <ButtonRaised
+                title={strings.button.cancel}
+              >
+                {strings.button.cancel}
+              </Button>
+              <Button
                 onClick={() => {
                   if (
                     this.props.unmappedColumns.filter(
@@ -214,21 +319,23 @@ export class FileViewImport extends ContextedComponent<
                         undefined
                     ).length === 0
                   ) {
-                    this.props.onSave(this.state.columnMappings);
+                    this.props.onSave(this.state.columnMappings, this.state.tableMapping, this.state.datasetTables);
                   }
                 }}
-                text={strings.templateImport.save}
+                title={strings.templateImport.save}
                 disabled={
                   this.props.unmappedColumns.filter(
                     (unmapped) =>
                       this.state.columnMappings.get(unmapped.name) === undefined
                   ).length !== 0
                 }
-              />
-            </div>
-          </section>
-        </section>
-      </FloatingPanel>
+              >
+                {strings.templateImport.save}
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
     );
   }
 }

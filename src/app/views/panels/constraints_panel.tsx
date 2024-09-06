@@ -14,6 +14,7 @@ import {
 import { Button, Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { SVGImageIcon } from "../../components/icons";
 import { Actions } from "../../actions";
+import { strings } from "../../../strings";
 
 interface ChartObjectWithState {
     persistent: boolean;
@@ -112,7 +113,7 @@ export const ConstraintsPanel: React.FC<{
                         flex: 1,
                         marginRight: "5px"
                     }}>
-                    Save
+                    {strings.constraints.save}
                 </Button>
                 <Button
                     size="small"
@@ -139,10 +140,10 @@ export const ConstraintsPanel: React.FC<{
                 style={{
                     flex: 1
                 }}>
-                    Add constraint
+                    {strings.constraints.add}
                 </Button>
             </div>
-            <h3>Constraints</h3>
+            <h3>{strings.constraints.constraints}</h3>
             {
                 (constraints.map((constraint) => {
                     const element = Prototypes.findObjectById(store.chart, constraint.attributes.element);
@@ -233,8 +234,8 @@ const ConstraintView: React.FC<{
             justifyItems: "start",
             marginBottom: "5px"
         }}>
-            <h4>{`${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.attribute} = ${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.targetAttribute}`}</h4>
-            <Label>Parent object</Label>
+            <h4>{`${elementWithState ? elementWithState.element.properties.name : ""}.${constraint.attributes.attribute} = ${targetWithState ? targetWithState.element.properties.name : ""}.${constraint.attributes.targetAttribute}`}</h4>
+            <Label>{strings.constraints.parentObject}</Label>
             <Dropdown
                 disabled={elementWithState?.persistent}
                 title="Place where the constraint is defined"
@@ -262,9 +263,9 @@ const ConstraintView: React.FC<{
                         );
                     })}
             </Dropdown>
-            <Label>Constraint type</Label>
+            <Label>{strings.constraints.type}</Label>
             <Dropdown
-                title="Type"
+                title={strings.constraints.type}
                 disabled={true}
                 value={constraint.type}
                 // selectedOptions={[constraint.type]}
@@ -290,7 +291,7 @@ const ConstraintView: React.FC<{
                         );
                     })}
             </Dropdown>
-            <Label>Gap</Label>
+            <Label>{strings.constraints.gap}</Label>
             <Input
                 type="number"
                 value={constraint.attributes.gap.toString()}
@@ -300,7 +301,7 @@ const ConstraintView: React.FC<{
                     onConstraintChange(newConstraint);
                 }}
             />
-            <Label>Element</Label>
+            <Label>{strings.constraints.element}</Label>
             <Dropdown
                 title="Element"
                 value={objects.find(o => o.element._id === constraint.attributes.element)?.element.properties.name}
@@ -332,9 +333,9 @@ const ConstraintView: React.FC<{
                         );
                     })}
             </Dropdown>
-            <Label>Element attribute</Label>
+            <Label>{strings.constraints.elementAttribute}</Label>
             <Dropdown
-                title="Element attribute"
+                title={strings.constraints.elementAttribute}
                 value={constraint.attributes.attribute}
                 selectedOptions={[constraint.attributes.attribute]}
                 onOptionSelect={(_, { optionValue: value }) => {
@@ -358,9 +359,9 @@ const ConstraintView: React.FC<{
                         );
                     })}
             </Dropdown>
-            <Label>Target</Label>
+            <Label>{strings.constraints.target}</Label>
             <Dropdown
-                title="Target"
+                title={strings.constraints.target}
                 value={objects.find(o => o.element._id === constraint.attributes.targetElement)?.element.properties.name}
                 selectedOptions={[constraint.attributes.targetElement]}
                 onOptionSelect={(_, { optionValue: value }) => {
@@ -390,9 +391,9 @@ const ConstraintView: React.FC<{
                         );
                     })}
             </Dropdown>
-            <Label>Target attribute</Label>
+            <Label>{strings.constraints.targetAttribute}</Label>
             <Dropdown
-                title="Target attribute"
+                title={strings.constraints.targetAttribute}
                 value={constraint.attributes.targetAttribute}
                 selectedOptions={[constraint.attributes.targetAttribute]}
                 onOptionSelect={(_, { optionValue: value }) => {
@@ -416,7 +417,6 @@ const ConstraintView: React.FC<{
                         );
                     })}
             </Dropdown>
-            {/* <pre>{JSON.stringify(constraint.attributes, null, " ")}</pre> */}
             <div style={{
                 display: "flex",
                 flexDirection: "row",
@@ -432,7 +432,7 @@ const ConstraintView: React.FC<{
                     onClick={() => {
                         onRemove(constraint);
                     }}>
-                    Remove
+                    {strings.constraints.remove}
                 </Button>
             </div>
         </div>

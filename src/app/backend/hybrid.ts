@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import { AbstractBackend, ItemData, ItemDescription, ItemMetadata } from "./abstract";
+import { AbstractBackend, ItemData, ItemDescription, ItemMetadata, ItemType } from "./abstract";
 import { CDNBackend, ICDNBackendOptions } from "./cdn";
 import { IndexedDBBackend } from "./indexed_db";
 
@@ -9,7 +9,7 @@ export interface IResourceDescription extends ItemData {
     url: string;
     name: string;
     img: string;
-    type: "chart" | "tmplt";
+    type: ItemType;
     author: {
         name: string;
         contact: string;

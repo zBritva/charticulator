@@ -3,7 +3,7 @@
 
 import * as FileSaver from "file-saver";
 import { saveAs } from "file-saver";
-import { Prototypes, deepClone, uniqueID } from "../../../core";
+import { deepClone, uniqueID } from "../../../core";
 import { Actions } from "../../actions";
 import {
   renderDataURLToPNG,
@@ -20,6 +20,8 @@ import {
   NestedEditorMessage,
   NestedEditorMessageType,
 } from "../../application";
+import { ChartTemplate, Dataset, Specification } from "../../../container";
+import { TableType } from "../../../core/dataset";
 
 /** Handlers for document-level actions such as Load, Save, Import, Export, Undo/Redo, Reset */
 // eslint-disable-next-line
@@ -185,31 +187,103 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
   });
 
   REG.add(Actions.ImportChartAndDataset, function (action) {
-    this.currentChartID = null;
-    this.currentSelection = null;
-    this.dataset = action.dataset;
-    this.originDataset = deepClone(this.dataset);
+    this.importChartAndDataset(action);
+  });
 
-    this.chart = action.specification;
+  REG.add(Actions.ImportTemplate, function (action) {
+    const data = action.template;
+    const mappingCallback = action.mappingCallback;
 
-    this.chartManager = new Prototypes.ChartStateManager(
-      this.chart,
-      this.dataset,
-      null,
-      {},
-      {},
-      action.originSpecification
-        ? deepClone(action.originSpecification)
-        : this.chartManager.getOriginChart()
-    );
-    this.chartManager.onUpdate(() => {
-      this.solveConstraintsAndUpdateGraphics();
+    let unmappedColumns: Specification.Template.Column[] = [];
+    data.tables[0].columns.forEach((column) => {
+      unmappedColumns = unmappedColumns.concat(
+        this.checkColumnsMapping(
+          column,
+          TableType.Main,
+          this.dataset
+        )
+      );
     });
-    this.chartState = this.chartManager.chartState;
+    if (data.tables[1]) {
+      data.tables[1].columns.forEach((column) => {
+        unmappedColumns = unmappedColumns.concat(
+          this.checkColumnsMapping(
+            column,
+            TableType.Links,
+            this.dataset
+          )
+        );
+      });
+    }
 
-    this.emit(AppStore.EVENT_DATASET);
-    this.emit(AppStore.EVENT_SELECTION);
-    this.solveConstraintsAndUpdateGraphics();
+    data.tables[0].type = TableType.Main;
+    if (data.tables[1]) {
+      data.tables[1].type = TableType.Links;
+    }
+
+    const tableMapping = new Map<string, string>();
+    tableMapping.set(
+      data.tables[0].name,
+      this.dataset.tables[0].name
+    );
+    if (data.tables[1] && this.dataset.tables[1]) {
+      tableMapping.set(
+        data.tables[1].name,
+        this.dataset.tables[1].name
+      );
+    }
+
+    const loadTemplateIntoState = (
+      tableMapping: Map<string, string>,
+      columnMapping: Map<string, string>,
+      datasetTable: Dataset.Table[]
+    ) => {
+      const template = new ChartTemplate(data);
+
+      for (const table of template.getDatasetSchema()) {
+        template.assignTable(
+          table.name,
+          tableMapping.get(table.name) || table.name
+        );
+        for (const column of table.columns) {
+          template.assignColumn(
+            table.name,
+            column.name,
+            columnMapping.get(column.name) || column.name
+          );
+        }
+      }
+
+      const newDataset: Dataset.Dataset = {
+        ...this.dataset,
+        tables: datasetTable
+      };
+
+      const instance = template.instantiate(
+        newDataset,
+        false // no scale inference
+      );
+
+      this.importChartAndDataset(new Actions.ImportChartAndDataset(
+        instance.chart,
+        newDataset,
+        {}
+      ))
+
+      this.replaceDataset(new Actions.ReplaceDataset(newDataset));
+    };
+
+    if (unmappedColumns.length > 0) {
+      mappingCallback(unmappedColumns, tableMapping, this.dataset.tables, data.tables, (mapping, tableMapping, datasetTable) => {
+        loadTemplateIntoState(
+          tableMapping,
+          mapping,
+          datasetTable
+        );
+      });
+    } else {
+      loadTemplateIntoState(tableMapping, new Map(), this.dataset.tables);
+    }
   });
 
   REG.add(Actions.UpdatePlotSegments, function () {
@@ -228,29 +302,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
   });
 
   REG.add(Actions.ReplaceDataset, function (action) {
-    this.currentChartID = null;
-    this.currentSelection = null;
-    this.dataset = action.dataset;
-    this.originDataset = deepClone(this.dataset);
-
-    this.chartManager = new Prototypes.ChartStateManager(
-      this.chart,
-      this.dataset,
-      null,
-      {},
-      {},
-      action.keepState ? this.chartManager.getOriginChart() : null
-    );
-    this.chartManager.onUpdate(() => {
-      this.solveConstraintsAndUpdateGraphics();
-    });
-    this.chartState = this.chartManager.chartState;
-    this.updatePlotSegments();
-    this.updateDataAxes();
-    this.updateScales();
-    this.solveConstraintsAndUpdateGraphics();
-    this.emit(AppStore.EVENT_DATASET);
-    this.emit(AppStore.EVENT_SELECTION);
+    this.replaceDataset(action);
   });
 
   REG.add(Actions.ConvertColumnDataType, function (action) {
@@ -431,3 +483,4 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     this.emit(AppStore.EVENT_GRAPHICS);
   });
 }
+

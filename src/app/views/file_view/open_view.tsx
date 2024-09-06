@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
@@ -19,6 +20,7 @@ import {
   DeleteFilled,
   OpenRegular,
 } from "@fluentui/react-icons";
+import { FileViewImport, MappingMode } from "./import_view";
 
 export interface FileViewOpenState {
   chartList: ItemDescription[];
@@ -27,6 +29,8 @@ export interface FileViewOpenState {
   displayPrivate: boolean;
   displayPublic: boolean;
   filterText: string;
+  importTemplateDialog: boolean;
+  dialogOptions: any;
 }
 
 export class FileViewOpen extends React.Component<
@@ -42,7 +46,9 @@ export class FileViewOpen extends React.Component<
     currentChartList: [],
     displayPrivate: true,
     displayPublic: true,
-    filterText: ""
+    filterText: "",
+    importTemplateDialog: false,
+    dialogOptions: null
   };
 
   public componentDidMount() {
@@ -51,7 +57,7 @@ export class FileViewOpen extends React.Component<
 
   public updateChartList() {
     const store = this.props.store;
-    store.backend.list("chart", "timeCreated", 0, 1000).then((result) => {
+    store.backend.list(null, "timeCreated", 0, 1000).then((result) => {
       this.setState({
         chartList: result.items,
         chartCount: result.totalCount
@@ -60,12 +66,35 @@ export class FileViewOpen extends React.Component<
   }
 
   public applyUserFilter() {
-    this.setState({
-      currentChartList: this.state.chartList
-        .filter(chart => this.state.displayPublic || chart.source !== "cdn")
-        .filter(chart => this.state.displayPrivate || chart.source !== "indexed")
-        .filter(chart => this.state.filterText == "" || chart.metadata.name.includes(this.state.filterText))
+    this.setState(state => {
+      return {
+        currentChartList: state.chartList
+          .filter(chart => state.displayPublic || chart.source !== "cdn")
+          .filter(chart => state.displayPrivate || chart.source !== "indexed")
+          .filter(chart => state.filterText == "" || chart.metadata.name.includes(state.filterText))
+      }
     })
+  }
+
+  public renderFileViewDialog(options: any) {
+    return (
+      <FileViewImport
+        mode={MappingMode.ImportTemplate}
+        tables={options.tables}
+        datasetTables={options.datasetTables}
+        tableMapping={options.tableMapping}
+        unmappedColumns={options.unmappedColumns}
+        format={options.format}
+        onSave={(mapping, tableMapping, datasetTable) => {
+          options.resolve(mapping, tableMapping, datasetTable);
+          options.close();
+        }}
+        onClose={() => {
+          options.close();
+        }}
+        onImportDataClick={() => { }}
+      />
+    );
   }
 
   // eslint-disable-next-line
@@ -86,12 +115,40 @@ export class FileViewOpen extends React.Component<
         return (
           <ul className="chart-list">
             {/* eslint-disable-next-line */}
+            {this.state.dialogOptions ? this.renderFileViewDialog(this.state.dialogOptions) : null}
             {this.state.currentChartList.map((chart) => {
               return (
                 <li
                   key={chart.id}
                   tabIndex={0}
                   onClick={() => {
+                    if (chart.type === "tmplt") {
+                      backend.get(chart.id).then((templateString) => {
+                        const template = templateString.data;
+                        this.props.store.dispatcher.dispatch(
+                          new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolve) => {
+                            this.setState({
+                              importTemplateDialog: true,
+                              dialogOptions: {
+                                unmappedColumns,
+                                tableMapping,
+                                datasetTables,
+                                tables,
+                                resolve,
+                                format: store.getLocaleFileFormat(),
+                                close: () => {
+                                  this.setState({
+                                    dialogOptions: null
+                                  })
+                                }
+                              }
+                            })
+                          })
+                        );
+                      })
+
+                      return;
+                    }
                     this.props.store.dispatcher.dispatch(
                       new Actions.Open(chart.id, (error) => {
                         if (error) {
@@ -218,75 +275,77 @@ export class FileViewOpen extends React.Component<
 
   public render() {
     return (
-      <section className="charticulator__file-view-content is-fix-width">
-        <h1>{strings.mainTabs.open}</h1>
-        <div style={{
+      <>
+        <section className="charticulator__file-view-content is-fix-width">
+          <h1>{strings.mainTabs.open}</h1>
+          <div style={{
             marginBottom: "12px",
             display: "flex",
             flexDirection: "row"
           }}>
-          <Button
-            style={{
-              minWidth: "130px"
-            }}
-            data-testid="fileOpenButton"
-            icon={<OpenRegular />}
-            title={strings.fileOpen.open}
-            onClick={async () => {
-              const file = await showOpenFileDialog(["chart"]);
-              const str = await readFileAsString(file);
-              const data = JSON.parse(str);
-              this.props.store.dispatcher.dispatch(
-                new Actions.Load(data.state)
-              );
-              this.props.onClose();
-            }}
-          >
-            {strings.fileOpen.open}
-          </Button>
-          <Input
-            style={{
-              marginLeft: "5px"
-            }}
-            placeholder={strings.fileOpen.filterText}
-            onChange={(e, data) => {
-              this.setState({
-                filterText: data.value
-              }, () => this.applyUserFilter());
-            }}
-          />
-          <ToggleButton
-            style={{
-              marginLeft: "5px"
-            }}
-            checked={this.state.displayPrivate}
-            onClick={() => {
-              this.setState((prev) => {
-                return {
-                  displayPrivate: !prev.displayPrivate
-                }
-              }, () => this.applyUserFilter())
-            }}>
-            {strings.fileOpen.private}
-          </ToggleButton>
-          <ToggleButton
-            style={{
-              marginLeft: "5px"
-            }}
-            checked={this.state.displayPublic}
-            onClick={() => {
-              this.setState((prev) => {
-                return {
-                  displayPublic: !prev.displayPublic
-                }
-              }, () => this.applyUserFilter())
-            }}>
-            {strings.fileOpen.public}
-          </ToggleButton>
-        </div>
+            <Button
+              style={{
+                minWidth: "130px"
+              }}
+              data-testid="fileOpenButton"
+              icon={<OpenRegular />}
+              title={strings.fileOpen.open}
+              onClick={async () => {
+                const file = await showOpenFileDialog(["chart"]);
+                const str = await readFileAsString(file);
+                const data = JSON.parse(str);
+                this.props.store.dispatcher.dispatch(
+                  new Actions.Load(data.state)
+                );
+                this.props.onClose();
+              }}
+            >
+              {strings.fileOpen.open}
+            </Button>
+            <Input
+              style={{
+                marginLeft: "5px"
+              }}
+              placeholder={strings.fileOpen.filterText}
+              onChange={(e, data) => {
+                this.setState({
+                  filterText: data.value
+                }, () => this.applyUserFilter());
+              }}
+            />
+            <ToggleButton
+              style={{
+                marginLeft: "5px"
+              }}
+              checked={this.state.displayPrivate}
+              onClick={() => {
+                this.setState((prev) => {
+                  return {
+                    displayPrivate: !prev.displayPrivate
+                  }
+                }, () => this.applyUserFilter())
+              }}>
+              {strings.fileOpen.private}
+            </ToggleButton>
+            <ToggleButton
+              style={{
+                marginLeft: "5px"
+              }}
+              checked={this.state.displayPublic}
+              onClick={() => {
+                this.setState((prev) => {
+                  return {
+                    displayPublic: !prev.displayPublic
+                  }
+                }, () => this.applyUserFilter())
+              }}>
+              {strings.fileOpen.public}
+            </ToggleButton>
+          </div>
 
-        {this.renderChartList()}
-      </section>
+          {this.renderChartList()}
+        </section>
+      </>
     );
   }
 }

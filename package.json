@@ -55,7 +55,7 @@
     ]
   },
   "dependencies": {
-    "@fluentui/react-components": "9.54.2",
+    "@fluentui/react-components": "9.54.13",
     "@fluentui/react-datepicker-compat": "0.4.41",
     "@fluentui/react-icons": "2.0.245",
     "d3-color": "3.1.0",

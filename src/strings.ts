@@ -86,6 +86,19 @@ export const strings = {
     no: "No",
     yes: "Yes",
   },
+  constraints: {
+    constraints: "Constraints",
+    add: "Add constraint",
+    parentObject: "Parent object",
+    type: "Constraint type",
+    gap: "Gap",
+    element: "Element",
+    elementAttribute: "Element attribute",
+    target: "Element",
+    targetAttribute: "Element attribute",
+    remove: "Remove",
+    save: "Save"
+  },
   canvas: {
     markContainer: "To edit this glyph, please create a plot segment with it.",
     newGlyph: "New glyph",
@@ -302,12 +315,14 @@ export const strings = {
     y: "Y",
   },
   templateImport: {
-    columnNameTemplate: "Column name from the template",
-    columnNameChart: "Column name from the chart design",
+    importData: "Import data",
+    importLinksData: "Import links data",
+    columnNameTemplate: "Template column",
+    columnNameChart: "Chart column",
     dataType: "Required data type",
     examples: "Example data values",
-    mapped: "Column name in the dataset",
-    save: "Save mapping",
+    mapped: "Dataset column",
+    save: "Save",
     tableName: "Table name",
     title: "Map your data",
     usbtitleImportTemplate:
