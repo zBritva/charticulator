@@ -12,7 +12,7 @@ import { Actions } from "../../actions";
 import { showOpenFileDialog, readFileAsString } from "../../utils";
 import { strings } from "../../../strings";
 import { AppStore } from "../../stores";
-import { Button, ToggleButton, Input, Dialog, DialogTrigger, DialogSurface, DialogBody, DialogTitle, DialogContent, DialogActions } from "@fluentui/react-components";
+import { Button, ToggleButton, Input } from "@fluentui/react-components";
 
 import {
   ArrowDownloadRegular,
@@ -21,11 +21,6 @@ import {
   OpenRegular,
 } from "@fluentui/react-icons";
 import { FileViewImport, MappingMode } from "./import_view";
-import { ModalView } from "../../controllers";
-
-import * as globals from "../../globals";
-
-import { TableType } from "../../../core/dataset";
 
 export interface FileViewOpenState {
   chartList: ItemDescription[];
@@ -97,7 +92,7 @@ export class FileViewOpen extends React.Component<
         onClose={() => {
           options.close();
         }}
-        onImportDataClick={(type: TableType) => { }}
+        onImportDataClick={() => { }}
       />
     );
   }

@@ -12,10 +12,7 @@ import { Dataset, Expression, Specification } from "../../../core";
 import { DragData, Actions } from "../../actions";
 import { DraggableElement, SVGImageIcon } from "../../components";
 import {
-  ModalView,
   PopupAlignment,
-  PopupContainer,
-  PopupController,
   PopupView,
 } from "../../controllers";
 import * as globals from "../../globals";

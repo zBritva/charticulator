@@ -103,11 +103,7 @@ export class FileViewImport extends ContextedComponent<
 
     return (
       <Dialog
-        open={true} onOpenChange={(e, data) => {
-
-        }}
-
-        >
+        open={true}>
         <DialogSurface
           style={{
             maxWidth: "100vh"

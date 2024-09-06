@@ -3,7 +3,7 @@
 
 import * as FileSaver from "file-saver";
 import { saveAs } from "file-saver";
-import { Prototypes, deepClone, uniqueID } from "../../../core";
+import { deepClone, uniqueID } from "../../../core";
 import { Actions } from "../../actions";
 import {
   renderDataURLToPNG,
@@ -22,7 +22,6 @@ import {
 } from "../../application";
 import { ChartTemplate, Dataset, Specification } from "../../../container";
 import { TableType } from "../../../core/dataset";
-import { Table } from "src/core/specification/template";
 
 /** Handlers for document-level actions such as Load, Save, Import, Export, Undo/Redo, Reset */
 // eslint-disable-next-line

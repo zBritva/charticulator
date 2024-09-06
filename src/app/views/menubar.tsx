@@ -23,14 +23,10 @@ import {
 
 import { FileView, MainTabs } from "./file_view";
 import { AppStore } from "../stores";
-import { classNames, readFileAsString, showOpenFileDialog } from "../utils";
+import { classNames, readFileAsString } from "../utils";
 import {
-  ChartTemplate,
-  Dataset,
-  // primaryButtonStyles,
   Specification,
 } from "../../container";
-import { TableType } from "../../core/dataset";
 import { FileViewImport, MappingMode } from "./file_view/import_view";
 import { strings } from "../../strings";
 import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
@@ -435,7 +431,7 @@ export class MenuBar extends ContextedComponent<
                                       onClose={() => {
                                         context.close();
                                       }}
-                                      onImportDataClick={(type: TableType) => {}}
+                                      onImportDataClick={() => {}}
                                     />
                                   </div>
                                 </ModalView>
