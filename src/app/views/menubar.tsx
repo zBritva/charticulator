@@ -428,8 +428,8 @@ export class MenuBar extends ContextedComponent<
                                       tableMapping={tableMapping}
                                       unmappedColumns={unmappedColumns}
                                       format={this.store.getLocaleFileFormat()}
-                                      onSave={(mapping, datasetTables) => {
-                                        resolve(mapping, datasetTables);
+                                      onSave={(mapping, tableMapping, datasetTables) => {
+                                        resolve(mapping, tableMapping, datasetTables);
                                         context.close();
                                       }}
                                       onClose={() => {

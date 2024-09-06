@@ -133,8 +133,8 @@ export class ColumnsView extends React.Component<
         tableMapping={options.tableMapping}
         unmappedColumns={options.unmappedColumns}
         format={options.format}
-        onSave={(mapping, datasetTables) => {
-          options.onSave(mapping, datasetTables);
+        onSave={(mapping, tableMapping, datasetTables) => {
+          options.onSave(mapping, tableMapping, datasetTables);
         }}
         onClose={() => {
           options.onClose();
@@ -298,7 +298,7 @@ export class ColumnsView extends React.Component<
                                   dialogOptions: null
                                 });
                               },
-                              onSave: (mapping, datasetTables) => {
+                              onSave: (mapping, tableMapping, datasetTables) => {
                                 loadTemplateIntoState(
                                   store,
                                   tableMapping,

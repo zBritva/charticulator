@@ -90,8 +90,8 @@ export class FileViewOpen extends React.Component<
         tableMapping={options.tableMapping}
         unmappedColumns={options.unmappedColumns}
         format={options.format}
-        onSave={(mapping, datasetTable) => {
-          options.resolve(mapping, datasetTable);
+        onSave={(mapping, tableMapping, datasetTable) => {
+          options.resolve(mapping, tableMapping, datasetTable);
           options.close();
         }}
         onClose={() => {

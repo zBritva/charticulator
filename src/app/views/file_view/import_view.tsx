@@ -23,7 +23,7 @@ export interface FileViewImportProps {
   tableMapping: Map<string, string>;
   unmappedColumns: Specification.Template.Column[];
   format: LocaleFileFormat;
-  onSave: (columnMapping: Map<string, string>, datasetTables: Table[]) => void;
+  onSave: (columnMapping: Map<string, string>, tableMapping: Map<string, string>, datasetTables: Table[]) => void;
   onImportDataClick: (type: TableType) => void;
   onClose: () => void;
 }
@@ -31,6 +31,7 @@ export interface FileViewImportState {
   saving?: boolean;
   error?: string;
   columnMappings: Map<string, string>;
+  tableMapping: Map<string, string>;
   datasetTables: Table[];
 }
 
@@ -40,7 +41,8 @@ export class FileViewImport extends ContextedComponent<
 > {
   public state: FileViewImportState = {
     columnMappings: new Map(),
-    datasetTables: this.props.datasetTables
+    datasetTables: this.props.datasetTables,
+    tableMapping: this.props.tableMapping
   };
 
   // eslint-disable-next-line
@@ -234,9 +236,14 @@ export class FileViewImport extends ContextedComponent<
                           return x;
                         }
                       });
+                      const newTableMapping = new Map(this.state.tableMapping.entries());
+                      const mainTableName = this.props.tables.find(t => t.type === TableType.Main).name;
+
+                      newTableMapping.set(mainTableName, file.name);
 
                       this.setState({
-                        datasetTables: [...datasetTables]
+                        datasetTables: [...datasetTables],
+                        tableMapping: newTableMapping
                       });
 
                       this.props.onImportDataClick(TableType.Main)
@@ -269,9 +276,17 @@ export class FileViewImport extends ContextedComponent<
                           return x;
                         }
                       });
+                      const newTableMapping = new Map(this.state.tableMapping.entries());
+                      const linksTableName = this.props.tables.find(t => t.type === TableType.Links)?.name;
+                      if (linksTableName) {
+                        newTableMapping.set(linksTableName, file.name);
+                      } else {
+                        newTableMapping.set(file.name, file.name);
+                      }
 
                       this.setState({
-                        datasetTables: [...datasetTables]
+                        datasetTables: [...datasetTables],
+                        tableMapping: newTableMapping
                       });
 
                       this.props.onImportDataClick(TableType.Links)
@@ -301,7 +316,7 @@ export class FileViewImport extends ContextedComponent<
                         undefined
                     ).length === 0
                   ) {
-                    this.props.onSave(this.state.columnMappings, this.state.datasetTables);
+                    this.props.onSave(this.state.columnMappings, this.state.tableMapping, this.state.datasetTables);
                   }
                 }}
                 title={strings.templateImport.save}

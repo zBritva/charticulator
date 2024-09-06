@@ -270,7 +270,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     };
 
     if (unmappedColumns.length > 0) {
-      mappingCallback(unmappedColumns, tableMapping, this.dataset.tables, data.tables, (mapping, datasetTable) => {
+      mappingCallback(unmappedColumns, tableMapping, this.dataset.tables, data.tables, (mapping, tableMapping, datasetTable) => {
         loadTemplateIntoState(
           tableMapping,
           mapping,
