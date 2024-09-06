@@ -428,40 +428,14 @@ export class MenuBar extends ContextedComponent<
                                       tableMapping={tableMapping}
                                       unmappedColumns={unmappedColumns}
                                       format={this.store.getLocaleFileFormat()}
-                                      onSave={(mapping) => {
-                                        resolve(mapping);
+                                      onSave={(mapping, datasetTables) => {
+                                        resolve(mapping, datasetTables);
                                         context.close();
                                       }}
                                       onClose={() => {
                                         context.close();
                                       }}
-                                      onImportDataClick={(type: TableType) => {
-                                        showOpenFileDialog(["csv"]).then((file) => {
-                                          const loader = new Dataset.DatasetLoader();
-                                          const reader = new FileReader();
-
-                                          reader.onload = () => {
-                                            const newTable = loader.loadDSVFromContents(
-                                              file.name,
-                                              reader.result as string,
-                                              this.store.getLocaleFileFormat()
-                                            );
-                                            const newDataset: Dataset.Dataset = {
-                                              name: this.store.dataset.name,
-                                              tables: this.store.dataset.tables.map((x) => {
-                                                // replace old table with new table type
-                                                if (x.type == type) {
-                                                  return newTable;
-                                                } else {
-                                                  return x;
-                                                }
-                                              }),
-                                            };
-
-                                            this.store.dispatcher.dispatch(new Actions.ReplaceDataset(newDataset, true))
-                                          }
-                                        });
-                                      }}
+                                      onImportDataClick={(type: TableType) => {}}
                                     />
                                   </div>
                                 </ModalView>

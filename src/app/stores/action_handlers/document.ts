@@ -20,8 +20,9 @@ import {
   NestedEditorMessage,
   NestedEditorMessageType,
 } from "../../application";
-import { ChartTemplate, Specification } from "../../../container";
+import { ChartTemplate, Dataset, Specification } from "../../../container";
 import { TableType } from "../../../core/dataset";
+import { Table } from "src/core/specification/template";
 
 /** Handlers for document-level actions such as Load, Save, Import, Export, Undo/Redo, Reset */
 // eslint-disable-next-line
@@ -230,7 +231,8 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
 
     const loadTemplateIntoState = (
       tableMapping: Map<string, string>,
-      columnMapping: Map<string, string>
+      columnMapping: Map<string, string>,
+      datasetTable: Dataset.Table[]
     ) => {
       const template = new ChartTemplate(data);
 
@@ -247,29 +249,36 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
           );
         }
       }
+
+      const newDataset: Dataset.Dataset = {
+        ...this.dataset,
+        tables: datasetTable
+      };
+
       const instance = template.instantiate(
-        this.dataset,
+        newDataset,
         false // no scale inference
       );
 
       this.importChartAndDataset(new Actions.ImportChartAndDataset(
         instance.chart,
-        this.dataset,
+        newDataset,
         {}
       ))
 
-      this.replaceDataset(new Actions.ReplaceDataset(this.dataset));
+      this.replaceDataset(new Actions.ReplaceDataset(newDataset));
     };
 
     if (unmappedColumns.length > 0) {
-      mappingCallback(unmappedColumns, tableMapping, this.dataset.tables, data.tables, (mapping) => {
+      mappingCallback(unmappedColumns, tableMapping, this.dataset.tables, data.tables, (mapping, datasetTable) => {
         loadTemplateIntoState(
           tableMapping,
-          mapping
+          mapping,
+          datasetTable
         );
       });
     } else {
-      loadTemplateIntoState(tableMapping, new Map());
+      loadTemplateIntoState(tableMapping, new Map(), this.dataset.tables);
     }
   });
 
