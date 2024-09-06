@@ -217,6 +217,11 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       });
     }
 
+    data.tables[0].type = TableType.Main;
+    if (data.tables[1]) {
+      data.tables[1].type = TableType.Links;
+    }
+
     const tableMapping = new Map<string, string>();
     tableMapping.set(
       data.tables[0].name,

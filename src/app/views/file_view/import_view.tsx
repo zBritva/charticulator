@@ -8,7 +8,7 @@ import { Dataset, Specification } from "../../../core";
 import { DataType, Table, TableType } from "../../../core/dataset/dataset";
 import { strings } from "../../../strings";
 import { showOpenFileDialog } from "../../utils";
-import { LocaleFileFormat } from "../../../core/dataset/dsv_parser";
+import { getTableName, LocaleFileFormat } from "../../../core/dataset/dsv_parser";
 import { Button, Dialog, DialogBody, DialogContent, DialogSurface, DialogTitle, Dropdown, Option, Table as FTable, TableHeader, TableRow, TableHeaderCell, TableBody, TableCell, DialogActions } from "@fluentui/react-components";
 
 export enum MappingMode {
@@ -229,6 +229,7 @@ export class FileViewImport extends ContextedComponent<
                         reader.result as string,
                         this.props.format
                       );
+                      newTable.type = TableType.Main;
                       const datasetTables = this.state.datasetTables.map((x) => {
                         if (x.type == TableType.Main) {
                           return newTable;
@@ -239,7 +240,7 @@ export class FileViewImport extends ContextedComponent<
                       const newTableMapping = new Map(this.state.tableMapping.entries());
                       const mainTableName = this.props.tables.find(t => t.type === TableType.Main).name;
 
-                      newTableMapping.set(mainTableName, file.name);
+                      newTableMapping.set(mainTableName, getTableName(file.name));
 
                       this.setState({
                         datasetTables: [...datasetTables],
@@ -269,6 +270,7 @@ export class FileViewImport extends ContextedComponent<
                         reader.result as string,
                         this.props.format,
                       );
+                      newTable.type = TableType.Links;
                       const datasetTables = this.state.datasetTables.map((x) => {
                         if (x.type == TableType.Links) {
                           return newTable;
@@ -279,9 +281,9 @@ export class FileViewImport extends ContextedComponent<
                       const newTableMapping = new Map(this.state.tableMapping.entries());
                       const linksTableName = this.props.tables.find(t => t.type === TableType.Links)?.name;
                       if (linksTableName) {
-                        newTableMapping.set(linksTableName, file.name);
+                        newTableMapping.set(linksTableName, getTableName(file.name));
                       } else {
-                        newTableMapping.set(file.name, file.name);
+                        newTableMapping.set(getTableName(file.name), getTableName(file.name));
                       }
 
                       this.setState({
