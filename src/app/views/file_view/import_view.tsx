@@ -115,7 +115,7 @@ export class FileViewImport extends ContextedComponent<
               {tables &&
                 tables.map((table) => {
                   return (
-                    <>
+                    <React.Fragment key={`table-${table.name}`}>
                       <h4>{table.type} table: {table.name}</h4>
                       <h5>
                         {this.props.mode === MappingMode.ImportTemplate
@@ -146,7 +146,7 @@ export class FileViewImport extends ContextedComponent<
                             const datasetTable = this.state.datasetTables.find(
                               (t) =>
                                 t.name ===
-                                this.props.tableMapping.get(table.name) || table.name || t.type === table.type
+                                this.props.tableMapping.get(table.name) ||  t.type === table.type
                             );
 
                             const optionValues =
@@ -166,10 +166,9 @@ export class FileViewImport extends ContextedComponent<
 
                             return (
                               <React.Fragment
-                                key={`${table.name}-${column.name}`}
+                                key={`column-${table.name}-${column.name}`}
                               >
                                 <TableRow>
-                                  {" "}
                                   <TableCell>
                                     {column.name}
                                   </TableCell>
@@ -203,7 +202,7 @@ export class FileViewImport extends ContextedComponent<
                           })}
                         </TableBody>
                       </FTable>
-                    </>
+                    </React.Fragment>
                   );
                 })}
             </DialogContent>
@@ -233,6 +232,9 @@ export class FileViewImport extends ContextedComponent<
                           return x;
                         }
                       });
+                      if (!datasetTables.find(t => t.type === TableType.Main)) {
+                        datasetTables.push(newTable);
+                      }      
                       const newTableMapping = new Map(this.state.tableMapping.entries());
                       const mainTableName = this.props.tables.find(t => t.type === TableType.Main).name;
 
@@ -274,6 +276,9 @@ export class FileViewImport extends ContextedComponent<
                           return x;
                         }
                       });
+                      if (!datasetTables.find(t => t.type === TableType.Links)) {
+                        datasetTables.push(newTable);
+                      }                      
                       const newTableMapping = new Map(this.state.tableMapping.entries());
                       const linksTableName = this.props.tables.find(t => t.type === TableType.Links)?.name;
                       if (linksTableName) {
