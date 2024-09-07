@@ -32,21 +32,29 @@ export const ConstraintsPanel: React.FC<{
     // eslint-disable-next-line powerbi-visuals/insecure-random
     const [_, forceUpdate] = React.useState(Math.random());
 
+    const updateConstraintsList = React.useCallback(() => {
+        // eslint-disable-next-line powerbi-visuals/insecure-random
+        const glyphConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
+            ...constraint,
+            parentObjectID: glyph._id,
+            parentObjectType: "glyph"
+        })));
+        const generalConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.constraints.map((constraint) => ({
+            ...constraint,
+            parentObjectID: store.chartManager.chart._id,
+            parentObjectType: "chart"
+        }));
+        setConstraints([].concat(glyphConstraints, generalConstraints));
+    }, [setConstraints]);
+
+    React.useEffect(() => {
+        updateConstraintsList();
+    }, [updateConstraintsList]);
+
     React.useEffect(() => {
         tokens.current = [
             store.addListener(AppStore.EVENT_GRAPHICS, () => {
-                // eslint-disable-next-line powerbi-visuals/insecure-random
-                const glyphConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
-                    ...constraint,
-                    parentObjectID: glyph._id,
-                    parentObjectType: "glyph"
-                })));
-                const generalConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.constraints.map((constraint) => ({
-                    ...constraint,
-                    parentObjectID: store.chartManager.chart._id,
-                    parentObjectType: "chart"
-                }));
-                setConstraints([].concat(glyphConstraints, generalConstraints))
+                updateConstraintsList();
             }),
             store.addListener(AppStore.EVENT_SAVECHART, () => {
                 // eslint-disable-next-line powerbi-visuals/insecure-random
@@ -56,7 +64,7 @@ export const ConstraintsPanel: React.FC<{
         return () => {
             tokens.current.forEach((token) => token.remove());
         };
-    }, [store]);
+    }, [store, setConstraints]);
 
     const getGlyphState = React.useCallback((glyph: Specification.Glyph) => {
         const chartStore = store;
