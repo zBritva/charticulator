@@ -68,10 +68,10 @@ export class FileViewOpen extends React.Component<
   public applyUserFilter() {
     this.setState(state => {
       return {
-        currentChartList: state.chartList
+        currentChartList: [...state.chartList
           .filter(chart => state.displayPublic || chart.source !== "cdn")
           .filter(chart => state.displayPrivate || chart.source !== "indexed")
-          .filter(chart => state.filterText == "" || chart.metadata.name.includes(state.filterText))
+          .filter(chart => state.filterText == "" || chart.metadata.name.includes(state.filterText))]
       }
     })
   }
@@ -116,10 +116,10 @@ export class FileViewOpen extends React.Component<
           <ul className="chart-list">
             {/* eslint-disable-next-line */}
             {this.state.dialogOptions ? this.renderFileViewDialog(this.state.dialogOptions) : null}
-            {this.state.currentChartList.map((chart) => {
+            {this.state.currentChartList.map((chart, index) => {
               return (
                 <li
-                  key={chart.id}
+                  key={`${chart.id}-${index}`}
                   tabIndex={0}
                   onClick={() => {
                     if (chart.type === "tmplt") {
