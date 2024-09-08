@@ -47,7 +47,15 @@
               {
                 workerScriptContent: workerScript
               }
-            );
+            ).then(() => {
+              application.setOnSaveChartCallback((chart) => {
+                console.log('chart has been saved');
+              });
+              application.setOnExportTemplateCallback((template) => {
+                console.log('template has been exported');
+                return false;
+              });
+            });
           });
         }
       );

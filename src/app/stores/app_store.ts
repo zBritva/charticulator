@@ -89,6 +89,7 @@ import {
   getColumnNameByExpression,
 } from "../../core/prototypes/plot_segments/utils";
 import { AxisRenderer } from "../../core/prototypes/plot_segments/axis";
+import { boolean } from "src/core/expression";
 
 export interface ChartStoreStateSolverStatus {
   solving: boolean;
@@ -148,6 +149,8 @@ export class AppStore extends BaseStore {
   public static EVENT_SAVECHART = "savechart";
   /** Fires when user clicks Edit nested chart for embedded editor */
   public static EVENT_OPEN_NESTED_EDITOR = "openeditor";
+  /** Fires when user clicks Export chart as template */
+  public static EVENT_EXPORT_TEMPLATE = "exporttemplate";
 
   /** The WebWorker for solving constraints */
   public readonly worker: CharticulatorWorkerInterface;
@@ -395,6 +398,12 @@ export class AppStore extends BaseStore {
     );
   }
 
+  public onExportTemplate(callback: (base: string) => boolean) {
+    this.onExportTemplateCallback = callback;
+  }
+
+  public onExportTemplateCallback: (base: string) => boolean;
+
   public async backendSaveChart() {
     if (this.currentChartID != null) {
       const chart = await this.backend.get(this.currentChartID);
@@ -410,7 +419,10 @@ export class AppStore extends BaseStore {
       this.chartManager?.resetDifference();
 
       this.emit(AppStore.EVENT_GRAPHICS);
-      this.emit(AppStore.EVENT_SAVECHART);
+      this.emit(AppStore.EVENT_SAVECHART, {
+        state: chart.data,
+        name: chart.metadata.name
+      });
     }
   }
 
@@ -436,7 +448,10 @@ export class AppStore extends BaseStore {
     );
     this.currentChartID = id;
     this.emit(AppStore.EVENT_GRAPHICS);
-    this.emit(AppStore.EVENT_SAVECHART);
+    this.emit(AppStore.EVENT_SAVECHART, {
+      state,
+      name,
+    });
     return id;
   }
 

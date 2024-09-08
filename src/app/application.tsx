@@ -45,9 +45,9 @@ import { LocalStorageKeys } from "./globals";
 import { defaultVersionOfTemplate } from "./stores/defaults";
 import { MenuBarHandlers, MenubarTabButton } from "./views/menubar";
 import { TelemetryRecorder } from "./components";
-import { AttributeMap, MappingType } from "../core/specification";
+import { AttributeMap, MappingType, Template } from "../core/specification";
 import { NestedChartEditorOptions } from "../core/prototypes/controls";
-import { EditorType } from "./stores/app_store";
+import { AppStoreState, EditorType } from "./stores/app_store";
 import { LocalizationConfig } from "../container/container";
 
 import { FluentProvider } from "@fluentui/react-provider";
@@ -287,7 +287,6 @@ export class Application {
       }
     }
 
-    (window as any).mainStore = this.appStore;
     this.root.render(
       <>
         <FluentProvider theme={teamsLightTheme}>
@@ -535,5 +534,32 @@ export class Application {
 
   public unregisterExportTemplateTarget(name: string) {
     this.appStore.unregisterExportTemplateTarget(name);
+  }
+
+  public loadData(dataset: Dataset.Dataset)
+  {
+    this.appStore.dispatcher.dispatch(new Actions.ImportDataset(dataset));
+  }
+
+  public loadTemplate()
+  {
+  }
+
+  public setOnExportTemplateCallback(callback: (template: string) => boolean) {
+    this.appStore.onExportTemplate((template: string) => {
+      return callback(template);
+    });
+  }
+
+  public setOnSaveChartCallback(callback: ({
+    state,
+    name
+  }: {
+    state: AppStoreState,
+    name: string
+  }) => void) {
+    this.appStore.addListener(AppStore.EVENT_SAVECHART, (data) => {
+      callback(data);
+    });
   }
 }
