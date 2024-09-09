@@ -27,38 +27,20 @@
     </script>
 
     <script type="text/javascript">
-      const responce = fetch(`${CHARTICULATOR_CONFIG.WorkerURL}`).then(
-        (responce) => {
-          if (!responce.ok) {
-            throw Error(
-              `Loading worker script from ${
-                CHARTICULATOR_CONFIG.WorkerURL
-              } failed`
-            );
-          }
-          const script = responce.text().then((script) => {
-            const blob = new Blob([script], { type: "application/javascript" });
-
-            const workerScript = URL.createObjectURL(blob);
-            var application = new Charticulator.Application();
-            application.initialize(
-              CHARTICULATOR_CONFIG,
-              "container",
-              {
-                workerScriptContent: workerScript
-              }
-            ).then(() => {
-              application.setOnSaveChartCallback((chart) => {
-                console.log('chart has been saved');
-              });
-              application.setOnExportTemplateCallback((template) => {
-                console.log('template has been exported');
-                return false;
-              });
-            });
-          });
-        }
-      );
+      var application = new Charticulator.Application();
+      application.initialize(
+        CHARTICULATOR_CONFIG,
+        "container",
+        {}
+      ).then(() => {
+        application.setOnSaveChartCallback((chart) => {
+          console.log('chart has been saved');
+        });
+        application.setOnExportTemplateCallback((template) => {
+          console.log('template has been exported');
+          return false;
+        });
+      });
     </script>
     <script type="text/javascript">
       // Include Lato and Inconsolata from Google fonts.
