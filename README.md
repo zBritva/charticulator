@@ -1,6 +1,3 @@
-
-[![Deploy static content to Pages](https://github.com/zBritva/charticulator/actions/workflows/static.yml/badge.svg)](https://github.com/zBritva/charticulator/actions/workflows/static.yml)
-
 Charticulator
 ====
 
@@ -8,8 +5,7 @@ Charticulator is a new charting tool that allows you to design charts by interac
 
 Deployed `beta` branch available on [https://zbritva.github.io/charticulator/](https://zbritva.github.io/charticulator/)
 
-Project Team & contributors
-----
+## Project Team & contributors
 
 - [Donghao Ren](https://donghaoren.org/)
 - [Bongshin Lee](http://research.microsoft.com/en-us/um/people/bongshin/)
@@ -26,8 +22,7 @@ Project Team & contributors
 - [deldersveld](https://github.com/deldersveld)
 - [duncanhealy](https://github.com/duncanhealy)
 
-Build
-----
+## Build
 
 Follow the following steps to prepare a development environment:
 
@@ -37,7 +32,7 @@ Follow the following steps to prepare a development environment:
 Install node modules:
 
 ```bash
-yarn
+npm install
 ```
 
 Copy the template configuration file and edit its contents:
@@ -50,27 +45,137 @@ cp config.template.yml config.yml
 Run the following command to build Charticulator, which will create a self contained bundle in the `dist` folder:
 
 ```bash
-yarn build
+npm run build
 ```
+
+## App configurations (config.yml)
+
+Charticulator stores user charts in [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) by default. The backend can be switched to `hybrid`, `cdn`.
+
+Where
+
+- `cdn` sets loading charts from external resource. specified in `*.json` file specified in `CDNBackend` section.
+
+- `hybrid` sets loading charts from IndexedDB and CDN, but saves charts in IndexedDB only.
+
+```yaml
+Backend: "cdn"
+```
+
+`resourcesDescriptionUrl` sets URL to `*.json` file with chart list.
+
+```yaml
+CDNBackend:
+  resourcesDescriptionUrl: https://ilfat-galiev.im/charts.json
+```
+
+Example of chart list for loading from CDN:
+
+```json
+[
+  {
+    "id": "oecd_population_2018_1725220272068",
+    "url": "https://ilfat-galiev.im/charts/bubble_chart.chart",
+    "type": "chart",
+    "source": "cdn",
+    "metadata": {
+      "name": "Population of OECD Countries in 2018",
+      "thumbnail": "https://ilfat-galiev.im/images/gallery/oecd_population_2018.png",
+      "timeCreated": 1724554194242,
+      "timeModified": 1724556972145,
+      "allowDelete": false
+    },
+    "author": {
+      "name": "Microsoft"
+    }
+  },
+  {
+    "id": "arc_diagram_1636761600",
+    "url": "https://raw.githubusercontent.com/PowerBI-tips/Charticulator-Templates/main/templates/Arc%20Diagram/arc_diagram.tmplt",
+    "type": "tmplt",
+    "source": "cdn",
+    "metadata": {
+      "name": "Arc diagram",
+      "thumbnail": "",
+      "timeCreated": 1636027200,
+      "timeModified": 1636027200,
+      "allowDelete": false
+    },
+    "author": {
+      "name": "Mike Carlo",
+      "contact": "http://powerbi.tips/"
+    }
+  }
+]
+```
+
+## Embedding App to website
+
+To embedding the app into web site include JS files and CSS files (files are located in dist folder after build) to your HTML:
+
+```html
+<link rel="stylesheet" href="styles/app.css" type="text/css" />
+<script src="data/config.js"></script>
+<script src="scripts/app.bundle.js"></script>
+```
+
+Add "container" element for root:
+
+```html
+<div id="container"></div>
+```
+
+Add JS code for initialize application
+
+```html
+<script type="text/javascript">
+  var application = new Charticulator.Application();
+  application
+    .initialize(
+      CHARTICULATOR_CONFIG,
+      "container", // container ID
+      {}
+    )
+    .then(() => {
+      // sets callback function that calls on saving a chart
+      application.setOnSaveChartCallback((chart) => {
+        console.log("chart has been saved");
+      });
+      // sets callback function that calls on exporting a template
+      // if callback returns true, the app doesn't open file saving dialog
+      application.setOnExportTemplateCallback((template) => {
+        console.log("template has been exported");
+        return false;
+      });
+
+      // loads dataset into app
+      // application.loadData(data);
+
+      // loads chart template into app, if template columns and dataset columns aren't match app opens columns mapping view
+      // application.loadTemplate(data);
+    });
+</script>
+```
+
+## Testing
 
 Run a local web server to test Charticulator:
 
 ```bash
 # Serve Charticulator at http://localhost:4000
-yarn server
+npm run server
 
 # Serve Charticulator publicly at http://0.0.0.0:4000
 # Use this if you want to enable access from another computer
-yarn public_server
+npm run public_server
 ```
 
-Development
-----
+## Development
 
 For a live development environment, keep the following command running:
 
 ```bash
-yarn start
+npm run start
 ```
 
 This command watches for any change in `src/` and `sass/`, and recompiles Charticulator automatically.
@@ -89,9 +194,10 @@ The watch mode won't update when you change the following:
 When you update these, please do `yarn build` again.
 
 ### Sample Datasets
-You can add custom sample datasets that can be used with Charticulator.  To do so, create a `datasets` folder at the root of the repository(if it doesn't exist), add your `.csv` (or `.tsv`) to that folder, and finally create a `files.json` file in the folder with the following contents:
 
-```
+You can add custom sample datasets that can be used with Charticulator. To do so, create a `datasets` folder at the root of the repository(if it doesn't exist), add your `.csv` (or `.tsv`) to that folder, and finally create a `files.json` file in the folder with the following contents:
+
+```json
 [
     {
         "name": "<Your dataset display name>",
@@ -107,8 +213,7 @@ You can add custom sample datasets that can be used with Charticulator.  To do s
 ]
 ```
 
-Testing
-----
+## Testing
 
 Charticulator currently include a rudimentary test code:
 
@@ -117,21 +222,6 @@ yarn test
 ```
 
 More test cases are needed.
-
-
-# Contributing
-
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 # Documentation
 
