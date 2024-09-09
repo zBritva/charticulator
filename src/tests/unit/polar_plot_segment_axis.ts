@@ -26,7 +26,7 @@ describe("Polar plot segment", () => {
       localization: {
         currency: "$",
         thousandsDelimiter: ",",
-        decemalDelimiter: ".",
+        decimalDelimiter: ".",
         billionsFormat: "billions",
       },
     });

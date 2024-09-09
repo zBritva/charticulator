@@ -153,7 +153,7 @@ export class Application {
       workerScriptContent?: string;
       worker?: CharticulatorWorkerInterface;
     },
-    localizaiton: LocalizationConfig,
+    localization: LocalizationConfig,
     utcTimeZone: boolean,
     handlers?: IHandlers
   ) {
@@ -190,14 +190,14 @@ export class Application {
       setTimeZone(utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone);
     } catch (ex) {
       setFormatOptions({
-        currency: [localizaiton?.currency, ""] ?? defaultCurrency,
+        currency: [localization?.currency, ""] ?? defaultCurrency,
         grouping: defaultDigitsGroup,
-        decimal: localizaiton?.decemalDelimiter ?? defaultNumberFormat.decimal,
+        decimal: localization?.decimalDelimiter ?? defaultNumberFormat.decimal,
         thousands:
-          localizaiton?.thousandsDelimiter ?? defaultNumberFormat.decimal,
+          localization?.thousandsDelimiter ?? defaultNumberFormat.decimal,
         billionsFormat: "giga",
       });
-      console.warn("Loadin localization settings failed");
+      console.warn("Loading localization settings failed");
     }
 
     this.config = config;
@@ -210,7 +210,7 @@ export class Application {
       localization: {
         billionsFormat: formattingOptions.billionsFormat,
         currency: formattingOptions.currency[0],
-        decemalDelimiter: formattingOptions.decimal,
+        decimalDelimiter: formattingOptions.decimal,
         thousandsDelimiter: formattingOptions.thousands,
         grouping: [formattingOptions.grouping[0]],
       },
@@ -237,7 +237,7 @@ export class Application {
       localization: {
         billionsFormat: formattingOptions.billionsFormat,
         currency: formattingOptions.currency[0],
-        decemalDelimiter: formattingOptions.decimal,
+        decimalDelimiter: formattingOptions.decimal,
         thousandsDelimiter: formattingOptions.thousands,
         grouping: [formattingOptions.grouping[0]],
       },

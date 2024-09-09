@@ -26,7 +26,7 @@ describe("Chart Solver", () => {
         localization: {
           currency: "$",
           thousandsDelimiter: ",",
-          decemalDelimiter: ".",
+          decimalDelimiter: ".",
           billionsFormat: "billions",
         },
       });

@@ -22,7 +22,7 @@ export class CharticulatorWorkerProcess
       localization: {
         currency: "$",
         thousandsDelimiter: ",",
-        decemalDelimiter: ".",
+        decimalDelimiter: ".",
         billionsFormat: "billions",
       },
     });
