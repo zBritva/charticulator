@@ -56,9 +56,10 @@ import { CDNBackend } from "./backend/cdn";
 import { IndexedDBBackend } from "./backend/indexed_db";
 import { AbstractBackend } from "./backend/abstract";
 import { HybridBackend, IHybridBackendOptions } from "./backend/hybrid";
+import { FileViewImport, MappingMode } from "./views/file_view/import_view";
 
 export class ApplicationExtensionContext implements ExtensionContext {
-  constructor(public app: Application) {}
+  constructor(public app: Application) { }
 
   public getGlobalDispatcher(): Dispatcher<Action> {
     return this.app.appStore.dispatcher;
@@ -104,6 +105,19 @@ export interface NestedEditorData {
   };
 }
 
+export interface IHandlers {
+  menuBarHandlers?: MenuBarHandlers;
+  telemetry?: TelemetryRecorder;
+  tabButtons?: MenubarTabButton[];
+  nestedEditor?: {
+    onOpenEditor: (
+      options: Prototypes.Controls.NestedChartEditorOptions,
+      object: Specification.IObject<AttributeMap>,
+      property: Prototypes.Controls.Property
+    ) => void;
+  };
+}
+
 export class Application {
   public worker: CharticulatorWorkerInterface;
   public appStore: AppStore;
@@ -115,6 +129,8 @@ export class Application {
   private containerID: string;
 
   private root: ReactDOM.Root;
+
+  private handlers: IHandlers;
 
   private nestedEditor: {
     onOpenEditor: (
@@ -137,20 +153,10 @@ export class Application {
     },
     localizaiton: LocalizationConfig,
     utcTimeZone: boolean,
-    handlers?: {
-      menuBarHandlers?: MenuBarHandlers;
-      telemetry?: TelemetryRecorder;
-      tabButtons?: MenubarTabButton[];
-      nestedEditor?: {
-        onOpenEditor: (
-          options: Prototypes.Controls.NestedChartEditorOptions,
-          object: Specification.IObject<AttributeMap>,
-          property: Prototypes.Controls.Property
-        ) => void;
-      };
-    }
+    handlers?: IHandlers
   ) {
     try {
+      this.handlers = handlers;
       const UtcTimeZone = parseSafe(
         window.localStorage.getItem(LocalStorageKeys.UtcTimeZone),
         true
@@ -165,7 +171,7 @@ export class Application {
       );
       const NumberFormatRemove = parseSafe(
         window.localStorage.getItem(LocalStorageKeys.NumberFormatRemove) ||
-          defaultNumberFormat.remove,
+        defaultNumberFormat.remove,
         defaultNumberFormat.remove
       );
       const BillionsFormat = parseSafe(
@@ -252,7 +258,7 @@ export class Application {
     try {
       DelimiterSymbol = parseSafe(
         window.localStorage.getItem(LocalStorageKeys.DelimiterSymbol) ||
-          defaultDelimiter,
+        defaultDelimiter,
         defaultDelimiter
       );
     } catch (e) {
@@ -287,20 +293,11 @@ export class Application {
       }
     }
 
-    this.root.render(
-      <>
-        <FluentProvider theme={teamsLightTheme}>
-          <MainView
-            store={this.appStore}
-            ref={(e) => (this.mainView = e)}
-            viewConfiguration={this.config.MainView}
-            menuBarHandlers={handlers?.menuBarHandlers}
-            tabButtons={handlers?.tabButtons}
-            telemetry={handlers?.telemetry}
-          />
-        </FluentProvider>
-      </>
-    );
+    this.root.render(<>
+      <FluentProvider theme={teamsLightTheme}>
+        {this.renderMain(handlers)}
+      </FluentProvider>
+    </>);
 
     this.extensionContext = new ApplicationExtensionContext(this);
 
@@ -324,6 +321,16 @@ export class Application {
     }
 
     await this.processHashString();
+  }
+
+  private renderMain(handlers: IHandlers) {
+    return (<MainView
+      store={this.appStore}
+      ref={(e) => (this.mainView = e)}
+      viewConfiguration={this.config.MainView}
+      menuBarHandlers={handlers?.menuBarHandlers}
+      tabButtons={handlers?.tabButtons}
+      telemetry={handlers?.telemetry} />);
   }
 
   // eslint-disable-next-line
@@ -536,13 +543,50 @@ export class Application {
     this.appStore.unregisterExportTemplateTarget(name);
   }
 
-  public loadData(dataset: Dataset.Dataset)
-  {
+  public loadData(dataset: Dataset.Dataset) {
     this.appStore.dispatcher.dispatch(new Actions.ImportDataset(dataset));
   }
 
-  public loadTemplate()
-  {
+  public async loadTemplate(template: Specification.Template.ChartTemplate): Promise<boolean> {
+    return new Promise<boolean>((resolveImport) => {
+      this.appStore.dispatcher.dispatch(
+        new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolveMapping) => {
+          this.root.render(
+            <>
+              <FluentProvider theme={teamsLightTheme}>
+                {this.renderMain(this.handlers)}
+                <FileViewImport
+                  mode={MappingMode.ImportTemplate}
+                  tables={tables}
+                  datasetTables={datasetTables}
+                  tableMapping={tableMapping}
+                  unmappedColumns={unmappedColumns}
+                  format={this.appStore.getLocaleFileFormat()}
+                  onSave={(mapping, tableMapping, datasetTables) => {
+                    resolveMapping(mapping, tableMapping, datasetTables);
+                    resolveImport(true);
+                    this.root.render(<>
+                      <FluentProvider theme={teamsLightTheme}>
+                        {this.renderMain(this.handlers)}
+                      </FluentProvider>
+                    </>);
+                  }}
+                  onClose={() => {
+                    resolveImport(false);
+                    this.root.render(<>
+                      <FluentProvider theme={teamsLightTheme}>
+                        {this.renderMain(this.handlers)}
+                      </FluentProvider>
+                    </>);
+                  }}
+                  onImportDataClick={() => { }}
+                />
+              </FluentProvider>
+            </>
+          );
+        })
+      );
+    });
   }
 
   public setOnExportTemplateCallback(callback: (template: string) => boolean) {
