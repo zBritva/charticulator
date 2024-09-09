@@ -58,6 +58,8 @@ import { AbstractBackend } from "./backend/abstract";
 import { HybridBackend, IHybridBackendOptions } from "./backend/hybrid";
 import { FileViewImport, MappingMode } from "./views/file_view/import_view";
 
+const defaultWorkerScript = require("raw-loader!../../dist/scripts/worker.bundle.js");
+
 export class ApplicationExtensionContext implements ExtensionContext {
   constructor(public app: Application) { }
 
@@ -216,10 +218,18 @@ export class Application {
 
     this.root = ReactDOM.createRoot(document.getElementById(this.containerID));
 
+    let workerScriptContent = null;
+    if (workerConfig.workerScriptContent) {
+      workerScriptContent = workerConfig.workerScriptContent;
+    } else {
+      const blob = new Blob([defaultWorkerScript.default], { type: "application/javascript" });
+      workerScriptContent = URL.createObjectURL(blob);
+    }
+
     if (workerConfig.worker) {
       this.worker = workerConfig.worker;
     } else {
-      this.worker = new CharticulatorWorker(workerConfig.workerScriptContent);
+      this.worker = new CharticulatorWorker(workerScriptContent);
     }
 
     await this.worker.initialize({
