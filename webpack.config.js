@@ -58,6 +58,8 @@ module.exports = (env, { mode }) => {
   ];
   return [
     {
+      name: "app",
+      dependencies: ["worker"],
       // devtool: "eval",
       entry:
         mode == "production"
@@ -115,6 +117,7 @@ module.exports = (env, { mode }) => {
       }) : null].filter(p => p)
     },
     {
+      name: "about",
       module: {
         rules: [
           pegjsConfig,
@@ -138,6 +141,7 @@ module.exports = (env, { mode }) => {
       plugins
     },
     {
+      name: "worker",
       module: {
         rules: [
           pegjsConfig,
@@ -167,6 +171,7 @@ module.exports = (env, { mode }) => {
       }) : null].filter(p => p)
     },
     {
+      name: "container",
       module: {
         rules: [
           pegjsConfig,
