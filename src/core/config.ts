@@ -9,7 +9,7 @@ export type BillionsFormat = "giga" | "billions";
 export interface LocalizationConfig {
   currency: string;
   thousandsDelimiter: string;
-  decemalDelimiter: string;
+  decimalDelimiter: string;
   billionsFormat: BillionsFormat;
   grouping?: [number];
 }
@@ -32,7 +32,7 @@ export function setConfig(_?: CharticulatorCoreConfig) {
       localization: {
         currency: "$",
         thousandsDelimiter: ",",
-        decemalDelimiter: ".",
+        decimalDelimiter: ".",
         billionsFormat: "billions",
       },
     };

@@ -52,7 +52,7 @@ describe("Charticulator", () => {
           localization: {
             currency: "$",
             thousandsDelimiter: ",",
-            decemalDelimiter: ".",
+            decimalDelimiter: ".",
             billionsFormat: "billions",
           },
         },
@@ -63,7 +63,7 @@ describe("Charticulator", () => {
         {
           currency: "$",
           thousandsDelimiter: ",",
-          decemalDelimiter: ".",
+          decimalDelimiter: ".",
           billionsFormat: "giga",
         },
         true

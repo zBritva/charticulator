@@ -116,6 +116,13 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       const blob = new Blob([byteArray], {
         type: "application/x-binary",
       });
+      if (this.onExportTemplateCallback != null) {
+        this.emit(AppStore.EVENT_EXPORT_TEMPLATE, base64);
+        if (this.onExportTemplateCallback(base64))
+        {
+          return;
+        }
+      }
       FileSaver.saveAs(
         blob,
         action.target.getFileName

@@ -85,7 +85,7 @@ export class TestApplication {
       localization: {
         currency: "$",
         thousandsDelimiter: ",",
-        decemalDelimiter: ".",
+        decimalDelimiter: ".",
         billionsFormat: "billions",
       },
     }).then(() => {

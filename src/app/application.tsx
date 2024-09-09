@@ -45,9 +45,9 @@ import { LocalStorageKeys } from "./globals";
 import { defaultVersionOfTemplate } from "./stores/defaults";
 import { MenuBarHandlers, MenubarTabButton } from "./views/menubar";
 import { TelemetryRecorder } from "./components";
-import { AttributeMap, MappingType } from "../core/specification";
+import { AttributeMap, MappingType, Template } from "../core/specification";
 import { NestedChartEditorOptions } from "../core/prototypes/controls";
-import { EditorType } from "./stores/app_store";
+import { AppStoreState, EditorType } from "./stores/app_store";
 import { LocalizationConfig } from "../container/container";
 
 import { FluentProvider } from "@fluentui/react-provider";
@@ -56,9 +56,12 @@ import { CDNBackend } from "./backend/cdn";
 import { IndexedDBBackend } from "./backend/indexed_db";
 import { AbstractBackend } from "./backend/abstract";
 import { HybridBackend, IHybridBackendOptions } from "./backend/hybrid";
+import { FileViewImport, MappingMode } from "./views/file_view/import_view";
+
+const defaultWorkerScript = require("raw-loader!../../dist/scripts/worker.bundle.js");
 
 export class ApplicationExtensionContext implements ExtensionContext {
-  constructor(public app: Application) {}
+  constructor(public app: Application) { }
 
   public getGlobalDispatcher(): Dispatcher<Action> {
     return this.app.appStore.dispatcher;
@@ -104,6 +107,19 @@ export interface NestedEditorData {
   };
 }
 
+export interface IHandlers {
+  menuBarHandlers?: MenuBarHandlers;
+  telemetry?: TelemetryRecorder;
+  tabButtons?: MenubarTabButton[];
+  nestedEditor?: {
+    onOpenEditor: (
+      options: Prototypes.Controls.NestedChartEditorOptions,
+      object: Specification.IObject<AttributeMap>,
+      property: Prototypes.Controls.Property
+    ) => void;
+  };
+}
+
 export class Application {
   public worker: CharticulatorWorkerInterface;
   public appStore: AppStore;
@@ -115,6 +131,8 @@ export class Application {
   private containerID: string;
 
   private root: ReactDOM.Root;
+
+  private handlers: IHandlers;
 
   private nestedEditor: {
     onOpenEditor: (
@@ -135,22 +153,12 @@ export class Application {
       workerScriptContent?: string;
       worker?: CharticulatorWorkerInterface;
     },
-    localizaiton: LocalizationConfig,
+    localization: LocalizationConfig,
     utcTimeZone: boolean,
-    handlers?: {
-      menuBarHandlers?: MenuBarHandlers;
-      telemetry?: TelemetryRecorder;
-      tabButtons?: MenubarTabButton[];
-      nestedEditor?: {
-        onOpenEditor: (
-          options: Prototypes.Controls.NestedChartEditorOptions,
-          object: Specification.IObject<AttributeMap>,
-          property: Prototypes.Controls.Property
-        ) => void;
-      };
-    }
+    handlers?: IHandlers
   ) {
     try {
+      this.handlers = handlers;
       const UtcTimeZone = parseSafe(
         window.localStorage.getItem(LocalStorageKeys.UtcTimeZone),
         true
@@ -165,7 +173,7 @@ export class Application {
       );
       const NumberFormatRemove = parseSafe(
         window.localStorage.getItem(LocalStorageKeys.NumberFormatRemove) ||
-          defaultNumberFormat.remove,
+        defaultNumberFormat.remove,
         defaultNumberFormat.remove
       );
       const BillionsFormat = parseSafe(
@@ -182,14 +190,14 @@ export class Application {
       setTimeZone(utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone);
     } catch (ex) {
       setFormatOptions({
-        currency: [localizaiton?.currency, ""] ?? defaultCurrency,
+        currency: [localization?.currency, ""] ?? defaultCurrency,
         grouping: defaultDigitsGroup,
-        decimal: localizaiton?.decemalDelimiter ?? defaultNumberFormat.decimal,
+        decimal: localization?.decimalDelimiter ?? defaultNumberFormat.decimal,
         thousands:
-          localizaiton?.thousandsDelimiter ?? defaultNumberFormat.decimal,
+          localization?.thousandsDelimiter ?? defaultNumberFormat.decimal,
         billionsFormat: "giga",
       });
-      console.warn("Loadin localization settings failed");
+      console.warn("Loading localization settings failed");
     }
 
     this.config = config;
@@ -202,7 +210,7 @@ export class Application {
       localization: {
         billionsFormat: formattingOptions.billionsFormat,
         currency: formattingOptions.currency[0],
-        decemalDelimiter: formattingOptions.decimal,
+        decimalDelimiter: formattingOptions.decimal,
         thousandsDelimiter: formattingOptions.thousands,
         grouping: [formattingOptions.grouping[0]],
       },
@@ -210,10 +218,18 @@ export class Application {
 
     this.root = ReactDOM.createRoot(document.getElementById(this.containerID));
 
+    let workerScriptContent = null;
+    if (workerConfig.workerScriptContent) {
+      workerScriptContent = workerConfig.workerScriptContent;
+    } else {
+      const blob = new Blob([defaultWorkerScript.default], { type: "application/javascript" });
+      workerScriptContent = URL.createObjectURL(blob);
+    }
+
     if (workerConfig.worker) {
       this.worker = workerConfig.worker;
     } else {
-      this.worker = new CharticulatorWorker(workerConfig.workerScriptContent);
+      this.worker = new CharticulatorWorker(workerScriptContent);
     }
 
     await this.worker.initialize({
@@ -221,7 +237,7 @@ export class Application {
       localization: {
         billionsFormat: formattingOptions.billionsFormat,
         currency: formattingOptions.currency[0],
-        decemalDelimiter: formattingOptions.decimal,
+        decimalDelimiter: formattingOptions.decimal,
         thousandsDelimiter: formattingOptions.thousands,
         grouping: [formattingOptions.grouping[0]],
       },
@@ -252,7 +268,7 @@ export class Application {
     try {
       DelimiterSymbol = parseSafe(
         window.localStorage.getItem(LocalStorageKeys.DelimiterSymbol) ||
-          defaultDelimiter,
+        defaultDelimiter,
         defaultDelimiter
       );
     } catch (e) {
@@ -287,21 +303,11 @@ export class Application {
       }
     }
 
-    (window as any).mainStore = this.appStore;
-    this.root.render(
-      <>
-        <FluentProvider theme={teamsLightTheme}>
-          <MainView
-            store={this.appStore}
-            ref={(e) => (this.mainView = e)}
-            viewConfiguration={this.config.MainView}
-            menuBarHandlers={handlers?.menuBarHandlers}
-            tabButtons={handlers?.tabButtons}
-            telemetry={handlers?.telemetry}
-          />
-        </FluentProvider>
-      </>
-    );
+    this.root.render(<>
+      <FluentProvider theme={teamsLightTheme}>
+        {this.renderMain(handlers)}
+      </FluentProvider>
+    </>);
 
     this.extensionContext = new ApplicationExtensionContext(this);
 
@@ -325,6 +331,16 @@ export class Application {
     }
 
     await this.processHashString();
+  }
+
+  private renderMain(handlers: IHandlers) {
+    return (<MainView
+      store={this.appStore}
+      ref={(e) => (this.mainView = e)}
+      viewConfiguration={this.config.MainView}
+      menuBarHandlers={handlers?.menuBarHandlers}
+      tabButtons={handlers?.tabButtons}
+      telemetry={handlers?.telemetry} />);
   }
 
   // eslint-disable-next-line
@@ -535,5 +551,69 @@ export class Application {
 
   public unregisterExportTemplateTarget(name: string) {
     this.appStore.unregisterExportTemplateTarget(name);
+  }
+
+  public loadData(dataset: Dataset.Dataset) {
+    this.appStore.dispatcher.dispatch(new Actions.ImportDataset(dataset));
+  }
+
+  public async loadTemplate(template: Specification.Template.ChartTemplate): Promise<boolean> {
+    return new Promise<boolean>((resolveImport) => {
+      this.appStore.dispatcher.dispatch(
+        new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolveMapping) => {
+          this.root.render(
+            <>
+              <FluentProvider theme={teamsLightTheme}>
+                {this.renderMain(this.handlers)}
+                <FileViewImport
+                  mode={MappingMode.ImportTemplate}
+                  tables={tables}
+                  datasetTables={datasetTables}
+                  tableMapping={tableMapping}
+                  unmappedColumns={unmappedColumns}
+                  format={this.appStore.getLocaleFileFormat()}
+                  onSave={(mapping, tableMapping, datasetTables) => {
+                    resolveMapping(mapping, tableMapping, datasetTables);
+                    resolveImport(true);
+                    this.root.render(<>
+                      <FluentProvider theme={teamsLightTheme}>
+                        {this.renderMain(this.handlers)}
+                      </FluentProvider>
+                    </>);
+                  }}
+                  onClose={() => {
+                    resolveImport(false);
+                    this.root.render(<>
+                      <FluentProvider theme={teamsLightTheme}>
+                        {this.renderMain(this.handlers)}
+                      </FluentProvider>
+                    </>);
+                  }}
+                  onImportDataClick={() => { }}
+                />
+              </FluentProvider>
+            </>
+          );
+        })
+      );
+    });
+  }
+
+  public setOnExportTemplateCallback(callback: (template: string) => boolean) {
+    this.appStore.onExportTemplate((template: string) => {
+      return callback(template);
+    });
+  }
+
+  public setOnSaveChartCallback(callback: ({
+    state,
+    name
+  }: {
+    state: AppStoreState,
+    name: string
+  }) => void) {
+    this.appStore.addListener(AppStore.EVENT_SAVECHART, (data) => {
+      callback(data);
+    });
   }
 }

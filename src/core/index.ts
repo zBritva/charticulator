@@ -110,7 +110,7 @@ export function initialize(config?: CharticulatorCoreConfig): Promise<void> {
   // Utils.setBillionsFormatOption(config.localization.billionsFormat);
   // Utils.setFormatOptions({
   //   currency: [config.localization.currency, ""],
-  //   decimal: config.localization.decemalDelimiter,
+  //   decimal: config.localization.decimalDelimiter,
   //   thousands: config.localization.thousandsDelimiter,
   //   grouping: [3]
   // }, true);
