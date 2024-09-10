@@ -3,6 +3,8 @@
 import * as Graphics from "../../../graphics";
 import { ConstraintSolver, ConstraintStrength } from "../../../solver";
 import * as Specification from "../../../specification";
+import * as SpecTypes from "../../../specification/spec_types";
+
 
 import { Geometry, zipArray } from "../../../common";
 import {
@@ -38,8 +40,8 @@ export interface MapState extends Specification.PlotSegmentState {
 }
 
 export interface MapProperties extends Specification.AttributeMap {
-  longitudeData: Specification.Types.AxisDataBinding;
-  latitudeData: Specification.Types.AxisDataBinding;
+  longitudeData: SpecTypes.AxisDataBinding;
+  latitudeData: SpecTypes.AxisDataBinding;
   mapType: "roadmap" | "satellite" | "hybrid" | "terrain";
 }
 

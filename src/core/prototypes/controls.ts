@@ -4,6 +4,7 @@
 import { DataMappingHints } from ".";
 import { Point } from "../common";
 import * as Specification from "../specification";
+import * as SpecTypes from "../specification/spec_types";
 import * as Dataset from "../dataset";
 import { CSSProperties } from "react";
 import { DataType } from "../specification";
@@ -194,7 +195,7 @@ export interface FilterEditorOptions extends SearchSection {
     plotSegment?: Specification.PlotSegment;
     property?: Property;
   };
-  value: Specification.Types.Filter;
+  value: SpecTypes.Filter;
   mode: PanelMode;
   key?: string;
 }
@@ -205,7 +206,7 @@ export interface GroupByEditorOptions extends SearchSection {
     plotSegment?: Specification.PlotSegment;
     property?: Property;
   };
-  value: Specification.Types.GroupBy;
+  value: SpecTypes.GroupBy;
   mode: PanelMode;
   key: string;
 }

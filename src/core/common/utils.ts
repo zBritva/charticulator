@@ -6,7 +6,7 @@ import { timeFormat, utcFormat } from "d3-time-format";
 
 import { formatLocale, FormatLocaleDefinition } from "d3-format";
 import { Scale } from ".";
-import { OrderMode } from "../specification/types";
+import { OrderType } from "../specification/spec_types";
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
@@ -750,7 +750,7 @@ export function getRandom(startRange: number, endRange: number) {
 export function defineCategories(vector: any[]) {
   const scale = new Scale.CategoricalScale();
   vector = (vector as number[]).sort((a, b) => a - b);
-  scale.inferParameters(vector as string[], OrderMode.order);
+  scale.inferParameters(vector as string[], OrderType.Order);
   const categories = new Array<string>(scale.length);
   scale.domain.forEach(
     (index: any, x: any) => (categories[index] = x.toString())

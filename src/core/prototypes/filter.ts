@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import * as Specification from "../specification";
+import * as SpecTypes from "../specification/spec_types";
 import { ExpressionCache, Context } from "../expression";
 
 export class CompiledFilter {
-  constructor(filter: Specification.Types.Filter, cache: ExpressionCache) {
+  constructor(filter: SpecTypes.Filter, cache: ExpressionCache) {
     if (filter.categories) {
       const expr = cache.parse(filter.categories.expression);
       const map = filter.categories.values;

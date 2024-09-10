@@ -2,7 +2,8 @@
 // Licensed under the MIT license.
 
 import { AttributeDescriptions } from "../object";
-import { AttributeMap, Types } from "../../specification/index";
+import { AttributeMap } from "../../specification/index";
+import * as SpecTypes from "../../specification/spec_types";
 import { AttrBuilder } from "../attrs";
 
 export const iconAttributes: AttributeDescriptions = {
@@ -22,10 +23,10 @@ export interface IconElementAttributes extends AttributeMap {
   size: number;
   opacity: number;
   visible: boolean;
-  image: Types.Image;
+  image: SpecTypes.Image;
 }
 
 export interface IconElementProperties extends AttributeMap {
-  alignment: Types.TextAlignment;
+  alignment: SpecTypes.TextAlignment;
   rotation: number;
 }

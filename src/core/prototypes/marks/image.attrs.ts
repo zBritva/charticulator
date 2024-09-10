@@ -2,7 +2,8 @@
 // Licensed under the MIT license.
 
 import { AttributeDescriptions } from "../object";
-import { AttributeMap, ObjectProperties, Types } from "../../specification";
+import { AttributeMap, ObjectProperties } from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 import { Color } from "../../common";
 import { AttrBuilder } from "../attrs";
 
@@ -28,7 +29,7 @@ export interface ImageElementAttributes extends AttributeMap {
   strokeWidth: number;
   opacity: number;
   visible: boolean;
-  image: Types.Image;
+  image: SpecTypes.Image;
 }
 
 export interface ImageElementProperties extends ObjectProperties {

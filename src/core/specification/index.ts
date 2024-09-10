@@ -2,10 +2,10 @@
 // Licensed under the MIT license.
 import { Color, Point } from "../common";
 import * as Template from "./template";
-import * as Types from "./types";
+import * as SpecTypes from "./spec_types";
 import { Specification } from "../../container";
 
-export { Types, Template };
+export { Template };
 
 // ===========================================================================
 // Fundamentals
@@ -279,11 +279,11 @@ export interface PlotSegment<
   /** The data table to get data rows from */
   table: string;
   /** Filter applied to the data table */
-  filter?: Types.Filter;
+  filter?: SpecTypes.Filter;
   /** Group the data by a specified categorical column (filter is applied before grouping) */
-  groupBy?: Types.GroupBy;
+  groupBy?: SpecTypes.GroupBy;
   /** Order the data (filter & groupBy is applied before order */
-  order?: Types.SortBy;
+  order?: SpecTypes.SortBy;
 }
 
 /** Guide */

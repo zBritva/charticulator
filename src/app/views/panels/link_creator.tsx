@@ -12,6 +12,7 @@ import {
   Point,
   Prototypes,
   Specification,
+  SpecTypes,
   uniqueID,
 } from "../../../core";
 import { Actions } from "../../actions";
@@ -183,8 +184,8 @@ export class LinkCreationPanel extends ContextedComponent<
   ): {
     linkType: Prototypes.Links.LinkType;
     interpolationType: Prototypes.Links.InterpolationType;
-    anchor1: Specification.Types.LinkAnchorPoint[];
-    anchor2: Specification.Types.LinkAnchorPoint[];
+    anchor1: SpecTypes.LinkAnchorPoint[];
+    anchor2: SpecTypes.LinkAnchorPoint[];
     color: Specification.Mapping;
     opacity: Specification.Mapping;
   } {
@@ -427,7 +428,7 @@ export class LinkCreationPanel extends ContextedComponent<
         x: { element: c1.element, attribute: pt.xAttribute },
         y: { element: c1.element, attribute: pt.yAttribute },
         direction: pt.direction,
-      } as Specification.Types.LinkAnchorPoint;
+      } as SpecTypes.LinkAnchorPoint;
     });
 
     const anchor2 = c2.points.map((pt) => {
@@ -435,7 +436,7 @@ export class LinkCreationPanel extends ContextedComponent<
         x: { element: c2.element, attribute: pt.xAttribute },
         y: { element: c2.element, attribute: pt.yAttribute },
         direction: pt.direction,
-      } as Specification.Types.LinkAnchorPoint;
+      } as SpecTypes.LinkAnchorPoint;
     });
 
     if (linkMode != "link-table") {

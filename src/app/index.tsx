@@ -43,9 +43,6 @@
  */
 
 // The entry JavaScript file for the web app.
-import * as Core from "../core";
-export { Core };
-
 export { Actions, DragData } from "./actions";
 export { ExtensionContext, Extension } from "./extension";
 export {

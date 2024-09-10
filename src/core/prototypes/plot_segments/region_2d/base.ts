@@ -9,7 +9,7 @@ import {
   Variable,
 } from "../../../solver";
 import * as Specification from "../../../specification";
-import { AxisDataBindingType } from "../../../specification/types";
+import { AxisDataBindingType, AxisDataBinding, SortBy } from "../../../specification/spec_types";
 import { BuildConstraintsContext, Controls } from "../../common";
 import { LabelPosition } from "../../controls";
 import { DataflowTable } from "../../dataflow";
@@ -85,7 +85,7 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
   };
 
   /** Order in sublayout objects */
-  order: Specification.Types.SortBy;
+  order: SortBy;
   orderReversed: boolean;
   /** packing options */
   packing: {
@@ -128,9 +128,9 @@ export enum PlotSegmentAxisPropertyNames {
 
 export interface Region2DProperties extends Specification.AttributeMap {
   /** X axis data binding, set to null to remove the axis, set to { type: "none" } to keep the axis but don't bind data */
-  xData?: Specification.Types.AxisDataBinding;
+  xData?: AxisDataBinding;
   /** Y axis data binding, set to null to remove the axis, set to { type: "none" } to keep the axis but don't bind data */
-  yData?: Specification.Types.AxisDataBinding;
+  yData?: AxisDataBinding;
   sublayout: Region2DSublayoutOptions;
 
   marginX1?: number;

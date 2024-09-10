@@ -14,6 +14,7 @@ import * as Expression from "../../expression";
 import * as Graphics from "../../graphics";
 import { PointDirection } from "../../graphics";
 import * as Specification from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 import { MappingType } from "../../specification";
 import { ChartElementClass } from "../chart_element";
 import { Controls, ObjectClassMetadata, TemplateParameters } from "../common";
@@ -35,9 +36,9 @@ export interface LinksProperties extends Specification.AttributeMap {
   interpolationType: InterpolationType;
 
   /** Start anchor */
-  anchor1: Specification.Types.LinkAnchorPoint[];
+  anchor1: SpecTypes.LinkAnchorPoint[];
   /** End anchor */
-  anchor2: Specification.Types.LinkAnchorPoint[];
+  anchor2: SpecTypes.LinkAnchorPoint[];
 
   /** Filter the data before linking */
   filter?: Specification.Expression;
@@ -181,7 +182,7 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
   };
 
   protected resolveLinkAnchorPoints(
-    anchorPoints: Specification.Types.LinkAnchorPoint[],
+    anchorPoints: SpecTypes.LinkAnchorPoint[],
     glyph: Specification.Glyph
   ): ResolvedLinkAnchorPoint[] {
     return anchorPoints.map((anchorPoint) => {

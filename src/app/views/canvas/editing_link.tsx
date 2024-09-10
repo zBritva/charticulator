@@ -11,6 +11,7 @@ import {
   Point,
   Prototypes,
   Specification,
+  SpecTypes,
   ZoomInfo,
 } from "../../../core";
 import { Actions } from "../../actions";
@@ -90,13 +91,13 @@ export class EditingLink extends React.Component<
 
       const markInfo = this.getMarkAtPoint(pageX, pageY);
       if (markInfo) {
-        const anchor: Specification.Types.LinkAnchorPoint[] = markInfo.anchor.points.map(
+        const anchor: SpecTypes.LinkAnchorPoint[] = markInfo.anchor.points.map(
           (pt) => {
             return {
               x: { element: markInfo.anchor.element, attribute: pt.xAttribute },
               y: { element: markInfo.anchor.element, attribute: pt.yAttribute },
               direction: pt.direction,
-            } as Specification.Types.LinkAnchorPoint;
+            } as SpecTypes.LinkAnchorPoint;
           }
         );
         if (markInfo.mode == "begin") {

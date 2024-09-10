@@ -5,12 +5,6 @@ import { DataKind } from "../dataset";
 import { StrokeStyle } from "../prototypes";
 import { AttributeMap, Expression, DataType } from "./index";
 
-export enum OrderMode {
-  alphabetically = "alphabetically",
-  occurrence = "occurrence",
-  order = "order",
-}
-
 export type AxisSide = "default" | "opposite";
 
 export enum AxisDataBindingType {
@@ -18,6 +12,13 @@ export enum AxisDataBindingType {
   Numerical = "numerical",
   Categorical = "categorical",
 }
+
+export enum OrderType {
+  Alphabetically = "alphabetically",
+  Occurrence = "occurrence",
+  Order = "order",
+}
+
 
 export enum NumericalMode {
   Linear = "linear",
@@ -69,7 +70,7 @@ export interface AxisDataBinding extends AttributeMap {
   style?: AxisRenderingStyle;
   dataKind?: DataKind;
   order?: string[];
-  orderMode?: OrderMode;
+  orderMode?: OrderType;
 
   /** scrolling options */
   // allCategories contsins all data set and categories property uses to display current content

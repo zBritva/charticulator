@@ -3,10 +3,11 @@
 
 import { Controls } from "../common";
 import { deepClone } from "../../common";
-import { Dataset, Expression, Specification } from "../../index";
+import { Dataset, Expression } from "../../index";
 import { CharticulatorPropertyAccessors } from "../../../app/views/panels/widgets/types";
-import { AxisDataBinding, OrderMode } from "../../../core/specification/types";
+import { AxisDataBinding, OrderType } from "../../specification/spec_types";
 import { DataType } from "../../../core/specification";
+import * as SpecTypes from "../../../core/specification/spec_types";
 import { Variable } from "../../../core/expression";
 
 export function getTableColumns(
@@ -69,7 +70,7 @@ export function transformOrderByExpression(expression: string): string {
 }
 
 export function shouldShowTickFormatForTickExpression(
-  data: Specification.Types.AxisDataBinding,
+  data: SpecTypes.AxisDataBinding,
   manager: Controls.WidgetManager
 ): boolean {
   let showInputFormat = true;
@@ -185,7 +186,7 @@ export function getOnConfirmFunction(
       return item;
     };
     data.order = new_order.map((item) => getItem(item[0]));
-    data.orderMode = OrderMode.order;
+    data.orderMode = OrderType.Order;
     data.categories = new_order.map((item) => getItem(item[0]));
   } catch (e) {
     console.log(e);

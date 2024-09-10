@@ -35,12 +35,12 @@ import {
   SublayoutAlignment,
 } from "./base";
 import { PlotSegmentClass } from "../plot_segment";
-import { getSortDirection, ZoomInfo } from "../../..";
+import { getSortDirection, SpecTypes, ZoomInfo } from "../../..";
 import { strings } from "../../../../strings";
 import {
   AxisDataBinding,
   AxisDataBindingType,
-} from "../../../specification/types";
+} from "../../../specification/spec_types";
 import { scaleLinear } from "d3-scale";
 import { FluentUIWidgetManager } from "../../../../app/views/panels/widgets/fluentui_manager";
 import { EventType } from "../../../../app/views/panels/widgets/observer";
@@ -345,7 +345,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
   }
 
   private getTickData = (
-    axis: Specification.Types.AxisDataBinding,
+    axis: SpecTypes.AxisDataBinding,
     manager: ChartStateManager
   ) => {
     this.chartManager = manager;

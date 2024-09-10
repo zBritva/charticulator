@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import * as React from "react";
-import { Expression, Prototypes, Specification } from "../../../../core";
+import { Expression, Prototypes, Specification, SpecTypes } from "../../../../core";
 import { strings } from "../../../../strings";
 import { Actions } from "../../../actions";
 import { DataFieldSelector } from "../../dataset/data_field_selector";
@@ -19,18 +19,18 @@ import { Option } from "@fluentui/react-combobox";
 export interface FilterEditorProps {
   manager: Prototypes.Controls.WidgetManager & CharticulatorPropertyAccessors;
   options: Prototypes.Controls.FilterEditorOptions;
-  value: Specification.Types.Filter;
+  value: SpecTypes.Filter;
 }
 export interface FilterEditorState {
   type: string;
-  currentValue: Specification.Types.Filter;
+  currentValue: SpecTypes.Filter;
 }
 export class FluentUIFilterEditor extends React.Component<
   React.PropsWithChildren<FilterEditorProps>,
   FilterEditorState
 > {
   public state: FilterEditorState = this.getDefaultState(this.props.value);
-  public getDefaultState(value: Specification.Types.Filter): FilterEditorState {
+  public getDefaultState(value: SpecTypes.Filter): FilterEditorState {
     let filterType = "none";
     if (value) {
       if (value.expression) {
@@ -45,7 +45,7 @@ export class FluentUIFilterEditor extends React.Component<
       currentValue: value,
     };
   }
-  public emitUpdateFilter(newValue: Specification.Types.Filter) {
+  public emitUpdateFilter(newValue: SpecTypes.Filter) {
     if (this.props.options.target.property) {
       this.props.manager.emitSetProperty(
         this.props.options.target.property,

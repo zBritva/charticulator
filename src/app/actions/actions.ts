@@ -11,6 +11,7 @@ import {
   ClearSelection,
   objectDigest,
   MessageType,
+  SpecTypes,
 } from "../../core";
 import * as DragData from "./drag_data";
 import { ExportTemplateTarget } from "../template";
@@ -20,7 +21,7 @@ import {
   AxisDataBindingType,
   CollapseOrExpandPanels,
   NumericalMode,
-} from "../../core/specification/types";
+} from "../../core/specification/spec_types";
 import { NestedChartEditorOptions } from "../../core/prototypes/controls";
 import { AttributeMap } from "../../core/specification";
 
@@ -560,7 +561,7 @@ export class MapDataToChartElementAttribute extends Action {
 export class SetPlotSegmentFilter extends Action {
   constructor(
     public plotSegment: Specification.PlotSegment,
-    public filter: Specification.Types.Filter
+    public filter: SpecTypes.Filter
   ) {
     super();
   }
@@ -576,7 +577,7 @@ export class SetPlotSegmentFilter extends Action {
 export class SetPlotSegmentGroupBy extends Action {
   constructor(
     public plotSegment: Specification.PlotSegment,
-    public groupBy: Specification.Types.GroupBy
+    public groupBy: SpecTypes.GroupBy
   ) {
     super();
   }

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import * as React from "react";
-import { Prototypes, Specification } from "../../../../core";
+import { Prototypes, Specification, SpecTypes } from "../../../../core";
 import { strings } from "../../../../strings";
 import { Actions } from "../../../actions";
 import { DataFieldSelector } from "../../dataset/data_field_selector";
@@ -10,11 +10,11 @@ import { CharticulatorPropertyAccessors } from "./types";
 export interface GroupByEditorProps {
   manager: Prototypes.Controls.WidgetManager & CharticulatorPropertyAccessors;
   options: Prototypes.Controls.GroupByEditorOptions;
-  value: Specification.Types.GroupBy;
+  value: SpecTypes.GroupBy;
 }
 export interface GroupByEditorState {
   type: string;
-  currentValue: Specification.Types.GroupBy;
+  currentValue: SpecTypes.GroupBy;
 }
 export class GroupByEditor extends React.Component<
   React.PropsWithChildren<GroupByEditorProps>,
@@ -22,7 +22,7 @@ export class GroupByEditor extends React.Component<
 > {
   public state: GroupByEditorState = this.getDefaultState(this.props.value);
   public getDefaultState(
-    value: Specification.Types.Filter
+    value: SpecTypes.Filter
   ): GroupByEditorState {
     let groupByType = "none";
     if (value) {
@@ -35,7 +35,7 @@ export class GroupByEditor extends React.Component<
       currentValue: value,
     };
   }
-  public emitUpdateGroupBy(newValue: Specification.Types.Filter) {
+  public emitUpdateGroupBy(newValue: SpecTypes.Filter) {
     if (this.props.options.target.property) {
       this.props.manager.emitSetProperty(
         this.props.options.target.property,

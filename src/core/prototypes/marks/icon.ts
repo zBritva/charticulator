@@ -7,10 +7,11 @@ import { Geometry, Point } from "../../common";
 import * as Graphics from "../../graphics";
 import * as Specification from "../../specification";
 import { DataKind, MappingType } from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 import {
   TextAlignmentHorizontal,
   TextAlignmentVertical,
-} from "../../specification/types";
+} from "../../specification/spec_types";
 import {
   BoundingBox,
   Controls,
@@ -137,7 +138,7 @@ export class IconElementClass extends EmphasizableMarkClass<
   }
 
   public getCenterOffset(
-    alignment: Specification.Types.TextAlignment,
+    alignment: SpecTypes.TextAlignment,
     width: number,
     height: number
   ): [number, number] {

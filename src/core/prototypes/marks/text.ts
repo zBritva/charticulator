@@ -19,7 +19,7 @@ import { MappingType } from "../../specification";
 import {
   TextAlignmentHorizontal,
   TextAlignmentVertical,
-} from "../../specification/types";
+} from "../../specification/spec_types";
 import {
   BoundingBox,
   Controls,

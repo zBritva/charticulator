@@ -84,6 +84,7 @@ import * as Graphics from "./graphics";
 import * as Prototypes from "./prototypes";
 import * as Solver from "./solver";
 import * as Specification from "./specification";
+import * as SpecTypes from "./specification/spec_types";
 import * as Utils from "./common/utils";
 import * as ColorUtils from "./common/color";
 export * from "./actions";
@@ -91,12 +92,13 @@ export * from "./actions";
 export {
   Expression,
   Specification,
+  SpecTypes,
   Prototypes,
   Solver,
   Graphics,
   Dataset,
   Utils,
-  ColorUtils,
+  ColorUtils
 };
 
 import { CharticulatorCoreConfig, setConfig } from "./config";

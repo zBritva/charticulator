@@ -11,11 +11,12 @@ import {
   getSortFunctionByData,
   getTimeFormatFunction,
   refineColumnName,
+  SpecTypes,
   tickFormatParserExpression,
   ZoomInfo,
 } from "../..";
 import { AxisRenderer } from "./axis";
-import { AxisDataBindingType, NumericalMode } from "../../specification/types";
+import { AxisDataBindingType, NumericalMode } from "../../specification/spec_types";
 import { strings } from "../../../strings";
 import { PanelMode } from "../controls";
 import { ReactElement } from "react";
@@ -107,7 +108,7 @@ export abstract class PlotSegmentClass<
    * @param axisProperty property name of plotsegment with axis properties (xData, yData, axis)
    */
   public buildGridLineWidgets(
-    data: Specification.Types.AxisDataBinding,
+    data: SpecTypes.AxisDataBinding,
     manager: Controls.WidgetManager,
     axisProperty: string,
     mainCollapsePanelHeader: string
@@ -245,7 +246,7 @@ export abstract class PlotSegmentClass<
   }
 
   public getDisplayRawFormat(
-    binding: Specification.Types.AxisDataBinding,
+    binding: SpecTypes.AxisDataBinding,
     manager: ChartStateManager
   ) {
     const tableName = this.object.table;
@@ -304,7 +305,7 @@ export abstract class PlotSegmentClass<
   }
 
   public getDisplayFormat = (
-    binding: Specification.Types.AxisDataBinding,
+    binding: SpecTypes.AxisDataBinding,
     tickFormat?: string,
     manager?: ChartStateManager
   ) => {

@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { AttributeMap, Types, ObjectProperties } from "../../specification";
+import { AttributeMap, ObjectProperties } from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 
 export interface DataAxisAttributes extends AttributeMap {
   // anchorNAME1, anchorNAME2, ... that corresponds to the data
@@ -18,7 +19,7 @@ export interface DataAxisExpression extends AttributeMap {
 }
 
 export interface DataAxisProperties extends ObjectProperties {
-  axis: Types.AxisDataBinding;
+  axis: SpecTypes.AxisDataBinding;
   dataExpressions: DataAxisExpression[];
   visibleOn: "all" | "first" | "last";
 }

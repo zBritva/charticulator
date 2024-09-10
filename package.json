@@ -40,6 +40,8 @@
     "docker_create": "docker create -ti --name charticulator charticulator/test bash",
     "docker_copy": "docker cp charticulator:/home/node/charticulator/src/tests/karma/ChromeHeadless ./src/tests/unit/"
   },
+  "types": "./dist/scripts/index.d.ts",
+  "main": "./dist/scripts/app.bundle.js",
   "lint-staged": {
     "*.{ts,tsx}": [
       "npx eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
@@ -113,6 +115,7 @@
     "babel-loader": "8.2.2",
     "chai": "4.2.0",
     "dom-to-json": "0.0.4",
+    "dts-bundle-generator": "^9.5.1",
     "eslint": "8.56.0",
     "eslint-plugin-powerbi-visuals": "0.8.1",
     "eslint-plugin-react-hooks": "4.6.0",

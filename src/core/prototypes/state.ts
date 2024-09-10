@@ -13,6 +13,7 @@ import {
 import * as Dataset from "../dataset";
 import * as Expression from "../expression";
 import * as Specification from "../specification";
+import * as SpecTypes from "../specification/spec_types";
 import { MappingType } from "../specification";
 import * as Charts from "./charts";
 import * as Glyphs from "./glyphs";
@@ -30,7 +31,7 @@ import { ObjectClass, ObjectClasses } from "./object";
 import { ChartConstraintSolver } from "../solver";
 import { ValueType } from "../expression/classes";
 import { expect_deep_approximately_equals } from "../../app/utils";
-import { AxisDataBinding, AxisDataBindingType } from "../specification/types";
+import { AxisDataBinding, AxisDataBindingType } from "../specification/spec_types";
 
 /**
  * Represents a set of default attributes
@@ -1214,7 +1215,7 @@ export class ChartStateManager {
 
   public getGroupedExpressionVector(
     tableName: string,
-    groupBy: Specification.Types.GroupBy,
+    groupBy: SpecTypes.GroupBy,
     expression: string
   ): ValueType[] {
     const expr = this.dataflow.cache.parse(expression);

@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { CurrentChartView } from ".";
-import { deepClone, Specification, Prototypes } from "../../../core";
+import { deepClone, Specification, Prototypes, SpecTypes } from "../../../core";
 import { ensureColumnsHaveExamples } from "../../../core/dataset/examples";
 import { findObjectById } from "../../../core/prototypes";
 import { strings } from "../../../strings";
@@ -369,7 +369,7 @@ export class ExportTemplateView extends React.Component<
               }}
             >
               <InputImageProperty
-                value={value as Specification.Types.Image}
+                value={value as SpecTypes.Image}
                 onChange={(image: any) => {
                   onChange(image);
                   return true;

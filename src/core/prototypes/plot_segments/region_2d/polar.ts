@@ -34,7 +34,7 @@ import { PlotSegmentClass } from "../plot_segment";
 import { getSortDirection } from "../../..";
 import { ChartStateManager } from "../..";
 import { strings } from "../../../../strings";
-import { AxisDataBinding } from "../../../specification/types";
+import { AxisDataBinding } from "../../../specification/spec_types";
 import {
   getCenterByAngle,
   getHandlesRadius,

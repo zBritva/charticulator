@@ -20,7 +20,7 @@ import { ScaleClass } from "./index";
 import { AttributeDescriptions } from "../object";
 import { InferParametersOptions } from "./scale";
 import { color as d3color } from "d3-color";
-import { OrderMode } from "../../specification/types";
+import { OrderType } from "../../specification/spec_types";
 import { ReservedMappingKeyNamePrefix } from "../legends/categorical_legend";
 import { strings } from "../../../strings";
 import { Specification } from "../..";
@@ -122,7 +122,7 @@ export class CategoricalScaleNumber extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     const values = <string[]>column.filter((x) => typeof x == "string");
-    s.inferParameters(values, OrderMode.order);
+    s.inferParameters(values, OrderType.Order);
 
     props.mapping = {};
 
@@ -218,7 +218,7 @@ export class CategoricalScaleColor extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     const values = column.filter((x) => x != null).map((x) => x.toString());
-    s.inferParameters(values, OrderMode.order);
+    s.inferParameters(values, OrderType.Order);
 
     props.autoDomainMin = true;
     props.autoDomainMax = true;
@@ -399,7 +399,7 @@ export class CategoricalScaleEnum extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     const values = column.filter((x) => x != null).map((x) => x.toString());
-    s.inferParameters(values, OrderMode.order);
+    s.inferParameters(values, OrderType.Order);
 
     // If we shouldn't reuse the range, then reset the mapping
     if (!options.reuseRange) {
@@ -490,7 +490,7 @@ export class CategoricalScaleBoolean extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     const values = column.filter((x) => x != null).map((x) => x.toString());
-    s.inferParameters(values, OrderMode.order);
+    s.inferParameters(values, OrderType.Order);
 
     // If we shouldn't reuse the range, then reset the mapping
     if (!options.reuseRange) {
@@ -597,7 +597,7 @@ export class CategoricalScaleImage extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     const values = column.filter((x) => x != null).map((x) => x.toString());
-    s.inferParameters(values, OrderMode.order);
+    s.inferParameters(values, OrderType.Order);
 
     // If we shouldn't reuse the range, then reset the mapping
     if (!options.reuseRange) {
@@ -700,7 +700,7 @@ export class CategoricalScaleBase64Image extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     const idValues = idColumn.filter((x) => x != null).map((x) => x.toString());
-    s.inferParameters(idValues, OrderMode.order);
+    s.inferParameters(idValues, OrderType.Order);
 
     // If we shouldn't reuse the range, then reset the mapping
     if (!options.reuseRange) {

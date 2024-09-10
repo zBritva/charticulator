@@ -8,6 +8,7 @@ import { Point } from "../../common";
 import * as Graphics from "../../graphics";
 import { ConstraintSolver, ConstraintStrength } from "../../solver";
 import * as Specification from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 import { AttrBuilder } from "../attrs";
 import {
   AttributeDescriptions,
@@ -177,7 +178,7 @@ export class DataAxisClass extends MarkClass<
   }
 
   private getTickData = (
-    axis: Specification.Types.AxisDataBinding,
+    axis: SpecTypes.AxisDataBinding,
     manager: ChartStateManager
   ) => {
     const table = manager.getTable(this.getPlotSegmentClass()?.object?.table);

@@ -3,7 +3,8 @@
 
 import { defaultFont, defaultFontSize } from "../../../app/stores/defaults";
 import { Color } from "../../common";
-import { AttributeMap, AttributeType, Types } from "../../specification";
+import { AttributeMap, AttributeType } from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 import { AttrBuilder } from "../attrs";
 import { AttributeDescriptions } from "../object";
 
@@ -71,6 +72,6 @@ export interface TextElementAttributes extends AttributeMap {
 }
 
 export interface TextElementProperties extends AttributeMap {
-  alignment: Types.TextAlignment;
+  alignment: SpecTypes.TextAlignment;
   rotation: number;
 }

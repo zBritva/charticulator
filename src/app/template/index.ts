@@ -21,6 +21,7 @@ import {
   isReservedColumnName,
   Prototypes,
   Specification,
+  SpecTypes,
 } from "../../core";
 import { TableType } from "../../core/dataset";
 import {
@@ -186,7 +187,7 @@ export class ChartTemplateBuilder {
           // Find all objects that use the scale
           const expressions = new Set<string>();
           let table: string = null;
-          let groupBy: Specification.Types.GroupBy = null;
+          let groupBy: SpecTypes.GroupBy = null;
           for (const item of Prototypes.forEachObject(
             this.template.specification
           )) {

@@ -5,7 +5,8 @@ import { strings } from "../../../strings";
 import { deepClone, indexOf } from "../../common";
 import * as Graphics from "../../graphics";
 import * as Specification from "../../specification";
-import { AxisSide } from "../../specification/types";
+import * as SpecTypes from "../../specification/spec_types";
+import { AxisSide } from "../../specification/spec_types";
 import { ChartElementClass } from "../chart_element";
 import {
   AttributeDescription,
@@ -56,7 +57,7 @@ export interface NumericalNumberLegendProperties
   axis: {
     visible: boolean;
     side: AxisSide;
-    style: Specification.Types.AxisRenderingStyle;
+    style: SpecTypes.AxisRenderingStyle;
     tickFormat: string;
   };
   polarAngularMode?: boolean;

@@ -5,8 +5,9 @@ import { strings } from "../../../strings";
 import { interpolateColors, Scale } from "../../common";
 import { ConstraintSolver, ConstraintStrength, Variable } from "../../solver";
 import * as Specification from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 import { MappingType } from "../../specification";
-import { Colorspace } from "../../specification/types";
+import { Colorspace } from "../../specification/spec_types";
 import {
   AttributeDescription,
   Controls,
@@ -231,10 +232,10 @@ export class LinearScale extends ScaleClass<
 }
 
 export interface LinearColorScaleProperties extends LinearScaleProperties {
-  range: Specification.Types.ColorGradient;
+  range: SpecTypes.ColorGradient;
 }
 
-function getDefaultGradient(): Specification.Types.ColorGradient {
+function getDefaultGradient(): SpecTypes.ColorGradient {
   return {
     colorspace: Colorspace.Lab,
     colors: [

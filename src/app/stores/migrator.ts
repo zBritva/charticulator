@@ -10,6 +10,7 @@ import {
   Expression,
   Prototypes,
   Specification,
+  SpecTypes,
   zip,
 } from "../../core";
 import { TableType } from "../../core/dataset";
@@ -30,7 +31,7 @@ import { LineGuideProperties } from "../../core/prototypes/plot_segments/line";
 import { CurveProperties } from "../../core/prototypes/plot_segments/region_2d/curve";
 import { DataAxisProperties } from "../../core/prototypes/marks/data_axis";
 import { replaceUndefinedByNull } from "../utils";
-import { TickFormatType } from "../../core/specification/types";
+import { TickFormatType } from "../../core/specification/spec_types";
 import { SymbolElementProperties } from "../../core/prototypes/marks/symbol.attrs";
 import { LinearBooleanScaleMode } from "../../core/prototypes/scales/linear";
 import { parseDerivedColumnsExpression } from "../../core/prototypes/plot_segments/utils";
@@ -265,7 +266,7 @@ export class Migrator {
     }
   }
 
-  public fixAxisDataMapping(mapping: Specification.Types.AxisDataBinding) {
+  public fixAxisDataMapping(mapping: SpecTypes.AxisDataBinding) {
     if (!mapping) {
       return;
     }
@@ -433,8 +434,8 @@ export class Migrator {
   }
 
   private updateAxis(
-    axis: Specification.Types.AxisDataBinding
-  ): Specification.Types.AxisDataBinding {
+    axis: SpecTypes.AxisDataBinding
+  ): SpecTypes.AxisDataBinding {
     return {
       ...axis,
       side: replaceUndefinedByNull(axis.side),

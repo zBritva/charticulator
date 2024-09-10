@@ -100,9 +100,9 @@ const devSequence = [
   "third_party_data",
   // "pegjs",
   // "typescript",
-  // "dtsBundle",
   "sass",
   "webpack",
+  "dtsBundle",
   "config",
   ...(isProd ? ["add_hash"] : [])
 ];
@@ -119,10 +119,11 @@ let COMMANDS = {
   ],
 
   dtsBundle: [
-    "dts-bundle --name CharticulatorContainer --main dist/scripts/container/index.d.ts --baseDir dist/scripts --out ../../dist/scripts/container.bundle.d.ts",
-    () => fixDTSBundle("dist/scripts/container.bundle.d.ts"),
-    "dts-bundle --name Charticulator --main dist/scripts/app/index.d.ts --baseDir dist/scripts --out ../../dist/scripts/app.bundle.d.ts",
-    () => fixDTSBundle("dist/scripts/app.bundle.d.ts")
+    "npx dts-bundle-generator ./dist/scripts/container/index.d.ts --out-file ./dist/scripts/container.bundle.d.ts --no-check --export-referenced-types=false",
+    // () => fixDTSBundle("dist/scripts/container.bundle.d.ts"),
+    "npx dts-bundle-generator ./dist/scripts/core/index.d.ts --out-file ./dist/scripts/core.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/app/index.d.ts --out-file ./dist/scripts/app.bundle.d.ts --no-check --export-referenced-types=false",
+    // () => fixDTSBundle("dist/scripts/app.bundle.d.ts")
   ],
 
   // Copy files

@@ -3,7 +3,7 @@
 
 import { strings } from "../../strings";
 import { DataValue, DataType, DataKind } from "../specification";
-import { OrderMode } from "../specification/types";
+import { OrderType } from "../specification/spec_types";
 import { LocaleNumberFormat } from "./data_types";
 
 export { DataValue, DataType, DataKind };
@@ -22,7 +22,7 @@ export interface ColumnMetadata {
   unit?: string;
   /** Order of categories for categorical type */
   order?: string[];
-  orderMode?: OrderMode;
+  orderMode?: OrderType;
   /** Formatting for other data types */
   format?: string;
   rawColumnName?: string;

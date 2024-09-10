@@ -5,6 +5,7 @@
 import { Point, getById, setField, getField } from "../common";
 import * as Graphics from "../graphics";
 import * as Specification from "../specification";
+import * as SpecTypes from "../specification/spec_types";
 import * as Controls from "./controls";
 export * from "./chart_element";
 export * from "./object";
@@ -215,7 +216,7 @@ export namespace Handles {
   export interface TextAlignment extends Description {
     type: "text-alignment";
     text: string;
-    alignment: Specification.Types.TextAlignment;
+    alignment: SpecTypes.TextAlignment;
     rotation: number;
     anchorX: number;
     anchorY: number;

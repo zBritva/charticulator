@@ -22,8 +22,8 @@ import {
 } from "./axis";
 import { PlotSegmentClass } from "./plot_segment";
 import { ChartStateManager } from "..";
-import { getSortDirection } from "../..";
-import { AxisDataBinding } from "../../specification/types";
+import { getSortDirection, SpecTypes } from "../..";
+import { AxisDataBinding } from "../../specification/spec_types";
 
 /**
  * Line plot segment distributes the elements on the line
@@ -54,7 +54,7 @@ export interface LineGuideState extends Specification.PlotSegmentState {
 }
 
 export interface LineGuideProperties extends Specification.AttributeMap {
-  axis?: Specification.Types.AxisDataBinding;
+  axis?: SpecTypes.AxisDataBinding;
 }
 
 export interface LineGuideObject extends Specification.PlotSegment {

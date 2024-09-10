@@ -16,6 +16,7 @@ import {
   setField,
   Solver,
   Specification,
+  SpecTypes,
   uniqueID,
   zipArray,
 } from "../../core";
@@ -64,9 +65,9 @@ import {
   AxisRenderingStyle,
   CollapseOrExpandPanels,
   NumericalMode,
-  OrderMode,
+  OrderType,
   TickFormatType,
-} from "../../core/specification/types";
+} from "../../core/specification/spec_types";
 import {
   NumericalNumberLegendAttributeNames,
   NumericalNumberLegendProperties,
@@ -721,7 +722,7 @@ export class AppStore extends BaseStore {
       tableName = context.chart.table;
     }
     // Figure out the groupBy
-    let groupBy: Specification.Types.GroupBy = null;
+    let groupBy: SpecTypes.GroupBy = null;
     if (context.glyph) {
       // Find plot segments that use the glyph.
       this.chartManager.enumeratePlotSegments((cls) => {
@@ -1361,7 +1362,7 @@ export class AppStore extends BaseStore {
         }[];
 
         // Figure out the groupBy
-        let groupBy: Specification.Types.GroupBy = null;
+        let groupBy: SpecTypes.GroupBy = null;
         if (context.glyph) {
           // Find plot segments that use the glyph.
           this.chartManager.enumeratePlotSegments((cls) => {
@@ -1494,7 +1495,7 @@ export class AppStore extends BaseStore {
       );
 
       // xData
-      const xDataProperty: Specification.Types.AxisDataBinding = (plot.properties as Region2DProperties)
+      const xDataProperty: SpecTypes.AxisDataBinding = (plot.properties as Region2DProperties)
         .xData;
       if (xDataProperty && xDataProperty.expression) {
         const xData = new DragData.DataExpression(
@@ -1513,7 +1514,7 @@ export class AppStore extends BaseStore {
               ? xDataProperty.orderMode
               : xDataProperty.valueType === "string" ||
                 xDataProperty.valueType === "number"
-              ? OrderMode.order
+              ? OrderType.Order
               : null,
             order:
               xDataProperty.order != undefined
@@ -1545,7 +1546,7 @@ export class AppStore extends BaseStore {
       }
 
       // yData
-      const yDataProperty: Specification.Types.AxisDataBinding = (plot.properties as Region2DProperties)
+      const yDataProperty: SpecTypes.AxisDataBinding = (plot.properties as Region2DProperties)
         .yData;
       if (yDataProperty && yDataProperty.expression) {
         const yData = new DragData.DataExpression(
@@ -1563,7 +1564,7 @@ export class AppStore extends BaseStore {
             orderMode: yDataProperty.orderMode
               ? yDataProperty.orderMode
               : yDataProperty.valueType === "string"
-              ? OrderMode.order
+              ? OrderType.Order
               : null,
             order:
               yDataProperty.order !== undefined ? yDataProperty.order : null,
@@ -1590,7 +1591,7 @@ export class AppStore extends BaseStore {
         });
       }
 
-      const axisProperty: Specification.Types.AxisDataBinding = (plot.properties as LineGuideProperties)
+      const axisProperty: SpecTypes.AxisDataBinding = (plot.properties as LineGuideProperties)
         .axis;
       if (axisProperty && axisProperty.expression) {
         const axisData = new DragData.DataExpression(
@@ -1610,7 +1611,7 @@ export class AppStore extends BaseStore {
             orderMode: axisProperty.orderMode
               ? axisProperty.orderMode
               : axisProperty.valueType === "string"
-              ? OrderMode.order
+              ? OrderType.Order
               : null,
             order: axisProperty.order !== undefined ? axisProperty.order : null,
             orderByExpression:
@@ -1651,7 +1652,7 @@ export class AppStore extends BaseStore {
     const bindAxis = (
       dataAxisElement: { table: string; element: any },
       expression: string,
-      axisProperty: Specification.Types.AxisDataBinding,
+      axisProperty: SpecTypes.AxisDataBinding,
       dataAxis: Specification.ChartElement<DataAxisProperties>,
       appendToProperty: string = null
     ) => {
@@ -1670,7 +1671,7 @@ export class AppStore extends BaseStore {
           orderMode: axisProperty.orderMode
             ? axisProperty.orderMode
             : axisProperty.valueType === "string"
-            ? OrderMode.order
+            ? OrderType.Order
             : null,
           order: axisProperty.order,
         },
@@ -1707,7 +1708,7 @@ export class AppStore extends BaseStore {
         const dataAxis = dataAxisElement.element as Specification.ChartElement<
           DataAxisProperties
         >;
-        const axisProperty: Specification.Types.AxisDataBinding = (dataAxis.properties as LineGuideProperties)
+        const axisProperty: SpecTypes.AxisDataBinding = (dataAxis.properties as LineGuideProperties)
           .axis;
         if (axisProperty) {
           const expression = axisProperty.expression;
@@ -1719,7 +1720,7 @@ export class AppStore extends BaseStore {
         // remove all and added again
         dataAxis.properties.dataExpressions = [];
         dataExpressions.forEach((dataExpression, index) => {
-          const axisProperty: Specification.Types.AxisDataBinding = (dataAxis.properties as LineGuideProperties)
+          const axisProperty: SpecTypes.AxisDataBinding = (dataAxis.properties as LineGuideProperties)
             .axis;
           if (axisProperty) {
             const expression = dataExpression.expression;
@@ -1798,7 +1799,7 @@ export class AppStore extends BaseStore {
     const column = getColumnNameByExpression(expression);
 
     const orderByCategories: Array<string> = [];
-    let dataBinding: Specification.Types.AxisDataBinding = {
+    let dataBinding: SpecTypes.AxisDataBinding = {
       type: options.type || type,
       // Don't change current expression (use current expression), if user appends data expression ()
       expression: expression,
@@ -1941,13 +1942,13 @@ export class AppStore extends BaseStore {
       } else {
         dataBinding = object.properties[
           property
-        ] as Specification.Types.AxisDataBinding;
+        ] as SpecTypes.AxisDataBinding;
       }
     } else {
       object.properties[property] = dataBinding;
     }
 
-    const groupBy: Specification.Types.GroupBy = this.getGroupingExpression(
+    const groupBy: SpecTypes.GroupBy = this.getGroupingExpression(
       object
     );
     let values: ValueType[] = [];
@@ -2206,7 +2207,7 @@ export class AppStore extends BaseStore {
   ) {
     let categories: string[];
     let order: string[];
-    if (metadata.order && metadata.orderMode === OrderMode.order) {
+    if (metadata.order && metadata.orderMode === OrderType.Order) {
       categories = metadata.order.slice();
       const scale = new Scale.CategoricalScale();
       scale.inferParameters(values as string[], metadata.orderMode);
@@ -2229,14 +2230,14 @@ export class AppStore extends BaseStore {
       categories = categories.concat(newItems);
       order = metadata.order.concat(newItems);
     } else {
-      let orderMode: OrderMode = OrderMode.alphabetically;
+      let orderMode: OrderType = OrderType.Alphabetically;
       const scale = new Scale.CategoricalScale();
       if (metadata.orderMode) {
         orderMode = metadata.orderMode;
       }
       if (type === "number") {
         values = (values as number[]).sort((a, b) => a - b);
-        orderMode = OrderMode.order;
+        orderMode = OrderType.Order;
       }
       scale.inferParameters(values as string[], orderMode);
       categories = new Array<string>(scale.length);
@@ -2253,7 +2254,7 @@ export class AppStore extends BaseStore {
   public getGroupingExpression(
     object: Specification.IObject<Specification.ObjectProperties>
   ) {
-    let groupBy: Specification.Types.GroupBy = null;
+    let groupBy: SpecTypes.GroupBy = null;
     if (Prototypes.isType(object.classID, "plot-segment")) {
       groupBy = (object as Specification.PlotSegment).groupBy;
     } else {

@@ -14,7 +14,7 @@ import {
   UpdatePlotSegments,
 } from "../../app/actions/actions";
 import { DataExpression } from "../../app/actions/drag_data";
-import { AxisDataBinding } from "../../core/specification/types";
+import { AxisDataBinding } from "../../core/specification/spec_types";
 import { Expression, initialize, Prototypes } from "./../../core";
 import { createMockStore } from "./mock";
 import { PolarProperties } from "../../core/prototypes/plot_segments/region_2d/polar";

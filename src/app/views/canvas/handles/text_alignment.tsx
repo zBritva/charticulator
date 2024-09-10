@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 import * as React from "react";
 import { default as Hammer } from "hammerjs";
-import { Specification, Prototypes, Point, Geometry } from "../../../../core";
+import { Specification, Prototypes, Point, Geometry, SpecTypes } from "../../../../core";
 import * as globals from "../../../globals";
 import { classNames } from "../../../utils";
 import { PopupView } from "../../../controllers";
@@ -11,7 +11,7 @@ import { HandlesDragContext, HandleViewProps } from "./common";
 import {
   TextAlignmentHorizontal,
   TextAlignmentVertical,
-} from "../../../../core/specification/types";
+} from "../../../../core/specification/spec_types";
 
 export interface TextAlignmentHandleViewProps extends HandleViewProps {
   handle: Prototypes.Handles.TextAlignment;
@@ -19,7 +19,7 @@ export interface TextAlignmentHandleViewProps extends HandleViewProps {
 
 export interface TextAlignmentHandleViewState {
   dragging: boolean;
-  newAlignment: Specification.Types.TextAlignment;
+  newAlignment: SpecTypes.TextAlignment;
   newRotation: number;
 }
 
@@ -64,7 +64,7 @@ export class TextAlignmentHandleView extends React.Component<
     let sumDeltaY: number = 0,
       dYLast = 0;
     let p0: Point;
-    let previousAlignment: Specification.Types.TextAlignment;
+    let previousAlignment: SpecTypes.TextAlignment;
     let previousRotation: number;
 
     let context: HandlesDragContext = null;
@@ -74,7 +74,7 @@ export class TextAlignmentHandleView extends React.Component<
       dy: number,
       newRotation: number,
       snapping: boolean
-    ): [Specification.Types.TextAlignment, number] => {
+    ): [SpecTypes.TextAlignment, number] => {
       const rect = this.getRectFromAlignment(
         previousAlignment,
         previousRotation
@@ -82,7 +82,7 @@ export class TextAlignmentHandleView extends React.Component<
       const acx = rect.cx - this.props.handle.anchorX;
       const acy = rect.cy - this.props.handle.anchorY;
 
-      const newAlignment: Specification.Types.TextAlignment = {
+      const newAlignment: SpecTypes.TextAlignment = {
         x: previousAlignment.x,
         y: previousAlignment.y,
         xMargin: previousAlignment.xMargin,
@@ -291,7 +291,7 @@ export class TextAlignmentHandleView extends React.Component<
   }
 
   public getRectFromAlignment(
-    alignment: Specification.Types.TextAlignment,
+    alignment: SpecTypes.TextAlignment,
     rotation: number
   ) {
     const cos = Math.cos(Geometry.degreesToRadians(rotation));

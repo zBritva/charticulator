@@ -3,7 +3,7 @@
 
 import { interpolateColors } from "../../common";
 import * as Graphics from "../../graphics";
-import * as Specification from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 
 import { AxisRenderer } from "../plot_segments/axis";
 import { LegendClass, LegendProperties } from "./legend";
@@ -64,7 +64,7 @@ export class NumericalColorLegendClass extends LegendClass {
       return null;
     }
 
-    const range = <Specification.Types.ColorGradient>scale[0].properties.range;
+    const range = <SpecTypes.ColorGradient>scale[0].properties.range;
     const domainMin = <number>scale[0].properties.domainMin;
     const domainMax = <number>scale[0].properties.domainMax;
 

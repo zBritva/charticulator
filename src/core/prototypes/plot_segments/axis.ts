@@ -32,7 +32,7 @@ import {
   splitByWidth,
   TextMeasurer,
 } from "../../graphics/renderer/text_measurer";
-import { Graphics, Prototypes, Specification } from "../../index";
+import { Graphics, Prototypes, Specification, SpecTypes } from "../../index";
 import { Controls, strokeStyleToDashArray } from "../common";
 import {
   AttributeMap,
@@ -46,7 +46,7 @@ import {
   AxisDataBinding,
   AxisDataBindingType,
   NumericalMode,
-} from "../../specification/types";
+} from "../../specification/spec_types";
 import { VirtualScrollBar, VirtualScrollBarPropertes } from "./virtualScroll";
 import {
   CategoryItemsWithIds,
@@ -67,7 +67,7 @@ import { type2DerivedColumns } from "../../../app/views/dataset/common";
 import { CartesianPlotSegment } from "../plot_segments/region_2d";
 import * as React from "react";
 
-export const defaultAxisStyle: Specification.Types.AxisRenderingStyle = {
+export const defaultAxisStyle: SpecTypes.AxisRenderingStyle = {
   tickColor: { r: 0, g: 0, b: 0 },
   tickTextBackgroudColor: null,
   tickTextBackgroudColorId: null,
@@ -89,7 +89,7 @@ export const defaultAxisStyle: Specification.Types.AxisRenderingStyle = {
 };
 
 function fillDefaultAxisStyle(
-  style?: Partial<Specification.Types.AxisRenderingStyle>
+  style?: Partial<SpecTypes.AxisRenderingStyle>
 ) {
   return fillDefaults(style, defaultAxisStyle);
 }
@@ -108,7 +108,7 @@ export const DEFAULT_SCROLL_WINDOW = 1;
 
 export class AxisRenderer {
   public ticks: TickDescription[] = [];
-  public style: Specification.Types.AxisRenderingStyle = defaultAxisStyle;
+  public style: SpecTypes.AxisRenderingStyle = defaultAxisStyle;
   public rangeMin: number = 0;
   public rangeMax: number = 1;
   public valueToPosition: (value: any) => number;
@@ -120,7 +120,7 @@ export class AxisRenderer {
   //axis tick selection
   private plotSegment: Specification.PlotSegment;
   private dataFlow: DataflowManager;
-  private data: Specification.Types.AxisDataBinding;
+  private data: SpecTypes.AxisDataBinding;
 
   private static textMeasurer = new TextMeasurer();
 
@@ -130,7 +130,7 @@ export class AxisRenderer {
   private dataType: AxisDataBindingType = AxisDataBindingType.Default;
   private windowSize: number = DEFAULT_SCROLL_WINDOW;
 
-  public setStyle(style?: Partial<Specification.Types.AxisRenderingStyle>) {
+  public setStyle(style?: Partial<SpecTypes.AxisRenderingStyle>) {
     if (!style) {
       this.style = defaultAxisStyle;
     } else {
@@ -142,7 +142,7 @@ export class AxisRenderer {
   }
 
   public setAxisDataBinding(
-    data: Specification.Types.AxisDataBinding,
+    data: SpecTypes.AxisDataBinding,
     rangeMin: number,
     rangeMax: number,
     enablePrePostGap: boolean,
@@ -1406,7 +1406,7 @@ export class AxisRenderer {
 }
 
 export function getCategoricalAxis(
-  data: Specification.Types.AxisDataBinding,
+  data: SpecTypes.AxisDataBinding,
   enablePrePostGap: boolean,
   reverse: boolean
 ) {
@@ -1450,7 +1450,7 @@ export function getCategoricalAxis(
 }
 
 export function getNumericalInterpolate(
-  data: Specification.Types.AxisDataBinding
+  data: SpecTypes.AxisDataBinding
 ) {
   if (data.numericalMode == "logarithmic") {
     const p1 = Math.log(data.domainMin);
@@ -1772,7 +1772,7 @@ const defaultAxisWidgetsConfig: AxisWidgetsConfig = {
 };
 
 function buildScrollingAxisWidgets(
-  data: Specification.Types.AxisDataBinding,
+  data: SpecTypes.AxisDataBinding,
   axisProperty: string,
   manager: Controls.WidgetManager,
   axisName: string,
@@ -1834,7 +1834,7 @@ function buildScrollingAxisWidgets(
 
 // eslint-disable-next-line
 export function buildAxisWidgets(
-  data: Specification.Types.AxisDataBinding,
+  data: SpecTypes.AxisDataBinding,
   axisProperty: string,
   manager: Controls.WidgetManager,
   axisName: string,
@@ -2394,7 +2394,7 @@ export function buildAxisInference(
   plotSegment: Specification.PlotSegment,
   property: string
 ): Specification.Template.Inference {
-  const axis = <Specification.Types.AxisDataBinding>(
+  const axis = <SpecTypes.AxisDataBinding>(
     plotSegment.properties[property]
   );
   return {
@@ -2581,7 +2581,7 @@ function applySelectionFilter(
 let orderChanged = false;
 
 function getOrderByAnotherColumnWidgets(
-  data: Specification.Types.AxisDataBinding,
+  data: SpecTypes.AxisDataBinding,
   axisProperty: string,
   manager: Controls.WidgetManager,
   mainCollapsePanelHeader: string
@@ -2646,7 +2646,7 @@ function getOrderByAnotherColumnWidgets(
   const getExpressionVector = (
     expression: string,
     table: string,
-    groupBy?: Specification.Types.GroupBy
+    groupBy?: SpecTypes.GroupBy
   ): any[] => {
     if (!expression) {
       return []
@@ -2774,7 +2774,7 @@ function getOrderByAnotherColumnWidgets(
 }
 
 function getTickDataAndTickFormatFields(
-  data: Specification.Types.AxisDataBinding,
+  data: SpecTypes.AxisDataBinding,
   axisProperty: string,
   manager: Controls.WidgetManager,
   mainCollapsePanelHeader?: string

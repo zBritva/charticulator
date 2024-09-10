@@ -6,8 +6,8 @@ import * as Dataset from "../dataset";
 import { TableType } from "../dataset";
 import { DefaultAttributes } from "../prototypes";
 import { Chart, DataType, AttributeType } from "./index";
-import * as Types from "./types";
-import { AxisRenderingStyle } from "./types";
+import * as Types from "./spec_types";
+import { AxisRenderingStyle } from "./spec_types";
 
 export type PropertyField =
   | string
@@ -104,7 +104,7 @@ export interface AxisInference {
   /** Infer axis data and assign to this property */
   property: PropertyField;
 
-  orderMode?: Types.OrderMode;
+  orderMode?: Types.OrderType;
   order?: string[];
   rawExpression?: string;
   defineCategories?: boolean;

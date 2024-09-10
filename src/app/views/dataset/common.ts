@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import { Dataset } from "../../../core";
-import { OrderMode } from "../../../core/specification/types";
+import { OrderType } from "../../../core/specification/spec_types";
 import { strings } from "../../../strings";
 
 export const kind2Icon: { [name in Dataset.DataKind]: string } = {
@@ -80,7 +80,7 @@ export const type2DerivedColumns: {
       function: "date.year",
       metadata: {
         kind: Dataset.DataKind.Categorical,
-        orderMode: OrderMode.alphabetically,
+        orderMode: OrderType.Alphabetically,
       },
     },
     {
@@ -100,7 +100,7 @@ export const type2DerivedColumns: {
       function: "date.monthnumber",
       metadata: {
         kind: Dataset.DataKind.Categorical,
-        orderMode: OrderMode.alphabetically,
+        orderMode: OrderType.Alphabetically,
       },
     },
     {
@@ -110,7 +110,7 @@ export const type2DerivedColumns: {
       function: "date.day",
       metadata: {
         kind: Dataset.DataKind.Categorical,
-        orderMode: OrderMode.alphabetically,
+        orderMode: OrderType.Alphabetically,
       },
     },
     {
@@ -120,7 +120,7 @@ export const type2DerivedColumns: {
       function: "date.weekOfYear",
       metadata: {
         kind: Dataset.DataKind.Categorical,
-        orderMode: OrderMode.alphabetically,
+        orderMode: OrderType.Alphabetically,
       },
     },
     {
@@ -130,7 +130,7 @@ export const type2DerivedColumns: {
       function: "date.dayOfYear",
       metadata: {
         kind: Dataset.DataKind.Categorical,
-        orderMode: OrderMode.alphabetically,
+        orderMode: OrderType.Alphabetically,
       },
     },
     {

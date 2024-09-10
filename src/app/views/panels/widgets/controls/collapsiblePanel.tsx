@@ -5,7 +5,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { AppStore } from "../../../../../app/stores";
 import { Actions } from "../../../../../app";
-import { CollapseOrExpandPanels } from "../../../../../core/specification/types";
+import { CollapseOrExpandPanels } from "../../../../../core/specification/spec_types";
 
 import { Label } from "@fluentui/react-label";
 import { Accordion } from "@fluentui/react-accordion";

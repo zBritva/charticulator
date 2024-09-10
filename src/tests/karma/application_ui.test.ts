@@ -11,7 +11,7 @@ import {
   ObjectProperties,
   PlotSegment,
 } from "../../core/specification";
-import { OrderMode } from "../../core/specification/types";
+import { OrderType } from "../../core/specification/spec_types";
 import { strings } from "../../strings";
 import {
   clickOnButtonByTitle,
@@ -109,7 +109,7 @@ describe("Charticulator", () => {
           DataType.String,
           {
             kind: DataKind.Categorical,
-            orderMode: OrderMode.order,
+            orderMode: OrderType.Order,
             order: strings.dataset.months,
           },
           expression

@@ -5,7 +5,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { ZoomInfo } from "../..";
-import { AxisDataBindingType } from "../../specification/types";
+import { AxisDataBindingType } from "../../specification/spec_types";
 
 export interface VirtualScrollBarPropertes {
   initialPosition: number;

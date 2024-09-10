@@ -10,6 +10,7 @@ import {
   Expression,
   parseColorOrThrowException,
   Specification,
+  SpecTypes,
 } from "../../../../core";
 import { DataMappingHints } from "../../../../core/prototypes";
 import { InputNumberOptions } from "../../../../core/prototypes/controls";
@@ -371,7 +372,7 @@ export class FluentValueEditor extends ContextedComponent<
         }
       }
       case Specification.AttributeType.Image: {
-        const str = value as Specification.Types.Image;
+        const str = value as SpecTypes.Image;
         return (
           <InputImage
             label={this.props.label}
@@ -380,7 +381,7 @@ export class FluentValueEditor extends ContextedComponent<
               if (newValue == null) {
                 this.emitClearValue();
               } else {
-                this.emitSetValue(newValue as Specification.Types.Image);
+                this.emitSetValue(newValue as SpecTypes.Image);
               }
               return true;
             }}

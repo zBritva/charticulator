@@ -3,6 +3,7 @@
 
 import { Color } from "../../common";
 import * as Specification from "../../specification";
+import * as SpecTypes from "../../specification/spec_types";
 import { Controls, ObjectClassMetadata } from "../common";
 import { DataAxisExpression } from "../marks/data_axis.attrs";
 import { LegendProperties, LegendState } from "./legend";
@@ -25,7 +26,7 @@ export interface CustomLegendProperties extends LegendProperties {
   axis: {
     visible: boolean;
     side: string;
-    style: Specification.Types.AxisRenderingStyle;
+    style: SpecTypes.AxisRenderingStyle;
   };
 }
 

@@ -5,7 +5,7 @@
 import { scaleUtc, scaleLinear, scaleLog, scaleTime } from "d3-scale";
 import { timeFormat, utcFormat } from "d3-time-format";
 import { getSortFunctionByData, isUtcTimeZone } from "./utils";
-import { OrderMode } from "../specification/types";
+import { OrderType } from "../specification/spec_types";
 
 export namespace Scale {
   /** Base scale class */
@@ -133,7 +133,7 @@ export namespace Scale {
 
     public inferParameters(
       values: string[],
-      order: OrderMode = OrderMode.alphabetically
+      order: OrderType = OrderType.Alphabetically
     ) {
       const vals = new Map<string, number>();
       const domain: string[] = [];

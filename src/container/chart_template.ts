@@ -11,6 +11,7 @@ import {
   Prototypes,
   Scale,
   Specification,
+  SpecTypes,
 } from "../core";
 import {
   findObjectById,
@@ -21,7 +22,7 @@ import {
   DefaultAttributes,
 } from "../core/prototypes";
 import { CompiledGroupBy } from "../core/prototypes/group_by";
-import { OrderMode } from "../core/specification/types";
+import { OrderType } from "../core/specification/spec_types";
 import { DataAxisExpression } from "../core/prototypes/marks/data_axis.attrs";
 import { MappingType, ScaleMapping, ValueMapping } from "../core/specification";
 import { Region2DSublayoutOptions } from "../core/prototypes/plot_segments/region_2d/base";
@@ -110,9 +111,9 @@ export class ChartTemplate {
   }
 
   public transformGroupBy(
-    groupBy: Specification.Types.GroupBy,
+    groupBy: SpecTypes.GroupBy,
     table: string
-  ): Specification.Types.GroupBy {
+  ): SpecTypes.GroupBy {
     if (!groupBy) {
       return null;
     }
@@ -352,7 +353,7 @@ export class ChartTemplate {
     const getExpressionVector = (
       expression: string,
       table: string,
-      groupBy?: Specification.Types.GroupBy
+      groupBy?: SpecTypes.GroupBy
     ): any[] => {
       if (!expression) {
         return null;
@@ -389,7 +390,7 @@ export class ChartTemplate {
         const axisDataBinding = getProperty(
           object,
           axis.property
-        ) as Specification.Types.AxisDataBinding;
+        ) as SpecTypes.AxisDataBinding;
         axisDataBinding.expression = expression;
         if (inference.autoDomainMin || inference.autoDomainMax) {
           // disableAuto flag responsible for disabling/enabling configulration scale domains when new data is coming
@@ -425,7 +426,7 @@ export class ChartTemplate {
             const scale = new Scale.CategoricalScale();
             scale.inferParameters(
               vector,
-              inference.axis.orderMode || OrderMode.order
+              inference.axis.orderMode || OrderType.Order
             );
             axisDataBinding.categories = new Array<string>(scale.domain.size);
             const newData = new Array<string>(scale.domain.size);
@@ -436,7 +437,7 @@ export class ChartTemplate {
             // try to save given order from template
             if (
               axisDataBinding.order &&
-              axisDataBinding.orderMode === OrderMode.order
+              axisDataBinding.orderMode === OrderType.Order
             ) {
               axisDataBinding.order = axisDataBinding.order.filter((value) =>
                 scale.domain.has(value)

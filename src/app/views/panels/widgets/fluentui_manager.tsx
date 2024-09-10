@@ -44,6 +44,7 @@ import { GroupByEditor } from "./groupby_editor";
 import {
   ChartTemplate,
   getFormat,
+  SpecTypes,
   tickFormatParserExpression,
 } from "../../../../container";
 import {
@@ -100,7 +101,7 @@ import { OpenNestedEditor } from "../../../actions/actions";
 import { FilterPanel } from "./fluentui_filter";
 import { EventManager, EventType, UIManagerListener } from "./observer";
 import { FluentUIGradientPicker } from "../../../components/fluent_ui_gradient_picker";
-import { OrderMode } from "../../../../core/specification/types";
+import { OrderType } from "../../../../core/specification/spec_types";
 import { CustomCollapsiblePanel } from "./controls/custom_collapsible_panel";
 import { FluentUIReorderStringsValue } from "./controls/fluentui_reorder_string_value";
 import { InputColorGradient } from "./controls/input_gradient";
@@ -1094,9 +1095,9 @@ export class FluentUIWidgetManager
     return (
       <InputImage
         key={this.getKeyFromProperty(property)}
-        value={this.getPropertyValue(property) as Specification.Types.Image}
+        value={this.getPropertyValue(property) as SpecTypes.Image}
         onChange={(image) => {
-          this.emitSetProperty(property, image as Specification.Types.Image);
+          this.emitSetProperty(property, image as SpecTypes.Image);
           return true;
         }}
       />
@@ -1107,9 +1108,9 @@ export class FluentUIWidgetManager
     return (
       <InputImageProperty
         key={this.getKeyFromProperty(property)}
-        value={this.getPropertyValue(property) as Specification.Types.Image}
+        value={this.getPropertyValue(property) as SpecTypes.Image}
         onChange={(image) => {
-          this.emitSetProperty(property, image as Specification.Types.Image);
+          this.emitSetProperty(property, image as SpecTypes.Image);
           return true;
         }}
       />
@@ -1213,7 +1214,7 @@ export class FluentUIWidgetManager
     let currentExpression: string = null;
     const currentSortBy = this.getPropertyValue(
       property
-    ) as Specification.Types.SortBy;
+    ) as SpecTypes.SortBy;
     if (currentSortBy != null) {
       currentExpression = currentSortBy.expression;
     }
@@ -1294,7 +1295,7 @@ export class FluentUIWidgetManager
                       property: property.property,
                       field: "orderMode",
                     },
-                    OrderMode.order
+                    OrderType.Order
                   );
                   this.emitSetProperty(
                     {
@@ -1310,7 +1311,7 @@ export class FluentUIWidgetManager
                         property: property.property,
                         field: "orderMode",
                       },
-                      OrderMode.alphabetically
+                      OrderType.Alphabetically
                     );
                   } else {
                     this.emitSetProperty(
@@ -1318,7 +1319,7 @@ export class FluentUIWidgetManager
                         property: property.property,
                         field: "orderMode",
                       },
-                      OrderMode.order
+                      OrderType.Order
                     );
                     this.emitSetProperty(
                       {
@@ -1345,7 +1346,7 @@ export class FluentUIWidgetManager
                   orderMode: "order",
                 };
 
-                const groupBy: Specification.Types.GroupBy = this.store.getGroupingExpression(
+                const groupBy: SpecTypes.GroupBy = this.store.getGroupingExpression(
                   this.objectClass.object
                 );
                 const values = this.store.chartManager.getGroupedExpressionVector(
@@ -1509,7 +1510,7 @@ export class FluentUIWidgetManager
     if (options.dropzone && options.dropzone.type == "axis-data-binding") {
       const current = this.getPropertyValue({
         property: options.dropzone.property,
-      }) as Specification.Types.AxisDataBinding;
+      }) as SpecTypes.AxisDataBinding;
 
       const onClick = (value: DataFieldSelectorValue) => {
         if (!value) {
@@ -2024,7 +2025,7 @@ export class FluentUIWidgetManager
                     property: property.property,
                     field: "orderMode",
                   },
-                  OrderMode.order
+                  OrderType.Order
                 );
                 if (options.onConfirmClick) {
                   options.onConfirmClick(items);
@@ -2049,7 +2050,7 @@ export class FluentUIWidgetManager
                   orderMode: "order",
                 };
 
-                const groupBy: Specification.Types.GroupBy = this.store.getGroupingExpression(
+                const groupBy: SpecTypes.GroupBy = this.store.getGroupingExpression(
                   this.objectClass.object
                 );
                 const values = this.store.chartManager.getGroupedExpressionVector(
