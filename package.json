@@ -7,14 +7,28 @@
     "email": "donghao.ren@gmail.com",
     "url": "https://donghaoren.org"
   },
+  "description": "The community version of the charticulator visual. The visual in development mode doesn't include all functionalities implemented in the original version. But the visual uses the latest version of the Charticulator with new features and bug fixes",
   "contributors": [
     "David Tittsworth <datittsw@microsoft.com>",
     "Ilfat Galiev <zbritva@gmail.com>"
   ],
+  "electron": "electron ./dist",
+  "dist": "electron-builder",
+  "build": {
+    "appId": "http://ilfat-galiev.im/",
+    "productName": "Charticulator App",
+    "directories": {
+      "output": "dist"
+    }
+  },
   "engines": {
     "node": ">=20.1.0"
   },
   "scripts": {
+    "electron": "electron .\\dist\\index.html",
+    "estart": "electron-forge start",
+    "epackage": "electron-forge package",
+    "emake": "electron-forge make",
     "dev": "node build.js",
     "prebuild": "pegjs --format commonjs --allowed-start-rules start,start_text -o src/core/expression/parser.js src/core/expression/parser.pegjs",
     "build": "node build.js --mode=production",
@@ -23,7 +37,7 @@
     "public_server": "node build.js public_server",
     "watch": "node build.js watch",
     "ssl_watch": "node build.js ssl_watch",
-    "start": "node build.js dev watch",
+    "start": "electron-forge start",
     "ssl_start": "node build.js dev ssl_watch",
     "eslint": "npx eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
     "prettify": "prettier \"./src/**/*.{ts,tsx}\" \"./sass/**/*.{scss,sass}\"",
@@ -38,7 +52,9 @@
     "docker_build": "docker build -t charticulator/test .",
     "docker_remove": "docker container rm charticulator",
     "docker_create": "docker create -ti --name charticulator charticulator/test bash",
-    "docker_copy": "docker cp charticulator:/home/node/charticulator/src/tests/karma/ChromeHeadless ./src/tests/unit/"
+    "docker_copy": "docker cp charticulator:/home/node/charticulator/src/tests/karma/ChromeHeadless ./src/tests/unit/",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "types": "./dist/scripts/index.d.ts",
   "main": "./dist/scripts/app.bundle.js",
@@ -66,6 +82,7 @@
     "d3-format": "1.3.0",
     "d3-scale": "4.0.2",
     "d3-time-format": "2.1.1",
+    "electron-squirrel-startup": "^1.0.1",
     "file-saver": "1.3.8",
     "hammerjs": "2.0.8",
     "lscg-solver": "1.2.1",
@@ -99,6 +116,14 @@
     "insert_license": true
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
     "@playwright/test": "1.41.2",
     "@types/chai": "4.3.11",
     "@types/d3": "4.9.0",
@@ -116,6 +141,8 @@
     "chai": "4.2.0",
     "dom-to-json": "0.0.4",
     "dts-bundle-generator": "^9.5.1",
+    "electron": "^32.0.2",
+    "electron-is-dev": "^3.0.1",
     "eslint": "8.56.0",
     "eslint-plugin-powerbi-visuals": "0.8.1",
     "eslint-plugin-react-hooks": "4.6.0",
