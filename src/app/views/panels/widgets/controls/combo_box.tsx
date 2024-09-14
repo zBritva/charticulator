@@ -48,8 +48,8 @@ export const FluentComboBoxFontFamily: React.FC<ComboBoxFontFamilyProps> = (
     (event, value) => {
       const currentInputValue: string = event.target.value;
       const currentFontValue: string =
-        value?.key?.toString() ??
-        (currentInputValue.length > 0 ? currentInputValue : props.defaultValue);
+        value ??
+        (currentInputValue && currentInputValue.length > 0 ? currentInputValue : props.defaultValue);
       setCurrentValue(currentFontValue);
       props.onEnter?.(currentFontValue);
     },
