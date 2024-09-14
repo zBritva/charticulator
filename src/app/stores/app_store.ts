@@ -90,7 +90,6 @@ import {
   getColumnNameByExpression,
 } from "../../core/prototypes/plot_segments/utils";
 import { AxisRenderer } from "../../core/prototypes/plot_segments/axis";
-import { boolean } from "src/core/expression";
 
 export interface ChartStoreStateSolverStatus {
   solving: boolean;
