@@ -63,7 +63,7 @@ export const FileViewOptionsView: React.FC<FileViewOptionsProps> = () => {
   };
 
   return (
-    <section className="charticulator__file-view-content">
+    <section className="charticulator__file-view-content is-fix-width is-restricted-width">
       <h1>{strings.mainTabs.options}</h1>
       <div>
         <h2>{strings.options.fileFormat}</h2>
