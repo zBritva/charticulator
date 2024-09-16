@@ -294,11 +294,12 @@ export class ImportDataView extends React.Component<
 
   public renderTable(
     table: Dataset.Table,
-    onTypeChange: (column: string, type: Dataset.DataType) => void
+    onTypeChange: (column: string, type: Dataset.DataType) => void,
+    onChange: (changes) => void,
   ) {
     return (
       <div className="wide-content">
-        <TableView table={table} maxRows={5} onTypeChange={onTypeChange} />
+        <TableView onChange={onChange} table={table} maxRows={5} onTypeChange={onTypeChange}/>
       </div>
     );
   }
@@ -402,16 +403,22 @@ export class ImportDataView extends React.Component<
                     dataColumn.type = type;
                     dataColumn.metadata.kind = getPreferredDataKind(type);
                   }
+                },
+                (changes) => {
+                  const table = this.state.dataTable;
+                  console.log(changes);
+                  changes.forEach(ch => {
+                    const row = table.rows[ch.row];
+                    const col: Dataset.Column = table.columns[ch.x];
+                    row[col.name] = ch.newValue;
+                  })
+                  this.setState({
+                    dataTable: table 
+                  })
                 }
               )}
               <Button
-                // text={strings.fileImport.removeButtonText}
-                // iconProps={{
-                //   iconName: "ChromeClose",
-                // }}
                 icon={<SVGImageIcon url={R.getSVGIcon("ChromeClose")} />}
-                // styles={primaryButtonStyles}
-                // title={strings.fileImport.removeButtonTitle}
                 onClick={() => {
                   this.setState({
                     dataTable: null,
@@ -421,6 +428,22 @@ export class ImportDataView extends React.Component<
               >
                 {strings.fileImport.removeButtonText}
               </Button>
+              {/* <Button
+                icon={<SVGImageIcon url={this.state.dataTableEdit ? R.getSVGIcon("Save") : R.getSVGIcon("Edit") } />}
+                onClick={() => {
+                  if (this.state.dataTableEdit) {
+                    if (this.dataTableRef.current) {
+                      const data = this.dataTableRef.current.getData();
+                      console.log('data', data);
+                    }
+                  }
+                  this.setState(state => ({
+                    dataTableEdit: !state.dataTableEdit,
+                  }));
+                }}
+              >
+                {strings.fileImport.editTableText}
+              </Button> */}
             </div>
             {this.state.imagesTable ? (
               <div className="charticulator__import-data-view-table">
@@ -449,7 +472,8 @@ export class ImportDataView extends React.Component<
                       dataColumn.type = type;
                       dataColumn.metadata.kind = getPreferredDataKind(type);
                     }
-                  }
+                  },
+                  () => {},
                 )}
               </div>
             ) : null}
@@ -506,16 +530,16 @@ export class ImportDataView extends React.Component<
                   linkTable: this.state.linkTable,
                   linkTableOrigin: this.state.linkTable,
                 });
+              },
+              (table) => {
+                this.setState({
+                  linkTable: table 
+                })
               }
             )}
             <Button
-              // text={strings.fileImport.removeButtonText}
-              // iconProps={{
-              //   iconName: "ChromeClose",
-              // }}
               icon={<SVGImageIcon url={R.getSVGIcon("ChromeClose")} />}
               title={strings.fileImport.removeButtonTitle}
-              // styles={primaryButtonStyles}
               onClick={() => {
                 this.setState({
                   linkTable: null,
@@ -527,6 +551,22 @@ export class ImportDataView extends React.Component<
             >
               {strings.fileImport.removeButtonText}
             </Button>
+            {/* <Button
+              icon={<SVGImageIcon url={this.state.linkTableEdit ? R.getSVGIcon("Save") : R.getSVGIcon("Edit") } />}
+              onClick={() => {
+                if (this.state.linkTableEdit) {
+                  if (this.linkTableRef.current) {
+                    const data = this.linkTableRef.current.getData();
+                    console.log('links', data);
+                  }
+                }
+                  this.setState(state => ({
+                    linkTableEdit: !state.linkTableEdit,
+                  }));
+              }}
+            >
+              {strings.fileImport.editTableText}
+            </Button> */}
           </div>
         ) : (
           <FileUploader
@@ -546,25 +586,20 @@ export class ImportDataView extends React.Component<
         )}
         <div className="el-actions">
           <Button
-            // text={strings.fileImport.doneButtonText}
-            // iconProps={{
-            //   iconName: "CheckMark",
-            // }}
             icon={<CheckRegular />}
-            // styles={primaryButtonStyles}
             title={strings.fileImport.doneButtonTitle}
             disabled={
               this.state.dataTable == null ||
               this.props.store.messageState.get("noID") !== undefined ||
               this.props.store.messageState.get("noSourceOrTargetID") !==
-                undefined
+              undefined
             }
             onClick={() => {
               if (
                 this.state.dataTable != null &&
                 this.props.store.messageState.get("noID") === undefined &&
                 this.props.store.messageState.get("noSourceOrTargetID") ===
-                  undefined
+                undefined
               ) {
                 const dataset: Dataset.Dataset = {
                   name: this.state.dataTable.name,
