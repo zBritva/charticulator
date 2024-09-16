@@ -44,6 +44,14 @@ module.exports = (env, { mode }) => {
       }
     ]
   }
+  const cssConfig = {
+    test: /\.(css|scss|less)?$/,
+    use: [
+      require.resolve('style-loader'),
+      require.resolve('css-loader'),
+      require.resolve('sass-loader')
+    ],
+  };
   const plugins = [
     new webpack.DefinePlugin({
       CHARTICULATOR_PACKAGE: JSON.stringify({
@@ -89,6 +97,7 @@ module.exports = (env, { mode }) => {
         rules: [
           pegjsConfig,
           typescriptConfig,
+          cssConfig,
           {
             test: /\.(woff|ttf|ico|woff2|jpg|jpeg|png|webp|svg)$/i,
             use: [

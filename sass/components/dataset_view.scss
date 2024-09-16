@@ -3,6 +3,25 @@
 @use 'sass:math';
 @import "../theme.scss";
 
+:root {
+  --jexcel_header_color: #000;
+  --jexcel_header_color_highlighted: #000;
+  --jexcel_header_background: #f3f3f3;
+  --jexcel_header_background_highlighted: #dcdcdc;
+  --jexcel_content_color: #000;
+  --jexcel_content_color_highlighted: #000;
+  --jexcel_content_background: #fff;
+  --jexcel_content_background_highlighted: rgba(0,0,0,0.05);
+  --jexcel_menu_background: #fff;
+  --jexcel_menu_background_highlighted: #ebebeb;
+  --jexcel_menu_color: #555;
+  --jexcel_menu_color_highlighted: #555;
+  --jexcel_menu_box_shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+  --jexcel_border_color: #ccc;
+  --jexcel_border_color_highlighted: #000;
+  --active_color: #007aff;
+}
+
 .charticulator {
   &__dataset-view {
     .el-title {
@@ -129,7 +148,7 @@
   }
 
   &__import-data-view {
-    width: 600px;
+    // width: 600px;
     // padding: 0 20px;
     padding-bottom: 20px;
     h2 {
@@ -165,6 +184,10 @@
   td {
     @include font-mono();
     text-align: left;
+  }
+
+  &-spreadsheet {
+    width: 100%;
   }
 }
 
