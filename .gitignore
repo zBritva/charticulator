@@ -14,3 +14,4 @@ key.pem
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/out
