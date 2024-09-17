@@ -5,6 +5,8 @@ Charticulator is a new charting tool that allows you to design charts by interac
 
 Deployed `beta` branch available on [https://zbritva.github.io/charticulator/](https://zbritva.github.io/charticulator/)
 
+[![Deploy static content to Pages](https://github.com/zBritva/charticulator/actions/workflows/static.yml/badge.svg?branch=beta)](https://github.com/zBritva/charticulator/actions/workflows/static.yml)
+
 ## Project Team & contributors
 
 - [Donghao Ren](https://donghaoren.org/)
