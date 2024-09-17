@@ -6,6 +6,7 @@ export interface ItemMetadata {
   timeCreated?: number;
   timeModified?: number;
   allowDelete?: boolean;
+  thumbnail?: string;
 }
 
 export type ItemSource = "cdn" | "indexed";

@@ -37,8 +37,42 @@
         "container",
         {}
       ).then(() => {
-        application.setOnSaveChartCallback((chart) => {
-          console.log('chart has been saved');
+        application.setOnSaveChartCallback(({
+          id,
+          state,
+          name,
+          metadata
+        }) => {
+          debugger;
+          if (!CHARTICULATOR_CONFIG.CDNBackend.externalExport) {
+            return;
+          }
+          const data = {
+            name,
+            state
+          };
+          jsonBlob = new Blob([JSON.stringify(data, null, 2)]);
+
+          const formData = new FormData();
+          formData.append("id", id);
+          formData.append("image", metadata.thumbnail);
+          formData.append("meta", jsonBlob);
+
+          fetch(CHARTICULATOR_CONFIG.CDNBackend.externalExport, {
+            method: "POST",
+            headers: {
+              "content-type": "multipart/form-data"
+            },
+            body: formData
+          })
+          .then(response => {
+            console.log(response);
+            console.log('chart has been saved');
+          })
+          .catch(error => {
+            console.log(error.message);
+            console.log('chart has not been saved');
+          });
         });
         application.setOnExportTemplateCallback((template) => {
           console.log('template has been exported');

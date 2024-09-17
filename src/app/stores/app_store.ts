@@ -421,7 +421,9 @@ export class AppStore extends BaseStore {
       this.emit(AppStore.EVENT_GRAPHICS);
       this.emit(AppStore.EVENT_SAVECHART, {
         state: chart.data,
-        name: chart.metadata.name
+        name: chart.metadata.name,
+        id: chart.id,
+        metadata: chart.metadata
       });
     }
   }
@@ -451,6 +453,12 @@ export class AppStore extends BaseStore {
     this.emit(AppStore.EVENT_SAVECHART, {
       state,
       name,
+      id,
+      metadata: {
+        name,
+        dataset: this.dataset.name,
+        thumbnail: png.toDataURL(),
+      }
     });
     return id;
   }

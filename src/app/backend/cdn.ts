@@ -47,7 +47,10 @@ export class CDNBackend extends AbstractBackend {
                 return;
             }
             fetch(this.resourcesDescriptionUrl, {
-                method: "GET"
+                method: "GET",
+                headers: {
+                    "content-type": "multipart/form-data"
+                }
             }).then(response => {
                 return response.json();
             }).then(json => {
