@@ -24,13 +24,16 @@
 # Configure sample datasets if any
 #------------------------------------------------
 
-# SampleDatasets:
-#   - name: DatasetName
-#     description: Dataset description
-#     tables:
-#       - name: TableName
-#         type: csv/tsv
-#         url: "relative/absolute url to the file"
+DatasetSources:
+  resourcesDescriptionUrl: https://ilfat-galiev.im/data.json
+
+SampleDatasets:
+  - name: DatasetName
+    description: Dataset description
+    tables:
+      - name: TableName
+        type: csv/tsv
+        url: "https://msdn.microsoft.com/en-us/library/ff428642.aspx"
 
 #------------------------------------------------
 # Configure the map service

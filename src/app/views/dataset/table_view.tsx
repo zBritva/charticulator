@@ -44,7 +44,6 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
   const onChange = props.onChange;
 
   React.useEffect(() => {
-    debugger;
     if (!refjspreadsheet.current) {
       refjspreadsheet.current = jspreadsheet(refContainer.current, {
         meta: {
@@ -53,23 +52,23 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
         onafterchanges: (element, changes) => {
           onChange(changes);
         },
-        oninsertrow: (el, rowIndex) => {
+        // oninsertrow: (el, rowIndex) => {
 
-        },
-        ondeleterow: (el, rowIndex) => {
+        // },
+        // ondeleterow: (el, rowIndex) => {
 
-        },
-        oninsertcolumn: (el, colIndex, count, cells) => {
+        // },
+        // oninsertcolumn: (el, colIndex, count, cells) => {
 
-        },
-        onchangeheader: (el, colIndex, old, val) => {
+        // },
+        // onchangeheader: (el, colIndex, old, val) => {
 
-        },
-        columns: table.columns.map(col => ({
-          title: col.displayName,
-          width: 150
-        })),
-        data: table.rows.map(row => table.columns.map(col => row[col.name])),
+        // },
+        // columns: table.columns.map(col => ({
+        //   title: col.displayName,
+        //   width: 150
+        // })),
+        // data: table.rows.map(row => table.columns.map(col => row[col.name])),
         pagination: 20,
         allowExport: true,
         allowDeleteColumn: true,
@@ -82,16 +81,31 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
         allowManualInsertRow: true,
         allowComments: false,
         editable: true,
-        paginationOptions: [20, 50, 100]
+        paginationOptions: [20, 50, 100],
+        csvHeaders: false,
       });
-    } else {
+    }
+  }, [onChange]);
+
+  React.useEffect(() => {
+    if (refjspreadsheet.current) {
+      const headers = refjspreadsheet.current.getHeaders(true) as string[]; 
+      if (headers.length > 0) {
+        refjspreadsheet.current.destroy();
+        // headers.forEach((header, idx) => {
+        //   refjspreadsheet.current.deleteColumn(idx);
+        // })
+      }
+      
       table.columns.forEach((col, idx) => {
-        refjspreadsheet.current.setHeader(idx, col.displayName)
+        refjspreadsheet.current.insertColumn(1, idx, false, []);
+        refjspreadsheet.current.setHeader(idx, col.displayName);
+        refjspreadsheet.current.setWidth(idx, 150);
       });
       refjspreadsheet.current.setData(table.rows.map(row => table.columns.map(col => row[col.name])));
+      refjspreadsheet.current.refresh();
     }
-
-  }, [onChange, table]);
+  }, [table]);
 
   return (
     <>
