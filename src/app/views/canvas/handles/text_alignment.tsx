@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 import * as React from "react";
 import { default as Hammer } from "hammerjs";
-import { Specification, Prototypes, Point, Geometry, SpecTypes } from "../../../../core";
+import { Prototypes, Point, Geometry, SpecTypes } from "../../../../core";
 import * as globals from "../../../globals";
 import { classNames } from "../../../utils";
 import { PopupView } from "../../../controllers";
