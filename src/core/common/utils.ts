@@ -554,24 +554,42 @@ export function hexToRgb(hex: string): Color {
     : null;
 }
 
+export function isNumbers(array: unknown[]): array is number[] {
+  return typeof array[0] === "number" || typeof (+array[0]) === "number";
+}
+
+export function numbersSortFunction(a: number | string, b: number | string) {
+  if (typeof a === "string" && typeof b === "string") {
+    return (+a) - (+b);
+  } else {
+    return <number>a - <number>b;
+  }
+}
+
+export function testToRange(value: string): boolean {
+  const reg = /(\d-)|(\d+-\d+)|(\d+\+)/;
+  const match = value.match(reg);
+  if (match && match.length) {
+    return true;
+  }
+  return false;
+}
+
+export function isRange(values: string[]): boolean
+{
+  return values
+  .map((val) => testToRange(val))
+  .reduceRight((a, b) => a && b)
+}
+
 /**
  * Return common comparator for two values or sope specific comparator for specific data type
  * testToRange function compares properly, strings with numbers: number-number, number-, number+
  * to sort value ranges list properly
  */
 export function getSortFunctionByData(values: string[]) {
-  const testToRange = (value: string) => {
-    const reg = /(\d-)|(\d+-\d+)|(\d+\+)/;
-    const match = value.match(reg);
-    if (match && match.length) {
-      return true;
-    }
-    return false;
-  };
   if (values.length > 0) {
-    const testResult = values
-      .map((val) => testToRange(val))
-      .reduceRight((a, b) => a && b);
+    const testResult = isRange(values);
     if (testResult) {
       return (a: any, b: any) => {
         if (a && b) {
@@ -587,6 +605,9 @@ export function getSortFunctionByData(values: string[]) {
     }
   }
 
+  if (isNumbers(values)) {
+    return numbersSortFunction;
+  }
   return (a: any, b: any) => (a < b ? -1 : 1);
 }
 /**

@@ -365,7 +365,7 @@ export abstract class PlotSegmentClass<
           table.getGroupedContext(dateRowIndices[j])
         );
 
-        return getSortFunctionByData([vi + "", vj + ""])(vi, vj);
+        return getSortFunctionByData([vi + "", vj + ""])(vi as any, vj as any);
       };
       groups.sort(compare);
     }
