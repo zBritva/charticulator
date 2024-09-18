@@ -4,7 +4,7 @@
 import * as React from "react";
 import { ReorderListView } from "../../object_list_editor";
 import { strings } from "../../../../../strings";
-import { getRandomNumber } from "../../../../../core";
+import { getRandomNumber, getSortFunctionByData } from "../../../../../core";
 import { DataType } from "../../../../../core/specification";
 import { Button } from "@fluentui/react-button";
 import { Label } from "@fluentui/react-label";
@@ -77,8 +77,9 @@ export class FluentUIReorderStringsValue extends React.Component<
           <Button
             icon={<TextSortDescendingRegular />}
             onClick={() => {
+              const sort = getSortFunctionByData(this.state.items);
               this.setState({
-                items: this.state.items.sort(),
+                items: this.state.items.sort(sort),
                 sortOrder: true,
                 customOrder: false,
               });
