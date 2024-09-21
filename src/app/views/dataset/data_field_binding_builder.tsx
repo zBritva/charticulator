@@ -823,6 +823,7 @@ export class Director {
   // TODO handle derived columns
   public menuRender(
     mainMenuItems: IContextualMenuItem[],
+    parentKey: string,
     scaleMapping?: Specification.Mapping,
     options?: {
       icon?: string | React.ReactElement;
@@ -871,7 +872,7 @@ export class Director {
     const { mapping, currentColumn } = getCurrentMapping(mainMenuItems);
 
     return (
-      <Popover trapFocus>
+      <Popover key={`menu-popover-${parentKey}`} trapFocus>
         <PopoverTrigger>
           <Button
             style={
@@ -906,23 +907,12 @@ export class Director {
           {mainMenuItems.map((menuItemParent) => {
             if (menuItemParent.subMenuProps) {
               return (
-                // <MenuItem key={menuItemParent.key}>
                 <FluentRowLayout
                   style={{
                     alignItems: "center",
                   }}
-                  key={menuItemParent.key}
+                  key={`menu-item-${parentKey}-${menuItemParent.key}`}
                 >
-                  {/* {!mapping ? (
-                        <Button
-                          style={{
-                            flex: 1,
-                          }}
-                          appearance="subtle"
-                        >
-                          ???{menuItemParent.text}
-                        </Button>
-                      ) : null} */}
                   {mapping != null ? (
                     <Popover
                       trapFocus
@@ -993,7 +983,6 @@ export class Director {
               );
             } else {
               return (
-                <>
                   <Button
                     appearance="subtle"
                     key={menuItemParent.key}
@@ -1017,7 +1006,6 @@ export class Director {
                   >
                     {menuItemParent.text}
                   </Button>
-                </>
               );
             }
           })}
