@@ -459,6 +459,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
         key: `glyph:${glyphIndex}-img:${this.object._id}-main`,
       },
     ]);
+    gImage.key = `glyph:${glyphIndex}-img:${this.object._id}-main-group`;
     gImage.transform = cs.getLocalTransform(px + offset.x, py + offset.y);
     g.elements.push(gImage);
 
