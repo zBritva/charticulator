@@ -196,6 +196,7 @@ export class IconElementClass extends EmphasizableMarkClass<
         key: `glyph:${glyphIndex}-icon:${this.object._id}`,
       },
     ]);
+    gImage.key = `glyph:${glyphIndex}-icon:${this.object._id}-group`
     gImage.transform = cs.getLocalTransform(
       attrs.x + offset.x,
       attrs.y + offset.y

@@ -136,7 +136,6 @@ export class MainView extends React.Component<
       });
       focusableComponents[newIndex].setAttribute("tabIndex", "0");
       focusableComponents[newIndex].focus();
-      console.log("current index", newIndex);
     }
   }
 

@@ -150,27 +150,13 @@ export class FluentUIWidgetManager
   public searchInput(options: InputTextOptions = {}) {
     return (
       <>
-        <Label>{options.label}</Label>
+        <Label
+          key={`search-input-label-${(options.label ?? options.placeholder).replace(/\W/g, "_")}`}
+        >{options.label}</Label>
         <Input
-          // styles={{
-          //   ...(defaultStyle as any),
-          //   field: {
-          //     ...defaultStyle.field,
-          //     height: null,
-          //     padding: "unset",
-          //   },
-          //   root: {
-          //     marginBottom: 5,
-          //     marginTop: 5,
-          //   },
-          //   prefix: {
-          //     backgroundColor: "unset",
-          //   },
-          // }}
+          key={`search-input-${(options.label ?? options.placeholder).replace(/\W/g, "_")}`}
           placeholder={options.placeholder}
-          // label={options.label}
           disabled={options.disabled}
-          // onRenderLabel={labelRender}
           onChange={(event, { value }) => {
             let newValue = "";
             if (value?.length > 0) {
@@ -180,15 +166,10 @@ export class FluentUIWidgetManager
           }}
           type="text"
           appearance={options.underline ? "underline" : "outline"}
-          // borderless={options.borderless ?? false}
-          // style={options.styles}
           prefix=""
           style={{
             width: "100%",
           }}
-          // onRenderPrefix={() => {
-          //   return <FontIcon aria-label="Search" iconName="Search" />;
-          // }}
           contentBefore={<SVGImageIcon url={R.getSVGIcon("Search")} />}
           autoComplete="off"
           defaultValue={this.store.searchString}
@@ -400,6 +381,7 @@ export class FluentUIWidgetManager
     }
     return (
       <FluentInputFormat
+        key={`input-format-${this.getKeyFromProperty(property)}`}
         label={options.label}
         defaultValue={this.getPropertyValue(property) as string}
         validate={(value: string) => {
@@ -665,7 +647,7 @@ export class FluentUIWidgetManager
             })
             .map((o) => {
               return (
-                <Option value={o.key} text={o.text}>
+                <Option key={o.key} value={o.key} text={o.text}>
                   {o.text}
                 </Option>
               );
@@ -984,7 +966,7 @@ export class FluentUIWidgetManager
         : "charticulator__widget-section-header charticulator__widget-section-header-dropzone";
       return (
         <DropZoneView
-          key={options.label}
+          key={`dropzone-${this.getKeyFromProperty(property)}`}
           filter={(data) => data instanceof DragData.DataExpression}
           onDrop={(data: DragData.DataExpression) => {
             if (options.dropzone.type === "axis-data-binding") {
@@ -1107,7 +1089,7 @@ export class FluentUIWidgetManager
   public inputImageProperty(property: Prototypes.Controls.Property) {
     return (
       <InputImageProperty
-        key={this.getKeyFromProperty(property)}
+        key={`image-${this.getKeyFromProperty(property)}`}
         value={this.getPropertyValue(property) as SpecTypes.Image}
         onChange={(image) => {
           this.emitSetProperty(property, image as SpecTypes.Image);
@@ -1119,29 +1101,13 @@ export class FluentUIWidgetManager
 
   public clearButton(property: Prototypes.Controls.Property, icon?: string) {
     return (
-      <>
-        {/* <FluentButton
-        key={this.getKeyFromProperty(property)}
-        marginTop={isHeader ? "0px" : null}
-        style={styles}
-      > */}
-        <Button
-          // styles={{
-          //   root: {
-          //     minWidth: "unset",
-          //     ...defultBindButtonSize,
-          //   },
-          // }}
-          // iconProps={{
-          //   iconName: icon || "EraseTool",
-          // }}
-          icon={<SVGImageIcon url={R.getSVGIcon(icon || "general/eraser")} />}
-          onClick={() => {
-            this.emitSetProperty(property, null);
-          }}
-        />
-        {/* </FluentButton> */}
-      </>
+      <Button
+        key={`clear-button-${this.getKeyFromProperty(property)}`}
+        icon={<SVGImageIcon url={R.getSVGIcon(icon || "general/eraser")} />}
+        onClick={() => {
+          this.emitSetProperty(property, null);
+        }}
+      />
     );
   }
 
@@ -1157,9 +1123,6 @@ export class FluentUIWidgetManager
     return (
       <Button
         key={this.getKeyFromProperty(property)}
-        // iconProps={{
-        //   iconName: icon,
-        // }}
         icon={<SVGImageIcon url={R.getSVGIcon(icon)} />}
         title={text}
         onClick={() => {
@@ -1228,7 +1191,7 @@ export class FluentUIWidgetManager
       defaultValue,
       this.store
     );
-    const menuRender = this.director.menuRender(menu, null, {
+    const menuRender = this.director.menuRender(menu, `order-by-${this.getKeyFromProperty(property)}`,null, {
       icon: "SortLines",
     }, () => {});
 
@@ -1241,31 +1204,7 @@ export class FluentUIWidgetManager
         }}
         className={""}
       >
-        {/* <FluentButton marginTop={"0px"}> */}
-        {/* <IconButton
-            styles={{
-              root: {
-                minWidth: "unset",
-                ...defultBindButtonSize,
-              },
-              label: null,
-            }}
-            key={property.property}
-            checked={this.getPropertyValue(property) != null}
-            iconProps={{
-              iconName: "SortLines",
-            }}
-            menuProps={{
-              items: menu,
-              gapSpace: options.shiftCallout ? options.shiftCallout : 0,
-              onMenuOpened: () => {
-                FluentMappingEditor.openEditor(currentExpression, false, null);
-              },
-              onRenderMenuList: menuRender,
-            }}
-          /> */}
         {menuRender}
-        {/* </FluentButton> */}
       </DropZoneView>
     );
   }
@@ -1394,7 +1333,7 @@ export class FluentUIWidgetManager
           {items.map((item, index) => {
             return (
               <div
-                key={index}
+              key={`array-${item.key}-${index}`}
                 className="charticulator__widget-array-view-item"
               >
                 {options.allowReorder ? (
@@ -1542,7 +1481,7 @@ export class FluentUIWidgetManager
         defaultValue,
         this.store
       );
-      const menuRender = this.director.menuRender(menu, undefined, {
+      const menuRender = this.director.menuRender(menu, `bind-data-${title?.replace(/\W/g, "_")}-${widget?.key}`,undefined, {
         icon: "general/bind-data"
       }, () => {});
 
@@ -1556,7 +1495,7 @@ export class FluentUIWidgetManager
       );
       return (
         <DropZoneView
-          key={title}
+          key={`section-header-dz-${title}-${widget?.key}`}
           filter={(data) => {
             if (
               acceptTables.length > 0 &&
@@ -1586,36 +1525,13 @@ export class FluentUIWidgetManager
             </>
           ) : null}
           {widget}
-          {/* <FluentButton marginTop={"0px"} marginLeft={"6px"}> */}
-          {/* <DefaultButton
-              key={title}
-              iconProps={{
-                iconName: "Link",
-              }}
-              menuProps={{
-                items: menu,
-                onRenderMenuList: menuRender,
-              }}
-              styles={{
-                menuIcon: {
-                  display: "none !important",
-                },
-                root: {
-                  minWidth: "unset",
-                  ...defultBindButtonSize,
-                },
-              }}
-            /> */}
           {menuRender}
-          {/* </FluentButton> */}
         </DropZoneView>
       );
     } else {
       return (
-        <div className="charticulator__widget-section-header">
-          {/* <FluentLabelHeader> */}
+        <div key={`section-header-dz-${title}-${widget?.key}`} className="charticulator__widget-section-header">
           <Label>{title}</Label>
-          {/* </FluentLabelHeader> */}
           {widget}
         </div>
       );
@@ -1628,7 +1544,7 @@ export class FluentUIWidgetManager
         {widgets.map((x, id) => (
           <span
             className={`el-layout-item el-layout-item-col-${cols[id]}`}
-            key={`horizontal-${id}`}
+            key={`horizontal-${id}-${x?.key}`}
           >
             {x}
           </span>
@@ -1644,14 +1560,16 @@ export class FluentUIWidgetManager
   ) {
     return (
       <div className="charticulator__widget-horizontal" style={styles}>
-        {widgets.map((x, id) => (
-          <span
-            className={`el-layout-item el-layout-item-col-${cols[id]}`}
-            key={id}
-          >
-            {x}
-          </span>
-        ))}
+        {widgets.map((x, id) => {
+          return (
+            <span
+              className={`el-layout-item el-layout-item-col-${cols[id]}`}
+              key={`horizontal-styled-${id}-${x?.key}`}
+            >
+              {x}
+            </span>
+          );
+        })}
       </div>
     );
   }
@@ -1826,9 +1744,9 @@ export class FluentUIWidgetManager
 
   public row(title?: string, widget?: JSX.Element) {
     return (
-      <div className="charticulator__widget-row" key={title}>
+      <div className="charticulator__widget-row" key={`row-item-${widget.key}`}>
         {title != null ? (
-          <span className="charticulator__widget-row-label el-layout-item">
+          <span key={`row-item-span-${widget.key}`} className="charticulator__widget-row-label el-layout-item">
             {title}
           </span>
         ) : // <Label>{title}</Label>
@@ -1890,9 +1808,9 @@ export class FluentUIWidgetManager
       <table className="charticulator__widget-table">
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index}>
+            <tr key={`row-${index}`}>
               {row.map((x, i) => (
-                <td key={i}>
+                <td key={`table-tr-${x.key}-${i}`}>
                   <span className="el-layout-item">{x}</span>
                 </td>
               ))}

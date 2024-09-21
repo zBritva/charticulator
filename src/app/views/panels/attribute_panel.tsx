@@ -173,11 +173,13 @@ export class AttributePanel extends React.Component<
           <section className="attribute-editor-element" key={object._id}>
             <div className="header" key="header">
               <SVGImageIcon
+                key={`attribute-editor-class-icon-${object.properties.name.replace(/\W/g, "_")}`}
                 url={getObjectIcon(object.classID)}
                 height={32}
                 width={32}
               />
               <EditableTextView
+                key={`attribute-editor-object-name-${object.properties.name.replace(/\W/g, "_")}`}
                 text={object.properties.name}
                 onEdit={(newValue) => {
                   new Actions.SetObjectProperty(

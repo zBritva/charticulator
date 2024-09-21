@@ -49,7 +49,7 @@ export class ColorSpaceSelect extends React.Component<
         }}
       >
         {options.map((o) => (
-          <Option value={o.key} text={o.text}>
+          <Option key={o.key} value={o.key} text={o.text}>
             {o.text}
           </Option>
         ))}

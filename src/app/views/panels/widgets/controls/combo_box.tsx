@@ -81,7 +81,7 @@ export const FluentComboBoxFontFamily: React.FC<ComboBoxFontFamilyProps> = (
       >
         {optionsWithCustomStyling.map((o) => {
           return (
-            <Option value={o.key as string} text={o.text}>
+            <Option key={o.key} value={o.key as string} text={o.text}>
               <span
                 style={{
                   fontFamily: o.data.fontFamily,

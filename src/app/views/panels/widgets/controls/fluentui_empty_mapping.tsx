@@ -51,16 +51,14 @@ export const EmptyMapping = ({
           {type === Specification.AttributeType.Color ? (
             <EmptyColorInput onClick={onClick} label={options.label} />
           ) : (
-            <>
-              <FluentColumnLayout>
-                <Label>{options.label}</Label>
-                <Input
-                  id={`id_${options.label.replace(/\s/g, "_")}`}
-                  placeholder={strings.core.none}
-                  onClick={onClick}
-                />
-              </FluentColumnLayout>
-            </>
+            <FluentColumnLayout id={`empty-mapping-column-${options.label.replace(/\s/g, "_")}`}>
+              <Label id={`empty-mapping-label-${options.label.replace(/\s/g, "_")}`}>{options.label}</Label>
+              <Input
+                id={`empty-mapping-${options.label.replace(/\s/g, "_")}`}
+                placeholder={strings.core.none}
+                onClick={onClick}
+              />
+            </FluentColumnLayout>
           )}
         </>
       );
@@ -82,14 +80,15 @@ const EmptyColorInput = ({
   return (
     <div className="el-color-value">
       <FluentColumnLayout
+        id={`empty-mapping-column-${label.replace(/\s/g, "_")}`}
         style={{
           flex: 1,
           width: "100%",
         }}
       >
-        <Label>{label}</Label>
+        <Label id={`empty-mapping-label-${label.replace(/\s/g, "_")}`}>{label}</Label>
         <Input
-          id={`id_${label.replace(/\s/g, "_")}`}
+          id={`empty-mapping-${label.replace(/\s/g, "_")}`}
           placeholder={strings.core.none}
           type="text"
           onClick={onClick}

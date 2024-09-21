@@ -96,7 +96,7 @@ export class TableView extends React.Component<
                             })
                             .map((o) => {
                               return (
-                                <Option value={o.key} text={o.text}>
+                                <Option key={o.key} value={o.key} text={o.text}>
                                   {o.text}
                                 </Option>
                               );
