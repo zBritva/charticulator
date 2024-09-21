@@ -254,7 +254,9 @@ export class DataAxisClass extends MarkClass<
           0,
           (Math.atan2(attrs.y2 - attrs.y1, attrs.x2 - attrs.x1) / Math.PI) *
             180,
-          -1
+          -1,
+          undefined,
+          this.object._id
         );
         g.transform = cs.getLocalTransform(
           attrs.x1 + offset.x,
@@ -281,7 +283,9 @@ export class DataAxisClass extends MarkClass<
         0,
         0,
         (Math.atan2(attrs.y2 - attrs.y1, attrs.x2 - attrs.x1) / Math.PI) * 180,
-        -1
+        -1,
+        undefined,
+        this.object._id
       );
       g.transform = cs.getLocalTransform(
         attrs.x1 + offset.x,
