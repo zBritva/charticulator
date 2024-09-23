@@ -2,9 +2,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import "jsuites/react/index";
-import jspreadsheet from "jspreadsheet-ce";
 
-import "../../../../node_modules/jspreadsheet-ce/dist/jspreadsheet.css";
+import { ReactGrid, Column, Row, DefaultCellTypes, CellChange, OptionType, CellLocation, DropdownCell, TextCell, NumberCell, CheckboxCell, DateCell } from "@silevis/reactgrid";
+import "@silevis/reactgrid/styles.css";
 
 /**
  * See {@link DatasetView} or {@link TableView}
@@ -14,14 +14,43 @@ import "../../../../node_modules/jspreadsheet-ce/dist/jspreadsheet.css";
 
 import * as React from "react";
 import { Dataset } from "../../../core";
-// import { getConvertableTypes } from "../../utils";
-// import { Dropdown, Option } from "@fluentui/react-combobox";
+import { getConvertibleTypes as getConvertibleTypes } from "../../utils";
+
+function editObj(obj: any, prop: string | number, value: any) {
+  obj[prop] = value;
+}
+
+function convertDataTypeToExcelType(type: Dataset.DataType) : string {
+  switch(type) {
+    case Dataset.DataType.Number:
+      return "number";
+    case Dataset.DataType.Boolean:
+      return "checkbox";
+    case Dataset.DataType.Date:
+      return "date";
+    default:
+      return "text";
+  }
+}
+
+function convertExcelTypeToDataType(type: string): Dataset.DataType {
+  switch(type) {
+    case "number":
+      return Dataset.DataType.Number;
+    case "checkbox":
+      return Dataset.DataType.Boolean;
+    case "date":
+      return Dataset.DataType.Date;
+    default:
+      return Dataset.DataType.String;
+  }
+}
 
 export interface TableViewProps {
   table: Dataset.Table;
   maxRows?: number;
   onTypeChange?: (column: string, type: string) => void;
-  onChange?: (changes: jspreadsheet.CellChange[]) => void;
+  onChange?: (cellChanges: CellChange[]) => void;
 }
 
 export interface TableViewState {
@@ -35,81 +64,146 @@ export interface TableViewState {
  * ![Table view](media://table_view_leftside.png)
  */
 export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
-  const table = props.table;
 
-  // eslint-disable-next-line powerbi-visuals/insecure-random
-  const id = React.useRef<string>(`refjspreadsheet-${Math.ceil(Math.random() * 1000000000)}`);
-  const refjspreadsheet = React.useRef<jspreadsheet.JspreadsheetInstance>();
-  const refContainer = React.useRef();
-  const onChange = props.onChange;
+  // const findOpenedDropdownCellLocation = React.useCallback((
+  //   changes: CellChange<any | DropdownCell>[]
+  // ) : CellLocation | undefined => {
+  //   const openedDropdownChanges: CellChange<DropdownCell>[] = changes.filter(
+  //     (change) => change.type === "dropdown" && change.newCell.isOpen
+  //   );
+  //   if (openedDropdownChanges.length >= 1) {
+  //     const cell = openedDropdownChanges[0];
+  //     return { rowId: cell.rowId, columnId: cell.columnId };
+  //   }
+  //   return undefined;
+  // }, []);
 
-  React.useEffect(() => {
-    if (!refjspreadsheet.current) {
-      refjspreadsheet.current = jspreadsheet(refContainer.current, {
-        meta: {
-          
-        },
-        onafterchanges: (element, changes) => {
-          onChange(changes);
-        },
-        // oninsertrow: (el, rowIndex) => {
+  // const [openedDropdownLocation, setOpenedDropdownLocation] = React.useState<
+  //   CellLocation
+  // >();
 
-        // },
-        // ondeleterow: (el, rowIndex) => {
+  const applyChanges = (
+    changes: CellChange<any>[],
+    prevRows: Row<DefaultCellTypes>[],
+  ): Row<DefaultCellTypes>[] => {
 
-        // },
-        // oninsertcolumn: (el, colIndex, count, cells) => {
+    changes.forEach((change) => {
+      const dataRowId = change.rowId as number;
+      const fieldName = change.columnId;
+      let dataRow = rows.find((d) => d.rowId == dataRowId);
 
-        // },
-        // onchangeheader: (el, colIndex, old, val) => {
+      console.log('change', change);
 
-        // },
-        // columns: table.columns.map(col => ({
-        //   title: col.displayName,
-        //   width: 150
-        // })),
-        // data: table.rows.map(row => table.columns.map(col => row[col.name])),
-        pagination: 20,
-        allowExport: true,
-        allowDeleteColumn: true,
-        allowDeleteRow: true,
-        allowInsertColumn: true,
-        allowRenameColumn: true,
-        allowDeletingAllRows: true,
-        allowInsertRow: true,
-        allowManualInsertColumn: true,
-        allowManualInsertRow: true,
-        allowComments: false,
-        editable: true,
-        paginationOptions: [20, 50, 100],
-        csvHeaders: false,
-      });
-    }
-  }, [onChange]);
-
-  React.useEffect(() => {
-    if (refjspreadsheet.current) {
-      const headers = refjspreadsheet.current.getHeaders(true) as string[]; 
-      if (headers.length > 0) {
-        refjspreadsheet.current.destroy();
-        // headers.forEach((header, idx) => {
-        //   refjspreadsheet.current.deleteColumn(idx);
-        // })
+      debugger;
+      if (dataRow.rowId === "type") {
+        const colIndex = columns.findIndex(col => col.columnId === fieldName);
+        (dataRow.cells[colIndex] as DropdownCell).isOpen = change.newCell.isOpen;
       }
-      
-      table.columns.forEach((col, idx) => {
-        refjspreadsheet.current.insertColumn(1, idx, false, []);
-        refjspreadsheet.current.setHeader(idx, col.displayName);
-        refjspreadsheet.current.setWidth(idx, 150);
-      });
-      refjspreadsheet.current.setData(table.rows.map(row => table.columns.map(col => row[col.name])));
-      refjspreadsheet.current.refresh();
-    }
-  }, [table]);
 
-  return (
-    <>
-      <div id={id.current} ref={refContainer} className="charticulator__dataset-table-view-spreadsheet"></div>
-    </>
-  );
+      if (!dataRow) {
+        const id = prevRows.length + 1;
+        dataRow = {
+          rowId: id.toString(),
+          cells: []
+        };
+        // prevRows.push(dataRow);
+      }
+      if (change.type === "text" && typeof dataRow[fieldName] === "string") {
+        editObj(dataRow, fieldName, change.newCell.text);
+      } else if (
+        change.type === "number" &&
+        typeof dataRow[fieldName] === "number"
+      ) {
+        editObj(dataRow, fieldName, change.newCell.value);
+      } else if (
+        change.type === "checkbox" &&
+        typeof dataRow[fieldName] === "boolean"
+      ) {
+        editObj(dataRow, fieldName, change.newCell.checked);
+      } else if (change.type === "dropdown") {
+        if (change.newCell.selectedValue != change.previousCell.selectedValue) {
+          editObj(dataRow, fieldName, change.newCell.selectedValue);
+        }
+      } else {
+        editObj(dataRow, fieldName, change.newCell.text);
+      }
+    });
+
+    return [
+      ...prevRows
+    ]
+  }
+
+  const handleChanges = (changes: CellChange<any>[]) => {
+    setRows(previousRows => {
+      const appliedChanges = applyChanges(changes, previousRows);
+      return appliedChanges;
+    })
+    // onChange(changes);
+  };
+
+  const columns: Column[] = React.useMemo(() => {
+    return props.table.columns.map(col => {
+      return { columnId: col.displayName, width: 150 }
+    })
+  }, [props.table]);
+
+  const headerRow: Row = {
+    rowId: "header",
+    cells: props.table.columns.map(col => {
+      return {
+        
+        text: col.displayName,
+        type: "text"
+      };
+    })
+  }
+
+  const typeRow: Row = {
+    rowId: "type",
+    cells: props.table.columns.map(col => {
+      const convertibleTypes = getConvertibleTypes(
+        col.type,
+        props.table.rows.slice(0, 10).map((row) => row[col.name])
+      );
+
+      return {
+        text: col.type,
+        type: "dropdown",
+        isOpen: false,
+        selectedValue: col.type,
+        values: convertibleTypes.map(type => ({
+          label: type,
+          value: type,
+        }))
+      };
+    })
+  }
+
+  const tableRows: Row[] = props.table.rows.map(row => {
+    return {
+      rowId: row._id,
+      cells: props.table.columns.map(col => {
+        return {
+          text: !row[col.displayName] ? "" : row[col.displayName].toString(),
+          type: "text"
+        } as DefaultCellTypes
+      })
+    }
+  });
+
+  
+  const [rows, setRows] = React.useState<Row<DefaultCellTypes>[]>([
+    headerRow,
+    typeRow,
+    ...tableRows
+  ]);
+
+  return <ReactGrid
+    canReorderColumns={() => false}
+    canReorderRows={() => false}
+    minColumnWidth={120}
+    onCellsChanged={handleChanges}
+    rows={rows}
+    columns={columns} />;
 }

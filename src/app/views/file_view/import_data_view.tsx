@@ -531,10 +531,11 @@ export class ImportDataView extends React.Component<
                   linkTableOrigin: this.state.linkTable,
                 });
               },
-              (table) => {
-                this.setState({
-                  linkTable: table 
-                })
+              (changes) => {
+                console.log('cell changes', changes);
+                // this.setState({
+                //   linkTable: table 
+                // })
               }
             )}
             <Button
