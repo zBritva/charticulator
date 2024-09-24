@@ -194,6 +194,9 @@ export const strings = {
     typeSVG: "SVG",
   },
   fileImport: {
+    new: "New",
+    addRow: "Add row",
+    addColumn: "Add column",
     doneButtonText: "Done",
     doneButtonTitle: "Finish importing data",
     fileUpload: "Open or Drop File",

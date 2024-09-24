@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { ReactGrid, Column, Row, DefaultCellTypes, CellChange, CellLocation, DropdownCell } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, DefaultCellTypes, CellChange, CellLocation, DropdownCell, Id, MenuOption, SelectionMode } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
 /**
@@ -66,6 +66,12 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
       const dataColumnId = change.columnId;
       let dataRow = table.rows.find((d) => d._id == dataRowId);
 
+      if (dataRowId === "header") {
+        debugger;
+        const colIndex = prevTable.columns.findIndex(col => col.displayName === change.previousCell.text);
+        prevTable.columns[colIndex].name == change.newCell.text;
+        prevTable.columns[colIndex].displayName == change.newCell.text;
+      } else
       if (dataRowId === "type") {
         const colIndex = prevTable.columns.findIndex(col => col.displayName === dataColumnId);
         prevTable.columns[colIndex].type == change.newCell.selectedValue;
@@ -114,11 +120,56 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
     })
   };
 
-  const columns: Column[] = React.useMemo(() => {
-    return props.table.columns.map(col => {
-      return { columnId: col.displayName, width: 150 }
-    })
-  }, [props.table]);
+  const handleContextMenu = (
+    selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[], selectedRanges: Array<CellLocation[]>
+  ): MenuOption[] => {
+    menuOptions = [
+      ...menuOptions,
+      {
+        id: "removeRow",
+        label: "Remove row",
+        handler: () => {
+          
+        }
+      },
+      {
+        id: "removeColumn",
+        label: "Remove column",
+        handler: () => {
+          
+        }
+      },
+      {
+        id: "addRowBefore",
+        label: "Add row before",
+        handler: () => {
+          
+        }
+      },
+      {
+        id: "addRowAfter",
+        label: "Add row before",
+        handler: () => {
+          
+        }
+      },
+      {
+        id: "addColumnBefore",
+        label: "Add column before",
+        handler: () => {
+          
+        }
+      },
+      {
+        id: "addColumnAfter",
+        label: "Add column before",
+        handler: () => {
+          
+        }
+      },
+    ];
+    return menuOptions;
+  }
 
   const getGridRows = (table: Dataset.Table) => {
     const headerRow: Row = {
@@ -175,10 +226,17 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
 
   const [table, setTable] = React.useState<Dataset.Table>(props.table);
 
+  const columns: Column[] = React.useMemo(() => {
+    return table.columns.map(col => {
+      return { columnId: col.displayName, width: 150 }
+    })
+  }, [table]);
+
   return <ReactGrid
     canReorderColumns={() => false}
     canReorderRows={() => false}
     onCellsChanged={handleChanges}
+    onContextMenu={handleContextMenu}
     rows={getGridRows(table)}
     columns={columns} />;
 }
