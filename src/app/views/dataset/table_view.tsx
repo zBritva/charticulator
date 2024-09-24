@@ -37,6 +37,8 @@ export interface TableViewState {
  */
 export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
 
+  const onChange = props.onChange;
+
   const findOpenedDropdownCellLocation = React.useCallback((
     changes: CellChange<any | DropdownCell>[]
   ) : CellLocation | undefined => {
@@ -107,9 +109,9 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
     setOpenedDropdownLocation(findOpenedDropdownCellLocation(changes));
     setTable(previousRows => {
       const appliedChanges = applyChanges(changes, previousRows);
+      setTimeout(() => onChange(appliedChanges), 0);
       return appliedChanges;
     })
-    // onChange(changes);
   };
 
   const columns: Column[] = React.useMemo(() => {
