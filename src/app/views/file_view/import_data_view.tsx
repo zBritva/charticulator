@@ -376,7 +376,7 @@ export class ImportDataView extends React.Component<
         </h2>
         {this.state.dataTable ? (
           <>
-            <div className="charticulator__import-data-view-table">
+            <div className="charticulator__scrollable-table">
               {this.renderTable(
                 this.state.dataTable,
                 (table: Dataset.Table) => {
@@ -398,7 +398,7 @@ export class ImportDataView extends React.Component<
               </Button>
             </div>
             {this.state.imagesTable ? (
-              <div className="charticulator__import-data-view-table">
+              <div className="charticulator__scrollable-table">
                 {this.renderTable(
                   this.state.imagesTable,
                   (table: Dataset.Table) => {
@@ -436,7 +436,7 @@ export class ImportDataView extends React.Component<
           {this.state.linkTable ? ": " + this.state.linkTable.name : null}
         </h2>
         {this.state.linkTable ? (
-          <div className="charticulator__import-data-view-table">
+          <div className="charticulator__scrollable-table">
             {this.renderTable(
               this.state.linkTable,
               (table: Dataset.Table) => {

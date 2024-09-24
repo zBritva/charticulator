@@ -164,6 +164,11 @@
       color: red;
     }
   }
+
+  &__scrollable-table {
+    height: 70vh;
+    overflow-y: scroll;
+  }
 }
 
 .charticulator__dataset-table-view {
