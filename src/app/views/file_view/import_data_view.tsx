@@ -294,12 +294,11 @@ export class ImportDataView extends React.Component<
 
   public renderTable(
     table: Dataset.Table,
-    onTypeChange: (column: string, type: Dataset.DataType) => void,
     onChange: (changes) => void,
   ) {
     return (
       <div className="wide-content">
-        <TableView onChange={onChange} table={table} maxRows={5} onTypeChange={onTypeChange}/>
+        <TableView onChange={onChange} table={table} maxRows={5}/>
       </div>
     );
   }
@@ -380,38 +379,7 @@ export class ImportDataView extends React.Component<
             <div className="charticulator__import-data-view-table">
               {this.renderTable(
                 this.state.dataTable,
-                (column: string, type: Dataset.DataType) => {
-                  const dataColumn = this.state.dataTable.columns.find(
-                    (col) => col.name === column
-                  );
-                  const dataTableError = convertColumns(
-                    this.state.dataTable,
-                    dataColumn,
-                    this.state.dataTableOrigin,
-                    type as Dataset.DataType
-                  );
-                  if (dataTableError) {
-                    this.props.store.dispatcher.dispatch(
-                      new AddMessage("parsingDataError", {
-                        text: dataTableError as string,
-                      })
-                    );
-                  } else {
-                    this.setState({
-                      dataTable: this.state.dataTable,
-                    });
-                    dataColumn.type = type;
-                    dataColumn.metadata.kind = getPreferredDataKind(type);
-                  }
-                },
-                (changes) => {
-                  const table = this.state.dataTable;
-                  console.log(changes);
-                  changes.forEach(ch => {
-                    const row = table.rows[ch.row];
-                    const col: Dataset.Column = table.columns[ch.x];
-                    row[col.name] = ch.newValue;
-                  })
+                (table: Dataset.Table) => {
                   this.setState({
                     dataTable: table 
                   })
@@ -428,52 +396,16 @@ export class ImportDataView extends React.Component<
               >
                 {strings.fileImport.removeButtonText}
               </Button>
-              {/* <Button
-                icon={<SVGImageIcon url={this.state.dataTableEdit ? R.getSVGIcon("Save") : R.getSVGIcon("Edit") } />}
-                onClick={() => {
-                  if (this.state.dataTableEdit) {
-                    if (this.dataTableRef.current) {
-                      const data = this.dataTableRef.current.getData();
-                      console.log('data', data);
-                    }
-                  }
-                  this.setState(state => ({
-                    dataTableEdit: !state.dataTableEdit,
-                  }));
-                }}
-              >
-                {strings.fileImport.editTableText}
-              </Button> */}
             </div>
             {this.state.imagesTable ? (
               <div className="charticulator__import-data-view-table">
                 {this.renderTable(
                   this.state.imagesTable,
-                  (column: string, type: Dataset.DataType) => {
-                    const dataColumn = this.state.imagesTable.columns.find(
-                      (col) => col.name === column
-                    );
-                    const dataTableError = convertColumns(
-                      this.state.imagesTable,
-                      dataColumn,
-                      this.state.dataTableOrigin,
-                      type as Dataset.DataType
-                    );
-                    if (dataTableError) {
-                      this.props.store.dispatcher.dispatch(
-                        new AddMessage("parsingDataError", {
-                          text: dataTableError as string,
-                        })
-                      );
-                    } else {
-                      this.setState({
-                        imagesTable: this.state.imagesTable,
-                      });
-                      dataColumn.type = type;
-                      dataColumn.metadata.kind = getPreferredDataKind(type);
-                    }
+                  (table: Dataset.Table) => {
+                    this.setState({
+                      imagesTable: table
+                    })
                   },
-                  () => {},
                 )}
               </div>
             ) : null}
@@ -507,35 +439,10 @@ export class ImportDataView extends React.Component<
           <div className="charticulator__import-data-view-table">
             {this.renderTable(
               this.state.linkTable,
-              (column: string, type: string) => {
-                const dataColumn = this.state.linkTable.columns.find(
-                  (col) => col.name === column
-                );
-                const linkTableError = convertColumns(
-                  this.state.linkTable,
-                  dataColumn,
-                  this.state.dataTableOrigin,
-                  type as Dataset.DataType
-                );
-
-                if (linkTableError) {
-                  this.props.store.dispatcher.dispatch(
-                    new AddMessage("parsingDataError", {
-                      text: linkTableError as string,
-                    })
-                  );
-                }
-
+              (table: Dataset.Table) => {
                 this.setState({
-                  linkTable: this.state.linkTable,
-                  linkTableOrigin: this.state.linkTable,
-                });
-              },
-              (changes) => {
-                console.log('cell changes', changes);
-                // this.setState({
-                //   linkTable: table 
-                // })
+                  linkTable: table
+                })
               }
             )}
             <Button

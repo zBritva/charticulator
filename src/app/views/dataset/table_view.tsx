@@ -22,8 +22,7 @@ function editObj(obj: any, prop: string | number, value: any) {
 export interface TableViewProps {
   table: Dataset.Table;
   maxRows?: number;
-  onTypeChange?: (column: string, type: string) => void;
-  onChange?: (cellChanges: CellChange[]) => void;
+  onChange?: (table: Dataset.Table) => void;
 }
 
 export interface TableViewState {
