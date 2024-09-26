@@ -68,14 +68,17 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
 
       if (dataRowId === "header") {
         const colIndex = prevTable.columns.findIndex(col => col.displayName === change.previousCell.text);
-        prevTable.columns[colIndex].name == change.newCell.text;
-        prevTable.columns[colIndex].displayName == change.newCell.text;
-      } else
-      if (dataRowId === "type") {
+        prevTable.columns[colIndex].name = change.newCell.text;
+        prevTable.columns[colIndex].displayName = change.newCell.text;
+        prevTable.rows.forEach(row => {
+          row[change.newCell.text] = row[change.previousCell.text];
+          delete row[change.previousCell.text];
+        })
+      }
+      else if (dataRowId === "type") {
         const colIndex = prevTable.columns.findIndex(col => col.displayName === dataColumnId);
         prevTable.columns[colIndex].type == change.newCell.selectedValue;
       } else {
-
         if (!dataRow) {
           const id = prevTable.rows.length + 1;
           dataRow = {
