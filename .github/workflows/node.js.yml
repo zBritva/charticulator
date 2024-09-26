@@ -29,3 +29,8 @@ jobs:
         source: config.template.yml
         target: config.yml
     - run: yarn test
+    - name: Test results
+      uses: actions/upload-artifact@v4
+      with: 
+        name: playwright-report
+        path: downloads
