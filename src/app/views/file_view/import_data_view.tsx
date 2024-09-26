@@ -435,58 +435,6 @@ export class ImportDataView extends React.Component<
             >
               {strings.fileImport.removeButtonText}
             </Button>
-            {/* <Button
-              icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
-              title={strings.fileImport.addRow}
-              onClick={() => {
-                this.setState((state) => {
-                  state.dataTable.rows.push({
-                    _id: (state.dataTable.rows.length + 1).toString()
-                  })
-                  return {
-                    dataTable: {
-                      ...state.dataTable
-                    }
-                  }
-                });
-                this.checkSourceAndTargetColumns(null);
-                this.checkKeyColumn(this.state.dataTable, null);
-              }}
-            >
-              {strings.fileImport.addRow}
-            </Button> */}
-            {/* <Button
-              icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
-              title={strings.fileImport.addColumn}
-              onClick={() => {
-                this.setState((state) => {
-                  const newColumnName = `New column ${state.dataTable.columns.length}`;
-                  state.dataTable.columns.push({
-                    displayName: newColumnName,
-                    name: newColumnName,
-                    metadata: {
-                      kind: Dataset.DataKind.Categorical
-                    },
-                    type: Dataset.DataType.String
-                  });
-                  state.dataTable.rows = state.dataTable.rows.map(row => {
-                    return {
-                      ...row,
-                      [newColumnName]: ""
-                    }
-                  });
-                  return {
-                    dataTable: {
-                      ...state.dataTable
-                    }
-                  }
-                });
-                this.checkSourceAndTargetColumns(null);
-                this.checkKeyColumn(this.state.dataTable, null);
-              }}
-            >
-              {strings.fileImport.addColumn}
-            </Button> */}
             <div className="charticulator__scrollable-table">
               {this.renderTable(
                 this.state.dataTable,
@@ -569,58 +517,6 @@ export class ImportDataView extends React.Component<
             >
               {strings.fileImport.removeButtonText}
             </Button>
-            {/* <Button
-              icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
-              title={strings.fileImport.addRow}
-              onClick={() => {
-                this.setState((state) => {
-                  state.linkTable.rows.push({
-                    _id: (state.linkTable.rows.length + 1).toString()
-                  })
-                  return {
-                    linkTable: {
-                      ...state.linkTable
-                    }
-                  }
-                });
-                this.checkSourceAndTargetColumns(null);
-                this.checkKeyColumn(this.state.dataTable, null);
-              }}
-            >
-              {strings.fileImport.addRow}
-            </Button> */}
-            {/* <Button
-              icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
-              title={strings.fileImport.addColumn}
-              onClick={() => {
-                this.setState((state) => {
-                  const newColumnName = `New column ${state.linkTable.columns.length}`;
-                  state.linkTable.columns.push({
-                    displayName: newColumnName,
-                    name: newColumnName,
-                    metadata: {
-                      kind: Dataset.DataKind.Categorical
-                    },
-                    type: Dataset.DataType.String
-                  })
-                  state.linkTable.rows = state.dataTable.rows.map(row => {
-                    return {
-                      ...row,
-                      [newColumnName]: ""
-                    }
-                  });
-                  return {
-                    linkTable: {
-                      ...state.linkTable
-                    }
-                  }
-                });
-                this.checkSourceAndTargetColumns(null);
-                this.checkKeyColumn(this.state.dataTable, null);
-              }}
-            >
-              {strings.fileImport.addColumn}
-            </Button> */}
             <div className="charticulator__scrollable-table">
               {this.renderTable(
                 this.state.linkTable,
