@@ -129,48 +129,67 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
         id: "removeRow",
         label: "Remove row",
         handler: () => {
-          console.log('removeRow');
-          alert('Is not implemented yet');
+          const rowIds = selectedRanges.flatMap(c => c.map(c => c.rowId));
+          setTable({
+            ...table,
+            rows: table.rows.filter(row => !rowIds.find(remove => remove === row._id))
+          });
         }
       },
       {
         id: "removeColumn",
         label: "Remove column",
         handler: () => {
-          console.log('removeRow');
-          alert('Is not implemented yet');
+          const columnIds = selectedRanges.flatMap(c => c.map(c => c.columnId));
+          setTable({
+            ...table,
+            columns: table.columns.filter(row => !columnIds.find(remove => remove === row.displayName)),
+            rows: table.rows.map(row => {
+              const newRow = {
+                ...row
+              }
+              columnIds.forEach(col => {
+                delete newRow[col];
+              });
+              return newRow;
+            })
+          });
         }
       },
       {
         id: "addRowBefore",
         label: "Add row before",
         handler: () => {
-          console.log('removeRow');
-          alert('Is not implemented yet');
+          console.log('addRowBefore');
+          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
+          debugger;
         }
       },
       {
         id: "addRowAfter",
         label: "Add row before",
         handler: () => {
-          console.log('removeRow');
-          alert('Is not implemented yet');
+          console.log('addRowAfter');
+          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
+          debugger;
         }
       },
       {
         id: "addColumnBefore",
         label: "Add column before",
         handler: () => {
-          console.log('removeRow');
-          alert('Is not implemented yet');
+          console.log('addColumnBefore');
+          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
+          debugger;
         }
       },
       {
         id: "addColumnAfter",
         label: "Add column before",
         handler: () => {
-          console.log('removeRow');
-          alert('Is not implemented yet');
+          console.log('addColumnAfter');
+          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
+          debugger;
         }
       },
     ];
