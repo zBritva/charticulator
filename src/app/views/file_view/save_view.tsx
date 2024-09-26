@@ -31,7 +31,7 @@ export class FileViewSaveAs extends React.Component<
     let inputSaveChartName: HTMLInputElement;
 
     return (
-      <section className="charticulator__file-view-content is-fix-width">
+      <section className="charticulator__file-view-content is-fix-width is-restricted-width">
         <h1>{strings.mainTabs.save}</h1>
         <section>
           <CurrentChartView store={this.props.store} />

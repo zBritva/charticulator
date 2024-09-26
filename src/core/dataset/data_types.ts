@@ -88,10 +88,10 @@ export function inferColumnType(
   localeNumberFormat: LocaleNumberFormat
 ): DataType {
   const candidates: DataType[] = <any>[
-    DataType.Image,
     DataType.Boolean,
     DataType.Number,
     DataType.Date,
+    DataType.Image,
   ];
   for (let i = 0; i < values.length; i++) {
     let v = values[i];

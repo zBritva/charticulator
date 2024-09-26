@@ -342,17 +342,21 @@ export class ColumnsView extends React.Component<
                   </p>
                   <TableView
                     table={table}
-                    onTypeChange={
+                    onChange={
                       this.props.store.editorType === EditorType.Chart
-                        ? (column, type) => {
+                        ? (table: Dataset.Table) => {
                           const store = this.props.store;
 
+                          const restTables = this.props.store.dataset.tables.filter(t => t.type != table.type);
+
                           store.dispatcher.dispatch(
-                            new Actions.ConvertColumnDataType(
-                              table.name,
-                              column,
-                              type as DataType
-                            )
+                            new Actions.ReplaceDataset({
+                              name: this.props.store.dataset.name,
+                              tables: [
+                                ...restTables,
+                                table
+                              ]
+                            }, true)
                           );
                         }
                         : null

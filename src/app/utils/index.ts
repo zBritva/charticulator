@@ -264,7 +264,7 @@ export function getPreferredDataKind(type: DataType): DataKind {
   return kind;
 }
 
-export function getConvertableTypes(
+export function getConvertibleTypes(
   type: DataType,
   dataSample?: (string | boolean | Date | number)[]
 ): DataType[] {
@@ -296,6 +296,8 @@ export function getConvertableTypes(
     case DataType.Image:
       types = [DataType.Image, DataType.String];
       break;
+    default:
+      types = [DataType.String];
   }
 
   return types.filter((t) => {
