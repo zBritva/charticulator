@@ -280,7 +280,7 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
           setTable({
             ...table,
             columns: table.columns.flatMap((col, index) => {
-              if (index == insertIndex) {
+              if (index == insertIndex || insertIndex == table.columns.length) {
                 return [
                   {
                     displayName: newColumnName,
