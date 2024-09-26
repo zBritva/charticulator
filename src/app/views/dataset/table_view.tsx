@@ -282,6 +282,7 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
             columns: table.columns.flatMap((col, index) => {
               if (index == insertIndex || insertIndex == table.columns.length) {
                 return [
+                  col,
                   {
                     displayName: newColumnName,
                     metadata: {
@@ -290,7 +291,6 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
                     name: newColumnName,
                     type: Dataset.DataType.String
                   } as Dataset.Column,
-                  col
                 ]
               } else {
                 return col
