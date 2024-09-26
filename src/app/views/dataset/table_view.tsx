@@ -129,42 +129,48 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
         id: "removeRow",
         label: "Remove row",
         handler: () => {
-          
+          console.log('removeRow');
+          alert('Is not implemented yet');
         }
       },
       {
         id: "removeColumn",
         label: "Remove column",
         handler: () => {
-          
+          console.log('removeRow');
+          alert('Is not implemented yet');
         }
       },
       {
         id: "addRowBefore",
         label: "Add row before",
         handler: () => {
-          
+          console.log('removeRow');
+          alert('Is not implemented yet');
         }
       },
       {
         id: "addRowAfter",
         label: "Add row before",
         handler: () => {
-          
+          console.log('removeRow');
+          alert('Is not implemented yet');
         }
       },
       {
         id: "addColumnBefore",
         label: "Add column before",
         handler: () => {
-          
+          console.log('removeRow');
+          alert('Is not implemented yet');
         }
       },
       {
         id: "addColumnAfter",
         label: "Add column before",
         handler: () => {
-          
+          console.log('removeRow');
+          alert('Is not implemented yet');
         }
       },
     ];
