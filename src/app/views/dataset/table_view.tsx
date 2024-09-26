@@ -67,7 +67,6 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
       let dataRow = table.rows.find((d) => d._id == dataRowId);
 
       if (dataRowId === "header") {
-        debugger;
         const colIndex = prevTable.columns.findIndex(col => col.displayName === change.previousCell.text);
         prevTable.columns[colIndex].name == change.newCell.text;
         prevTable.columns[colIndex].displayName == change.newCell.text;
@@ -160,18 +159,71 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
         id: "addRowBefore",
         label: "Add row before",
         handler: () => {
-          console.log('addRowBefore');
-          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
-          debugger;
+          const rowIds = selectedRanges.flatMap(c => c.map(c => c.rowId))[0];
+          setTable({
+            ...table,
+            rows: table.rows.flatMap((row) => {
+              if (+row._id < +rowIds) {
+                return row
+              }
+              if (+row._id == +rowIds) {
+                const newRow = 
+                {
+                  _id: `${+row._id}`,
+                };
+                table.columns.forEach(col => {
+                  newRow[col.displayName] = "";
+                });
+                return [
+                  newRow,
+                  {
+                    ...row,
+                    _id: `${+row._id + 1}`
+                  }
+                ];
+              }
+              if (+row._id > +rowIds) {
+                return {
+                  ...row,
+                  _id: `${+row._id + 1}`
+                }
+              }
+            })
+          });
         }
       },
       {
         id: "addRowAfter",
-        label: "Add row before",
+        label: "Add row after",
         handler: () => {
-          console.log('addRowAfter');
-          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
-          debugger;
+          const rowIds = selectedRanges.flatMap(c => c.map(c => c.rowId))[0];
+          setTable({
+            ...table,
+            rows: table.rows.flatMap((row) => {
+              if (+row._id < +rowIds) {
+                return row
+              }
+              if (+row._id == +rowIds) {
+                const newRow = 
+                {
+                  _id: `${+row._id + 1}`,
+                };
+                table.columns.forEach(col => {
+                  newRow[col.displayName] = "";
+                });
+                return [
+                  row,
+                  newRow
+                ];
+              }
+              if (+row._id > +rowIds) {
+                return {
+                  ...row,
+                  _id: `${+row._id + 1}`
+                }
+              }
+            })
+          });
         }
       },
       {
@@ -185,7 +237,7 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
       },
       {
         id: "addColumnAfter",
-        label: "Add column before",
+        label: "Add column after",
         handler: () => {
           console.log('addColumnAfter');
           console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
