@@ -27,13 +27,13 @@
 DatasetSources:
   resourcesDescriptionUrl: https://ilfat-galiev.im/data.json
 
-SampleDatasets:
-  - name: DatasetName
-    description: Dataset description
-    tables:
-      - name: TableName
-        type: csv/tsv
-        url: "https://msdn.microsoft.com/en-us/library/ff428642.aspx"
+# SampleDatasets:
+#   - name: DatasetName
+#     description: Dataset description
+#     tables:
+#       - name: TableName
+#         type: csv/tsv
+#         url: "https://msdn.microsoft.com/en-us/library/ff428642.aspx"
 
 #------------------------------------------------
 # Configure the map service
