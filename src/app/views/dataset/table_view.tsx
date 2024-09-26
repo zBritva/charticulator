@@ -231,8 +231,37 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
         label: "Add column before",
         handler: () => {
           console.log('addColumnBefore');
-          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
-          debugger;
+          const columnId = selectedRanges.flatMap(c => c.map(c => c.columnId))[0];
+
+          const insertIndex = table.columns.findIndex(col => col.displayName == columnId);
+          const newColumnName = `New column ${table.columns.length + 1}`;
+
+          setTable({
+            ...table,
+            columns: table.columns.flatMap((col, index) => {
+              if (index == insertIndex) {
+                return [
+                  {
+                    displayName: newColumnName,
+                    metadata: {
+                      kind: Dataset.DataKind.Categorical
+                    },
+                    name: newColumnName,
+                    type: Dataset.DataType.String
+                  } as Dataset.Column,
+                  col
+                ]
+              } else {
+                return col
+              }
+            }),
+            rows: table.rows.map(row => {
+              return {
+                ...row,
+                [newColumnName]: ""
+              }
+            })
+          });
         }
       },
       {
@@ -240,8 +269,37 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
         label: "Add column after",
         handler: () => {
           console.log('addColumnAfter');
-          console.log(selectedRowIds, selectedColIds, selectionMode, menuOptions, selectedRanges);
-          debugger;
+          const columnId = selectedRanges.flatMap(c => c.map(c => c.columnId))[0];
+
+          const insertIndex = table.columns.findIndex(col => col.displayName == columnId) + 1;
+          const newColumnName = `New column ${table.columns.length + 1}`;
+
+          setTable({
+            ...table,
+            columns: table.columns.flatMap((col, index) => {
+              if (index == insertIndex) {
+                return [
+                  {
+                    displayName: newColumnName,
+                    metadata: {
+                      kind: Dataset.DataKind.Categorical
+                    },
+                    name: newColumnName,
+                    type: Dataset.DataType.String
+                  } as Dataset.Column,
+                  col
+                ]
+              } else {
+                return col
+              }
+            }),
+            rows: table.rows.map(row => {
+              return {
+                ...row,
+                [newColumnName]: ""
+              }
+            })
+          });
         }
       },
     ];
