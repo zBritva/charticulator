@@ -301,6 +301,56 @@ export class ImportDataView extends React.Component<
     );
   }
 
+  private createEmptyMainTable() {
+    this.setState({
+      dataTable: {
+        columns: [{
+          displayName: "sample column",
+          name: "sample column",
+          metadata: {
+            kind: Dataset.DataKind.Categorical
+          },
+          type: Dataset.DataType.String
+        }],
+        rows: [{
+          _id: "0",
+          "sample column": "sample value"
+        }],
+        name: "main",
+        displayName: "Main",
+        type: TableType.Main
+      }
+    });
+    this.checkSourceAndTargetColumns(null);
+    this.checkKeyColumn(this.state.dataTable, null);
+  }
+
+  private createEmptyLinksTable() {
+    this.setState({
+      linkTable: {
+        columns: [{
+          displayName: "source_id",
+          name: "source_id",
+          metadata: {
+            kind: Dataset.DataKind.Categorical
+          },
+          type: Dataset.DataType.String
+        },{
+          displayName: "target_id",
+          name: "target_id",
+          metadata: {
+            kind: Dataset.DataKind.Categorical
+          },
+          type: Dataset.DataType.String
+        }],
+        rows: [],
+        name: "links",
+        displayName: "Links",
+        type: TableType.Main
+      }
+    });
+  }
+
   // eslint-disable-next-line
   public render() {
     let sampleDatasetDiv: HTMLDivElement;
@@ -385,7 +435,7 @@ export class ImportDataView extends React.Component<
             >
               {strings.fileImport.removeButtonText}
             </Button>
-            <Button
+            {/* <Button
               icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
               title={strings.fileImport.addRow}
               onClick={() => {
@@ -404,21 +454,27 @@ export class ImportDataView extends React.Component<
               }}
             >
               {strings.fileImport.addRow}
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
               title={strings.fileImport.addColumn}
               onClick={() => {
                 this.setState((state) => {
-                  const name = `New column ${state.dataTable.columns.length}`;
+                  const newColumnName = `New column ${state.dataTable.columns.length}`;
                   state.dataTable.columns.push({
-                    displayName: name,
-                    name,
+                    displayName: newColumnName,
+                    name: newColumnName,
                     metadata: {
                       kind: Dataset.DataKind.Categorical
                     },
                     type: Dataset.DataType.String
-                  })
+                  });
+                  state.dataTable.rows = state.dataTable.rows.map(row => {
+                    return {
+                      ...row,
+                      [newColumnName]: ""
+                    }
+                  });
                   return {
                     dataTable: {
                       ...state.dataTable
@@ -430,7 +486,7 @@ export class ImportDataView extends React.Component<
               }}
             >
               {strings.fileImport.addColumn}
-            </Button>
+            </Button> */}
             <div className="charticulator__scrollable-table">
               {this.renderTable(
                 this.state.dataTable,
@@ -456,54 +512,41 @@ export class ImportDataView extends React.Component<
           </>
         ) : (
           <>
-            <Button
-              icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
-              title={strings.fileImport.new}
-              onClick={() => {
-                this.setState({
-                  dataTable: {
-                    columns: [{
-                      displayName: "sample column",
-                      name: "sample column",
-                      metadata: {
-                        kind: Dataset.DataKind.Categorical
-                      },
-                      type: Dataset.DataType.String
-                    }],
-                    rows: [{
-                      _id: "0",
-                      "sample column": "sample value"
-                    }],
-                    name: "main",
-                    displayName: "Main",
-                    type: TableType.Main
+            <div className="charticulator__file-uploader-wrap">
+              <div
+                className="charticulator__file-uploader"
+                onClick={() => this.createEmptyMainTable()}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    this.createEmptyMainTable();
                   }
-                });
-                this.checkSourceAndTargetColumns(null);
-                this.checkKeyColumn(this.state.dataTable, null);
-              }}
-            >
-              {strings.fileImport.new}
-            </Button>
-            <FileUploader
-              extensions={["csv", "tsv"]}
-              onChange={(file) => {
-                this.loadFileAsTable(file).then(([table, imageTable]) => {
-                  table.type = TableType.Main;
-                  if (imageTable) {
-                    imageTable.type = TableType.Image;
-                  }
+                }}
+              >
+                <span className="charticulator__file-uploader-prompt">
+                  <SVGImageIcon url={R.getSVGIcon("general/plus")} />
+                  {strings.fileImport.new}
+                </span>
+              </div>
+              <FileUploader
+                extensions={["csv", "tsv"]}
+                onChange={(file) => {
+                  this.loadFileAsTable(file).then(([table, imageTable]) => {
+                    table.type = TableType.Main;
+                    if (imageTable) {
+                      imageTable.type = TableType.Image;
+                    }
 
-                  this.checkKeyColumn(table, this.state.linkTable);
+                    this.checkKeyColumn(table, this.state.linkTable);
 
-                  this.setState({
-                    dataTable: table,
-                    dataTableOrigin: deepClone(table),
-                    imagesTable: imageTable,
+                    this.setState({
+                      dataTable: table,
+                      dataTableOrigin: deepClone(table),
+                      imagesTable: imageTable,
+                    });
                   });
-                });
-              }}
-            />
+                }}
+              />
+            </div>
           </>
         )}
         <h2>
@@ -526,7 +569,7 @@ export class ImportDataView extends React.Component<
             >
               {strings.fileImport.removeButtonText}
             </Button>
-            <Button
+            {/* <Button
               icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
               title={strings.fileImport.addRow}
               onClick={() => {
@@ -545,21 +588,27 @@ export class ImportDataView extends React.Component<
               }}
             >
               {strings.fileImport.addRow}
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
               title={strings.fileImport.addColumn}
               onClick={() => {
                 this.setState((state) => {
-                  const name = `New column ${state.linkTable.columns.length}`;
+                  const newColumnName = `New column ${state.linkTable.columns.length}`;
                   state.linkTable.columns.push({
-                    displayName: name,
-                    name,
+                    displayName: newColumnName,
+                    name: newColumnName,
                     metadata: {
                       kind: Dataset.DataKind.Categorical
                     },
                     type: Dataset.DataType.String
                   })
+                  state.linkTable.rows = state.dataTable.rows.map(row => {
+                    return {
+                      ...row,
+                      [newColumnName]: ""
+                    }
+                  });
                   return {
                     linkTable: {
                       ...state.linkTable
@@ -571,7 +620,7 @@ export class ImportDataView extends React.Component<
               }}
             >
               {strings.fileImport.addColumn}
-            </Button>
+            </Button> */}
             <div className="charticulator__scrollable-table">
               {this.renderTable(
                 this.state.linkTable,
@@ -585,52 +634,36 @@ export class ImportDataView extends React.Component<
           </>
         ) : (
           <>
-            <Button
-              icon={<SVGImageIcon url={R.getSVGIcon("general/plus")} />}
-              title={strings.fileImport.new}
-              onClick={() => {
-                this.setState({
-                  linkTable: {
-                    columns: [{
-                      displayName: "source_id",
-                      name: "source_id",
-                      metadata: {
-                        kind: Dataset.DataKind.Categorical
-                      },
-                      type: Dataset.DataType.String
-                    },{
-                      displayName: "target_id",
-                      name: "target_id",
-                      metadata: {
-                        kind: Dataset.DataKind.Categorical
-                      },
-                      type: Dataset.DataType.String
-                    }],
-                    rows: [],
-                    name: "links",
-                    displayName: "Links",
-                    type: TableType.Main
+            <div className="charticulator__file-uploader-wrap">
+              <div
+                className="charticulator__file-uploader"
+                onClick={() => this.createEmptyLinksTable()}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    this.createEmptyLinksTable();
                   }
-                });
-                this.checkSourceAndTargetColumns(null);
-                this.checkKeyColumn(this.state.dataTable, null);
-              }}
-            >
-              {strings.fileImport.new}
-            </Button><FileUploader
-              extensions={["csv", "tsv"]}
-              onChange={(file) => {
-                this.loadFileAsTable(file).then(([table]) => {
-                  table.type = TableType.Links;
-                  this.checkSourceAndTargetColumns(table);
-                  this.checkKeyColumn(this.state.dataTable, table);
-                  this.setState({
-                    linkTable: table,
-                    linkTableOrigin: deepClone(table),
+                }}
+              >
+                <span className="charticulator__file-uploader-prompt">
+                  <SVGImageIcon url={R.getSVGIcon("general/plus")} />
+                  {strings.fileImport.new}
+                </span>
+              </div>
+              <FileUploader
+                extensions={["csv", "tsv"]}
+                onChange={(file) => {
+                  this.loadFileAsTable(file).then(([table]) => {
+                    table.type = TableType.Links;
+                    this.checkSourceAndTargetColumns(table);
+                    this.checkKeyColumn(this.state.dataTable, table);
+                    this.setState({
+                      linkTable: table,
+                      linkTableOrigin: deepClone(table),
+                    });
                   });
-                });
-              }}
-            />
+                }}
+              />
+            </div>
           </>
         )}
         <div className="el-actions">

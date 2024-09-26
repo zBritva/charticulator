@@ -206,9 +206,15 @@
 }
 
 .charticulator {
+  &__file-uploader-wrap {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__file-uploader {
     $height: 80px;
     $width: 400px;
+    margin: 5px;
 
     font-size: 16px;
     display: inline-block;
