@@ -135,6 +135,7 @@ export abstract class BaseButton<
 export interface AppButtonProps extends ButtonProps {
   name?: string;
   title: string;
+  iconOnly?: boolean;
 }
 
 export class AppButton extends BaseButton<AppButtonProps> {
@@ -153,7 +154,7 @@ export class AppButton extends BaseButton<AppButtonProps> {
         }}
       >
         <SVGImageIcon url={R.getSVGIcon("app-icon")} />
-        <span className="el-text">{this.props.name || strings.app.name}</span>
+        {this.props.iconOnly ? null : <span className="el-text">{this.props.name || strings.app.name}</span>}
       </span>
     );
   }

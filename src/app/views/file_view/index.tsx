@@ -93,6 +93,7 @@ export interface FileViewProps {
   store: AppStore;
   backend: AbstractBackend;
   defaultTab?: MainTabs;
+  disabledTabs?: MainTabs[];
   onClose: () => void;
 }
 
@@ -188,7 +189,9 @@ export class FileView extends React.Component<
             >
               <SVGImageIcon url={R.getSVGIcon("toolbar/back")} />
             </div>
-            {tabOrder.map((t, index) =>
+            {tabOrder.filter(tab => {
+              return !this.props.disabledTabs?.find(disabled => tab === disabled)
+            }).map((t, index) =>
               t === null ? (
                 <div key={index} className="el-sep" />
               ) : (

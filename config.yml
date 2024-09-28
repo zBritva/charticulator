@@ -24,16 +24,13 @@
 # Configure sample datasets if any
 #------------------------------------------------
 
-DatasetSources:
-  resourcesDescriptionUrl: https://ilfat-galiev.im/data.json
-
 # SampleDatasets:
 #   - name: DatasetName
 #     description: Dataset description
 #     tables:
 #       - name: TableName
 #         type: csv/tsv
-#         url: "https://msdn.microsoft.com/en-us/library/ff428642.aspx"
+#         url: "relative/absolute url to the file"
 
 #------------------------------------------------
 # Configure the map service
@@ -64,6 +61,7 @@ CorsPolicy:
 Backend: "hybrid"
 CDNBackend:
   resourcesDescriptionUrl: https://ilfat-galiev.im/charts.json
+
 #------------------------------------------------
 # Configure panels layout
 #------------------------------------------------

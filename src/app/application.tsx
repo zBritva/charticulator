@@ -532,7 +532,7 @@ export class Application {
       const json = await value.json();
       this.appStore.dispatcher.dispatch(new Actions.Load(json.state));
     } else {
-      this.mainView?.refMenuBar?.showFileModalWindow(MainTabs.new);
+      this.mainView?.refMenuBar?.showFileModalWindow(MainTabs.new, false);
     }
   }
 

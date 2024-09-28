@@ -8,6 +8,7 @@ export interface IResourceDescription extends ItemData {
     name: string;
     img: string;
     type: ItemType;
+    hidden: boolean;
     author: {
         name: string;
         contact: string;
@@ -68,6 +69,7 @@ export class CDNBackend extends AbstractBackend {
                 new Promise<{ items: ItemDescription[]; totalCount: number }>(
                     (resolve) => {
                         const filtered = this.resources
+                            .filter(res => !res.hidden)
                             .filter(res => res.type === type || type === null)
                             .sort((i1, i2) => <number>i1.metadata[orderBy] - <number>i2.metadata[orderBy])
                             .slice(start, start + count);
@@ -105,6 +107,9 @@ export class CDNBackend extends AbstractBackend {
         return this.open().then(
             () =>
                 new Promise<void>((resolve) => {
+                    if (this.updateUrl == null) {
+                        resolve();
+                    }
                     fetch(this.updateUrl, {
                         method: "PUT",
                         mode: "cors",
@@ -133,6 +138,9 @@ export class CDNBackend extends AbstractBackend {
         return this.open().then(
             () =>
                 new Promise<string>((resolve) => {
+                    if (this.updateUrl == null) {
+                        resolve(null);
+                    }
                     fetch(this.updateUrl, {
                         method: "POST",
                         mode: "cors",
@@ -159,6 +167,9 @@ export class CDNBackend extends AbstractBackend {
         return this.open().then(
             () =>
                 new Promise<void>((resolve) => {
+                    if (this.updateUrl == null) {
+                        resolve();
+                    }
                     fetch(this.updateUrl, {
                         method: "DELETE",
                         mode: "cors",

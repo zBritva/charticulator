@@ -224,12 +224,12 @@ export class MenuBar extends ContextedComponent<
         switch (command) {
           case "new":
             {
-              this.showFileModalWindow(MainTabs.open);
+              this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded);
             }
             break;
           case "open":
             {
-              this.showFileModalWindow(MainTabs.open);
+              this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded);
             }
             break;
           case "save":
@@ -244,14 +244,14 @@ export class MenuBar extends ContextedComponent<
                 if (this.context.store.currentChartID) {
                   this.dispatch(new Actions.Save());
                 } else {
-                  this.showFileModalWindow(MainTabs.save);
+                  this.showFileModalWindow(MainTabs.open, false);
                 }
               }
             }
             break;
           case "export":
             {
-              this.showFileModalWindow(MainTabs.export);
+              this.showFileModalWindow(MainTabs.export, this.context.store.editorType === EditorType.Embedded);
             }
             break;
           case "undo":
@@ -283,7 +283,7 @@ export class MenuBar extends ContextedComponent<
     globals.popupController.reset();
   }
 
-  public showFileModalWindow(defaultTab: MainTabs = MainTabs.open) {
+  public showFileModalWindow(defaultTab: MainTabs = MainTabs.open, isEmbedded: boolean) {
     if (this.context.store.disableFileView) {
       return;
     }
@@ -295,6 +295,7 @@ export class MenuBar extends ContextedComponent<
               backend={this.context.store.backend}
               defaultTab={defaultTab}
               store={this.context.store}
+              disabledTabs={isEmbedded && this.context.store.backend != null ? [MainTabs.new, MainTabs.save, MainTabs.options, MainTabs.about] : []}
               onClose={() => context.close()}
             />
           </ModalView>
@@ -544,14 +545,14 @@ export class MenuBar extends ContextedComponent<
           url={R.getSVGIcon("toolbar/new")}
           title={strings.menuBar.new}
           onClick={() => {
-            this.showFileModalWindow(MainTabs.new);
+            this.showFileModalWindow(MainTabs.new, this.context.store.editorType === EditorType.Embedded);
           }}
         />
         <MenuButton
           url={R.getSVGIcon("toolbar/open")}
           title={strings.menuBar.open}
           onClick={() => {
-            this.showFileModalWindow(MainTabs.open);
+            this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded);
           }}
         />
         <MenuButton
@@ -562,7 +563,7 @@ export class MenuBar extends ContextedComponent<
             if (this.context.store.currentChartID) {
               this.dispatch(new Actions.Save());
             } else {
-              this.showFileModalWindow(MainTabs.save);
+              this.showFileModalWindow(MainTabs.save, this.context.store.editorType === EditorType.Embedded);
             }
           }}
         />
@@ -571,7 +572,7 @@ export class MenuBar extends ContextedComponent<
           url={R.getSVGIcon("toolbar/export")}
           title={strings.menuBar.export}
           onClick={() => {
-            this.showFileModalWindow(MainTabs.export);
+            this.showFileModalWindow(MainTabs.export, this.context.store.editorType === EditorType.Embedded);
           }}
         />
       </>
@@ -658,15 +659,12 @@ export class MenuBar extends ContextedComponent<
         <PopupContainer controller={this.popupController} />
         <section className="charticulator__menu-bar">
           <div className="charticulator__menu-bar-left">
-            {this.context.store.editorType === EditorType.Embedded ||
-            this.context.store.editorType ===
-              EditorType.NestedEmbedded ? null : (
-              <AppButton
-                name={this.props.name}
-                title={strings.menuBar.home}
-                onClick={() => this.showFileModalWindow(MainTabs.open)}
-              />
-            )}
+            <AppButton
+              name={this.props.name}
+              title={strings.menuBar.home}
+              iconOnly={this.context.store.editorType === EditorType.Embedded}
+              onClick={() => this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded)}
+            />
             {this.props.alignButtons === PositionsLeftRight.Left ? (
               <>
                 <span className="charticulator__menu-bar-separator" />
