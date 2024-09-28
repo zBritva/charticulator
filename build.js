@@ -5,6 +5,10 @@ const multirun = require("multirun");
 const path = require("path");
 const crypto = require("crypto");
 
+const CHARTICULATOR_CONFIG_FILE = process.env.CHARTICULATOR_CONFIG ?? "config.yml";
+
+console.log('CHARTICULATOR_CONFIG_FILE', CHARTICULATOR_CONFIG_FILE);
+
 let isProd = false;
 let sequence = [];
 process.argv.slice(2).forEach(arg => {
@@ -147,7 +151,7 @@ let COMMANDS = {
   third_party_data: async () =>
     yamlToJSON("THIRD_PARTY.yml", "dist/data/THIRD_PARTY.json"),
 
-  // Convert the config.yml to config.js
+  // Convert the *.yml to config.js
   config: async () => {
     let mixin = doc => {
       if (fs.existsSync("datasets/files.json")) {
@@ -187,13 +191,13 @@ let COMMANDS = {
       }
     };
     await yamlToJavaScript(
-      "config.yml",
+      CHARTICULATOR_CONFIG_FILE,
       "dist/data/config.js",
       "CHARTICULATOR_CONFIG",
       mixin
     );
     await yamlToJSON(
-      "config.yml",
+      CHARTICULATOR_CONFIG_FILE,
       "dist/scripts/config.json"
     );
   },
