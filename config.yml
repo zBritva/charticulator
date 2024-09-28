@@ -61,6 +61,7 @@ CorsPolicy:
 Backend: "hybrid"
 CDNBackend:
   resourcesDescriptionUrl: https://ilfat-galiev.im/charts.json
+  externalExport: /pbi-upload
 
 #------------------------------------------------
 # Configure panels layout
