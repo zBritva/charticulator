@@ -1917,7 +1917,9 @@ export class AppStore extends BaseStore {
         <string[]>objectProperties?.orderByCategories !== undefined
           ? <string[]>objectProperties?.orderByCategories
           : orderByCategories,
-      orderByExpression: column,
+      orderByExpression: <string>objectProperties?.orderByExpression !== undefined
+      ? <string>objectProperties?.orderByExpression
+      : column,
       numberOfTicks:
         <number>objectProperties?.numberOfTicks !== undefined
           ? <number>objectProperties?.numberOfTicks
