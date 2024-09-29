@@ -10,6 +10,7 @@ import {
   getById,
   getByName,
   ImageKeyColumn,
+  makeRange,
   MessageType,
   Prototypes,
   Scale,
@@ -61,6 +62,7 @@ import {
 } from "../../core/specification";
 import { RenderEvents } from "../../core/graphics";
 import {
+  AxisDataBinding,
   AxisDataBindingType,
   AxisRenderingStyle,
   CollapseOrExpandPanels,
@@ -88,8 +90,12 @@ import { DataAxisProperties } from "../../core/prototypes/marks/data_axis.attrs"
 import { isBase64Image } from "../../core/dataset/data_types";
 import {
   getColumnNameByExpression,
+  parseDerivedColumnsExpression,
+  transformOrderByExpression,
+  updateWidgetCategoriesByExpression,
 } from "../../core/prototypes/plot_segments/utils";
 import { AxisRenderer } from "../../core/prototypes/plot_segments/axis";
+import { CompiledGroupBy } from "../../core/prototypes/group_by";
 
 export interface ChartStoreStateSolverStatus {
   solving: boolean;
@@ -1993,7 +1999,13 @@ export class AppStore extends BaseStore {
               dataExpression.valueType,
               values
             );
-            dataBinding.orderByCategories = deepClone(categories);
+            try {
+              dataBinding.orderByCategories = this.getCategoriesForOrderByColumn(
+                dataBinding
+              );
+            } catch (e) {
+              dataBinding.orderByCategories = deepClone(categories);
+            }
             dataBinding.order = order != undefined ? order : null;
             dataBinding.allCategories = deepClone(categories);
 
@@ -2159,6 +2171,45 @@ export class AppStore extends BaseStore {
         }
       }
     }
+  }
+
+  public getCategoriesForOrderByColumn(
+    data: AxisDataBinding
+  ) {
+    const parsed = Expression.parse(data.expression);
+    let groupByExpression: string = null;
+    if (parsed instanceof Expression.FunctionCall) {
+      groupByExpression = parsed.args[0].toString();
+      groupByExpression = groupByExpression?.split("`").join("");
+      //need to provide date.year() etc.
+      groupByExpression = parseDerivedColumnsExpression(groupByExpression);
+    }
+    const table = this.getTables()[0].name;
+
+    const df = new Prototypes.Dataflow.DataflowManager(this.dataset);
+    const getExpressionVector = (
+      expression: string,
+      table: string,
+      groupBy?: SpecTypes.GroupBy
+    ): any[] => {
+      const newExpression = transformOrderByExpression(expression);
+      groupBy.expression = transformOrderByExpression(groupBy.expression);
+
+      const expr = Expression.parse(newExpression);
+      const tableContext = df.getTable(table);
+      const indices = groupBy
+        ? new CompiledGroupBy(groupBy, df.cache).groupBy(tableContext)
+        : makeRange(0, tableContext.rows.length).map((x) => [x]);
+      return indices.map((is) =>
+        expr.getValue(tableContext.getGroupedContext(is))
+      );
+    };
+    const vectorData = getExpressionVector(data.orderByExpression, table, {
+      expression: groupByExpression,
+    });
+    const items = vectorData.map((item) => [...new Set(item)]);
+    const newData = updateWidgetCategoriesByExpression(items);
+    return [...new Set(newData)];
   }
 
   /**
