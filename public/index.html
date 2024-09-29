@@ -43,10 +43,10 @@
           name,
           metadata
         }) => {
-          debugger;
           if (!CHARTICULATOR_CONFIG.CDNBackend.externalExport) {
             return;
           }
+          console.log('externalExport')
           const data = {
             name,
             state
