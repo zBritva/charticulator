@@ -5,6 +5,7 @@ import * as React from "react";
 import { fontList } from "../../../../../core";
 import { Combobox, Option } from "@fluentui/react-combobox";
 import { Label } from "@fluentui/react-label";
+import { FluentColumnLayout } from "./fluentui_customized_components";
 
 export interface ComboBoxFontFamilyProps {
   defaultValue: string;
@@ -58,41 +59,43 @@ export const FluentComboBoxFontFamily: React.FC<ComboBoxFontFamilyProps> = (
 
   return (
     <>
-      <Label>{props.label}</Label>
-      <Combobox
-        // styles={{
-        //   ...defaultStyle,
-        //   root: {
-        //     ...defultComponentsHeight,
-        //   },
-        // }}
-        value={currentValue}
-        // label={props.label}
-        // onRenderLabel={({ props }) => (
-        //   <Label styles={defaultLabelStyle}>{props.label}</Label>
-        // )}
-        autoComplete="on"
-        // options={optionsWithCustomStyling}
-        onOptionSelect={(e, { optionValue }) => {
-          onEnter(e, optionValue);
-        }}
-        onAbort={onCancel}
+      <FluentColumnLayout>
+        <Label>{props.label}</Label>
+        <Combobox
+          // styles={{
+          //   ...defaultStyle,
+          //   root: {
+          //     ...defultComponentsHeight,
+          //   },
+          // }}
+          value={currentValue}
+          // label={props.label}
+          // onRenderLabel={({ props }) => (
+          //   <Label styles={defaultLabelStyle}>{props.label}</Label>
+          // )}
+          autoComplete="on"
+          // options={optionsWithCustomStyling}
+          onOptionSelect={(e, { optionValue }) => {
+            onEnter(e, optionValue);
+          }}
+          onAbort={onCancel}
         // allowFreeform
-      >
-        {optionsWithCustomStyling.map((o) => {
-          return (
-            <Option key={o.key} value={o.key as string} text={o.text}>
-              <span
-                style={{
-                  fontFamily: o.data.fontFamily,
-                }}
-              >
-                {o.text}
-              </span>
-            </Option>
-          );
-        })}
-      </Combobox>
+        >
+          {optionsWithCustomStyling.map((o) => {
+            return (
+              <Option key={o.key} value={o.key as string} text={o.text}>
+                <span
+                  style={{
+                    fontFamily: o.data.fontFamily,
+                  }}
+                >
+                  {o.text}
+                </span>
+              </Option>
+            );
+          })}
+        </Combobox>
+      </FluentColumnLayout>
     </>
   );
 };
