@@ -115,6 +115,15 @@ export class HelpButton extends React.Component<
                         {strings.help.contact}
                       </a>
                     </div>
+                    <div className="el-item">
+                      <a
+                        target="_blank"
+                        href="https://ilfat-galiev.im/pages/about"
+                        onClick={this.props.handlers.onAboutClick}
+                      >
+                        {strings.help.aboutMeUs}
+                      </a>
+                    </div>
                     <div className="el-item-version">
                       {strings.help.version(CHARTICULATOR_PACKAGE.version)}
                     </div>
@@ -143,6 +152,7 @@ export interface MenuBarHandlers {
   onGalleryClick?: () => void;
   onIssuesClick?: () => void;
   onHomeClick?: () => void;
+  onAboutClick?: () => void;
 }
 
 export interface MenubarTabButton {

@@ -253,6 +253,7 @@ export const strings = {
     gettingStarted: "Getting Started",
     home: "Charticulator Home",
     issues: "Report an Issue",
+    aboutMeUs: "About",
     version: (version: string) => `Version: ${version}`,
   },
   mainTabs: <{ [key in MainTabs]: string }>{
