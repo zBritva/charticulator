@@ -36,6 +36,9 @@ export interface CharticulatorAppConfig extends CharticulatorCoreConfig {
     description: string;
     tables: { name: string; url: string; type: string }[];
   }[];
+  ExternalDatasets?: {
+    resourcesDescriptionUrl: string;
+  },
   WorkerURL: string;
   ContainerURL: string;
   /** Deprecated. don't use */

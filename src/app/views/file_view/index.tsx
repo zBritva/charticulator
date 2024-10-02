@@ -43,11 +43,13 @@ import { FileViewSaveAs } from "./save_view";
 import { FileViewOptionsView } from "./options_view";
 import { strings } from "../../../strings";
 import { MainReactContext } from "../../context_component";
+import { DatasetsView } from "./datasets_view";
 
 export enum MainTabs {
   about = "about",
   export = "export",
   new = "new",
+  datasets = "datasets",
   open = "open",
   options = "options",
   save = "save",
@@ -56,6 +58,7 @@ export enum MainTabs {
 const tabOrder: MainTabs[] = [
   MainTabs.new,
   MainTabs.open,
+  MainTabs.datasets,
   MainTabs.save,
   MainTabs.export,
   MainTabs.options,
@@ -132,6 +135,11 @@ export class FileView extends React.Component<
       case MainTabs.new: {
         return (
           <FileViewNew store={this.props.store} onClose={this.props.onClose} />
+        );
+      }
+      case MainTabs.datasets: {
+        return (
+          <DatasetsView store={this.props.store} onClose={this.props.onClose} />
         );
       }
       case MainTabs.save: {

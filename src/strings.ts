@@ -219,12 +219,13 @@ export const strings = {
     delete: "Delete this chart",
     download: "Download this chart",
     open: "Open Chart",
-    filterText: "Filter chart by name",
+    filterText: "Filter by name",
     private: "Private",
     public: "Public",
     noChart: "(no chart to show)",
     dataset: "Dataset",
-    author: "Author"
+    author: "Author",
+    description: "Description"
   },
   fileSave: {
     saveButton: "Save to My Charts",
@@ -260,6 +261,7 @@ export const strings = {
     about: "About",
     export: "Export",
     new: "New",
+    datasets: "Datasets",
     open: "Open",
     options: "Options",
     save: "Save As",
