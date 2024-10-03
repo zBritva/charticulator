@@ -309,6 +309,12 @@
         }
 
         .name {
+          font-weight: bold;
+          font-size: 16px;
+          color: $gray-040;
+        }
+
+        .description2 {
           font-size: 16px;
           color: $gray-040;
         }

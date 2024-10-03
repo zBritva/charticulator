@@ -20,6 +20,18 @@ export interface AppExtension {
 
 export type Backend = "indexed" | "cdn" | "hybrid";
 
+export interface DatasetDescription {
+  id: string;
+  name: string;
+  description: string;
+  thumbnail: string;
+  tables: { name: string; url: string; type: string }[];
+  author: {
+    name: string;
+    contact: string;
+  }
+}
+
 export interface CharticulatorAppConfig extends CharticulatorCoreConfig {
   ContactUsHref?: string;
   LegalNotices: {
@@ -31,11 +43,10 @@ export interface CharticulatorAppConfig extends CharticulatorCoreConfig {
   /** Load extensions */
   Extensions?: AppExtension[];
   /** Sample datasets to show */
-  SampleDatasets?: {
-    name: string;
-    description: string;
-    tables: { name: string; url: string; type: string }[];
-  }[];
+  SampleDatasets?: DatasetDescription[];
+  ExternalDatasets?: {
+    resourcesDescriptionUrl: string;
+  },
   WorkerURL: string;
   ContainerURL: string;
   /** Deprecated. don't use */
