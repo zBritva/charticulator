@@ -211,6 +211,7 @@ export const strings = {
       `No ${linkSourceKeyColumn} or ${linkTargetKeyColumn} colums are specified in links table`,
     removeButtonText: "Remove",
     removeButtonTitle: "Remove this table",
+    openUrl: "Open source url or contacts with author"
   },
   fileOpen: {
     copy: "Copy this chart",
