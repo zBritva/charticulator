@@ -208,10 +208,10 @@ export const strings = {
       linkSourceKeyColumn: string,
       linkTargetKeyColumn: string
     ) =>
-      `No ${linkSourceKeyColumn} or ${linkTargetKeyColumn} colums are specified in links table`,
+      `No ${linkSourceKeyColumn} or ${linkTargetKeyColumn} columns are specified in links table`,
     removeButtonText: "Remove",
     removeButtonTitle: "Remove this table",
-    openUrl: "Open source url or contacts with author"
+    openUrl: "Open data source url"
   },
   fileOpen: {
     copy: "Copy this chart",
