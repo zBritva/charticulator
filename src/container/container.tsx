@@ -227,13 +227,13 @@ export class ChartContainer extends EventEmitter {
     this.defaultAttributes = instance.defaultAttributes;
 
     setFormatOptions({
-      currency: [localizaiton?.currency, ""] ?? defaultCurrency,
+      currency: localizaiton?.currency != null ? [localizaiton?.currency, ""] : defaultCurrency,
       grouping: defaultDigitsGroup,
       decimal: localizaiton?.decimalDelimiter ?? defaultNumberFormat.decimal,
       thousands:
         localizaiton?.thousandsDelimiter ?? defaultNumberFormat.decimal,
     });
-    setBillionsFormatOption(localizaiton.billionsFormat);
+    setBillionsFormatOption(localizaiton?.billionsFormat || "billions");
     setTimeZone(utcTimeZone);
   }
 
