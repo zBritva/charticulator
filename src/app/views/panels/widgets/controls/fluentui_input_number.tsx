@@ -124,8 +124,8 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
     const tick = props.updownTick || 0.1;
     return (
       <>
-        {!props.showSlider ? <Label 
-        key={`spin-label-${props.label.replace(/\W/g, "_")}`}>{props.label}</Label> : null}
+        {!props.showSlider ? <Label
+          key={`spin-label-${props.label.replace(/\W/g, "_")}`}>{props.label}</Label> : null}
         <SpinButton
           key={`spin-button-${props.label.replace(/\W/g, "_")}`}
           value={+value}
@@ -165,23 +165,23 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
   return (
     <>
       {props.showSlider ? <Label>{props.label}</Label> : null}
-      <FluentColumnLayout style={props.styles} key={`input-column-${props.label.replace(/\W/g, "_")}`}>
+      <FluentColumnLayout style={props.styles} key={`input-column-${props.label?.replace(/\W/g, "_")}`}>
         {props.showUpdown ? (
           renderUpdown()
         ) : (
           <>
-            {!props.showSlider ? <Label key={`input-label-${props.label.replace(/\W/g, "_")}`}>{props.label}</Label> : null}
+            {!props.showSlider ? <Label key={`input-label-${props.label?.replace(/\W/g, "_")}`}>{props.label}</Label> : null}
             <Input
               key={`input-${props.label.replace(/\W/g, "_")}`}
               placeholder={props.placeholder}
               value={
                 typeof value === "string" &&
-                ((value as string).indexOf(".") === value.length - 1 ||
-                  ((value as string).indexOf("-") === 0 && value.length === 1))
+                  ((value as string).indexOf(".") === value.length - 1 ||
+                    ((value as string).indexOf("-") === 0 && value.length === 1))
                   ? value
                   : value == null
-                  ? ""
-                  : formatNumber(+value)
+                    ? ""
+                    : formatNumber(+value)
               }
               onChange={(event, { value: str }) => {
                 if (

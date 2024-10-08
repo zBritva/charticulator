@@ -125,7 +125,7 @@ export class FluentValueEditor extends ContextedComponent<
         }
         return (
           <FluentInputNumber
-            key={`input-number-${this.props.label.replace(/\W/g, "_")}`}
+            key={`input-number-${this.props.label?.replace(/\W/g, "_")}`}
             label={this.props.label}
             stopPropagation={this.props.stopPropagation}
             placeholder={this.props.placeholder}
@@ -150,11 +150,11 @@ export class FluentValueEditor extends ContextedComponent<
         const color = value as Color;
         const hex = colorToHTMLColorHEX(color);
         return (
-          <span className="el-color-value" key={`input-color-wrap-${this.props.label.replace(/\W/g, "_")}`}>
-            <FluentColumnLayout key={`input-color-column-${this.props.label.replace(/\W/g, "_")}`}>
+          <span className="el-color-value" key={`input-color-wrap-${this.props.label?.replace(/\W/g, "_")}`}>
+            <FluentColumnLayout key={`input-color-column-${this.props.label?.replace(/\W/g, "_")}`}>
               <Label>{this.props.label}</Label>
               <Input
-                key={`input-color-${this.props.label.replace(/\W/g, "_")}`}
+                key={`input-color-${this.props.label?.replace(/\W/g, "_")}`}
                 placeholder={this.props.placeholder}
                 value={this.state.value}
                 type="text"
@@ -221,7 +221,7 @@ export class FluentValueEditor extends ContextedComponent<
       case Specification.AttributeType.FontFamily:
         return (
           <FluentComboBoxFontFamily
-            key={`input-font-${this.props.label.replace(/\W/g, "_")}`}
+            key={`input-font-${this.props.label?.replace(/\W/g, "_")}`}
             label={this.props.label}
             defaultValue={value as string}
             onEnter={(value) => {
@@ -235,7 +235,7 @@ export class FluentValueEditor extends ContextedComponent<
         if (this.props.onEmitMapping) {
           return (
             <FluentInputExpression
-              key={`input-expression-${this.props.label.replace(/\W/g, "_")}`}
+              key={`input-expression-${this.props.label?.replace(/\W/g, "_")}`}
               label={this.props.label}
               textExpression={true}
               validate={(value) =>
@@ -282,7 +282,7 @@ export class FluentValueEditor extends ContextedComponent<
             <FluentColumnLayout>
               <Label>{this.props.label}</Label>
               <Input
-                key={`input-text-${this.props.label.replace(/\W/g, "_")}`}
+                key={`input-text-${this.props.label?.replace(/\W/g, "_")}`}
                 value={str}
                 placeholder={placeholderText}
                 onChange={(event, { value }) => {
@@ -308,10 +308,10 @@ export class FluentValueEditor extends ContextedComponent<
         const str = value as string;
         const strings = this.props.hints.rangeEnum;
         return (
-          <FluentColumnLayout key={`input-enum-column-${this.props.label.replace(/\W/g, "_")}`}>
-            <Label key={`input-enum-label-${this.props.label.replace(/\W/g, "_")}`}>{this.props.label}</Label>
+          <FluentColumnLayout key={`input-enum-column-${this.props.label?.replace(/\W/g, "_")}`}>
+            <Label key={`input-enum-label-${this.props.label?.replace(/\W/g, "_")}`}>{this.props.label}</Label>
             <Dropdown
-              key={`input-enum-${this.props.label.replace(/\W/g, "_")}`}
+              key={`input-enum-${this.props.label?.replace(/\W/g, "_")}`}
               value={str}
               onOptionSelect={(event, { optionValue }) => {
                 if (value == null) {
@@ -331,7 +331,7 @@ export class FluentValueEditor extends ContextedComponent<
                 })
                 .map((o) => {
                   return (
-                    <Option key={`input-enum-column-${this.props.label.replace(/\W/g, "_")}-${o.key.replace(/\W/g, "_")}`} value={o.key} text={o.key}>
+                    <Option key={`input-enum-column-${this.props.label?.replace(/\W/g, "_")}-${o.key.replace(/\W/g, "_")}`} value={o.key} text={o.key}>
                       {o.text}
                     </Option>
                   );
@@ -344,17 +344,17 @@ export class FluentValueEditor extends ContextedComponent<
         const boolean = value as boolean;
         if (this.props.onEmitMapping) {
           return (
-            <FluentColumnLayout key={`input-boolean-column-${this.props.label.replace(/\W/g, "_")}`}>
+            <FluentColumnLayout key={`input-boolean-column-${this.props.label?.replace(/\W/g, "_")}`}>
               <Label>{strings.objects.visibleOn.visibility}</Label>
               {this.props.menuRender}
             </FluentColumnLayout>
           );
         } else {
           return (
-            <FluentColumnLayout key={`input-boolean-column-${this.props.label.replace(/\W/g, "_")}`}>
+            <FluentColumnLayout key={`input-boolean-column-${this.props.label?.replace(/\W/g, "_")}`}>
               <Label>{strings.objects.visibleOn.visibility}</Label>
               <Button
-                key={`input-boolean-${this.props.label.replace(/\W/g, "_")}`}
+                key={`input-boolean-${this.props.label?.replace(/\W/g, "_")}`}
                 icon={
                   boolean ? (
                     <CheckboxCheckedRegular />
@@ -374,7 +374,7 @@ export class FluentValueEditor extends ContextedComponent<
         const str = value as SpecTypes.Image;
         return (
           <InputImage
-            key={`input-image-${this.props.label.replace(/\W/g, "_")}`}
+            key={`input-image-${this.props.label?.replace(/\W/g, "_")}`}
             label={this.props.label}
             value={str}
             onChange={(newValue) => {
