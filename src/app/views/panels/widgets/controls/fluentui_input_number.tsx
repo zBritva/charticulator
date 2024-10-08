@@ -105,7 +105,7 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
     }
     return (
       <Slider
-        key={`slider-${props.label.replace(/\W/g, "_")}`}
+        key={`slider-${props.label?.replace(/\W/g, "_")}`}
         min={sliderMin}
         max={sliderMax}
         value={+value}
@@ -125,9 +125,9 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
     return (
       <>
         {!props.showSlider ? <Label
-          key={`spin-label-${props.label.replace(/\W/g, "_")}`}>{props.label}</Label> : null}
+          key={`spin-label-${props.label?.replace(/\W/g, "_")}`}>{props.label}</Label> : null}
         <SpinButton
-          key={`spin-button-${props.label.replace(/\W/g, "_")}`}
+          key={`spin-button-${props.label?.replace(/\W/g, "_")}`}
           value={+value}
           step={tick}
           onChange={(e, { value, displayValue: str }) => {
@@ -172,7 +172,7 @@ export const FluentInputNumber: React.FC<InputNumberProps> = (props) => {
           <>
             {!props.showSlider ? <Label key={`input-label-${props.label?.replace(/\W/g, "_")}`}>{props.label}</Label> : null}
             <Input
-              key={`input-${props.label.replace(/\W/g, "_")}`}
+              key={`input-${props.label?.replace(/\W/g, "_")}`}
               placeholder={props.placeholder}
               value={
                 typeof value === "string" &&
