@@ -2,18 +2,12 @@
 // Licensed under the MIT license.
 import { dsvFormat } from "d3-dsv";
 
-import { inferAndConvertColumn, LocaleNumberFormat } from "./data_types";
+import { inferAndConvertColumn } from "./data_types";
 import {
   Row,
   Table,
   rawColumnPostFix,
-  DataValue,
-  DataType,
-  ColumnMetadata,
-  TableType,
-  Column,
 } from "./dataset";
-import { deepClone } from "../common";
 import { getTableName, LocaleFileFormat } from "./utils";
 
 
