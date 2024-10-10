@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import { dsvFormat } from "d3-dsv";
 
 import { inferAndConvertColumn } from "./data_types";
 import {
   Row,
   Table,
+  TableType,
   rawColumnPostFix,
 } from "./dataset";
 import { getTableName, LocaleFileFormat } from "./utils";

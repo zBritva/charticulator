@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import { Table, Dataset, TableType } from "./dataset";
-import { parseDataset, LocaleFileFormat } from "./dsv_parser";
+import { parseDataset } from "./dsv_parser";
+import { LocaleFileFormat } from "./utils";
 
 export interface TableSourceSpecification {
   /** Name of the table, if empty, use the basename of the url without extension */

@@ -13,7 +13,7 @@ import {
   setFormatOptions,
   setTimeZone,
 } from "../../../core/common";
-import { LocaleFileFormat } from "../../../core/dataset/dsv_parser";
+import { LocaleFileFormat } from "../../../core/dataset/utils";
 import { strings } from "../../../strings";
 import { MainReactContext } from "../../context_component";
 import { LocalStorageKeys } from "../../globals";
