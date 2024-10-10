@@ -36,7 +36,7 @@ import { ExportTemplateTarget } from "./template";
 import { parseHashString } from "./utils";
 import { Actions } from "./actions";
 import { DatasetSourceSpecification } from "../core/dataset/loader";
-import { LocaleFileFormat } from "../core/dataset/dsv_parser";
+import { LocaleFileFormat } from "../core/dataset/utils";
 import { MainTabs } from "./views/file_view";
 import { makeDefaultDataset } from "./default_dataset";
 import { strings } from "../strings";

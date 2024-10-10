@@ -8,7 +8,7 @@ import { Dataset, Specification } from "../../../core";
 import { DataType, Table, TableType } from "../../../core/dataset/dataset";
 import { strings } from "../../../strings";
 import { showOpenFileDialog } from "../../utils";
-import { getTableName, LocaleFileFormat } from "../../../core/dataset/dsv_parser";
+import { getTableName, LocaleFileFormat } from "../../../core/dataset/utils";
 import { Button, Dialog, DialogBody, DialogContent, DialogSurface, DialogTitle, Dropdown, Option, Table as FTable, TableHeader, TableRow, TableHeaderCell, TableBody, TableCell, DialogActions } from "@fluentui/react-components";
 
 export enum MappingMode {
