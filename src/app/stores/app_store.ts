@@ -49,7 +49,7 @@ import {
   MarkSelection,
   Selection,
 } from "./selection";
-import { LocaleFileFormat } from "../../core/dataset/dsv_parser";
+import { LocaleFileFormat } from "../../core/dataset/utils";
 import { TableType } from "../../core/dataset";
 import { ValueType } from "../../core/expression/classes";
 import {

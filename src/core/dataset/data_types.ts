@@ -9,7 +9,7 @@ import {
   monthNames,
   getDateFormat,
 } from "./datetime";
-import { LocaleFileFormat } from "./dsv_parser";
+import { LocaleFileFormat } from "./utils";
 
 export interface LocaleNumberFormat {
   remove: string;

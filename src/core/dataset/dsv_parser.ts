@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 import { dsvFormat } from "d3-dsv";
 
-import { inferAndConvertColumn, LocaleNumberFormat } from "./data_types";
+import { inferAndConvertColumn } from "./data_types";
 import {
   Row,
   Table,
@@ -12,6 +12,7 @@ import {
   ColumnMetadata,
 } from "./dataset";
 import { deepClone } from "../common";
+import { getTableName, LocaleFileFormat } from "./utils";
 
 export function parseHints(hints: string) {
   const items = hints.match(/ *\*(.*)/);
@@ -34,19 +35,6 @@ export function parseHints(hints: string) {
   } else {
     return {};
   }
-}
-
-export interface LocaleFileFormat {
-  delimiter: string;
-  numberFormat: LocaleNumberFormat;
-  currency: string;
-  group: string;
-  utcTimeZone: boolean;
-  billionsFormat: "giga" | "billions";
-}
-
-export function getTableName(fileName: string) {
-  return fileName.replace(/\W/g, "_");
 }
 
 /**
