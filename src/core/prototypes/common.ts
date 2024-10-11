@@ -218,6 +218,7 @@ export namespace Handles {
     text: string;
     alignment: SpecTypes.TextAlignment;
     rotation: number;
+    ignorePolarRotation: boolean;
     anchorX: number;
     anchorY: number;
     textWidth: number;
@@ -247,7 +248,7 @@ export namespace BoundingBox {
     width: number;
     height: number;
     rotation: number;
-
+    ignorePolarRotation: boolean;
     anchorX: number;
     anchorY: number;
   }

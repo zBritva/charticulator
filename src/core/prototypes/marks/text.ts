@@ -85,6 +85,7 @@ export class TextElementClass extends EmphasizableMarkClass<
       yMargin: 5,
     },
     rotation: 0,
+    ignorePolarRotation: false,
     visible: true,
   };
 
@@ -148,6 +149,10 @@ export class TextElementClass extends EmphasizableMarkClass<
       props.alignment.yMargin
     );
     const p = cs.getLocalTransform(attrs.x + offset.x, attrs.y + offset.y);
+    
+    if (this.object.properties.ignorePolarRotation) {
+      p.angle = 0;
+    }
     p.angle += props.rotation;
     let text: Graphics.Element = null;
     const textContent =
@@ -256,6 +261,7 @@ export class TextElementClass extends EmphasizableMarkClass<
         text: attrs.text,
         alignment: props.alignment,
         rotation: props.rotation,
+        ignorePolarRotation: props.ignorePolarRotation
       },
     ];
   }
@@ -288,6 +294,7 @@ export class TextElementClass extends EmphasizableMarkClass<
       cy: attrs.y + cx * sin + cy * cos,
       width: metrics.width,
       height: (metrics.middle - metrics.ideographicBaseline) * 2,
+      ignorePolarRotation: this.object.properties.ignorePolarRotation,
       rotation,
     };
   }
@@ -304,6 +311,7 @@ export class TextElementClass extends EmphasizableMarkClass<
       width: rect.width,
       height: rect.height,
       rotation: rect.rotation,
+      ignorePolarRotation: rect.ignorePolarRotation
     };
   }
 
@@ -421,6 +429,14 @@ export class TextElementClass extends EmphasizableMarkClass<
               searchSection: strings.objects.anchorAndRotation,
             }
           ),
+          manager.inputBoolean(
+            { property: "ignorePolarRotation" },
+            {
+              label: strings.objects.ignorePolarRotation,
+              searchSection: strings.objects.anchorAndRotation,
+              type: "checkbox"
+            }
+          )
         ]
       ),
       manager.verticalGroup(

@@ -107,10 +107,15 @@ export class BoundingBoxView extends React.Component<
           y: rect.cy,
           angle: rect.rotation,
         };
+        const baseTransform = coordinateSystem.getBaseTransform();
+        const localTransform = coordinateSystem.getLocalTransform(cx, cy);
+        if (rect.ignorePolarRotation) {
+          localTransform.angle = 0;
+        }
         const tr = Graphics.concatTransform(
           Graphics.concatTransform(
-            coordinateSystem.getBaseTransform(),
-            coordinateSystem.getLocalTransform(cx, cy)
+            baseTransform,
+            localTransform
           ),
           trCenter
         );

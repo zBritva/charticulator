@@ -74,4 +74,5 @@ export interface TextElementAttributes extends AttributeMap {
 export interface TextElementProperties extends AttributeMap {
   alignment: SpecTypes.TextAlignment;
   rotation: number;
+  ignorePolarRotation: boolean;
 }
