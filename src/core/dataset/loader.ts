@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import { Table, Dataset, TableType } from "./dataset";
-import { parseDataset } from "./dsv_parser";
-import { LocaleFileFormat } from "./utils";
+import { parseDataset as parseDatasetDSV } from "./dsv_parser";
+import { parseDataset as parseDatasetJSON } from "./json_parser";
+import { LocaleFileFormat, getDataSourceType } from "./utils";
 
 export interface TableSourceSpecification {
   /** Name of the table, if empty, use the basename of the url without extension */
@@ -30,7 +31,11 @@ export class DatasetLoader {
     localeFileFormat: LocaleFileFormat
   ): Promise<Table> {
     return this.loadTextData(url).then((data) => {
-      return parseDataset(url, data, localeFileFormat);
+      if (getDataSourceType(data) === 'json') {
+        return parseDatasetJSON(url, data, localeFileFormat);
+      } else {
+        return parseDatasetDSV(url, data, localeFileFormat);
+      }
     });
   }
 
@@ -39,7 +44,11 @@ export class DatasetLoader {
     contents: string,
     localeFileFormat: LocaleFileFormat
   ): Table {
-    return parseDataset(filename, contents, localeFileFormat);
+    if (getDataSourceType(contents) === 'json') {
+      return parseDatasetJSON(filename, contents, localeFileFormat);
+    } else {
+      return parseDatasetDSV(filename, contents, localeFileFormat);
+    }
   }
 
   public async loadTableFromSourceSpecification(
@@ -50,21 +59,44 @@ export class DatasetLoader {
       if (spec.url.toLowerCase().endsWith(".tsv")) {
         spec.localeFileFormat.delimiter = "\t";
       }
-      const table = parseDataset(
-        spec.url.split("/").pop(),
-        tableContent,
-        spec.localeFileFormat
-      );
+
+      let table = null;
+      if (getDataSourceType(tableContent) === 'json') {
+        table = parseDatasetJSON(
+          spec.url.split("/").pop(),
+          tableContent,
+          spec.localeFileFormat
+        );
+      } else {
+        table = parseDatasetDSV(
+          spec.url.split("/").pop(),
+          tableContent,
+          spec.localeFileFormat
+        );
+      }
+
       if (spec.name) {
         table.name = spec.name;
       }
       return table;
     } else if (spec.content) {
-      const table = parseDataset(
-        spec.name,
-        spec.content,
-        spec.localeFileFormat
-      );
+
+      let table = null;
+
+      if (getDataSourceType(spec.content) === 'json') {
+        table = parseDatasetJSON(
+          spec.name,
+          spec.content,
+          spec.localeFileFormat
+        );
+      } else {
+        table = parseDatasetDSV(
+          spec.name,
+          spec.content,
+          spec.localeFileFormat
+        );
+      }
+      
       table.name = spec.name;
       return table;
     } else {

@@ -281,7 +281,19 @@ export class ImportDataView extends React.Component<
               currency: null,
               group: null,
               utcTimeZone: true,
-              billionsFormat: "giga",
+              billionsFormat: localeFileFormat?.billionsFormat || "giga",
+            }),
+            null,
+          ];
+        }
+        case "json": {
+          return [
+            loader.loadDSVFromContents(filename, contents, {
+              numberFormat: localeFileFormat.numberFormat,
+              currency: null,
+              group: null,
+              utcTimeZone: true,
+              billionsFormat: localeFileFormat?.billionsFormat || "giga",
             }),
             null,
           ];
@@ -476,7 +488,7 @@ export class ImportDataView extends React.Component<
                 </span>
               </div>
               <FileUploader
-                extensions={["csv", "tsv"]}
+                extensions={["csv", "tsv", "json"]}
                 onChange={(file) => {
                   this.loadFileAsTable(file).then(([table, imageTable]) => {
                     table.type = TableType.Main;
@@ -546,7 +558,7 @@ export class ImportDataView extends React.Component<
                 </span>
               </div>
               <FileUploader
-                extensions={["csv", "tsv"]}
+                extensions={["csv", "tsv", "json"]}
                 onChange={(file) => {
                   this.loadFileAsTable(file).then(([table]) => {
                     table.type = TableType.Links;
