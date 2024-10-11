@@ -27,8 +27,8 @@ export function parseDataset(
 
     const keys = Object.keys(array[0]);
 
-    let columnValues = keys.map((name, index) => {
-      const values = array.map((row) => row[index]);
+    const columnValues = keys.map((name) => {
+      const values = array.map((row) => row[name]);
       return inferAndConvertColumn(values, localeFileFormat);
     });
 
