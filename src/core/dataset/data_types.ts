@@ -17,6 +17,9 @@ export interface LocaleNumberFormat {
 }
 
 function localeNumber(x: string, localeNumberFormat: LocaleNumberFormat) {
+  if (typeof x == "number") {
+    return +x;
+  }
   const reRemove = new RegExp("\\" + localeNumberFormat.remove, "g");
   x = x.replace(reRemove, "");
   if (localeNumberFormat.decimal !== ".") {
@@ -59,6 +62,9 @@ export const dataTypes: { [name in DataType]: DataTypeDescription } = {
       if (x === "null") {
         return true;
       }
+      if (typeof x == "number") {
+        return true;
+      }
       const value = localeNumber(x, localeNumberFormat);
       return !isNaN(value);
     },
@@ -93,6 +99,10 @@ export function inferColumnType(
     DataType.Date,
     DataType.Image,
   ];
+  if (values !== null && values[0] !== null && typeof values[0] == 'number') {
+    return DataType.Number;
+  }
+
   for (let i = 0; i < values.length; i++) {
     let v = values[i];
     v = v.trim();
