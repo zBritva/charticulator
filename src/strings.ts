@@ -409,6 +409,7 @@ export const strings = {
     logarithmic: "Logarithmic",
   },
   objects: {
+    ignorePolarRotation: "Ignore polar coordinate rotation",
     default: "Default",
     opposite: "Opposite",
     position: "Position",
