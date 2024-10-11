@@ -5,7 +5,7 @@ export function getTableName(fileName: string) {
 }
 
 export function getDataSourceType(content: string): ContentType {
-  if (content.startsWith('[') && content.endsWith(']')) {
+  if (content.trim().startsWith('[') && content.trim().endsWith(']')) {
     return 'json';
   } else {
     return 'csv';
