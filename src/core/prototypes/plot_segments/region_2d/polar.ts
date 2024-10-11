@@ -856,23 +856,25 @@ export class PolarPlotSegment extends PlotSegmentClass<
               manager.label(strings.objects.plotSegment.radius, {
                 ignoreSearch: true,
               }),
-              manager.horizontal(
-                [0, 1, 0, 1],
-                manager.label(strings.objects.plotSegment.inner, {
+              manager.inputNumber(
+                { property: "innerRatio" },
+                {
                   ignoreSearch: true,
-                }),
-                manager.inputNumber(
-                  { property: "innerRatio" },
-                  { ignoreSearch: true }
-                ),
-                manager.label(strings.objects.plotSegment.outer, {
-                  ignoreSearch: true,
-                }),
-                manager.inputNumber(
-                  { property: "outerRatio" },
-                  { maximum: 1, ignoreSearch: true }
-                )
+                  label: strings.objects.plotSegment.inner,
+                  showUpdown: true,
+                  step: 0.1
+                 }
               ),
+              manager.inputNumber(
+                { property: "outerRatio" },
+                {
+                  maximum: 1,
+                  ignoreSearch: true,
+                  label: strings.objects.plotSegment.outer,
+                  showUpdown: true,
+                  step: 0.1
+                }
+              )
             ]
           ),
 
