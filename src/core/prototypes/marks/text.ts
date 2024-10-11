@@ -294,6 +294,7 @@ export class TextElementClass extends EmphasizableMarkClass<
       cy: attrs.y + cx * sin + cy * cos,
       width: metrics.width,
       height: (metrics.middle - metrics.ideographicBaseline) * 2,
+      ignorePolarRotation: this.object.properties.ignorePolarRotation,
       rotation,
     };
   }
@@ -310,6 +311,7 @@ export class TextElementClass extends EmphasizableMarkClass<
       width: rect.width,
       height: rect.height,
       rotation: rect.rotation,
+      ignorePolarRotation: rect.ignorePolarRotation
     };
   }
 
