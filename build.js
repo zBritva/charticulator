@@ -228,7 +228,7 @@ let COMMANDS = {
   watch: {
     //tsc: "tsc -w",
     webpack: "webpack -w --mode=" + (isProd ? "production" : "development"),
-    sass: "sass --watch sass/app.scss:dist/styles/app.css sass/page.scss:dist/styles/page.css",
+    sass: "sass --watch sass/app.scss:dist/styles/app.css sass/page.scss:dist/styles/page.css sass/container.scss:dist/styles/container.css",
     server: "http-server ./dist -a 0.0.0.0 -p 4000 -c-1 -s",
   },
   ssl_watch: {
