@@ -247,12 +247,27 @@ export class AppStore extends BaseStore {
               displayName: "Name",
               name: "name",
               type: "string",
-              default: template.specification.properties?.name || "template",
+              default: template.specification.properties?.name || "Name",
+            },
+            {
+              displayName: "Author",
+              name: "author",
+              type: "string",
+              default: template.author || "Author",
+            },
+            {
+              displayName: "E-mail",
+              name: "email",
+              type: "string",
+              default: template.email || "E-mail",
             },
           ],
           getFileName: (props: { name: string }) => `${props.name}.tmplt`,
-          generate: () => {
+          generate: (properties) => {
             return new Promise<string>((resolve) => {
+              template.author = properties.author;
+              template.email = properties.email;
+
               const r = b64EncodeUnicode(JSON.stringify(template, null, 2));
               resolve(r);
             });

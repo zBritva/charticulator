@@ -34,6 +34,12 @@ export interface ChartTemplate {
 
   /**Default */
   default: boolean;
+
+  /**Author email */
+  email?: string;
+
+  /**Author name */
+  author?: string;
 }
 
 export interface Column {
