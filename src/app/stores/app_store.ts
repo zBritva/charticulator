@@ -198,6 +198,8 @@ export class AppStore extends BaseStore {
   public currentToolOptions: string;
   public searchString: string = "";
 
+  public ContainerScriptText: string;
+
   public collapseOrExpandPanelsType: CollapseOrExpandPanels =
     CollapseOrExpandPanels.Expand;
 
@@ -419,11 +421,11 @@ export class AppStore extends BaseStore {
     );
   }
 
-  public onExportTemplate(callback: (base: string) => boolean) {
+  public onExportTemplate(callback: (type: string, content: string | Blob) => boolean) {
     this.onExportTemplateCallback = callback;
   }
 
-  public onExportTemplateCallback: (base: string) => boolean;
+  public onExportTemplateCallback: (type: string, content: string | Blob) => boolean;
 
   public async backendSaveChart() {
     if (this.currentChartID != null) {

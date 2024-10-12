@@ -305,7 +305,7 @@ export class MenuBar extends ContextedComponent<
               backend={this.context.store.backend}
               defaultTab={defaultTab}
               store={this.context.store}
-              disabledTabs={isEmbedded && this.context.store.backend != null ? [MainTabs.new, MainTabs.save, MainTabs.options, MainTabs.about] : []}
+              disabledTabs={isEmbedded && this.context.store.backend != null ? [MainTabs.new, MainTabs.save, MainTabs.options, MainTabs.datasets, MainTabs.about] : []}
               onClose={() => context.close()}
             />
           </ModalView>
@@ -602,7 +602,7 @@ export class MenuBar extends ContextedComponent<
         props.alignSaveButton === props.alignButtons
           ? this.renderSaveEmbedded()
           : null}
-        {this.context.store.editorType === EditorType.Embedded ||
+        {/* {this.context.store.editorType === EditorType.Embedded ||
         this.context.store.editorType === EditorType.NestedEmbedded ? (
           <>
             <span className="charticulator__menu-bar-separator" />
@@ -610,7 +610,7 @@ export class MenuBar extends ContextedComponent<
             {this.renderExportButton(props)}
             {this.renderCopyToClipboard(props)}
           </>
-        ) : null}
+        ) : null} */}
         <span className="charticulator__menu-bar-separator" />
         {this.props.undoRedoLocation === UndoRedoLocation.MenuBar ? (
           <>

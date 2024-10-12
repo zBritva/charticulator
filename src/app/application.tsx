@@ -599,9 +599,9 @@ export class Application {
     });
   }
 
-  public setOnExportTemplateCallback(callback: (template: string) => boolean) {
-    this.appStore.onExportTemplate((template: string) => {
-      return callback(template);
+  public setOnExportTemplateCallback(callback: (type: string, content: string | Blob) => boolean) {
+    this.appStore.onExportTemplate((type: string, content: string | Blob) => {
+      return callback(type, content);
     });
   }
 

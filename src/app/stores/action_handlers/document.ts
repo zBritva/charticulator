@@ -33,6 +33,12 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       if (action.type == "svg") {
         const svg = await this.renderLocalSVG();
         const blob = new Blob([svg], { type: "image/svg;charset=utf-8" });
+        if (this.onExportTemplateCallback != null) {
+          if (this.onExportTemplateCallback(action.type, blob))
+          {
+            return;
+          }
+        }
         saveAs(blob, "charticulator.svg", true);
       }
       // Export as bitmaps
@@ -47,6 +53,12 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
           background: "#ffffff",
         }).then((png) => {
           png.toBlob((blob) => {
+            if (this.onExportTemplateCallback != null) {
+              if (this.onExportTemplateCallback(action.type, blob))
+              {
+                return;
+              }
+            }
             saveAs(
               blob,
               "charticulator." + (action.type == "png" ? "png" : "jpg"),
@@ -57,9 +69,14 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       }
       // Export as interactive HTML
       if (action.type == "html") {
-        const containerScriptText = await (
-          await fetch(getConfig().ContainerURL)
-        ).text();
+        let containerScriptText = ""
+        if (this.ContainerScriptText) {
+          containerScriptText = this.ContainerScriptText;
+        } else {
+          containerScriptText = await (
+            await fetch(getConfig().ContainerURL)
+          ).text();
+        }
 
         const htmlString = `
           <!DOCTYPE html>
@@ -99,6 +116,13 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
           </html>
         `;
         const blob = new Blob([htmlString]);
+
+        if (this.onExportTemplateCallback != null) {
+          if (this.onExportTemplateCallback(action.type, blob))
+          {
+            return;
+          }
+        }
         saveAs(blob, "charticulator.html", true);
       }
     })();
@@ -118,7 +142,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       });
       if (this.onExportTemplateCallback != null) {
         this.emit(AppStore.EVENT_EXPORT_TEMPLATE, base64);
-        if (this.onExportTemplateCallback(base64))
+        if (this.onExportTemplateCallback("json", blob))
         {
           return;
         }
