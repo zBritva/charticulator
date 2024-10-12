@@ -1077,7 +1077,9 @@ export class ChartEditorView
                           }}
                         ></div>
                       </PopoverTrigger>
-                      <PopoverSurface>
+                      <PopoverSurface style={{
+                        padding: '5px'
+                      }}>
                         {manager.horizontal(
                           controls.widgets.map(() => 0),
                           ...controls.widgets
