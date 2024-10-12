@@ -270,7 +270,9 @@ export class PolygonElementClass extends EmphasizableMarkClass<
     const lines = [];
     // const points = zipArray(attrs.pointsX, attrs.pointsY);
     const keys = Object.keys(attrs).filter((key) => key.startsWith("x"));
-    const points: [x: number, y: number][] = keys.map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number]);
+    const points: [x: number, y: number][] = keys
+      .map((x, index) => [attrs[`x${index + 1}`] as number, attrs[`y${index + 1}`] as number])
+      .map((p) => [offset.x + p[0], offset.y + p[1]]);
 
     if (this.object.properties.closed) {
       const path = helper.polygon(
