@@ -139,8 +139,10 @@ export class ChartRenderer {
 
     const elementsAndStates = zipArray(chart.elements, chartState.elements);
 
+    let elementsIndex = -1;
     // Render layout graphics
     for (const [element, elementState] of elementsAndStates) {
+      elementsIndex++;
       if (!element.properties.visible) {
         continue;
       }
@@ -216,7 +218,7 @@ export class ChartRenderer {
         const gElement = makeGroup([]);
         const elementClass = this.manager.getChartElementClass(elementState);
         const elementGraphic = elementClass.getGraphics(this.manager);
-        gElement.key = `ew-${elementGraphic}`;
+        gElement.key = `el-wrap-${elementGraphic.key}-idx:${elementsIndex}`;
         gElement.elements.push(elementGraphic);
         graphics.push(gElement);
       }

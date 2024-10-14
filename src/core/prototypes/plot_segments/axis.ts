@@ -584,7 +584,7 @@ export class AxisRenderer {
     objectID?: string
   ): Group {
     const axisGraphics = makeGroup([]);
-    axisGraphics.key = `line:${objectID ?? ""}-text-x:${x}-y:${y}-ang:${angle}-side:${side}-offset:${axisOffset}`;
+    axisGraphics.key = `line:${objectID ?? ""}-text-x:${x}-y:${y}-ang:${angle}-side:${side}-offset:${axisOffset ?? 'nooffset'}`;
     const style = this.style;
     const rangeMin = this.rangeMin;
     const rangeMax = this.rangeMax;
@@ -628,14 +628,16 @@ export class AxisRenderer {
       visibleTicks.push(rangeMin, rangeMax);
     }
     if (style.showTicks) {
+      let tickIndex = 0;
       for (const tickPosition of visibleTicks) {
         const tx = x + tickPosition * cos;
         const ty = y + tickPosition * sin;
         const dx = side * tickSize * sin;
         const dy = -side * tickSize * cos;
         const tickGraphics = makeLine(tx, ty, tx + dx, ty + dy, lineStyle);
-        tickGraphics.key = `${axisGraphics.key}-tick:${tickPosition}`;
+        tickGraphics.key = `${axisGraphics.key}-tick:${tickPosition}-tx:${tx}-ty:${ty}-tx2:${tx + dx}-ty2:${ty + dy}-idx:${tickIndex}`;
         axisGraphics.elements.push(tickGraphics);
+        tickIndex++;
       }
     }
     // Tick texts
