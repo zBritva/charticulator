@@ -204,6 +204,7 @@ let COMMANDS = {
 
   // Compile sass files
   sass: {
+    container: "sass sass/container.scss:dist/styles/container.css",
     app: "sass sass/app.scss:dist/styles/app.css",
     page: "sass sass/page.scss:dist/styles/page.css"
   },
