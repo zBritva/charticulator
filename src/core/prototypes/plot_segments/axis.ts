@@ -457,7 +457,7 @@ export class AxisRenderer {
     const ticks = scale.ticks(tickNumber);
     const tickFromatInternal = scale.tickFormat(
       tickNumber,
-      tickFormatString?.replace(tickFormatParserExpression(), "$1")
+      (tickFormatString ?? "%m/%d/%Y").replace(tickFormatParserExpression(), "$1")
     );
     const r: TickDescription[] = [];
     for (let i = 0; i < ticks.length; i++) {
