@@ -1,38 +1,35 @@
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
 import * as React from "react";
 
-import { EventSubscription, Prototypes, Specification, uniqueID } from "../../../core";
+import { Prototypes, Specification } from "../../../core";
 import { Actions } from "../../actions";
-import { EditableTextView, SVGImageIcon } from "../../components";
+import { EditableTextView } from "../../components";
 
 import { AppStore } from "../../stores";
 import { FluentUIWidgetManager } from "./widgets/fluentui_manager";
-import { ReservedMappingKeyNamePrefix } from "../../../core/prototypes/legends/categorical_legend";
 import { strings } from "../../../strings";
-import { AttributeMap } from "../../../core/specification";
-import { ObjectClass } from "../../../core/prototypes";
-import { EventType } from "./widgets/observer";
-import { ScaleEditorWrapper } from "./panel_styles";
-import { Button } from "@fluentui/react-button";
-import * as R from "../../resources";
-import { AddRegular, DeleteRegular } from "@fluentui/react-icons";
-import { Dropdown, Option } from "@fluentui/react-components";
+// import { AddRegular, DeleteRegular } from "@fluentui/react-icons";
+import { Dropdown, Label, Option } from "@fluentui/react-components";
+import { FluentColumnLayout } from "./widgets/controls/fluentui_customized_components";
+import { TableType } from "../../../core/dataset";
 
 export interface ScaleEditorProps {
-    scale: Specification.Scale;
-    scaleMapping: Specification.ScaleMapping;
     store: AppStore;
-    plotSegment: ObjectClass;
 }
 
 export const ScaleClassList = [
-    "scale.categorical<string,image>",
-    "scale.categorical<string,boolean>",
-    "scale.linear<number,boolean>",
     "scale.categorical<string,color>",
-    "scale.categorical<date,color>"
+    "scale.categorical<string,image>",
+    "scale.categorical<date,color>",
+    "scale.categorical<string,boolean>",
+    "scale.categorical<string,number>",
+    "scale.categorical<string,enum>",
+    "scale.linear<number,number>",
+    "scale.linear<number,color>",
+    "scale.linear<number,boolean>",
 ]
 
 export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
@@ -40,11 +37,63 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
 }) => {
     const chartManager = store.chartManager;
 
-    const [scaleClass, setScaleClass] = React.useState<ObjectClass<Specification.AttributeMap, Specification.AttributeMap>>(null);
+    const [scaleClassName, setScaleClass] = React.useState<string>(null);
 
-    const [scale, setScale] = React.useState<Specification.Scale>(null);
+    const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(null);
 
-    var manager = React.useMemo(() => {
+    const table = React.useMemo(() => {
+        const tableName = store.dataset.tables.find(
+            (t) => t.type === TableType.Main
+        ).name;
+        const table = store.chartManager.dataflow.getTable(
+            tableName
+        );
+
+        return table;
+    }, [store]);
+
+    const values = React.useMemo(() => {
+        if (!table || !domainSourceColumn) {
+            return null;
+        }
+        const values = chartManager.getGroupedExpressionVector(
+            table.name,
+            null, // groupBy, no glyph context
+            `first(${domainSourceColumn})`
+          ) as number[] | string[];
+
+          return values;
+    }, [chartManager, domainSourceColumn, table]);
+
+    const [scale, scaleClass] = React.useMemo(() => {
+        if (!scaleClassName) {
+            return [null, null];
+        }
+        const newScale = chartManager.createObject(
+            scaleClassName
+        ) as Specification.Scale;
+
+        newScale.properties.name = chartManager.findUnusedName("Scale");
+        chartManager.addScale(newScale);
+        const scaleClass = chartManager.getClassById(
+            newScale._id
+        ) as Prototypes.Scales.ScaleClass;
+        if (values) {
+            scaleClass.inferParameters(values, {
+                autoRange: true,
+                newScale: true,
+                reuseRange: false
+            })
+        }
+        chartManager.removeScale(newScale);
+
+        return [newScale, scaleClass];
+    }, [scaleClassName, values, chartManager]);
+
+    const manager = React.useMemo(() => {
+        if (!scaleClass) {
+            return null;
+        }
         const manager = new FluentUIWidgetManager(
             store,
             scaleClass,
@@ -52,73 +101,68 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         );
 
         return manager;
-    }, [scaleClass]);
+    }, [scaleClass, store]);
 
     // todo: create react hook
+    // eslint-disable-next-line powerbi-visuals/insecure-random, @typescript-eslint/no-unused-vars
     const [_, setUpdate] = React.useState(Math.random());
     React.useEffect(() => {
-        var token = store.addListener(AppStore.EVENT_GRAPHICS, () => {
+        const token = store.addListener(AppStore.EVENT_GRAPHICS, () => {
+            // eslint-disable-next-line powerbi-visuals/insecure-random
             setUpdate(Math.random());
         });
 
         return () => {
             token.remove();
         }
-    }, []);
+    }, [setUpdate, store]);
 
     return (
-        <ScaleEditorWrapper className="scale-editor-view">
-            <div className="attribute-editor">
-                <section className="attribute-editor-element">
-                    <div className="header">
-                        <Dropdown
-                            title="scale type"
-                            value={scale.classID}
-                            onOptionSelect={(_, { optionValue: classID }) => {
-                                debugger;
-                                const newScale = chartManager.createObject(
-                                    classID
-                                ) as Specification.Scale;
-
-                                newScale.properties.name = chartManager.findUnusedName("Scale");
-
-                                const scaleClass = chartManager.getClassById(
-                                    newScale._id
-                                ) as Prototypes.Scales.ScaleClass;
-
-                                setScaleClass(scaleClass);
-                                setScale(newScale);
-                            }}
-                        >
-                            {
-                                ScaleClassList.map(className => {
-                                    return (
-                                        <Option text={className} value={className} key={className}>
-                                            {className}
-                                        </Option>);
-                                })
-                            }
-                        </Dropdown>
-                        <EditableTextView
-                            text={scale ? scale.properties.name : "New scale name"}
-                            onEdit={(newText) => {
-                                if (scale) {
-                                    new Actions.SetObjectProperty(
-                                        scale,
-                                        "name",
-                                        null,
-                                        newText,
-                                        true
-                                    ).dispatch(store.dispatcher);
-                                }
-                            }}
-                        />
-                    </div>
-                    {manager.vertical(...scaleClass.getAttributePanelWidgets(manager))}
-                    <div className="action-buttons">
-                    </div>
-                </section>
-            </div>
-        </ScaleEditorWrapper>
+        <FluentColumnLayout>
+            <Label>{strings.scaleEditor.type}</Label>
+            <Dropdown
+                title={strings.scaleEditor.type}
+                value={scale?.classID}
+                onOptionSelect={(_, { optionValue: scaleClassName }) => {
+                    setScaleClass(scaleClassName);
+                }}
+            >
+                {
+                    ScaleClassList.map(className => {
+                        return (
+                            <Option text={className} value={className} key={className}>
+                                {className}
+                            </Option>);
+                    })
+                }
+            </Dropdown>
+            <Label>{strings.scaleEditor.domainSourceColumn}</Label>
+            <Dropdown
+                value={domainSourceColumn}
+                onOptionSelect={(_, { optionValue: columnName }) => setDomainSourceColumn(columnName)}
+            >
+                {table.columns.map(col => {
+                    return (<Option key={col.name} text={col.displayName} value={col.displayName}>
+                        {col.displayName}
+                    </Option>);
+                })}
+            </Dropdown>
+            <Label>{strings.scaleEditor.name}</Label>
+            <EditableTextView
+                text={scale ? scale.properties.name : "New scale name"}
+                onEdit={(newText) => {
+                    if (scale) {
+                        new Actions.SetObjectProperty(
+                            scale,
+                            "name",
+                            null,
+                            newText,
+                            true
+                        ).dispatch(store.dispatcher);
+                    }
+                }}
+            />
+            {scaleClass ? manager.vertical(...scaleClass.getAttributePanelWidgets(manager)) : null}
+        </FluentColumnLayout>
     );
 } 

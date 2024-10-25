@@ -147,6 +147,11 @@ export const strings = {
     deleteChart: "Delete chart",
   },
   scaleEditor: {
+    name: "Scale name",
+    domainSourceColumn: "Domain source",
+    type: "Scale type",
+    createScale: "Create scale",
+    close: "Close",
     add: "Add",
     removeLast: "Remove the last",
     addLegend: "Add Legend",

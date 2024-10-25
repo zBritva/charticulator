@@ -22,6 +22,9 @@ import { Actions, DragData } from "../..";
 import { classNames } from "../../utils";
 import { FunctionCall, Variable } from "../../../core/expression";
 import { ColumnMetadata } from "../../../core/dataset";
+import { Button, Dialog, DialogActions, DialogBody, DialogSurface, DialogTitle } from "@fluentui/react-components";
+import { strings } from "../../../strings";
+import { AdvancedScaleEditor } from "./adv_scale_editor";
 
 export class ScalesPanel extends ContextedComponent<
   {
@@ -29,6 +32,7 @@ export class ScalesPanel extends ContextedComponent<
   },
   {
     isSelected: string;
+    createDialog: boolean;
   }
 > {
   public mappingButton: Element;
@@ -38,6 +42,7 @@ export class ScalesPanel extends ContextedComponent<
     super(props, null);
     this.state = {
       isSelected: "",
+      createDialog: false
     };
   }
 
@@ -199,9 +204,8 @@ export class ScalesPanel extends ContextedComponent<
                   Prototypes.ObjectClasses.GetMetadata(element.classID).iconPath
                 )}
               />
-              <span className="el-text">{`${
-                element.properties.name
-              }.${this.getPropertyDisplayName(key)}`}</span>
+              <span className="el-text">{`${element.properties.name
+                }.${this.getPropertyDisplayName(key)}`}</span>
             </DraggableElement>
           </div>
         );
@@ -327,6 +331,37 @@ export class ScalesPanel extends ContextedComponent<
             return mapToUI(el.scale)(el.glyph, el.mark)(el.property);
           })}
         </ReorderListView>
+        <Button onClick={() => this.setState({ createDialog: true })}>{strings.scaleEditor.createScale}</Button>
+        <Dialog
+          modalType={"non-modal"}
+          open={this.state.createDialog}>
+          <DialogSurface>
+            <DialogTitle>{strings.scaleEditor.createScale}</DialogTitle>
+            <DialogBody>
+              <AdvancedScaleEditor
+                store={this.context.store}
+              />
+              <DialogActions>
+                <Button onClick={() => {
+                  this.setState({
+                    createDialog: false
+                  });
+                }}>
+                  {strings.scaleEditor.close}
+                </Button>
+                <Button
+                  style={{
+                    width: 100
+                  }}
+                  onClick={() => {
+
+                }}>
+                  {strings.scaleEditor.createScale}
+                </Button>
+              </DialogActions>
+            </DialogBody>
+          </DialogSurface>
+        </Dialog>
       </div>
     );
   }
