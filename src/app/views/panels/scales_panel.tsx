@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as R from "../../resources";
 
-import { EventSubscription, Prototypes, Expression } from "../../../core";
+import { EventSubscription, Prototypes, Expression, Specification } from "../../../core";
 import { SVGImageIcon, DraggableElement } from "../../components";
 
 import { AppStore } from "../../stores";
@@ -24,7 +24,7 @@ import { FunctionCall, Variable } from "../../../core/expression";
 import { ColumnMetadata } from "../../../core/dataset";
 import { Button, Dialog, DialogActions, DialogBody, DialogSurface, DialogTitle } from "@fluentui/react-components";
 import { strings } from "../../../strings";
-import { AdvancedScaleEditor } from "./adv_scale_editor";
+import { AdvancedScaleEditor, ScaleEditorProps } from "./adv_scale_editor";
 
 export class ScalesPanel extends ContextedComponent<
   {
@@ -33,6 +33,8 @@ export class ScalesPanel extends ContextedComponent<
   {
     isSelected: string;
     createDialog: boolean;
+    scale: Specification.Scale<Specification.ObjectProperties>,
+    scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>
   }
 > {
   public mappingButton: Element;
@@ -42,7 +44,9 @@ export class ScalesPanel extends ContextedComponent<
     super(props, null);
     this.state = {
       isSelected: "",
-      createDialog: false
+      createDialog: false,
+      scale: null,
+      scaleClass: null
     };
   }
 
@@ -340,6 +344,16 @@ export class ScalesPanel extends ContextedComponent<
             <DialogBody>
               <AdvancedScaleEditor
                 store={this.context.store}
+                onScaleChange={(scale, scaleClass) => {
+                  if (scale != this.state.scale) {
+                    debugger;
+                    // TODO move dialog into AdvancedScaleEditor
+                    this.setState({
+                      scale,
+                      scaleClass
+                    });
+                  }
+                }}
               />
               <DialogActions>
                 <Button onClick={() => {
@@ -354,8 +368,12 @@ export class ScalesPanel extends ContextedComponent<
                     width: 100
                   }}
                   onClick={() => {
-
-                }}>
+                    store.chartManager.addScale(this.state.scale);
+                    store.emit(AppStore.EVENT_GRAPHICS);
+                    this.setState({
+                      createDialog: false
+                    });
+                  }}>
                   {strings.scaleEditor.createScale}
                 </Button>
               </DialogActions>

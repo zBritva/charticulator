@@ -5,19 +5,19 @@
 import * as React from "react";
 
 import { Prototypes, Specification } from "../../../core";
-import { Actions } from "../../actions";
-import { EditableTextView } from "../../components";
+// import { Actions } from "../../actions";
 
 import { AppStore } from "../../stores";
 import { FluentUIWidgetManager } from "./widgets/fluentui_manager";
 import { strings } from "../../../strings";
 // import { AddRegular, DeleteRegular } from "@fluentui/react-icons";
-import { Dropdown, Label, Option } from "@fluentui/react-components";
+import { Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { FluentColumnLayout } from "./widgets/controls/fluentui_customized_components";
 import { TableType } from "../../../core/dataset";
 
 export interface ScaleEditorProps {
     store: AppStore;
+    onScaleChange: (scale: Specification.Scale<Specification.ObjectProperties>, scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>) => void;
 }
 
 export const ScaleClassList = [
@@ -33,7 +33,8 @@ export const ScaleClassList = [
 ]
 
 export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
-    store
+    store,
+    onScaleChange
 }) => {
     const chartManager = store.chartManager;
 
@@ -89,6 +90,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
 
         return [newScale, scaleClass];
     }, [scaleClassName, values, chartManager]);
+    onScaleChange(scale, scaleClass);
 
     const manager = React.useMemo(() => {
         if (!scaleClass) {
@@ -148,17 +150,11 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
                 })}
             </Dropdown>
             <Label>{strings.scaleEditor.name}</Label>
-            <EditableTextView
-                text={scale ? scale.properties.name : "New scale name"}
-                onEdit={(newText) => {
+            <Input
+                value={scale ? scale.properties.name : ""}
+                onChange={(_, { value }) => {
                     if (scale) {
-                        new Actions.SetObjectProperty(
-                            scale,
-                            "name",
-                            null,
-                            newText,
-                            true
-                        ).dispatch(store.dispatcher);
+                        scale.properties.name = value;
                     }
                 }}
             />
