@@ -17,6 +17,8 @@ import { TableType } from "../../../core/dataset";
 
 export interface ScaleEditorProps {
     store: AppStore;
+    // scale for editing
+    scale: Specification.Scale<Specification.ObjectProperties>,
     onScaleChange: (scale: Specification.Scale<Specification.ObjectProperties>, scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>) => void;
 }
 
@@ -34,12 +36,15 @@ export const ScaleClassList = [
 
 export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     store,
+    scale: editing,
     onScaleChange
 }) => {
     const chartManager = store.chartManager;
 
-    const [scaleClassName, setScaleClass] = React.useState<string>(null);
+    const [scaleClassName, setScaleClass] = React.useState<string>(editing?.classID);
 
+    // todo load current column from expression
+    debugger;
     const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(null);
 
     const table = React.useMemo(() => {
@@ -70,12 +75,14 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         if (!scaleClassName) {
             return [null, null];
         }
-        const newScale = chartManager.createObject(
+        const newScale = editing ? editing : chartManager.createObject(
             scaleClassName
         ) as Specification.Scale;
 
-        newScale.properties.name = chartManager.findUnusedName("Scale");
-        chartManager.addScale(newScale);
+        if (!editing) {
+            newScale.properties.name = chartManager.findUnusedName("Scale");
+            chartManager.addScale(newScale);
+        }
         const scaleClass = chartManager.getClassById(
             newScale._id
         ) as Prototypes.Scales.ScaleClass;
@@ -86,10 +93,12 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
                 reuseRange: false
             })
         }
-        chartManager.removeScale(newScale);
+        if (!editing) {
+            chartManager.removeScale(newScale);
+        }
 
         return [newScale, scaleClass];
-    }, [scaleClassName, values, chartManager]);
+    }, [scaleClassName, values, chartManager, editing]);
     onScaleChange(scale, scaleClass);
 
     const manager = React.useMemo(() => {

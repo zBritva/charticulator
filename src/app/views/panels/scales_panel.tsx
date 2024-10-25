@@ -24,7 +24,7 @@ import { FunctionCall, Variable } from "../../../core/expression";
 import { ColumnMetadata } from "../../../core/dataset";
 import { Button, Dialog, DialogActions, DialogBody, DialogSurface, DialogTitle } from "@fluentui/react-components";
 import { strings } from "../../../strings";
-import { AdvancedScaleEditor, ScaleEditorProps } from "./adv_scale_editor";
+import { AdvancedScaleEditor } from "./adv_scale_editor";
 
 export class ScalesPanel extends ContextedComponent<
   {
@@ -35,6 +35,7 @@ export class ScalesPanel extends ContextedComponent<
     createDialog: boolean;
     scale: Specification.Scale<Specification.ObjectProperties>,
     scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>
+    currentScale: Specification.Scale<Specification.ObjectProperties>
   }
 > {
   public mappingButton: Element;
@@ -46,7 +47,8 @@ export class ScalesPanel extends ContextedComponent<
       isSelected: "",
       createDialog: false,
       scale: null,
-      scaleClass: null
+      scaleClass: null,
+      currentScale: null
     };
   }
 
@@ -117,6 +119,12 @@ export class ScalesPanel extends ContextedComponent<
       // eslint-disable-next-line
     ) => (key: string) => {
       if (!element) {
+        const onClick = () => {
+          this.setState({
+            currentScale: scale,
+            createDialog: true
+          })
+        };
         return (
           <div key={scale._id} className="el-object-item">
             <SVGImageIcon
@@ -125,6 +133,15 @@ export class ScalesPanel extends ContextedComponent<
               )}
             />
             <span className="el-text">{scale.properties.name}</span>
+            <div tabIndex={0} onClick={onClick} onKeyDown={(e) => {
+              if (e.key == "Enter") {
+                onClick
+              }
+            }}>
+              <SVGImageIcon
+                url={R.getSVGIcon("Edit")}
+              />
+            </div>
           </div>
         );
       } else {
@@ -301,6 +318,13 @@ export class ScalesPanel extends ContextedComponent<
 
     return (
       <div className="charticulator__object-list-editor charticulator__object-scales">
+        <Button
+          style={{
+            width: '100%'
+          }}
+          onClick={() => this.setState({ createDialog: true })}>
+            {strings.scaleEditor.createScale}
+        </Button>
         <ReorderListView
           restrict={true}
           enabled={true}
@@ -335,7 +359,6 @@ export class ScalesPanel extends ContextedComponent<
             return mapToUI(el.scale)(el.glyph, el.mark)(el.property);
           })}
         </ReorderListView>
-        <Button onClick={() => this.setState({ createDialog: true })}>{strings.scaleEditor.createScale}</Button>
         <Dialog
           modalType={"non-modal"}
           open={this.state.createDialog}>
@@ -344,9 +367,9 @@ export class ScalesPanel extends ContextedComponent<
             <DialogBody>
               <AdvancedScaleEditor
                 store={this.context.store}
+                scale={this.state.currentScale}
                 onScaleChange={(scale, scaleClass) => {
                   if (scale != this.state.scale) {
-                    debugger;
                     // TODO move dialog into AdvancedScaleEditor
                     this.setState({
                       scale,
@@ -356,7 +379,11 @@ export class ScalesPanel extends ContextedComponent<
                 }}
               />
               <DialogActions>
-                <Button onClick={() => {
+                <Button
+                  style={{
+                    width: 150
+                  }}
+                  onClick={() => {
                   this.setState({
                     createDialog: false
                   });
@@ -365,16 +392,21 @@ export class ScalesPanel extends ContextedComponent<
                 </Button>
                 <Button
                   style={{
-                    width: 100
+                    width: 150
                   }}
+                  appearance="primary"
                   onClick={() => {
-                    store.chartManager.addScale(this.state.scale);
+                    if (!this.state.currentScale) {
+                      store.chartManager.addScale(this.state.scale);
+                    }
+                    store.solveConstraintsAndUpdateGraphics();
                     store.emit(AppStore.EVENT_GRAPHICS);
                     this.setState({
-                      createDialog: false
+                      createDialog: false,
+                      currentScale: null
                     });
                   }}>
-                  {strings.scaleEditor.createScale}
+                  {this.state.currentScale ? strings.scaleEditor.save : strings.scaleEditor.createScale}
                 </Button>
               </DialogActions>
             </DialogBody>

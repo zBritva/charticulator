@@ -148,6 +148,7 @@ export const strings = {
   },
   scaleEditor: {
     name: "Scale name",
+    save: "Save scale",
     domainSourceColumn: "Domain source",
     type: "Scale type",
     createScale: "Create scale",
