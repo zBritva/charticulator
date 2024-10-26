@@ -428,10 +428,18 @@ export class ScalesPanel extends ContextedComponent<
                           return;
                         }
                         const valueType = column.type;
+
+                        let expression = '';
+                        if (this.state.domainSourceColumn.split(" ").length > 1) {
+                            expression = "`" + this.state.domainSourceColumn + "`";
+                        } else {
+                            expression = `first(${this.state.domainSourceColumn})`;
+                        }
+
                         property.mark.mappings[property.property] = {
                           type: MappingType.scale,
                           table: this.state.domainSourceTable,
-                          expression: `first(${this.state.domainSourceColumn})`,
+                          expression: expression,
                           valueType: valueType,
                           scale: this.state.scale._id,
                           attribute: property.property,

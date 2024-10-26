@@ -82,10 +82,17 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         if (!table || !domainSourceColumn) {
             return null;
         }
+        let expression = '';
+        if (domainSourceColumn.split(" ").length > 1) {
+            expression = "`" + domainSourceColumn + "`";
+        } else {
+            expression = `first(${domainSourceColumn})`;
+        }
+        
         const values = chartManager.getGroupedExpressionVector(
             table.name,
             null, // groupBy, no glyph context
-            `first(${domainSourceColumn})`
+            expression
           ) as number[] | string[];
 
           return values;
