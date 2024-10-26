@@ -94,8 +94,8 @@ export const strings = {
     gap: "Gap",
     element: "Element",
     elementAttribute: "Element attribute",
-    target: "Element",
-    targetAttribute: "Element attribute",
+    target: "Target",
+    targetAttribute: "Target attribute",
     remove: "Remove",
     save: "Save"
   },
