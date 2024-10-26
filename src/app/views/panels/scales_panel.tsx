@@ -366,6 +366,7 @@ export class ScalesPanel extends ContextedComponent<
           })}
         </ReorderListView>
         <Dialog
+          onOpenChange={(e, { open }) => this.setState({createDialog: open})}
           modalType={"non-modal"}
           open={this.state.createDialog}>
           <DialogSurface>
