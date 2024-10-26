@@ -119,7 +119,7 @@ export class HelpButton extends React.Component<
                       <a
                         target="_blank"
                         href="https://ilfat-galiev.im/pages/about"
-                        onClick={this.props.handlers.onAboutClick}
+                        onClick={this.props.handlers?.onAboutClick}
                       >
                         {strings.help.aboutMeUs}
                       </a>
