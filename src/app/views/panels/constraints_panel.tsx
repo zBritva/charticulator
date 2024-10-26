@@ -252,6 +252,7 @@ const ConstraintView: React.FC<{
                 onOptionSelect={(_, { optionValue: value }) => {
                     const newConstraint = { ...constraint };
                     newConstraint.parentObjectID = value;
+                    newConstraint.parentObjectType = parents.find(p => p._id == value).classID === 'chart.rectangle' ? 'chart' : 'glyph';
                     onConstraintChange(newConstraint);
                 }}
             >
