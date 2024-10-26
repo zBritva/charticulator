@@ -23,6 +23,7 @@ export interface ScaleEditorProps {
     onScaleChange: (
         scale: Specification.Scale<Specification.ObjectProperties>,
         scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>,
+        domainSourceTable: string,
         domainSourceColumn: string,
         table: Prototypes.Dataflow.DataflowTable
     ) => void;
@@ -50,18 +51,32 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     const [scaleClassName, setScaleClass] = React.useState<string>(editing?.classID);
 
     // todo load current column from expression
+    const [domainSourceTable, setDomainSourceTable] = React.useState<string>(null);
     const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(null);
 
     const table = React.useMemo(() => {
-        const tableName = store.dataset.tables.find(
-            (t) => t.type === TableType.Main
-        ).name;
-        const table = store.chartManager.dataflow.getTable(
-            tableName
-        );
-
-        return table;
-    }, [store]);
+        if (!domainSourceTable && store.dataset.tables.length > 1) {
+            return null;
+        }
+        if (!domainSourceTable && store.dataset.tables.length == 1) {
+            const tableName = store.dataset.tables[0].name;
+            const table = store.chartManager.dataflow.getTable(
+                tableName
+            );
+            setDomainSourceTable(tableName);
+    
+            return table;
+        } else {
+            const tableName = store.dataset.tables.find(
+                (t) => t.displayName == domainSourceTable
+            ).name;
+            const table = store.chartManager.dataflow.getTable(
+                tableName
+            );
+    
+            return table;
+        }
+    }, [store, domainSourceTable]);
 
     const values = React.useMemo(() => {
         if (!table || !domainSourceColumn) {
@@ -104,7 +119,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
 
         return [newScale, scaleClass];
     }, [scaleClassName, values, chartManager, editing]);
-    onScaleChange(scale, scaleClass, domainSourceColumn, table);
+    onScaleChange(scale, scaleClass, domainSourceTable, domainSourceColumn, table);
 
     const manager = React.useMemo(() => {
         if (!scaleClass) {
@@ -160,12 +175,23 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
                     })
                 }
             </Dropdown>
+            <Label>{strings.scaleEditor.domainSourceTable}</Label>
+            <Dropdown
+                value={domainSourceTable}
+                onOptionSelect={(_, { optionValue: tableName }) => setDomainSourceTable(tableName)}
+            >
+                {store.dataset.tables.map(table => {
+                    return (<Option key={table.name} text={table.displayName} value={table.displayName}>
+                        {table.displayName}
+                    </Option>);
+                })}
+            </Dropdown>
             <Label>{strings.scaleEditor.domainSourceColumn}</Label>
             <Dropdown
                 value={domainSourceColumn}
                 onOptionSelect={(_, { optionValue: columnName }) => setDomainSourceColumn(columnName)}
             >
-                {table.columns.map(col => {
+                {table?.columns.map(col => {
                     return (<Option key={col.name} text={col.displayName} value={col.displayName}>
                         {col.displayName}
                     </Option>);

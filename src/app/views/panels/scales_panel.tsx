@@ -35,6 +35,7 @@ export class ScalesPanel extends ContextedComponent<
     createDialog: boolean;
     scale: Specification.Scale<Specification.ObjectProperties>,
     scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>
+    domainSourceTable: string;
     domainSourceColumn: string;
     currentScale: Specification.Scale<Specification.ObjectProperties>
     table: Prototypes.Dataflow.DataflowTable
@@ -52,6 +53,7 @@ export class ScalesPanel extends ContextedComponent<
       scaleClass: null,
       currentScale: null,
       domainSourceColumn: null,
+      domainSourceTable: null,
       table: null
     };
   }
@@ -372,7 +374,7 @@ export class ScalesPanel extends ContextedComponent<
               <AdvancedScaleEditor
                 store={this.context.store}
                 scale={this.state.currentScale}
-                onScaleChange={(scale, scaleClass, domainSourceColumn, table) => {
+                onScaleChange={(scale, scaleClass, domainSourceTable, domainSourceColumn, table) => {
                   const newState: any = {};
                   if (scale != this.state.scale) {
                     // TODO move dialog into AdvancedScaleEditor
@@ -380,6 +382,9 @@ export class ScalesPanel extends ContextedComponent<
                   }
                   if (scaleClass != this.state.scaleClass) {
                     newState.scaleClass = scaleClass;
+                  }
+                  if (domainSourceTable != this.state.domainSourceTable) {
+                    newState.domainSourceTable = domainSourceTable;
                   }
                   if (domainSourceColumn != this.state.domainSourceColumn) {
                     newState.domainSourceColumn = domainSourceColumn;
@@ -416,11 +421,8 @@ export class ScalesPanel extends ContextedComponent<
                     if (!this.state.currentScale) {
                       store.chartManager.addScale(this.state.scale);
                     } else {
-                      // TODO revisit marks to update expression
-                      console.log('propertyList', propertyList);
                       const property = propertyList.find(p => p.scale._id == this.state.currentScale._id && !!p.property && !!p.mark);
                       if (property) {
-                        debugger;
                         const column = this.state.table.columns.find(col => col.displayName == this.state.domainSourceColumn);
                         if (!column) {
                           return;
@@ -428,7 +430,7 @@ export class ScalesPanel extends ContextedComponent<
                         const valueType = column.type;
                         property.mark.mappings[property.property] = {
                           type: MappingType.scale,
-                          table: this.state.table.name,
+                          table: this.state.domainSourceTable,
                           expression: `first(${this.state.domainSourceColumn})`,
                           valueType: valueType,
                           scale: this.state.scale._id,
