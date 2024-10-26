@@ -488,9 +488,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
 
     this.chartManager.chart.constraints = [];
 
-    const glyphs = this.chartManager.chart.glyphs.filter(
-      (glyph) => constraints.find((constraint) => constraint.parentObjectID === glyph._id)
-    );
+    const glyphs = this.chartManager.chart.glyphs;
 
     glyphs.forEach((glyph) => {
       glyph.constraints = [];
