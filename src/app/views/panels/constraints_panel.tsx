@@ -32,20 +32,23 @@ export const ConstraintsPanel: React.FC<{
     // eslint-disable-next-line powerbi-visuals/insecure-random
     const [_, forceUpdate] = React.useState(Math.random());
 
+    const chart = store.chartManager.chart;
+    const glyphs = store.chartManager.chart.glyphs;
+
     const updateConstraintsList = React.useCallback(() => {
         // eslint-disable-next-line powerbi-visuals/insecure-random
-        const glyphConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
+        const glyphConstraints: Specification.ObjectConstraint[] = glyphs.flatMap((glyph) => glyph.constraints.map((constraint) => ({
             ...constraint,
             parentObjectID: glyph._id,
             parentObjectType: "glyph"
         })));
-        const generalConstraints: Specification.ObjectConstraint[] = store.chartManager.chart.constraints.map((constraint) => ({
+        const generalConstraints: Specification.ObjectConstraint[] = chart.constraints.map((constraint) => ({
             ...constraint,
-            parentObjectID: store.chartManager.chart._id,
+            parentObjectID: chart._id,
             parentObjectType: "chart"
         }));
         setConstraints([].concat(glyphConstraints, generalConstraints));
-    }, [setConstraints]);
+    }, [setConstraints, chart, glyphs]);
 
     React.useEffect(() => {
         updateConstraintsList();
@@ -64,7 +67,7 @@ export const ConstraintsPanel: React.FC<{
         return () => {
             tokens.current.forEach((token) => token.remove());
         };
-    }, [store, setConstraints]);
+    }, [store, setConstraints, updateConstraintsList]);
 
     const getGlyphState = React.useCallback((glyph: Specification.Glyph) => {
         const chartStore = store;
@@ -206,6 +209,7 @@ export const ConstraintsPanel: React.FC<{
                             setConstraints(newConstraints);
                         }}
                         onRemove={() => {
+                            debugger;
                             const newConstraints = [...constraints];
                             const index = newConstraints.findIndex(c => c._id === constraint._id);
                             newConstraints.splice(index, 1);
@@ -252,6 +256,7 @@ const ConstraintView: React.FC<{
                 onOptionSelect={(_, { optionValue: value }) => {
                     const newConstraint = { ...constraint };
                     newConstraint.parentObjectID = value;
+                    newConstraint.parentObjectType = parents.find(p => p._id == value).classID === 'chart.rectangle' ? 'chart' : 'glyph';
                     onConstraintChange(newConstraint);
                 }}
             >
