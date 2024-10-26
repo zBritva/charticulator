@@ -14,12 +14,18 @@ import { strings } from "../../../strings";
 import { Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { FluentColumnLayout } from "./widgets/controls/fluentui_customized_components";
 import { TableType } from "../../../core/dataset";
+import { Actions } from "../../actions";
 
 export interface ScaleEditorProps {
     store: AppStore;
     // scale for editing
     scale: Specification.Scale<Specification.ObjectProperties>,
-    onScaleChange: (scale: Specification.Scale<Specification.ObjectProperties>, scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>) => void;
+    onScaleChange: (
+        scale: Specification.Scale<Specification.ObjectProperties>,
+        scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>,
+        domainSourceColumn: string,
+        table: Prototypes.Dataflow.DataflowTable
+    ) => void;
 }
 
 export const ScaleClassList = [
@@ -44,7 +50,6 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     const [scaleClassName, setScaleClass] = React.useState<string>(editing?.classID);
 
     // todo load current column from expression
-    debugger;
     const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(null);
 
     const table = React.useMemo(() => {
@@ -99,7 +104,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
 
         return [newScale, scaleClass];
     }, [scaleClassName, values, chartManager, editing]);
-    onScaleChange(scale, scaleClass);
+    onScaleChange(scale, scaleClass, domainSourceColumn, table);
 
     const manager = React.useMemo(() => {
         if (!scaleClass) {
@@ -110,9 +115,17 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             scaleClass,
             true
         );
+        manager.onEditMappingHandler = (
+            attribute: string,
+            mapping: Specification.Mapping
+          ) => {
+            new Actions.SetScaleAttribute(scale, attribute, mapping).dispatch(
+              store.dispatcher
+            );
+          };
 
         return manager;
-    }, [scaleClass, store]);
+    }, [scaleClass, store, scale]);
 
     // todo: create react hook
     // eslint-disable-next-line powerbi-visuals/insecure-random, @typescript-eslint/no-unused-vars

@@ -35,7 +35,9 @@ export class ScalesPanel extends ContextedComponent<
     createDialog: boolean;
     scale: Specification.Scale<Specification.ObjectProperties>,
     scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>
+    domainSourceColumn: string;
     currentScale: Specification.Scale<Specification.ObjectProperties>
+    table: Prototypes.Dataflow.DataflowTable
   }
 > {
   public mappingButton: Element;
@@ -48,7 +50,9 @@ export class ScalesPanel extends ContextedComponent<
       createDialog: false,
       scale: null,
       scaleClass: null,
-      currentScale: null
+      currentScale: null,
+      domainSourceColumn: null,
+      table: null
     };
   }
 
@@ -368,12 +372,25 @@ export class ScalesPanel extends ContextedComponent<
               <AdvancedScaleEditor
                 store={this.context.store}
                 scale={this.state.currentScale}
-                onScaleChange={(scale, scaleClass) => {
+                onScaleChange={(scale, scaleClass, domainSourceColumn, table) => {
+                  const newState: any = {};
                   if (scale != this.state.scale) {
                     // TODO move dialog into AdvancedScaleEditor
+                    newState.scale = scale;
+                  }
+                  if (scaleClass != this.state.scaleClass) {
+                    newState.scaleClass = scaleClass;
+                  }
+                  if (domainSourceColumn != this.state.domainSourceColumn) {
+                    newState.domainSourceColumn = domainSourceColumn;
+                  }
+                  if (table != this.state.table) {
+                    newState.table = table;
+                  }
+                  
+                  if (newState.scale || newState.scaleClass || newState.domainSourceColumn || newState.table) {
                     this.setState({
-                      scale,
-                      scaleClass
+                      ...newState
                     });
                   }
                 }}
@@ -398,13 +415,34 @@ export class ScalesPanel extends ContextedComponent<
                   onClick={() => {
                     if (!this.state.currentScale) {
                       store.chartManager.addScale(this.state.scale);
+                    } else {
+                      // TODO revisit marks to update expression
+                      console.log('propertyList', propertyList);
+                      const property = propertyList.find(p => p.scale._id == this.state.currentScale._id && !!p.property && !!p.mark);
+                      if (property) {
+                        debugger;
+                        const column = this.state.table.columns.find(col => col.displayName == this.state.domainSourceColumn);
+                        if (!column) {
+                          return;
+                        }
+                        const valueType = column.type;
+                        property.mark.mappings[property.property] = {
+                          type: MappingType.scale,
+                          table: this.state.table.name,
+                          expression: `first(${this.state.domainSourceColumn})`,
+                          valueType: valueType,
+                          scale: this.state.scale._id,
+                          attribute: property.property,
+                          valueIndex: 0,
+                        } as Specification.ScaleMapping;
+                      }
                     }
-                    store.solveConstraintsAndUpdateGraphics();
-                    store.emit(AppStore.EVENT_GRAPHICS);
                     this.setState({
                       createDialog: false,
                       currentScale: null
                     });
+                    store.solveConstraintsAndUpdateGraphics();
+                    store.emit(AppStore.EVENT_GRAPHICS);
                   }}>
                   {this.state.currentScale ? strings.scaleEditor.save : strings.scaleEditor.createScale}
                 </Button>
