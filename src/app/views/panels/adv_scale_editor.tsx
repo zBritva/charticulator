@@ -167,6 +167,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         <FluentColumnLayout>
             <Label>{strings.scaleEditor.type}</Label>
             <Dropdown
+                disabled={!!editing}
                 title={strings.scaleEditor.type}
                 value={scale?.classID}
                 onOptionSelect={(_, { optionValue: scaleClassName }) => {
