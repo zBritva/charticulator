@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as R from "../../resources";
 
-import { EventSubscription, Prototypes, Expression } from "../../../core";
+import { EventSubscription, Prototypes, Expression, Specification } from "../../../core";
 import { SVGImageIcon, DraggableElement } from "../../components";
 
 import { AppStore } from "../../stores";
@@ -22,6 +22,9 @@ import { Actions, DragData } from "../..";
 import { classNames } from "../../utils";
 import { FunctionCall, Variable } from "../../../core/expression";
 import { ColumnMetadata } from "../../../core/dataset";
+import { Button, Dialog, DialogActions, DialogBody, DialogSurface, DialogTitle } from "@fluentui/react-components";
+import { strings } from "../../../strings";
+import { AdvancedScaleEditor } from "./adv_scale_editor";
 
 export class ScalesPanel extends ContextedComponent<
   {
@@ -29,6 +32,13 @@ export class ScalesPanel extends ContextedComponent<
   },
   {
     isSelected: string;
+    createDialog: boolean;
+    scale: Specification.Scale<Specification.ObjectProperties>,
+    scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>
+    domainSourceTable: string;
+    domainSourceColumn: string;
+    currentScale: Specification.Scale<Specification.ObjectProperties>
+    table: Prototypes.Dataflow.DataflowTable
   }
 > {
   public mappingButton: Element;
@@ -38,6 +48,13 @@ export class ScalesPanel extends ContextedComponent<
     super(props, null);
     this.state = {
       isSelected: "",
+      createDialog: false,
+      scale: null,
+      scaleClass: null,
+      currentScale: null,
+      domainSourceColumn: null,
+      domainSourceTable: null,
+      table: null
     };
   }
 
@@ -108,6 +125,12 @@ export class ScalesPanel extends ContextedComponent<
       // eslint-disable-next-line
     ) => (key: string) => {
       if (!element) {
+        const onClick = () => {
+          this.setState({
+            currentScale: scale,
+            createDialog: true
+          })
+        };
         return (
           <div key={scale._id} className="el-object-item">
             <SVGImageIcon
@@ -116,6 +139,15 @@ export class ScalesPanel extends ContextedComponent<
               )}
             />
             <span className="el-text">{scale.properties.name}</span>
+            <div tabIndex={0} onClick={onClick} onKeyDown={(e) => {
+              if (e.key == "Enter") {
+                onClick
+              }
+            }}>
+              <SVGImageIcon
+                url={R.getSVGIcon("Edit")}
+              />
+            </div>
           </div>
         );
       } else {
@@ -199,9 +231,8 @@ export class ScalesPanel extends ContextedComponent<
                   Prototypes.ObjectClasses.GetMetadata(element.classID).iconPath
                 )}
               />
-              <span className="el-text">{`${
-                element.properties.name
-              }.${this.getPropertyDisplayName(key)}`}</span>
+              <span className="el-text">{`${element.properties.name
+                }.${this.getPropertyDisplayName(key)}`}</span>
             </DraggableElement>
           </div>
         );
@@ -293,6 +324,13 @@ export class ScalesPanel extends ContextedComponent<
 
     return (
       <div className="charticulator__object-list-editor charticulator__object-scales">
+        <Button
+          style={{
+            width: '100%'
+          }}
+          onClick={() => this.setState({ createDialog: true })}>
+            {strings.scaleEditor.createScale}
+        </Button>
         <ReorderListView
           restrict={true}
           enabled={true}
@@ -327,6 +365,102 @@ export class ScalesPanel extends ContextedComponent<
             return mapToUI(el.scale)(el.glyph, el.mark)(el.property);
           })}
         </ReorderListView>
+        <Dialog
+          onOpenChange={(e, { open }) => this.setState({createDialog: open})}
+          modalType={"non-modal"}
+          open={this.state.createDialog}>
+          <DialogSurface>
+            <DialogTitle>{strings.scaleEditor.createScale}</DialogTitle>
+            <DialogBody>
+              <AdvancedScaleEditor
+                store={this.context.store}
+                scale={this.state.currentScale}
+                onScaleChange={(scale, scaleClass, domainSourceTable, domainSourceColumn, table) => {
+                  const newState: any = {};
+                  if (scale != this.state.scale) {
+                    // TODO move dialog into AdvancedScaleEditor
+                    newState.scale = scale;
+                  }
+                  if (scaleClass != this.state.scaleClass) {
+                    newState.scaleClass = scaleClass;
+                  }
+                  if (domainSourceTable != this.state.domainSourceTable) {
+                    newState.domainSourceTable = domainSourceTable;
+                  }
+                  if (domainSourceColumn != this.state.domainSourceColumn) {
+                    newState.domainSourceColumn = domainSourceColumn;
+                  }
+                  if (table != this.state.table) {
+                    newState.table = table;
+                  }
+                  
+                  if (newState.scale || newState.scaleClass || newState.domainSourceColumn || newState.table) {
+                    this.setState({
+                      ...newState
+                    });
+                  }
+                }}
+              />
+              <DialogActions>
+                <Button
+                  style={{
+                    width: 150
+                  }}
+                  onClick={() => {
+                  this.setState({
+                    createDialog: false
+                  });
+                }}>
+                  {strings.scaleEditor.close}
+                </Button>
+                <Button
+                  style={{
+                    width: 150
+                  }}
+                  appearance="primary"
+                  onClick={() => {
+                    if (!this.state.currentScale) {
+                      store.chartManager.addScale(this.state.scale);
+                    } else {
+                      const property = propertyList.find(p => p.scale._id == this.state.currentScale._id && !!p.property && !!p.mark);
+                      if (property) {
+                        const column = this.state.table.columns.find(col => col.displayName == this.state.domainSourceColumn);
+                        if (!column) {
+                          return;
+                        }
+                        const valueType = column.type;
+
+                        let expression = '';
+                        if (this.state.domainSourceColumn.split(" ").length > 1) {
+                            expression = "`" + this.state.domainSourceColumn + "`";
+                        } else {
+                            expression = `first(${this.state.domainSourceColumn})`;
+                        }
+
+                        property.mark.mappings[property.property] = {
+                          type: MappingType.scale,
+                          table: this.state.domainSourceTable,
+                          expression: expression,
+                          valueType: valueType,
+                          scale: this.state.scale._id,
+                          attribute: property.property,
+                          valueIndex: 0,
+                        } as Specification.ScaleMapping;
+                      }
+                    }
+                    this.setState({
+                      createDialog: false,
+                      currentScale: null
+                    });
+                    store.solveConstraintsAndUpdateGraphics();
+                    store.emit(AppStore.EVENT_GRAPHICS);
+                  }}>
+                  {this.state.currentScale ? strings.scaleEditor.save : strings.scaleEditor.createScale}
+                </Button>
+              </DialogActions>
+            </DialogBody>
+          </DialogSurface>
+        </Dialog>
       </div>
     );
   }
