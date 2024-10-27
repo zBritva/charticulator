@@ -245,6 +245,7 @@ export interface InputExpressionOptions extends SearchSection {
     property?: string;
     defineCategories?: boolean;
   };
+  key?: string;
 }
 
 export interface InputFormatOptions extends SearchSection {
