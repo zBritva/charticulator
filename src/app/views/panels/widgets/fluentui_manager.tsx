@@ -1111,6 +1111,31 @@ export class FluentUIWidgetManager
     );
   }
 
+  public propertyEditor(
+    property: Prototypes.Controls.Property,
+    valueGetter: (editingProperty: Specification.AttributeValue) => Specification.AttributeValue,
+    icon?: string,
+    text?: string
+  ) {
+    if (!this.shouldDrawComponent([text])) {
+      return;
+    }
+    return (
+      <Button
+        key={this.getKeyFromProperty(property)}
+        icon={<SVGImageIcon url={R.getSVGIcon(icon)} />}
+        title={text}
+        onClick={() => {
+          let object = this.getPropertyValue(property);
+          object = valueGetter(object);
+          this.emitSetProperty(property, object);
+        }}
+      >
+        {text}
+      </Button>
+    );
+  }
+
   public setButton(
     property: Prototypes.Controls.Property,
     value: Specification.AttributeValue,

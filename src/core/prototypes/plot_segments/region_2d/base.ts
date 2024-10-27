@@ -32,6 +32,10 @@ import {
   AlignTopRegular,
 } from "@fluentui/react-icons";
 import React from "react";
+import { DataAxisExpression } from "../../marks/data_axis.attrs";
+
+import { group } from "d3-array";
+import { precedences } from "../../../../core/expression/intrinsics";
 
 export enum Region2DSublayoutType {
   Overlap = "overlap",
@@ -40,6 +44,7 @@ export enum Region2DSublayoutType {
   Grid = "grid",
   Packing = "packing",
   Jitter = "jitter",
+  Tree = "tree"
 }
 
 export enum SublayoutAlignment {
@@ -98,6 +103,11 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     vertical: boolean;
     horizontal: boolean;
   };
+  tree: {
+    gap: number;
+    dataExpressions: DataAxisExpression[];
+    measureExpression: DataAxisExpression;
+  }
 }
 
 export interface Region2DAttributes extends Specification.AttributeMap {
@@ -161,6 +171,7 @@ export interface Region2DConfigurationTerminology {
   packing: string;
   overlap: string;
   jitter: string;
+  tree: string;
 }
 
 export interface Region2DConfigurationIcons {
@@ -175,6 +186,7 @@ export interface Region2DConfigurationIcons {
   gridIcon: string | React.ReactNode;
   packingIcon: string | React.ReactNode;
   jitterIcon: string | React.ReactNode;
+  treeIcon: string | React.ReactNode;
   overlapIcon: string | React.ReactNode;
 }
 
@@ -287,7 +299,7 @@ export class Region2DConstraintBuilder {
     public solver?: ConstraintSolver,
     public solverContext?: BuildConstraintsContext,
     public chartStateManager?: ChartStateManager
-  ) {}
+  ) { }
 
   public static defaultJitterPackingRadius = 5;
 
@@ -509,7 +521,7 @@ export class Region2DConstraintBuilder {
         solver.addLinear(
           ConstraintStrength.HARD,
           (data.categories.length - i - 0.5) * props.marginY1 -
-            (i + 0.5) * props.marginY2,
+          (i + 0.5) * props.marginY2,
           [
             [i + 0.5, y2],
             [data.categories.length - i - 0.5, y1],
@@ -566,7 +578,7 @@ export class Region2DConstraintBuilder {
         solver.addLinear(
           ConstraintStrength.HARD,
           (data.categories.length - i - 0.5) * props.marginX1 -
-            (i + 0.5) * props.marginX2,
+          (i + 0.5) * props.marginX2,
           [
             [i + 0.5, x2],
             [data.categories.length - i - 0.5, x1],
@@ -1261,6 +1273,10 @@ export class Region2DConstraintBuilder {
         // Jitter layout
         if (props.sublayout.type == Region2DSublayoutType.Jitter) {
           this.sublayoutJitter(groups);
+        }
+        // Tree layout
+        if (props.sublayout.type == Region2DSublayoutType.Tree) {
+          this.sublayoutTree(groups);
         }
       }
     }
@@ -2031,11 +2047,11 @@ export class Region2DConstraintBuilder {
             boxed:
               packingProps.boxedX || packingProps.boxedY
                 ? {
-                    x1: packingProps.boxedX ? solver.getValue(group.x1) : null,
-                    x2: packingProps.boxedX ? solver.getValue(group.x2) : null,
-                    y1: packingProps.boxedY ? solver.getValue(group.y1) : null,
-                    y2: packingProps.boxedY ? solver.getValue(group.y2) : null,
-                  }
+                  x1: packingProps.boxedX ? solver.getValue(group.x1) : null,
+                  x2: packingProps.boxedX ? solver.getValue(group.x2) : null,
+                  y1: packingProps.boxedY ? solver.getValue(group.y1) : null,
+                  y2: packingProps.boxedY ? solver.getValue(group.y2) : null,
+                }
                 : null,
           }
         )
@@ -2089,9 +2105,70 @@ export class Region2DConstraintBuilder {
           jitterProps
             ? jitterProps
             : {
-                horizontal: true,
-                vertical: true,
-              }
+              horizontal: true,
+              vertical: true,
+            }
+        )
+      );
+    });
+  }
+
+  public sublayoutTree(groups: SublayoutGroup[]) {
+    const solver = this.solver;
+    const state = this.plotSegment.state;
+    const treeProps = this.plotSegment.object.properties.sublayout.tree;
+    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table)
+
+    const dataExpressions = treeProps.dataExpressions;
+
+    const columns = [];
+
+    dataExpressions.forEach(expression => {
+      const parsed = Expression.parse(expression.expression) as Expression.FunctionCall;
+      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+      columns.push(column);
+    });
+
+    const projection = table.rows.map(row => {
+      const projection = {
+        _id: row._id
+      }
+
+      columns.forEach(col => {
+        projection[col] = row[col];
+      })
+
+      return projection;
+    });
+
+    const nestedData = group(projection, ...columns.map(c => {
+      return d => d[c]
+    }));
+    console.log('nestedData', nestedData);
+
+    groups.forEach((group) => {
+      const glyphStates = group.group.map((index) => state.glyphs[index]);
+      const { x1, y1, x2, y2 } = group;
+
+      const points = glyphStates.map((state) => {
+        return <[Variable, Variable, Variable, Variable, Variable, Variable]>[
+          solver.attr(state.attributes, "x"),
+          solver.attr(state.attributes, "y"),
+          solver.attr(state.attributes, "x1"),
+          solver.attr(state.attributes, "y1"),
+          solver.attr(state.attributes, "height"),
+          solver.attr(state.attributes, "width"),
+        ];
+      });
+      solver.addPlugin(
+        new ConstraintPlugins.TreePlugin(
+          solver,
+          x1,
+          y1,
+          x2,
+          y2,
+          points,
+          treeProps
         )
       );
     });
@@ -2463,6 +2540,11 @@ export class Region2DConstraintBuilder {
       label: terminology.jitter,
       icon: icons.jitterIcon,
     };
+    const treeOption = {
+      value: Region2DSublayoutType.Tree,
+      label: terminology.tree,
+      icon: icons.treeIcon,
+    };
     const props = this.plotSegment.object.properties;
     const xMode = props.xData ? props.xData.type : "null";
     const yMode = props.yData ? props.yData.type : "null";
@@ -2477,9 +2559,10 @@ export class Region2DConstraintBuilder {
         packingOption,
         jitterOption,
         overlapOption,
+        treeOption,
       ];
     }
-    return [packingOption, jitterOption, overlapOption];
+    return [packingOption, jitterOption, overlapOption, treeOption];
   }
 
   public isSublayoutApplicable() {
@@ -2828,6 +2911,100 @@ export class Region2DConstraintBuilder {
                 ignoreSearch: true,
               }
             ),
+          ]
+        )
+      );
+    }
+    if (type == Region2DSublayoutType.Tree) {
+      extra.push(
+        m.searchWrapper(
+          {
+            searchPattern: [
+              strings.objects.plotSegment.gap,
+              strings.objects.plotSegment.subLayout,
+            ],
+          },
+          [
+            m.inputNumber(
+              { property: "sublayout", field: ["tree", "gap"] },
+              {
+                minimum: 0.1,
+                maximum: 1,
+                step: 0.1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.gap,
+                ignoreSearch: true,
+              }
+            ),
+            m.vertical([
+              m.label(strings.objects.axes.measureExpressions, {
+                ignoreSearch: true,
+              }),
+              m.inputExpression(
+                {
+                  property: "sublayout",
+                  field: ["tree", "measureExpressions"],
+                },
+                {
+                  table: this.plotSegment.object.table,
+                  // dropzone: {
+                  //   type: 'axis-data-binding',
+                  //   property: 'measureExpressions',
+                  //   prompt: "Data for tree group values"
+                  // },
+                }
+              )
+            ]),
+            m.label("", {
+              ignoreSearch: true,
+            }),
+            m.propertyEditor({
+              property: "sublayout",
+              field: ["tree", "dataExpressions"],
+            }, (editingProperty) => {
+              const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
+              const column = table.columns[0];
+              (editingProperty as DataAxisExpression[]).push(<DataAxisExpression>{
+                expression: `first(${column.name})`,
+              });
+              return editingProperty;
+            }, "Add", "Add grouping expression"),
+            m.vertical([
+              m.label(strings.objects.axes.dataExpressions, {
+                ignoreSearch: true,
+              }),
+              m.arrayWidget(
+                { property: "sublayout", field: ["tree", "dataExpressions"] },
+                (item, index) => {
+                  const expressionInput = m.inputExpression(
+                    {
+                      property: "sublayout",
+                      field:
+                        item.field instanceof Array
+                          ? [...item.field, "expression"]
+                          : [item.field, "expression"],
+                    },
+                    {
+                      // dropzone: {
+                      //   type: 'axis-data-binding',
+                      //   property: 'expression',
+                      //   prompt: "Data for tree grouping"
+                      // },
+                      table: this.plotSegment.object.table
+                    }
+                  );
+                  return React.createElement(
+                    "Fragment",
+                    { key: index },
+                    expressionInput
+                  );
+                },
+                {
+                  allowDelete: true,
+                  allowReorder: true,
+                }
+              )
+            ]),
           ]
         )
       );

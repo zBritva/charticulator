@@ -86,6 +86,7 @@ const icons: Region2DConfigurationIcons = {
   gridIcon: "GridViewSmall",
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",
+  treeIcon: "sublayout/tree",
   overlapIcon: "Stack",
 };
 
@@ -144,6 +145,11 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         gravityY: 0.1,
         boxedX: null,
         boxedY: null,
+      },
+      tree: {
+        gap: 0.1,
+        dataExpressions: [],
+        measureExpression: null
       },
       orderReversed: null,
     },
@@ -285,7 +291,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
   public getAttributePanelWidgets(
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
-    const fluentUIManager = manager as FluentUIWidgetManager;
+    const fluentUIManager = (manager as unknown) as FluentUIWidgetManager;
     fluentUIManager.eventManager.subscribe(EventType.UPDATE_FIELD, {
       update: (property: Controls.Property | Controls.Property[]) => {
         if (

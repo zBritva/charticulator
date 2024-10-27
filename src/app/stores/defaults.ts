@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+import { DataAxisExpression } from "src/core/prototypes/marks/data_axis.attrs";
 import { Dataset, Specification, uniqueID } from "../../core";
 import {
   GridDirection,
@@ -100,6 +101,15 @@ export function createDefaultPlotSegment(
           vertical: true,
           horizontal: true,
         },
+        tree: <{
+          gap: number;
+          dataExpressions: DataAxisExpression[];
+          measureExpression: DataAxisExpression;
+        }>{
+          gap: 0.1,
+          dataExpressions: [],
+          measureExpression: null
+        }
       },
     },
   } as Specification.PlotSegment;

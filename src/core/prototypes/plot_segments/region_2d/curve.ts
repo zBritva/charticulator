@@ -90,6 +90,7 @@ export const icons: Region2DConfigurationIcons = {
   yMiddleIcon: "align/y-middle",
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",
+  treeIcon: "sublayout/tree",
 };
 
 export class CurvePlotSegment extends PlotSegmentClass<

@@ -342,6 +342,13 @@ export interface WidgetManager {
     text?: string
   ): Widget;
 
+  propertyEditor(
+    property: Property,
+    valueGetter: (editingProperty: Specification.AttributeValue) => Specification.AttributeValue,
+    icon?: string,
+    text?: string
+  ): Widget;
+
   scaleEditor(attribute: string, text: string): Widget;
 
   // Order by data button. Map data to "sortBy" expression

@@ -106,6 +106,7 @@ export const icons: Region2DConfigurationIcons = {
   packingIcon: "sublayout/packing",
   overlapIcon: "Stack",
   jitterIcon: "sublayout/jitter",
+  treeIcon: "sublayout/tree"
 };
 
 export class PolarPlotSegment extends PlotSegmentClass<
