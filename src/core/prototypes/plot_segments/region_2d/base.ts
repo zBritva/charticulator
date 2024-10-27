@@ -39,7 +39,7 @@ import { group } from "d3-array";
 import { hierarchy, treemap } from "d3-hierarchy";
 
 import { precedences } from "../../../../core/expression/intrinsics";
-import glyph from "src/app/stores/action_handlers/glyph";
+import { CartesianAttributes } from "./cartesian";
 
 export enum Region2DSublayoutType {
   Overlap = "overlap",
@@ -2069,10 +2069,10 @@ export class Region2DConstraintBuilder {
     const jitterProps = this.plotSegment.object.properties.sublayout.jitter;
 
     groups.forEach((group) => {
-      const markStates = group.group.map((index) => state.glyphs[index]);
+      const glyphStates = group.group.map((index) => state.glyphs[index]);
       const { x1, y1, x2, y2 } = group;
 
-      const points = markStates.map((state) => {
+      const points = glyphStates.map((state) => {
         let radius = 0;
         for (const e of state.marks) {
           if (e.attributes.size != null) {
@@ -2121,6 +2121,10 @@ export class Region2DConstraintBuilder {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const treeProps = this.plotSegment.object.properties.sublayout.tree;
+
+    const glyphGroup = groups[0];
+    const { x1, y1, x2, y2 } = glyphGroup;
+
     if (!this.chartStateManager) {
       return;
     }
@@ -2160,47 +2164,61 @@ export class Region2DConstraintBuilder {
       return d => d[c]
     }));
 
-    const hierarchyData = hierarchy(nestedData).sum(d => {
+    const hierarchyData = hierarchy(nestedData)
+    .sum(d => {
       return (<any>d)[measureColumns[0]];
+    })
+    .sort((a, b) => {
+      return b.value - a.value;
     });
-
-    const glyphGroup = groups[0];
-    const { x1, y1, x2, y2 } = glyphGroup;
 
     const x1val = this.solver.getValue(x1);
     const x2val = this.solver.getValue(x2);
     const y1val = this.solver.getValue(y1);
     const y2val = this.solver.getValue(y2);
 
+    const width = x2val - x1val;
+    const height = y2val - y1val;
+
     // Compute the layout.
     const root = treemap()
-      .size([x2val - x1val, y2val - y1val])
+      .size([width, height])
       (hierarchyData);
-    console.log('root', root);
 
-    const glyphStates = glyphGroup.group.map((index) => state.glyphs[index]);
+    let xScale = 1;
+    let yScale = 1;
+    if (this.config.getXYScale != null) {
+      const { x, y } = this.config.getXYScale();
+      xScale = x;
+      yScale = y;
+    }
 
-    const points = glyphStates.map((state) => {
-      return <[Variable, Variable, Variable, Variable, Variable, Variable]>[
-        solver.attr(state.attributes, "x"),
-        solver.attr(state.attributes, "y"),
-        solver.attr(state.attributes, "x1"),
-        solver.attr(state.attributes, "y1"),
-        solver.attr(state.attributes, "height"),
-        solver.attr(state.attributes, "width"),
-      ];
+    root.leaves().forEach((leave) => {
+      const data = leave.data as any;
+      const glyphState = data.glyphState;
+
+      const x1 = this.solver.attr(glyphState.attributes, "x1");
+      const y1 = this.solver.attr(glyphState.attributes, "y1");
+      const x2 = this.solver.attr(glyphState.attributes, "x2");
+      const y2 = this.solver.attr(glyphState.attributes, "y2");
+
+      const constants: Specification.AttributeMap = {
+        x1: (leave.x0 - width / 2) / xScale,
+        y1: (leave.y0 - height / 2) / yScale,
+        x2: (leave.x1 - width / 2) / xScale,
+        y2: (leave.y1 - height / 2) / yScale,
+      };
+
+      const x1const = solver.attr(constants, "x1", {edit: false});
+      const y1const = solver.attr(constants, "y1", {edit: false});
+      const x2const = solver.attr(constants, "x2", {edit: false});
+      const y2const = solver.attr(constants, "y2", {edit: false});
+
+      this.solver.addEquals(ConstraintStrength.HARD, x1, x1const);
+      this.solver.addEquals(ConstraintStrength.HARD, y1, y1const);
+      this.solver.addEquals(ConstraintStrength.HARD, x2, x2const);
+      this.solver.addEquals(ConstraintStrength.HARD, y2, y2const);
     });
-    solver.addPlugin(
-      new ConstraintPlugins.TreePlugin(
-        solver,
-        x1,
-        y1,
-        x2,
-        y2,
-        root,
-        treeProps
-      )
-    );
   }
 
   public getHandles(): Region2DHandleDescription[] {

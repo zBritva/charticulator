@@ -9,6 +9,8 @@ export interface TreePluginOptions {
 
 export class TreePlugin extends ConstraintPlugin {
   public solver: ConstraintSolver;
+  public x: Variable;
+  public y: Variable;
   public x1: Variable;
   public y1: Variable;
   public x2: Variable;
@@ -18,6 +20,7 @@ export class TreePlugin extends ConstraintPlugin {
   public yEnable: boolean;
   public getXYScale: () => { x: number; y: number };
   public options?: TreePluginOptions;
+  public points: [Variable, Variable, number][];
 
   constructor(
     solver: ConstraintSolver,
@@ -26,7 +29,9 @@ export class TreePlugin extends ConstraintPlugin {
     x2: Variable,
     y2: Variable,
     root: HierarchyRectangularNode<unknown>,
-    options?: TreePluginOptions
+    points: [Variable, Variable, number][],
+    options?: TreePluginOptions,
+    getXYScale?: () => { x: number; y: number },
   ) {
     super();
     this.solver = solver;
@@ -36,27 +41,18 @@ export class TreePlugin extends ConstraintPlugin {
     this.y2 = y2;
     this.root = root;
     this.options = options;
+    this.getXYScale = getXYScale;
+    this.points = points;
   }
 
   public apply() {
-    // const x1 = this.solver.getValue(this.x1);
-    // const x2 = this.solver.getValue(this.x2);
-    // const y1 = this.solver.getValue(this.y1);
-    // const y2 = this.solver.getValue(this.y2);
-    this.root.leaves().forEach((leave) => {
-      debugger;
-      const data = leave.data as any;
-      const glyphState = data.glyphState;
-      const x = this.solver.attr(glyphState.attributes, "x");
-      const y = this.solver.attr(glyphState.attributes, "y");
-      const x1 = this.solver.attr(glyphState.attributes, "x1");
-      const y1 = this.solver.attr(glyphState.attributes, "y1");
-
-      this.solver.setValue(x, leave.x0);
-      this.solver.setValue(y, leave.y0);
-      this.solver.setValue(x1, leave.x1);
-      this.solver.setValue(y1, leave.y1);
-    });
+    let xScale = 1;
+    let yScale = 1;
+    if (this.getXYScale != null) {
+      const { x, y } = this.getXYScale();
+      xScale = x;
+      yScale = y;
+    }
 
     return true;
   }
