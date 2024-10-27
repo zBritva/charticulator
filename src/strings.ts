@@ -484,7 +484,7 @@ export const strings = {
       direction: "Direction",
       count: "Count",
       dataExpressions: "Data Expressions",
-      measureExpressions: "Measure Expressions",
+      measureExpression: "Measure Expression",
       lineColor: "Line Color",
       tickColor: "Tick Label Color",
       tickTextBackgroudColor: "Tick background color",

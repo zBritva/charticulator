@@ -510,7 +510,7 @@ export class ChartConstraintSolver {
                   .getGroupedContext(rowIndex)
               );
             },
-          });
+          }, this.manager);
         }
       }
     }

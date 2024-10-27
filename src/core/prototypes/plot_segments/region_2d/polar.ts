@@ -422,7 +422,8 @@ export class PolarPlotSegment extends PlotSegmentClass<
 
   public buildGlyphConstraints(
     solver: ConstraintSolver,
-    context: BuildConstraintsContext
+    context: BuildConstraintsContext,
+    manager: ChartStateManager
   ): void {
     const builder = this.createBuilder(solver, context);
     builder.build();

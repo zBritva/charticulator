@@ -220,7 +220,8 @@ export class CartesianPlotSegment extends PlotSegmentClass<
 
   public createBuilder(
     solver?: ConstraintSolver,
-    context?: BuildConstraintsContext
+    context?: BuildConstraintsContext,
+    manager?: ChartStateManager
   ) {
     const builder = new Region2DConstraintBuilder(
       this,
@@ -231,16 +232,17 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       "y2",
       solver,
       context,
-      this.chartManager
+      this.chartManager || manager
     );
     return builder;
   }
 
   public buildGlyphConstraints(
     solver: ConstraintSolver,
-    context: BuildConstraintsContext
+    context: BuildConstraintsContext,
+    manager: ChartStateManager
   ): void {
-    const builder = this.createBuilder(solver, context);
+    const builder = this.createBuilder(solver, context, manager);
     builder.build();
   }
 

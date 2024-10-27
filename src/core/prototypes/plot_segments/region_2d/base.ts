@@ -106,7 +106,7 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
   tree: {
     gap: number;
     dataExpressions: DataAxisExpression[];
-    measureExpression: DataAxisExpression;
+    measureExpression: string;
   }
 }
 
@@ -2117,10 +2117,12 @@ export class Region2DConstraintBuilder {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const treeProps = this.plotSegment.object.properties.sublayout.tree;
-    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table)
+    if (!this.chartStateManager) {
+      return;
+    }
+    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
 
     const dataExpressions = treeProps.dataExpressions;
-
     const columns = [];
 
     dataExpressions.forEach(expression => {
@@ -2129,12 +2131,20 @@ export class Region2DConstraintBuilder {
       columns.push(column);
     });
 
+    const measureColumns = [];
+
+    if (treeProps.measureExpression) {
+      const parsed = Expression.parse(treeProps.measureExpression) as Expression.FunctionCall;
+      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+      measureColumns.push(column);
+    }
+
     const projection = table.rows.map(row => {
       const projection = {
         _id: row._id
       }
 
-      columns.forEach(col => {
+      columns.concat(measureColumns).forEach(col => {
         projection[col] = row[col];
       })
 
@@ -2937,19 +2947,19 @@ export class Region2DConstraintBuilder {
               }
             ),
             m.vertical([
-              m.label(strings.objects.axes.measureExpressions, {
+              m.label(strings.objects.axes.measureExpression, {
                 ignoreSearch: true,
               }),
               m.inputExpression(
                 {
                   property: "sublayout",
-                  field: ["tree", "measureExpressions"],
+                  field: ["tree", "measureExpression"],
                 },
                 {
                   table: this.plotSegment.object.table,
                   // dropzone: {
                   //   type: 'axis-data-binding',
-                  //   property: 'measureExpressions',
+                  //   property: 'measureExpression',
                   //   prompt: "Data for tree group values"
                   // },
                 }
