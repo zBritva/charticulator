@@ -1,3 +1,4 @@
+/* eslint-disable no-unexpected-multiline */
 /* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
@@ -35,7 +36,10 @@ import React from "react";
 import { DataAxisExpression } from "../../marks/data_axis.attrs";
 
 import { group } from "d3-array";
+import { hierarchy, treemap } from "d3-hierarchy";
+
 import { precedences } from "../../../../core/expression/intrinsics";
+import glyph from "src/app/stores/action_handlers/glyph";
 
 export enum Region2DSublayoutType {
   Overlap = "overlap",
@@ -2139,9 +2143,10 @@ export class Region2DConstraintBuilder {
       measureColumns.push(column);
     }
 
-    const projection = table.rows.map(row => {
+    const projection = table.rows.map((row, index) => {
       const projection = {
-        _id: row._id
+        _id: row._id,
+        glyphState: state.glyphs[index]
       }
 
       columns.concat(measureColumns).forEach(col => {
@@ -2154,34 +2159,48 @@ export class Region2DConstraintBuilder {
     const nestedData = group(projection, ...columns.map(c => {
       return d => d[c]
     }));
-    console.log('nestedData', nestedData);
 
-    groups.forEach((group) => {
-      const glyphStates = group.group.map((index) => state.glyphs[index]);
-      const { x1, y1, x2, y2 } = group;
-
-      const points = glyphStates.map((state) => {
-        return <[Variable, Variable, Variable, Variable, Variable, Variable]>[
-          solver.attr(state.attributes, "x"),
-          solver.attr(state.attributes, "y"),
-          solver.attr(state.attributes, "x1"),
-          solver.attr(state.attributes, "y1"),
-          solver.attr(state.attributes, "height"),
-          solver.attr(state.attributes, "width"),
-        ];
-      });
-      solver.addPlugin(
-        new ConstraintPlugins.TreePlugin(
-          solver,
-          x1,
-          y1,
-          x2,
-          y2,
-          points,
-          treeProps
-        )
-      );
+    const hierarchyData = hierarchy(nestedData).sum(d => {
+      return (<any>d)[measureColumns[0]];
     });
+
+    const glyphGroup = groups[0];
+    const { x1, y1, x2, y2 } = glyphGroup;
+
+    const x1val = this.solver.getValue(x1);
+    const x2val = this.solver.getValue(x2);
+    const y1val = this.solver.getValue(y1);
+    const y2val = this.solver.getValue(y2);
+
+    // Compute the layout.
+    const root = treemap()
+      .size([x2val - x1val, y2val - y1val])
+      (hierarchyData);
+    console.log('root', root);
+
+    const glyphStates = glyphGroup.group.map((index) => state.glyphs[index]);
+
+    const points = glyphStates.map((state) => {
+      return <[Variable, Variable, Variable, Variable, Variable, Variable]>[
+        solver.attr(state.attributes, "x"),
+        solver.attr(state.attributes, "y"),
+        solver.attr(state.attributes, "x1"),
+        solver.attr(state.attributes, "y1"),
+        solver.attr(state.attributes, "height"),
+        solver.attr(state.attributes, "width"),
+      ];
+    });
+    solver.addPlugin(
+      new ConstraintPlugins.TreePlugin(
+        solver,
+        x1,
+        y1,
+        x2,
+        y2,
+        points,
+        treeProps
+      )
+    );
   }
 
   public getHandles(): Region2DHandleDescription[] {
@@ -3000,14 +3019,11 @@ export class Region2DConstraintBuilder {
                       //   property: 'expression',
                       //   prompt: "Data for tree grouping"
                       // },
-                      table: this.plotSegment.object.table
+                      table: this.plotSegment.object.table,
+                      key: index?.toString()
                     }
                   );
-                  return React.createElement(
-                    "Fragment",
-                    { key: index },
-                    expressionInput
-                  );
+                  return expressionInput;
                 },
                 {
                   allowDelete: true,
