@@ -2197,7 +2197,7 @@ export class Region2DConstraintBuilder {
         y1,
         x2,
         y2,
-        points,
+        root,
         treeProps
       )
     );
