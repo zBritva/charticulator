@@ -104,11 +104,20 @@ export function createDefaultPlotSegment(
         tree: <{
           gap: number;
           dataExpressions: DataAxisExpression[];
-          measureExpression: DataAxisExpression;
+          measureExpression: string;
         }>{
           gap: 0.1,
-          dataExpressions: [],
-          measureExpression: null
+          dataExpressions: [
+            ...table.columns
+              .filter(col => col.metadata.kind === Dataset.DataKind.Categorical)
+              .map(col => ({
+                expression: `first(${col.name})`,
+                name: col.name
+              }))
+          ],
+          measureExpression: `first(${table.columns
+            .filter(col => col.metadata.kind === Dataset.DataKind.Numerical)
+            .map(col => col.name)[0]})`
         }
       },
     },
