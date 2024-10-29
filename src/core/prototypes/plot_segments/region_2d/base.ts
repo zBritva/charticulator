@@ -2122,110 +2122,112 @@ export class Region2DConstraintBuilder {
     const state = this.plotSegment.state;
     const treemapProps = this.plotSegment.object.properties.sublayout.treemap;
 
-    const glyphGroup = groups[0];
-    const { x1, y1, x2, y2 } = glyphGroup;
+    for (const gr in groups) {
+      const glyphGroup = groups[gr];
+      const { x1, y1, x2, y2 } = glyphGroup;
 
-    if (!this.chartStateManager) {
-      return;
-    }
-    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
+      if (!this.chartStateManager) {
+        return;
+      }
+      const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
 
-    const dataExpressions = treemapProps.dataExpressions;
-    const columns = [];
+      const dataExpressions = treemapProps.dataExpressions;
+      const columns = [];
 
-    // to data is set for layout
-    if (dataExpressions.length == 0 || !treemapProps.measureExpression) {
-      return;
-    }
-
-    dataExpressions.forEach(expression => {
-      const parsed = Expression.parse(expression.expression) as Expression.FunctionCall;
-      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
-      columns.push(column);
-    });
-
-    const measureColumns = [];
-
-    if (treemapProps.measureExpression) {
-      const parsed = Expression.parse(treemapProps.measureExpression) as Expression.FunctionCall;
-      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
-      measureColumns.push(column);
-    }
-
-    const projection = table.rows.map((row, index) => {
-      const projection = {
-        _id: row._id,
-        glyphState: state.glyphs[index]
+      // to data is set for layout
+      if (dataExpressions.length == 0 || !treemapProps.measureExpression) {
+        return;
       }
 
-      columns.concat(measureColumns).forEach(col => {
-        projection[col] = row[col];
-      })
+      dataExpressions.forEach(expression => {
+        const parsed = Expression.parse(expression.expression) as Expression.FunctionCall;
+        const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+        columns.push(column);
+      });
 
-      return projection;
-    });
+      const measureColumns = [];
 
-    const nestedData = group(projection, ...columns.map(c => {
-      return d => d[c]
-    }));
+      if (treemapProps.measureExpression) {
+        const parsed = Expression.parse(treemapProps.measureExpression) as Expression.FunctionCall;
+        const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+        measureColumns.push(column);
+      }
 
-    const hierarchyData = hierarchy(nestedData)
-    .sum(d => {
-      return (<any>d)[measureColumns[0]];
-    })
-    .sort((a, b) => {
-      return b.value - a.value;
-    });
+      const projection = table.rows.map((row, index) => {
+        const projection = {
+          _id: row._id,
+          glyphState: state.glyphs[index]
+        }
 
-    const x1val = this.solver.getValue(x1);
-    const x2val = this.solver.getValue(x2);
-    const y1val = this.solver.getValue(y1);
-    const y2val = this.solver.getValue(y2);
+        columns.concat(measureColumns).forEach(col => {
+          projection[col] = row[col];
+        })
 
-    const width = x2val - x1val;
-    const height = y2val - y1val;
+        return projection;
+      });
 
-    // Compute the layout.
-    const root = treemap()
-      .paddingInner(treemapProps.paddingInner ?? 0)
-      .paddingOuter(treemapProps.paddingOuter ?? 0)
-      .size([width, height])
-      (hierarchyData);
+      const nestedData = group(projection, ...columns.map(c => {
+        return d => d[c]
+      }));
 
-    let xScale = 1;
-    let yScale = 1;
-    if (this.config.getXYScale != null) {
-      const { x, y } = this.config.getXYScale();
-      xScale = x;
-      yScale = y;
+      const hierarchyData = hierarchy(nestedData)
+        .sum(d => {
+          return (<any>d)[measureColumns[0]];
+        })
+        .sort((a, b) => {
+          return b.value - a.value;
+        });
+
+      const x1val = this.solver.getValue(x1);
+      const x2val = this.solver.getValue(x2);
+      const y1val = this.solver.getValue(y1);
+      const y2val = this.solver.getValue(y2);
+
+      const width = x2val - x1val;
+      const height = y2val - y1val;
+
+      // Compute the layout.
+      const root = treemap()
+        .paddingInner(treemapProps.paddingInner ?? 0)
+        .paddingOuter(treemapProps.paddingOuter ?? 0)
+        .size([width, height])
+        (hierarchyData);
+
+      let xScale = 1;
+      let yScale = 1;
+      if (this.config.getXYScale != null) {
+        const { x, y } = this.config.getXYScale();
+        xScale = x;
+        yScale = y;
+      }
+
+      root.leaves().forEach((leave) => {
+        const data = leave.data as any;
+        const glyphState = data.glyphState;
+
+        const x1 = this.solver.attr(glyphState.attributes, "x1");
+        const y1 = this.solver.attr(glyphState.attributes, "y1");
+        const x2 = this.solver.attr(glyphState.attributes, "x2");
+        const y2 = this.solver.attr(glyphState.attributes, "y2");
+
+        const constants: Specification.AttributeMap = {
+          x1: (leave.x0 - width / 2) / xScale,
+          y1: (leave.y0 - height / 2) / yScale,
+          x2: (leave.x1 - width / 2) / xScale,
+          y2: (leave.y1 - height / 2) / yScale,
+        };
+
+        const x1const = solver.attr(constants, "x1", { edit: false });
+        const y1const = solver.attr(constants, "y1", { edit: false });
+        const x2const = solver.attr(constants, "x2", { edit: false });
+        const y2const = solver.attr(constants, "y2", { edit: false });
+
+        this.solver.addEquals(ConstraintStrength.HARD, x1, x1const);
+        this.solver.addEquals(ConstraintStrength.HARD, y1, y1const);
+        this.solver.addEquals(ConstraintStrength.HARD, x2, x2const);
+        this.solver.addEquals(ConstraintStrength.HARD, y2, y2const);
+      });
     }
-
-    root.leaves().forEach((leave) => {
-      const data = leave.data as any;
-      const glyphState = data.glyphState;
-
-      const x1 = this.solver.attr(glyphState.attributes, "x1");
-      const y1 = this.solver.attr(glyphState.attributes, "y1");
-      const x2 = this.solver.attr(glyphState.attributes, "x2");
-      const y2 = this.solver.attr(glyphState.attributes, "y2");
-
-      const constants: Specification.AttributeMap = {
-        x1: (leave.x0 - width / 2) / xScale,
-        y1: (leave.y0 - height / 2) / yScale,
-        x2: (leave.x1 - width / 2) / xScale,
-        y2: (leave.y1 - height / 2) / yScale,
-      };
-
-      const x1const = solver.attr(constants, "x1", {edit: false});
-      const y1const = solver.attr(constants, "y1", {edit: false});
-      const x2const = solver.attr(constants, "x2", {edit: false});
-      const y2const = solver.attr(constants, "y2", {edit: false});
-
-      this.solver.addEquals(ConstraintStrength.HARD, x1, x1const);
-      this.solver.addEquals(ConstraintStrength.HARD, y1, y1const);
-      this.solver.addEquals(ConstraintStrength.HARD, x2, x2const);
-      this.solver.addEquals(ConstraintStrength.HARD, y2, y2const);
-    });
   }
 
   public getHandles(): Region2DHandleDescription[] {
