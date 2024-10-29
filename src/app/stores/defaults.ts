@@ -101,7 +101,7 @@ export function createDefaultPlotSegment(
           vertical: true,
           horizontal: true,
         },
-        tree: <{
+        treemap: <{
           gap: number;
           dataExpressions: DataAxisExpression[];
           measureExpression: string;

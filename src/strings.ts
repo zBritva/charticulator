@@ -21,7 +21,7 @@ const cartesianTerminology: Region2DConfigurationTerminology = {
   gridDirectionY: "Vertical",
   packing: "Packing",
   jitter: "Jitter",
-  tree: "Tree",
+  treemap: "Treemap",
   overlap: "Overlap",
 };
 
@@ -41,7 +41,7 @@ const curveTerminology: Region2DConfigurationTerminology = {
   gridDirectionY: "Normal",
   packing: "Packing",
   jitter: "Jitter",
-  tree: "Tree",
+  treemap: "Treemap",
   overlap: "Overlap",
 };
 
@@ -61,7 +61,7 @@ const polarTerminology: Region2DConfigurationTerminology = {
   gridDirectionY: "Radial",
   packing: "Packing",
   jitter: "Jitter",
-  tree: "Tree",
+  treemap: "Treemap",
   overlap: "Overlap",
 };
 

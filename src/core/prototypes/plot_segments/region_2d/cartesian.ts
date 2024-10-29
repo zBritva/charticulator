@@ -86,7 +86,7 @@ const icons: Region2DConfigurationIcons = {
   gridIcon: "GridViewSmall",
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",
-  treeIcon: "sublayout/tree",
+  treeMapIcon: "sublayout/treemap",
   overlapIcon: "Stack",
 };
 
@@ -146,7 +146,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         boxedX: null,
         boxedY: null,
       },
-      tree: {
+      treemap: {
         gap: 0.1,
         dataExpressions: [],
         measureExpression: null

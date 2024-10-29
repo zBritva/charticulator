@@ -39,7 +39,6 @@ import { group } from "d3-array";
 import { hierarchy, treemap } from "d3-hierarchy";
 
 import { precedences } from "../../../../core/expression/intrinsics";
-import { CartesianAttributes } from "./cartesian";
 
 export enum Region2DSublayoutType {
   Overlap = "overlap",
@@ -48,7 +47,7 @@ export enum Region2DSublayoutType {
   Grid = "grid",
   Packing = "packing",
   Jitter = "jitter",
-  Tree = "tree"
+  Treemap = "treemap"
 }
 
 export enum SublayoutAlignment {
@@ -107,7 +106,7 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     vertical: boolean;
     horizontal: boolean;
   };
-  tree: {
+  treemap: {
     gap: number;
     dataExpressions: DataAxisExpression[];
     measureExpression: string;
@@ -175,7 +174,7 @@ export interface Region2DConfigurationTerminology {
   packing: string;
   overlap: string;
   jitter: string;
-  tree: string;
+  treemap: string;
 }
 
 export interface Region2DConfigurationIcons {
@@ -190,7 +189,7 @@ export interface Region2DConfigurationIcons {
   gridIcon: string | React.ReactNode;
   packingIcon: string | React.ReactNode;
   jitterIcon: string | React.ReactNode;
-  treeIcon: string | React.ReactNode;
+  treeMapIcon: string | React.ReactNode;
   overlapIcon: string | React.ReactNode;
 }
 
@@ -1279,7 +1278,7 @@ export class Region2DConstraintBuilder {
           this.sublayoutJitter(groups);
         }
         // Tree layout
-        if (props.sublayout.type == Region2DSublayoutType.Tree) {
+        if (props.sublayout.type == Region2DSublayoutType.Treemap) {
           this.sublayoutTree(groups);
         }
       }
@@ -2120,7 +2119,7 @@ export class Region2DConstraintBuilder {
   public sublayoutTree(groups: SublayoutGroup[]) {
     const solver = this.solver;
     const state = this.plotSegment.state;
-    const treeProps = this.plotSegment.object.properties.sublayout.tree;
+    const treeProps = this.plotSegment.object.properties.sublayout.treemap;
 
     const glyphGroup = groups[0];
     const { x1, y1, x2, y2 } = glyphGroup;
@@ -2587,10 +2586,10 @@ export class Region2DConstraintBuilder {
       label: terminology.jitter,
       icon: icons.jitterIcon,
     };
-    const treeOption = {
-      value: Region2DSublayoutType.Tree,
-      label: terminology.tree,
-      icon: icons.treeIcon,
+    const treemapOption = {
+      value: Region2DSublayoutType.Treemap,
+      label: terminology.treemap,
+      icon: icons.treeMapIcon,
     };
     const props = this.plotSegment.object.properties;
     const xMode = props.xData ? props.xData.type : "null";
@@ -2606,10 +2605,10 @@ export class Region2DConstraintBuilder {
         packingOption,
         jitterOption,
         overlapOption,
-        treeOption,
+        treemapOption,
       ];
     }
-    return [packingOption, jitterOption, overlapOption, treeOption];
+    return [packingOption, jitterOption, overlapOption, treemapOption];
   }
 
   public isSublayoutApplicable() {
@@ -2962,7 +2961,7 @@ export class Region2DConstraintBuilder {
         )
       );
     }
-    if (type == Region2DSublayoutType.Tree) {
+    if (type == Region2DSublayoutType.Treemap) {
       extra.push(
         m.searchWrapper(
           {
@@ -2973,7 +2972,7 @@ export class Region2DConstraintBuilder {
           },
           [
             m.inputNumber(
-              { property: "sublayout", field: ["tree", "gap"] },
+              { property: "sublayout", field: ["treemap", "gap"] },
               {
                 minimum: 0.1,
                 maximum: 1,
@@ -2990,7 +2989,7 @@ export class Region2DConstraintBuilder {
               m.inputExpression(
                 {
                   property: "sublayout",
-                  field: ["tree", "measureExpression"],
+                  field: ["treemap", "measureExpression"],
                 },
                 {
                   table: this.plotSegment.object.table,
@@ -3007,7 +3006,7 @@ export class Region2DConstraintBuilder {
             }),
             m.propertyEditor({
               property: "sublayout",
-              field: ["tree", "dataExpressions"],
+              field: ["treemap", "dataExpressions"],
             }, (editingProperty) => {
               const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
               const column = table.columns[0];
@@ -3021,7 +3020,7 @@ export class Region2DConstraintBuilder {
                 ignoreSearch: true,
               }),
               m.arrayWidget(
-                { property: "sublayout", field: ["tree", "dataExpressions"] },
+                { property: "sublayout", field: ["treemap", "dataExpressions"] },
                 (item, index) => {
                   const expressionInput = m.inputExpression(
                     {
