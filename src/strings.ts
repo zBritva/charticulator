@@ -484,7 +484,7 @@ export const strings = {
       direction: "Direction",
       count: "Count",
       dataExpressions: "Data Expressions",
-      measureExpression: "Measure Expression",
+      measureExpression: "Value Expression",
       lineColor: "Line Color",
       tickColor: "Tick Label Color",
       tickTextBackgroudColor: "Tick background color",
@@ -527,7 +527,8 @@ export const strings = {
       directionDownLeft: "Down Left",
       directionUpLeft: "Up Left",
       directionUpRight: "Up Right",
-      gap: "Gap"
+      paddingInner: "Inner padding",
+      paddingOuter: "Outer padding"
     },
     visibleOn: {
       visibility: "Visibility",

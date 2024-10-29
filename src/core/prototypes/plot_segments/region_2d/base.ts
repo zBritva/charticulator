@@ -107,7 +107,8 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     horizontal: boolean;
   };
   treemap: {
-    gap: number;
+    paddingInner: number;
+    paddingOuter: number;
     dataExpressions: DataAxisExpression[];
     measureExpression: string;
   }
@@ -2119,7 +2120,7 @@ export class Region2DConstraintBuilder {
   public sublayoutTree(groups: SublayoutGroup[]) {
     const solver = this.solver;
     const state = this.plotSegment.state;
-    const treeProps = this.plotSegment.object.properties.sublayout.treemap;
+    const treemapProps = this.plotSegment.object.properties.sublayout.treemap;
 
     const glyphGroup = groups[0];
     const { x1, y1, x2, y2 } = glyphGroup;
@@ -2129,8 +2130,13 @@ export class Region2DConstraintBuilder {
     }
     const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
 
-    const dataExpressions = treeProps.dataExpressions;
+    const dataExpressions = treemapProps.dataExpressions;
     const columns = [];
+
+    // to data is set for layout
+    if (dataExpressions.length == 0 || !treemapProps.measureExpression) {
+      return;
+    }
 
     dataExpressions.forEach(expression => {
       const parsed = Expression.parse(expression.expression) as Expression.FunctionCall;
@@ -2140,8 +2146,8 @@ export class Region2DConstraintBuilder {
 
     const measureColumns = [];
 
-    if (treeProps.measureExpression) {
-      const parsed = Expression.parse(treeProps.measureExpression) as Expression.FunctionCall;
+    if (treemapProps.measureExpression) {
+      const parsed = Expression.parse(treemapProps.measureExpression) as Expression.FunctionCall;
       const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
       measureColumns.push(column);
     }
@@ -2181,6 +2187,8 @@ export class Region2DConstraintBuilder {
 
     // Compute the layout.
     const root = treemap()
+      .paddingInner(treemapProps.paddingInner ?? 0)
+      .paddingOuter(treemapProps.paddingOuter ?? 0)
       .size([width, height])
       (hierarchyData);
 
@@ -2966,19 +2974,30 @@ export class Region2DConstraintBuilder {
         m.searchWrapper(
           {
             searchPattern: [
-              strings.objects.plotSegment.gap,
+              strings.objects.plotSegment.paddingInner,
               strings.objects.plotSegment.subLayout,
             ],
           },
           [
             m.inputNumber(
-              { property: "sublayout", field: ["treemap", "gap"] },
+              { property: "sublayout", field: ["treemap", "paddingInner"] },
               {
-                minimum: 0.1,
-                maximum: 1,
+                minimum: 0,
+                maximum: 100,
                 step: 0.1,
                 showUpdown: true,
-                label: strings.objects.plotSegment.gap,
+                label: strings.objects.plotSegment.paddingInner,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["treemap", "paddingOuter"] },
+              {
+                minimum: 0,
+                maximum: 100,
+                step: 0.1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.paddingOuter,
                 ignoreSearch: true,
               }
             ),

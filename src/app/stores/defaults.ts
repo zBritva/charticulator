@@ -102,11 +102,13 @@ export function createDefaultPlotSegment(
           horizontal: true,
         },
         treemap: <{
-          gap: number;
+          paddingInner: number;
+          paddingOuter: number;
           dataExpressions: DataAxisExpression[];
           measureExpression: string;
         }>{
-          gap: 0.1,
+          paddingInner: 0,
+          paddingOuter: 0,
           dataExpressions: [
             ...table.columns
               .filter(col => col.metadata.kind === Dataset.DataKind.Categorical)

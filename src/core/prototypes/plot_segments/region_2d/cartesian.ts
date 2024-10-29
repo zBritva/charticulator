@@ -147,7 +147,8 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         boxedY: null,
       },
       treemap: {
-        gap: 0.1,
+        paddingInner: 0,
+        paddingOuter: 0,
         dataExpressions: [],
         measureExpression: null
       },
