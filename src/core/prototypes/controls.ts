@@ -245,6 +245,7 @@ export interface InputExpressionOptions extends SearchSection {
     property?: string;
     defineCategories?: boolean;
   };
+  key?: string;
 }
 
 export interface InputFormatOptions extends SearchSection {
@@ -338,6 +339,13 @@ export interface WidgetManager {
   setButton(
     property: Property,
     value: Specification.AttributeValue,
+    icon?: string,
+    text?: string
+  ): Widget;
+
+  propertyEditor(
+    property: Property,
+    valueGetter: (editingProperty: Specification.AttributeValue) => Specification.AttributeValue,
     icon?: string,
     text?: string
   ): Widget;

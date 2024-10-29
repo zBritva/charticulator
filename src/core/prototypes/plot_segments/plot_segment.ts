@@ -50,8 +50,9 @@ export abstract class PlotSegmentClass<
     // eslint-disable-next-line
     solver: ConstraintSolver,
     // eslint-disable-next-line
-    context: BuildConstraintsContext
+    context: BuildConstraintsContext,
     // eslint-disable-next-line
+    manager: ChartStateManager
   ): void {}
 
   /** Get the graphics that represent this layout */

@@ -21,6 +21,7 @@ const cartesianTerminology: Region2DConfigurationTerminology = {
   gridDirectionY: "Vertical",
   packing: "Packing",
   jitter: "Jitter",
+  treemap: "Treemap",
   overlap: "Overlap",
 };
 
@@ -40,6 +41,7 @@ const curveTerminology: Region2DConfigurationTerminology = {
   gridDirectionY: "Normal",
   packing: "Packing",
   jitter: "Jitter",
+  treemap: "Treemap",
   overlap: "Overlap",
 };
 
@@ -59,6 +61,7 @@ const polarTerminology: Region2DConfigurationTerminology = {
   gridDirectionY: "Radial",
   packing: "Packing",
   jitter: "Jitter",
+  treemap: "Treemap",
   overlap: "Overlap",
 };
 
@@ -481,6 +484,7 @@ export const strings = {
       direction: "Direction",
       count: "Count",
       dataExpressions: "Data Expressions",
+      measureExpression: "Value Expression",
       lineColor: "Line Color",
       tickColor: "Tick Label Color",
       tickTextBackgroudColor: "Tick background color",
@@ -523,6 +527,8 @@ export const strings = {
       directionDownLeft: "Down Left",
       directionUpLeft: "Up Left",
       directionUpRight: "Up Right",
+      paddingInner: "Inner padding",
+      paddingOuter: "Outer padding"
     },
     visibleOn: {
       visibility: "Visibility",

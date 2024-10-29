@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+import { DataAxisExpression } from "src/core/prototypes/marks/data_axis.attrs";
 import { Dataset, Specification, uniqueID } from "../../core";
 import {
   GridDirection,
@@ -100,6 +101,26 @@ export function createDefaultPlotSegment(
           vertical: true,
           horizontal: true,
         },
+        treemap: <{
+          paddingInner: number;
+          paddingOuter: number;
+          dataExpressions: DataAxisExpression[];
+          measureExpression: string;
+        }>{
+          paddingInner: 0,
+          paddingOuter: 0,
+          dataExpressions: [
+            ...table.columns
+              .filter(col => col.metadata.kind === Dataset.DataKind.Categorical)
+              .map(col => ({
+                expression: `first(${col.name})`,
+                name: col.name
+              }))
+          ],
+          measureExpression: `first(${table.columns
+            .filter(col => col.metadata.kind === Dataset.DataKind.Numerical)
+            .map(col => col.name)[0]})`
+        }
       },
     },
   } as Specification.PlotSegment;

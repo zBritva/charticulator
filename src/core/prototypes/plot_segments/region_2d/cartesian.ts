@@ -86,6 +86,7 @@ const icons: Region2DConfigurationIcons = {
   gridIcon: "GridViewSmall",
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",
+  treeMapIcon: "sublayout/treemap",
   overlapIcon: "Stack",
 };
 
@@ -144,6 +145,12 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         gravityY: 0.1,
         boxedX: null,
         boxedY: null,
+      },
+      treemap: {
+        paddingInner: 0,
+        paddingOuter: 0,
+        dataExpressions: [],
+        measureExpression: null
       },
       orderReversed: null,
     },
@@ -214,7 +221,8 @@ export class CartesianPlotSegment extends PlotSegmentClass<
 
   public createBuilder(
     solver?: ConstraintSolver,
-    context?: BuildConstraintsContext
+    context?: BuildConstraintsContext,
+    manager?: ChartStateManager
   ) {
     const builder = new Region2DConstraintBuilder(
       this,
@@ -225,16 +233,17 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       "y2",
       solver,
       context,
-      this.chartManager
+      this.chartManager || manager
     );
     return builder;
   }
 
   public buildGlyphConstraints(
     solver: ConstraintSolver,
-    context: BuildConstraintsContext
+    context: BuildConstraintsContext,
+    manager: ChartStateManager
   ): void {
-    const builder = this.createBuilder(solver, context);
+    const builder = this.createBuilder(solver, context, manager);
     builder.build();
   }
 
@@ -285,7 +294,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
   public getAttributePanelWidgets(
     manager: Controls.WidgetManager
   ): Controls.Widget[] {
-    const fluentUIManager = manager as FluentUIWidgetManager;
+    const fluentUIManager = (manager as unknown) as FluentUIWidgetManager;
     fluentUIManager.eventManager.subscribe(EventType.UPDATE_FIELD, {
       update: (property: Controls.Property | Controls.Property[]) => {
         if (

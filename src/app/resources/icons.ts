@@ -283,6 +283,10 @@ addSVGIcon(
   "sublayout/jitter",
   require("resources/icons/icons_sublayout-jitter.svg")
 );
+addSVGIcon(
+  "sublayout/treemap",
+  require("resources/icons/icons_sublayout-treemap.svg")
+);
 addSVGIcon("align/left", require("resources/icons/icons_align-left.svg"));
 addSVGIcon(
   "AlignHorizontalLeft",
