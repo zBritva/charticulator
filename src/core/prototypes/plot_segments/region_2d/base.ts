@@ -2608,14 +2608,25 @@ export class Region2DConstraintBuilder {
       (xMode == "null" || xMode == "categorical") &&
       (yMode == "null" || yMode == "categorical")
     ) {
+      // treemap work only when no axes in PS
+      if (xMode == "null" && yMode == "null") {
+        return [
+          dodgeXOption,
+          dodgeYOption,
+          gridOption,
+          packingOption,
+          jitterOption,
+          overlapOption,
+          treemapOption,
+        ];
+      }
       return [
         dodgeXOption,
         dodgeYOption,
         gridOption,
         packingOption,
         jitterOption,
-        overlapOption,
-        treemapOption,
+        overlapOption
       ];
     }
     return [packingOption, jitterOption, overlapOption, treemapOption];
