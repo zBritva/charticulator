@@ -77,7 +77,7 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
       }
       else if (dataRowId === "type") {
         const colIndex = prevTable.columns.findIndex(col => col.displayName === dataColumnId);
-        prevTable.columns[colIndex].type == change.newCell.selectedValue;
+        prevTable.columns[colIndex].type = change.newCell.selectedValue;
       } else {
         if (!dataRow) {
           const id = prevTable.rows.length + 1;
