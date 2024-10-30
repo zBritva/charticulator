@@ -274,7 +274,7 @@ export const TableView: React.FC<TableViewProps> = (props: TableViewProps) => {
           console.log('addColumnAfter');
           const columnId = selectedRanges.flatMap(c => c.map(c => c.columnId))[0];
 
-          const insertIndex = table.columns.findIndex(col => col.displayName == columnId) + 1;
+          const insertIndex = table.columns.findIndex(col => col.displayName == columnId);
           const newColumnName = `New column ${table.columns.length + 1}`;
 
           setTable({
