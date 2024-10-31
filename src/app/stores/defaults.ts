@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { DataAxisExpression } from "src/core/prototypes/marks/data_axis.attrs";
 import { Dataset, Specification, uniqueID } from "../../core";
 import {
   GridDirection,
@@ -104,7 +103,7 @@ export function createDefaultPlotSegment(
         treemap: <{
           paddingInner: number;
           paddingOuter: number;
-          dataExpressions: DataAxisExpression[];
+          dataExpressions: any[];
           measureExpression: string;
         }>{
           paddingInner: 0,
