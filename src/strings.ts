@@ -23,6 +23,7 @@ const cartesianTerminology: Region2DConfigurationTerminology = {
   jitter: "Jitter",
   treemap: "Treemap",
   overlap: "Overlap",
+  geo: "Geo",
 };
 
 const curveTerminology: Region2DConfigurationTerminology = {
@@ -43,6 +44,7 @@ const curveTerminology: Region2DConfigurationTerminology = {
   jitter: "Jitter",
   treemap: "Treemap",
   overlap: "Overlap",
+  geo: "Geo",
 };
 
 const polarTerminology: Region2DConfigurationTerminology = {
@@ -63,6 +65,7 @@ const polarTerminology: Region2DConfigurationTerminology = {
   jitter: "Jitter",
   treemap: "Treemap",
   overlap: "Overlap",
+  geo: "Geo"
 };
 
 export const strings = {

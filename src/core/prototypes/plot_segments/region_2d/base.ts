@@ -47,7 +47,8 @@ export enum Region2DSublayoutType {
   Grid = "grid",
   Packing = "packing",
   Jitter = "jitter",
-  Treemap = "treemap"
+  Treemap = "treemap",
+  Geo = "geo"
 }
 
 export enum SublayoutAlignment {
@@ -67,6 +68,8 @@ export enum GridStartPosition {
   LeftBottom = "LB",
   RigtBottom = "RB",
 }
+
+export type GeoProjection = "Equirectangular" | "Mercator";
 
 export interface Region2DSublayoutOptions extends Specification.AttributeMap {
   type: Region2DSublayoutType;
@@ -111,6 +114,12 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     paddingOuter: number;
     dataExpressions: DataAxisExpression[];
     measureExpression: string;
+  },
+  geo: {
+    projection: GeoProjection;
+    latExpressions: string;
+    lonExpressions: string;
+    GeoJSON: string;
   }
 }
 
@@ -176,6 +185,7 @@ export interface Region2DConfigurationTerminology {
   overlap: string;
   jitter: string;
   treemap: string;
+  geo: string;
 }
 
 export interface Region2DConfigurationIcons {
@@ -191,6 +201,7 @@ export interface Region2DConfigurationIcons {
   packingIcon: string | React.ReactNode;
   jitterIcon: string | React.ReactNode;
   treeMapIcon: string | React.ReactNode;
+  geoIcon: string | React.ReactNode;
   overlapIcon: string | React.ReactNode;
 }
 
@@ -2601,6 +2612,11 @@ export class Region2DConstraintBuilder {
       label: terminology.treemap,
       icon: icons.treeMapIcon,
     };
+    const geoOption = {
+      value: Region2DSublayoutType.Geo,
+      label: terminology.geo,
+      icon: icons.geoIcon,
+    };
     const props = this.plotSegment.object.properties;
     const xMode = props.xData ? props.xData.type : "null";
     const yMode = props.yData ? props.yData.type : "null";
@@ -2618,6 +2634,7 @@ export class Region2DConstraintBuilder {
           jitterOption,
           overlapOption,
           treemapOption,
+          geoOption,
         ];
       }
       return [
@@ -2629,7 +2646,7 @@ export class Region2DConstraintBuilder {
         overlapOption
       ];
     }
-    return [packingOption, jitterOption, overlapOption, treemapOption];
+    return [packingOption, jitterOption, overlapOption, treemapOption, geoOption];
   }
 
   public isSublayoutApplicable() {

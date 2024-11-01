@@ -287,6 +287,10 @@ addSVGIcon(
   "sublayout/treemap",
   require("resources/icons/icons_sublayout-treemap.svg")
 );
+addSVGIcon(
+  "sublayout/geo",
+  require("resources/icons/icons_sublayout-treemap.svg")
+);
 addSVGIcon("align/left", require("resources/icons/icons_align-left.svg"));
 addSVGIcon(
   "AlignHorizontalLeft",
