@@ -3111,10 +3111,15 @@ export class Region2DConstraintBuilder {
             ],
           },
           [
-            m.fileLoader({
-              property: "sublayout",
-              field: ["geo", "GeoJSON"],
-            }, ["json", "geojson"], "Load GeoJSON file", "general/plus"),
+            m.vertical([
+              m.label(strings.objects.axes.geoJSON, {
+                ignoreSearch: true,
+              }),
+              m.fileLoader({
+                property: "sublayout",
+                field: ["geo", "GeoJSON"],
+              }, ["json", "geojson"], "Load GeoJSON file", "general/plus"),
+            ]),
             m.vertical([
               m.label(strings.objects.axes.latExpressions, {
                 ignoreSearch: true,
