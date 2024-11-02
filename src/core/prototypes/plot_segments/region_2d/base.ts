@@ -2288,7 +2288,10 @@ export class Region2DConstraintBuilder {
 
     const width = <number>x2 - <number>x1;
     const height = <number>y2 - <number>y1;
-
+    
+    const shiftX = - (<number>x2 - <number>x1) / 2;
+    const shiftY = (<number>y2 - <number>y1) / 2;
+    
     const parsedGeoJSON = JSON.parse(geoProps.GeoJSON);
     const projectionName = `geo${geoProps.projection || "Mercator"}`;
     const projectionFunc = geoProjections[projectionName];
@@ -2299,13 +2302,13 @@ export class Region2DConstraintBuilder {
       height
     ], parsedGeoJSON);
 
-    let xScale = 1;
-    let yScale = 1;
-    if (this.config.getXYScale != null) {
-      const { x, y } = this.config.getXYScale();
-      xScale = x;
-      yScale = y;
-    }
+    // let xScale = 1;
+    // let yScale = 1;
+    // if (this.config.getXYScale != null) {
+    //   const { x, y } = this.config.getXYScale();
+    //   xScale = x;
+    //   yScale = y;
+    // }
 
     const coordinateColumns = [];
     if (geoProps.latExpressions) {
@@ -2343,11 +2346,11 @@ export class Region2DConstraintBuilder {
         const cx = this.solver.attr(data.glyphState.attributes, "x");
         const cy = this.solver.attr(data.glyphState.attributes, "y");
 
-        const [px, py] = projection([lat, lon]);
+        const [px, py] = projection([lon, lat]);
 
         const constants: Specification.AttributeMap = {
-          cx: px,
-          cy: py,
+          cx: px + shiftX,
+          cy: -py + shiftY,
         };
 
         const cxconst = solver.attr(constants, "cx", { edit: false });
