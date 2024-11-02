@@ -433,7 +433,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       const group = Graphics.makeGroup([path.path]);
       group.key = `cartesian:${this.object._id}-geopath-group`;
       group.transform = {
-        x: -(this.state.attributes.x2 - this.state.attributes.x1) / 2,
+        x: (this.state.attributes.x2 - this.state.attributes.x1) / 2,
         y: -(this.state.attributes.y2 - this.state.attributes.y1) / 2,
         angle: 0
       };
