@@ -398,7 +398,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       const projectionName = `geo${sublayout.geo.projection || "Mercator"}`;
       const projectionFunc = geoProjections[projectionName];
       const projection = projectionFunc();
-      projection.rotate([180, 0, -180]);
+      projection.rotate([0, 0, 0]);
       projection.fitSize([
         this.state.attributes.x2 - this.state.attributes.x1,
         this.state.attributes.y2 - this.state.attributes.y1
