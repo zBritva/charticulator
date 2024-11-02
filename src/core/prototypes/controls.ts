@@ -350,6 +350,10 @@ export interface WidgetManager {
     text?: string
   ): Widget;
 
+  fileLoader(
+    property: Property, types: string[], text?: string, icon?: string
+  ): Widget;
+
   scaleEditor(attribute: string, text: string): Widget;
 
   // Order by data button. Map data to "sortBy" expression

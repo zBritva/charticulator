@@ -289,7 +289,7 @@ addSVGIcon(
 );
 addSVGIcon(
   "sublayout/geo",
-  require("resources/icons/icons_sublayout-treemap.svg")
+  require("resources/icons/icons_scaffold-map.svg")
 );
 addSVGIcon("align/left", require("resources/icons/icons_align-left.svg"));
 addSVGIcon(

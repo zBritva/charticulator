@@ -136,6 +136,22 @@ export class FluentUIWidgetManager
     this.eventListener = new UIManagerListener(this);
     this.eventManager.subscribe(EventType.UPDATE_FIELD, this.eventListener);
   }
+  public fileLoader(property: Prototypes.Controls.Property, types: string[], text?: string, icon?: string) {
+    return (
+      <Button
+        icon={<SVGImageIcon url={R.getSVGIcon(icon)} />}
+        // text={importTemplate}
+        onClick={async () => {
+          const file = await showOpenFileDialog(types);
+          const str = await readFileAsString(file);
+          debugger;
+          this.emitSetProperty(property, str);
+        }}
+      >
+        {text}
+      </Button>
+    );
+  }
 
   public onMapDataHandler: OnMapDataHandler;
   public onEditMappingHandler: OnEditMappingHandler;
@@ -201,10 +217,10 @@ export class FluentUIWidgetManager
           <React.Fragment key={`search-${id}-${getRandomNumber()}`}>
             {Array.isArray(x)
               ? x.map((w) => (
-                  <React.Fragment key={`search-${id}-${getRandomNumber()}`}>
-                    {w}
-                  </React.Fragment>
-                ))
+                <React.Fragment key={`search-${id}-${getRandomNumber()}`}>
+                  {w}
+                </React.Fragment>
+              ))
               : x}
           </React.Fragment>
         ))}
@@ -576,9 +592,9 @@ export class FluentUIWidgetManager
             }
           }}
           type="text"
-          // underlined={options.underline ?? false}
-          // borderless={options.borderless ?? false}
-          // style={options.styles}
+        // underlined={options.underline ?? false}
+        // borderless={options.borderless ?? false}
+        // style={options.styles}
         />
       </FluentColumnLayout>
     );
@@ -684,9 +700,8 @@ export class FluentUIWidgetManager
           <FluentColumnLayout>
             <Label>{options.label}</Label>
             <Dropdown
-              key={`${this.getKeyFromProperty(property)}-${options.label}-${
-                options.type
-              }`}
+              key={`${this.getKeyFromProperty(property)}-${options.label}-${options.type
+                }`}
               style={{
                 minWidth: "unset",
                 width: "100%",
@@ -738,9 +753,8 @@ export class FluentUIWidgetManager
     } else {
       return (
         <React.Fragment
-          key={`${this.getKeyFromProperty(property)}-${options.label}-${
-            options.type
-          }`}
+          key={`${this.getKeyFromProperty(property)}-${options.label}-${options.type
+            }`}
         >
           {options.label && options.label.length > 0 ? (
             <Label>{options.label}</Label>
@@ -748,9 +762,8 @@ export class FluentUIWidgetManager
           {options.options.map((option, index) => {
             return (
               <ToggleButton
-                key={`${this.getKeyFromProperty(property)}-${options.label}-${
-                  options.type
-                }-${index}`}
+                key={`${this.getKeyFromProperty(property)}-${options.label}-${options.type
+                  }-${index}`}
                 // iconProps={{
                 //   iconName: options.icons[index],
                 // }}
@@ -1216,9 +1229,9 @@ export class FluentUIWidgetManager
       defaultValue,
       this.store
     );
-    const menuRender = this.director.menuRender(menu, `order-by-${this.getKeyFromProperty(property)}`,null, {
+    const menuRender = this.director.menuRender(menu, `order-by-${this.getKeyFromProperty(property)}`, null, {
       icon: "SortLines",
-    }, () => {});
+    }, () => { });
 
     return (
       <DropZoneView
@@ -1358,7 +1371,7 @@ export class FluentUIWidgetManager
           {items.map((item, index) => {
             return (
               <div
-              key={`array-${item.key}-${index}`}
+                key={`array-${item.key}-${index}`}
                 className="charticulator__widget-array-view-item"
               >
                 {options.allowReorder ? (
@@ -1506,9 +1519,9 @@ export class FluentUIWidgetManager
         defaultValue,
         this.store
       );
-      const menuRender = this.director.menuRender(menu, `bind-data-${title?.replace(/\W/g, "_")}-${widget?.key}`,undefined, {
+      const menuRender = this.director.menuRender(menu, `bind-data-${title?.replace(/\W/g, "_")}-${widget?.key}`, undefined, {
         icon: "general/bind-data"
-      }, () => {});
+      }, () => { });
 
       const className = options.noLineHeight
         ? "charticulator__widget-section-header-no-height charticulator__widget-section-header-dropzone"
@@ -1775,7 +1788,7 @@ export class FluentUIWidgetManager
             {title}
           </span>
         ) : // <Label>{title}</Label>
-        null}
+          null}
         {widget}
       </div>
     );
@@ -1928,27 +1941,27 @@ export class FluentUIWidgetManager
               //   iconName: "SortLines",
               // }}
               icon={<SVGImageIcon url={R.getSVGIcon("SortLines")} />}
-              // onClick={() => {
-              //   globals.popupController.popupAt(
-              //     (context) => {
-              //       const items = options.items
-              //         ? options.items
-              //         : (this.getPropertyValue(property) as string[]);
-              //       return (
-              //         <PopupView context={context}>
+            // onClick={() => {
+            //   globals.popupController.popupAt(
+            //     (context) => {
+            //       const items = options.items
+            //         ? options.items
+            //         : (this.getPropertyValue(property) as string[]);
+            //       return (
+            //         <PopupView context={context}>
 
-              //         </PopupView>
-              //       );
-              //     },
-              //     {
-              //       anchor: container,
-              //       alignX:
-              //         this.store.editorType == EditorType.Embedded
-              //           ? PopupAlignment.EndInner
-              //           : PopupAlignment.StartInner,
-              //     }
-              //   );
-              // }}
+            //         </PopupView>
+            //       );
+            //     },
+            //     {
+            //       anchor: container,
+            //       alignX:
+            //         this.store.editorType == EditorType.Embedded
+            //           ? PopupAlignment.EndInner
+            //           : PopupAlignment.StartInner,
+            //     }
+            //   );
+            // }}
             />
           </PopoverTrigger>
           <PopoverSurface>
@@ -2136,8 +2149,8 @@ export class DropZoneView
         {this.props.draggingHint == null
           ? this.props.children
           : this.state.isInSession
-          ? this.props.draggingHint()
-          : this.props.children}
+            ? this.props.draggingHint()
+            : this.props.children}
       </div>
     );
   }

@@ -3063,7 +3063,7 @@ export class Region2DConstraintBuilder {
                 expression: `first(${column.name})`,
               });
               return editingProperty;
-            }, "Add", "Add grouping expression"),
+            }, "general/plus", "Add grouping expression"),
             m.vertical([
               m.label(strings.objects.axes.dataExpressions, {
                 ignoreSearch: true,
@@ -3094,6 +3094,50 @@ export class Region2DConstraintBuilder {
                 {
                   allowDelete: true,
                   allowReorder: true,
+                }
+              )
+            ]),
+          ]
+        )
+      );
+    }
+    if (type == Region2DSublayoutType.Geo) {
+      extra.push(
+        m.searchWrapper(
+          {
+            searchPattern: [
+              strings.objects.plotSegment.paddingInner,
+              strings.objects.plotSegment.subLayout,
+            ],
+          },
+          [
+            m.fileLoader({
+              property: "sublayout",
+              field: ["geo", "GeoJSON"],
+            }, ["json", "geojson"], "Load GeoJSON file", "general/plus"),
+            m.vertical([
+              m.label(strings.objects.axes.latExpressions, {
+                ignoreSearch: true,
+              }),
+              m.inputExpression(
+                {
+                  property: "sublayout",
+                  field: ["geo", "latExpressions"],
+                },
+                {
+                  table: this.plotSegment.object.table,
+                }
+              ),
+              m.label(strings.objects.axes.latExpressions, {
+                ignoreSearch: true,
+              }),
+              m.inputExpression(
+                {
+                  property: "sublayout",
+                  field: ["geo", "lonExpressions"],
+                },
+                {
+                  table: this.plotSegment.object.table,
                 }
               )
             ]),

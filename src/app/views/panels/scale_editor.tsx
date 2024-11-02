@@ -99,9 +99,6 @@ export class ScaleEditor extends React.Component<
               {canExtendLegend ? (
                 <>
                   <Button
-                    // iconProps={{
-                    //   iconName: "Add",
-                    // }}
                     icon={<AddRegular />}
                     title={strings.scaleEditor.add}
                     onClick={() => {
@@ -138,9 +135,6 @@ export class ScaleEditor extends React.Component<
                     {strings.scaleEditor.add}
                   </Button>
                   <Button
-                    // iconProps={{
-                    //   iconName: "Remove",
-                    // }}
                     icon={<DeleteRegular />}
                     disabled={(currentSelection?.length ?? 0) === 0}
                     title={strings.scaleEditor.removeSelected}
@@ -165,9 +159,6 @@ export class ScaleEditor extends React.Component<
               ) : null}
               {canAddLegend ? (
                 <Button
-                  // iconProps={{
-                  //   iconName: "CharticulatorLegend",
-                  // }}
                   icon={
                     <SVGImageIcon url={R.getSVGIcon("CharticulatorLegend")} />
                   }
