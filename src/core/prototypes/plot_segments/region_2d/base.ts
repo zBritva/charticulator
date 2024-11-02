@@ -32,6 +32,24 @@ import {
   AlignRightRegular,
   AlignTopRegular,
 } from "@fluentui/react-icons";
+
+import {
+  geoPath,
+  geoAzimuthalEqualArea,
+  geoAzimuthalEquidistant,
+  geoGnomonic,
+  geoOrthographic,
+  geoStereographic,
+  geoAlbers,
+  geoConicConformal,
+  geoConicEqualArea,
+  geoConicEquidistant,
+  geoEquirectangular,
+  geoMercator,
+  geoTransverseMercator,
+  geoProjection,
+} from "d3-geo";
+
 import React from "react";
 import { DataAxisExpression } from "../../marks/data_axis.attrs";
 
@@ -39,6 +57,21 @@ import { group } from "d3-array";
 import { hierarchy, treemap } from "d3-hierarchy";
 
 import { precedences } from "../../../../core/expression/intrinsics";
+
+const geoProjections = {
+  "geoAzimuthalEqualArea": geoAzimuthalEqualArea,
+  "geoAzimuthalEquidistant": geoAzimuthalEquidistant,
+  "geoGnomonic": geoGnomonic,
+  "geoOrthographic": geoOrthographic,
+  "geoStereographic": geoStereographic,
+  "geoAlbers": geoAlbers,
+  "geoConicConformal": geoConicConformal,
+  "geoConicEqualArea": geoConicEqualArea,
+  "geoConicEquidistant": geoConicEquidistant,
+  "geoEquirectangular": geoEquirectangular,
+  "geoMercator": geoMercator,
+  "geoTransverseMercator": geoTransverseMercator
+};
 
 export enum Region2DSublayoutType {
   Overlap = "overlap",
@@ -1293,6 +1326,10 @@ export class Region2DConstraintBuilder {
         if (props.sublayout.type == Region2DSublayoutType.Treemap) {
           this.sublayoutTree(groups);
         }
+        // Geo layout
+        if (props.sublayout.type == Region2DSublayoutType.Geo) {
+          this.sublayoutGeo(groups);
+        }
       }
     }
   }
@@ -2132,6 +2169,7 @@ export class Region2DConstraintBuilder {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const treemapProps = this.plotSegment.object.properties.sublayout.treemap;
+    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
 
     for (const gr in groups) {
       const glyphGroup = groups[gr];
@@ -2140,7 +2178,6 @@ export class Region2DConstraintBuilder {
       if (!this.chartStateManager) {
         return;
       }
-      const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
 
       const dataExpressions = treemapProps.dataExpressions;
       const columns = [];
@@ -2238,6 +2275,88 @@ export class Region2DConstraintBuilder {
         this.solver.addEquals(ConstraintStrength.HARD, x2, x2const);
         this.solver.addEquals(ConstraintStrength.HARD, y2, y2const);
       });
+    }
+  }
+
+  public sublayoutGeo(groups: SublayoutGroup[]) {
+    const solver = this.solver;
+    const state = this.plotSegment.state;
+    const geoProps = this.plotSegment.object.properties.sublayout.geo;
+
+    debugger;
+    const { x1, y1, x2, y2 } = state.attributes;
+
+    const width = <number>x2 - <number>x1;
+    const height = <number>y2 - <number>y1;
+
+    const parsedGeoJSON = JSON.parse(geoProps.GeoJSON);
+    const projectionName = `geo${geoProps.projection || "Mercator"}`;
+    const projectionFunc = geoProjections[projectionName];
+    const projection = projectionFunc();
+    projection.rotate([0, 0, 0]);
+    projection.fitSize([
+      width,
+      height
+    ], parsedGeoJSON);
+
+    let xScale = 1;
+    let yScale = 1;
+    if (this.config.getXYScale != null) {
+      const { x, y } = this.config.getXYScale();
+      xScale = x;
+      yScale = y;
+    }
+
+    const coordinateColumns = [];
+    if (geoProps.latExpressions) {
+      const parsed = Expression.parse(geoProps.latExpressions) as Expression.FunctionCall;
+      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+      coordinateColumns.push(column);
+    }
+    if (geoProps.lonExpressions) {
+      const parsed = Expression.parse(geoProps.lonExpressions) as Expression.FunctionCall;
+      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+      coordinateColumns.push(column);
+    }
+    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
+    const dataProjection = table.rows.map((row, index) => {
+      const projection = {
+        _id: row._id,
+        glyphState: state.glyphs[index]
+      }
+
+      coordinateColumns.forEach(col => {
+        projection[col] = row[col];
+      })
+
+      return projection;
+    });
+
+    debugger;
+    for (const gr in groups) {
+      const glyphGroup = groups[gr];
+      for (const groupIndex in glyphGroup.group) {
+        const data = dataProjection[groupIndex];
+        const lat = data[coordinateColumns[0]];
+        const lon = data[coordinateColumns[1]];
+
+        const cx = this.solver.attr(data.glyphState.attributes, "x");
+        const cy = this.solver.attr(data.glyphState.attributes, "y");
+
+        const [px, py] = projection([lat, lon]);
+
+        const constants: Specification.AttributeMap = {
+          cx: px,
+          cy: py,
+        };
+
+        const cxconst = solver.attr(constants, "cx", { edit: false });
+        const cyconst = solver.attr(constants, "cy", { edit: false });
+
+        this.solver.addEquals(ConstraintStrength.HARD, cx, cxconst);
+        this.solver.addEquals(ConstraintStrength.HARD, cy, cyconst);
+      }
+
     }
   }
 

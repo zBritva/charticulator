@@ -144,7 +144,6 @@ export class FluentUIWidgetManager
         onClick={async () => {
           const file = await showOpenFileDialog(types);
           const str = await readFileAsString(file);
-          debugger;
           this.emitSetProperty(property, str);
         }}
       >

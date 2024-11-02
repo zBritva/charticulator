@@ -393,7 +393,6 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     }
     const sublayout = this.object.properties.sublayout;
     if (sublayout.type == Region2DSublayoutType.Geo && sublayout.geo && sublayout.geo.GeoJSON) {
-      debugger;
       const parsedGeoJSON = JSON.parse(sublayout.geo.GeoJSON);
       const projectionName = `geo${sublayout.geo.projection || "Mercator"}`;
       const projectionFunc = geoProjections[projectionName];
@@ -403,13 +402,6 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         this.state.attributes.x2 - this.state.attributes.x1,
         this.state.attributes.y2 - this.state.attributes.y1
       ], parsedGeoJSON);
-      // projection.fitSize([[
-      //   100, // this.state.attributes.x1,
-      //   100, // -this.state.attributes.y1
-      // ],[
-      //   this.state.attributes.x2 - this.state.attributes.x1,
-      //   this.state.attributes.y2 - this.state.attributes.y1,
-      // ]], parsedGeoJSON);
       const geoGenerator = geoPath().projection(projection);
       const pathData = geoGenerator(parsedGeoJSON);
 
@@ -426,15 +418,15 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       path.path.cmds = parsedPath.map(({ code, x, y }) => {
         return {
           cmd: code.toUpperCase(),
-          args: [x, y]
+          args: [x, -y]
         }
       });
 
       const group = Graphics.makeGroup([path.path]);
       group.key = `cartesian:${this.object._id}-geopath-group`;
       group.transform = {
-        x: (this.state.attributes.x2 - this.state.attributes.x1) / 2,
-        y: -(this.state.attributes.y2 - this.state.attributes.y1) / 2,
+        x: -(this.state.attributes.x2 - this.state.attributes.x1) / 2,
+        y: (this.state.attributes.y2 - this.state.attributes.y1) / 2,
         angle: 0
       };
 
