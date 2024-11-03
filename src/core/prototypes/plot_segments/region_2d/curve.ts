@@ -91,6 +91,7 @@ export const icons: Region2DConfigurationIcons = {
   packingIcon: "sublayout/packing",
   jitterIcon: "sublayout/jitter",
   treeMapIcon: "sublayout/treemap",
+  geoIcon: "sublayout/geo",
 };
 
 export class CurvePlotSegment extends PlotSegmentClass<
@@ -330,7 +331,8 @@ export class CurvePlotSegment extends PlotSegmentClass<
   public buildGlyphConstraints(
     solver: ConstraintSolver,
     context: BuildConstraintsContext,
-    manager: ChartStateManager
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _manager: ChartStateManager
   ): void {
     const builder = this.createBuilder(solver, context);
     builder.build();

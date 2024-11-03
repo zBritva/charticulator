@@ -42,6 +42,24 @@ import {
   AxisDataBindingType,
 } from "../../../specification/spec_types";
 import { scaleLinear } from "d3-scale";
+import {
+  geoPath,
+  geoAzimuthalEqualArea,
+  geoAzimuthalEquidistant,
+  geoGnomonic,
+  geoOrthographic,
+  geoStereographic,
+  geoAlbers,
+  geoConicConformal,
+  geoConicEqualArea,
+  geoConicEquidistant,
+  geoEquirectangular,
+  geoMercator,
+  geoTransverseMercator
+} from "d3-geo";
+
+import { parseSVG } from 'svg-path-parser';
+
 import { FluentUIWidgetManager } from "../../../../app/views/panels/widgets/fluentui_manager";
 import { EventType } from "../../../../app/views/panels/widgets/observer";
 import {
@@ -53,6 +71,21 @@ import {
   AlignTopRegular,
 } from "@fluentui/react-icons";
 import React from "react";
+
+const geoProjections = {
+  "geoAzimuthalEqualArea": geoAzimuthalEqualArea,
+  "geoAzimuthalEquidistant": geoAzimuthalEquidistant,
+  "geoGnomonic": geoGnomonic,
+  "geoOrthographic": geoOrthographic,
+  "geoStereographic": geoStereographic,
+  "geoAlbers": geoAlbers,
+  "geoConicConformal": geoConicConformal,
+  "geoConicEqualArea": geoConicEqualArea,
+  "geoConicEquidistant": geoConicEquidistant,
+  "geoEquirectangular": geoEquirectangular,
+  "geoMercator": geoMercator,
+  "geoTransverseMercator": geoTransverseMercator
+};
 
 export type CartesianAxisMode =
   | "null"
@@ -88,6 +121,7 @@ const icons: Region2DConfigurationIcons = {
   jitterIcon: "sublayout/jitter",
   treeMapIcon: "sublayout/treemap",
   overlapIcon: "Stack",
+  geoIcon: "sublayout/geo",
 };
 
 export const config: Region2DConfiguration = {
@@ -151,6 +185,21 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         paddingOuter: 0,
         dataExpressions: [],
         measureExpression: null
+      },
+      geo: {
+        projection: "Equirectangular",
+        latExpressions: "",
+        lonExpressions: "",
+        GeoJSON: "",
+        rotateGamma: 0,
+        rotateLambda: 0,
+        rotatePhi: 0,
+        fit: true,
+        scale: 100,
+        translateX: 0,
+        translateY: 0,
+        centerLat: 0,
+        centerLon: 0,
       },
       orderReversed: null,
     },
@@ -349,6 +398,54 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           this.getPlotSegmentAxisYDataGraphics(manager)
         );
       }
+    }
+    const sublayout = this.object.properties.sublayout;
+    if (sublayout.type == Region2DSublayoutType.Geo && sublayout.geo && sublayout.geo.GeoJSON) {
+      const parsedGeoJSON = JSON.parse(sublayout.geo.GeoJSON);
+      const projectionName = `geo${sublayout.geo.projection || "Mercator"}`;
+      const projectionFunc = geoProjections[projectionName];
+      const projection = projectionFunc();
+      projection.center([sublayout.geo.centerLon, sublayout.geo.centerLat]);
+      projection.rotate([sublayout.geo.rotateLambda, sublayout.geo.rotatePhi, sublayout.geo.rotateGamma]);
+      
+      if (sublayout.geo.fit) {
+        projection.fitSize([
+          this.state.attributes.x2 - this.state.attributes.x1,
+          this.state.attributes.y2 - this.state.attributes.y1
+        ], parsedGeoJSON);
+      } else {
+        projection.scale(sublayout.geo.scale);
+        projection.translate([sublayout.geo.translateX, sublayout.geo.translateY]);
+      }
+      const geoGenerator = geoPath().projection(projection);
+      const pathData = geoGenerator(parsedGeoJSON);
+
+      const parsedPath = parseSVG(pathData) as { code: string, x: number, y: number }[];
+
+      const path = Graphics.makePath({
+        strokeColor: {
+          b: 0,
+          g: 0,
+          r: 0,
+        }
+      });
+      path.path.key = `cartesian:${this.object._id}-geopath`;
+      path.path.cmds = parsedPath.map(({ code, x, y }) => {
+        return {
+          cmd: code.toUpperCase(),
+          args: [x, -y]
+        }
+      });
+
+      const group = Graphics.makeGroup([path.path]);
+      group.key = `cartesian:${this.object._id}-geopath-group`;
+      group.transform = {
+        x: -(this.state.attributes.x2 - this.state.attributes.x1) / 2,
+        y: (this.state.attributes.y2 - this.state.attributes.y1) / 2,
+        angle: 0
+      };
+
+      cartesianGraphics.elements.push(group);
     }
     return cartesianGraphics;
   }

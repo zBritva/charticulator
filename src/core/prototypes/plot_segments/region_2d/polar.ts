@@ -106,7 +106,8 @@ export const icons: Region2DConfigurationIcons = {
   packingIcon: "sublayout/packing",
   overlapIcon: "Stack",
   jitterIcon: "sublayout/jitter",
-  treeMapIcon: "sublayout/treemap"
+  treeMapIcon: "sublayout/treemap",
+  geoIcon: "sublayout/geo",
 };
 
 export class PolarPlotSegment extends PlotSegmentClass<
@@ -423,6 +424,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
   public buildGlyphConstraints(
     solver: ConstraintSolver,
     context: BuildConstraintsContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     manager: ChartStateManager
   ): void {
     const builder = this.createBuilder(solver, context);

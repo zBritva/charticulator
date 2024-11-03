@@ -13,7 +13,6 @@ import { strings } from "../../../strings";
 // import { AddRegular, DeleteRegular } from "@fluentui/react-icons";
 import { Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { FluentColumnLayout } from "./widgets/controls/fluentui_customized_components";
-import { TableType } from "../../../core/dataset";
 import { Actions } from "../../actions";
 
 export interface ScaleEditorProps {

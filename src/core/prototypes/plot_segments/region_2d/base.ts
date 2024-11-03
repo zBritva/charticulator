@@ -32,6 +32,22 @@ import {
   AlignRightRegular,
   AlignTopRegular,
 } from "@fluentui/react-icons";
+
+import {
+  geoAzimuthalEqualArea,
+  geoAzimuthalEquidistant,
+  geoGnomonic,
+  geoOrthographic,
+  geoStereographic,
+  geoAlbers,
+  geoConicConformal,
+  geoConicEqualArea,
+  geoConicEquidistant,
+  geoEquirectangular,
+  geoMercator,
+  geoTransverseMercator
+} from "d3-geo";
+
 import React from "react";
 import { DataAxisExpression } from "../../marks/data_axis.attrs";
 
@@ -40,6 +56,21 @@ import { hierarchy, treemap } from "d3-hierarchy";
 
 import { precedences } from "../../../../core/expression/intrinsics";
 
+const geoProjections = {
+  "geoAzimuthalEqualArea": geoAzimuthalEqualArea,
+  "geoAzimuthalEquidistant": geoAzimuthalEquidistant,
+  "geoGnomonic": geoGnomonic,
+  "geoOrthographic": geoOrthographic,
+  "geoStereographic": geoStereographic,
+  "geoAlbers": geoAlbers,
+  "geoConicConformal": geoConicConformal,
+  "geoConicEqualArea": geoConicEqualArea,
+  "geoConicEquidistant": geoConicEquidistant,
+  "geoEquirectangular": geoEquirectangular,
+  "geoMercator": geoMercator,
+  "geoTransverseMercator": geoTransverseMercator
+};
+
 export enum Region2DSublayoutType {
   Overlap = "overlap",
   DodgeX = "dodge-x",
@@ -47,7 +78,8 @@ export enum Region2DSublayoutType {
   Grid = "grid",
   Packing = "packing",
   Jitter = "jitter",
-  Treemap = "treemap"
+  Treemap = "treemap",
+  Geo = "geo"
 }
 
 export enum SublayoutAlignment {
@@ -67,6 +99,8 @@ export enum GridStartPosition {
   LeftBottom = "LB",
   RigtBottom = "RB",
 }
+
+export type GeoProjection = "Equirectangular" | "Mercator";
 
 export interface Region2DSublayoutOptions extends Specification.AttributeMap {
   type: Region2DSublayoutType;
@@ -111,6 +145,21 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     paddingOuter: number;
     dataExpressions: DataAxisExpression[];
     measureExpression: string;
+  },
+  geo: {
+    projection: GeoProjection;
+    latExpressions: string;
+    lonExpressions: string;
+    GeoJSON: string;
+    scale: number;
+    fit: boolean;
+    rotateLambda: number;
+    rotatePhi: number;
+    rotateGamma: number;
+    translateX: number;
+    translateY: number;
+    centerLat: number;
+    centerLon: number;
   }
 }
 
@@ -176,6 +225,7 @@ export interface Region2DConfigurationTerminology {
   overlap: string;
   jitter: string;
   treemap: string;
+  geo: string;
 }
 
 export interface Region2DConfigurationIcons {
@@ -191,6 +241,7 @@ export interface Region2DConfigurationIcons {
   packingIcon: string | React.ReactNode;
   jitterIcon: string | React.ReactNode;
   treeMapIcon: string | React.ReactNode;
+  geoIcon: string | React.ReactNode;
   overlapIcon: string | React.ReactNode;
 }
 
@@ -1282,6 +1333,10 @@ export class Region2DConstraintBuilder {
         if (props.sublayout.type == Region2DSublayoutType.Treemap) {
           this.sublayoutTree(groups);
         }
+        // Geo layout
+        if (props.sublayout.type == Region2DSublayoutType.Geo) {
+          this.sublayoutGeo(groups);
+        }
       }
     }
   }
@@ -2121,6 +2176,7 @@ export class Region2DConstraintBuilder {
     const solver = this.solver;
     const state = this.plotSegment.state;
     const treemapProps = this.plotSegment.object.properties.sublayout.treemap;
+    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
 
     for (const gr in groups) {
       const glyphGroup = groups[gr];
@@ -2129,7 +2185,6 @@ export class Region2DConstraintBuilder {
       if (!this.chartStateManager) {
         return;
       }
-      const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
 
       const dataExpressions = treemapProps.dataExpressions;
       const columns = [];
@@ -2227,6 +2282,96 @@ export class Region2DConstraintBuilder {
         this.solver.addEquals(ConstraintStrength.HARD, x2, x2const);
         this.solver.addEquals(ConstraintStrength.HARD, y2, y2const);
       });
+    }
+  }
+
+  public sublayoutGeo(groups: SublayoutGroup[]) {
+    const solver = this.solver;
+    const state = this.plotSegment.state;
+    const geoProps = this.plotSegment.object.properties.sublayout.geo;
+
+    const { x1, y1, x2, y2 } = state.attributes;
+
+    const width = <number>x2 - <number>x1;
+    const height = <number>y2 - <number>y1;
+
+    const shiftX = - (<number>x2 - <number>x1) / 2;
+    const shiftY = (<number>y2 - <number>y1) / 2;
+
+    const parsedGeoJSON = JSON.parse(geoProps.GeoJSON);
+    const projectionName = `geo${geoProps.projection || "Mercator"}`;
+    const projectionFunc = geoProjections[projectionName];
+    const projection = projectionFunc();
+    projection.center([geoProps.centerLon, geoProps.centerLat]);
+    projection.rotate([geoProps.rotateLambda, geoProps.rotatePhi, geoProps.rotateGamma]);
+
+    if (geoProps.fit) {
+      projection.fitSize([
+        width,
+        height
+      ], parsedGeoJSON);
+    } else {
+      projection.scale(geoProps.scale);
+      projection.translate([geoProps.translateX, geoProps.translateY]);
+    }
+
+    // let xScale = 1;
+    // let yScale = 1;
+    // if (this.config.getXYScale != null) {
+    //   const { x, y } = this.config.getXYScale();
+    //   xScale = x;
+    //   yScale = y;
+    // }
+
+    const coordinateColumns = [];
+    if (geoProps.latExpressions) {
+      const parsed = Expression.parse(geoProps.latExpressions) as Expression.FunctionCall;
+      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+      coordinateColumns.push(column);
+    }
+    if (geoProps.lonExpressions) {
+      const parsed = Expression.parse(geoProps.lonExpressions) as Expression.FunctionCall;
+      const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
+      coordinateColumns.push(column);
+    }
+    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
+    const dataProjection = table.rows.map((row, index) => {
+      const projection = {
+        _id: row._id,
+        glyphState: state.glyphs[index]
+      }
+
+      coordinateColumns.forEach(col => {
+        projection[col] = row[col];
+      })
+
+      return projection;
+    });
+
+    for (const gr in groups) {
+      const glyphGroup = groups[gr];
+      for (const groupIndex in glyphGroup.group) {
+        const data = dataProjection[groupIndex];
+        const lat = data[coordinateColumns[0]];
+        const lon = data[coordinateColumns[1]];
+
+        const cx = this.solver.attr(data.glyphState.attributes, "x");
+        const cy = this.solver.attr(data.glyphState.attributes, "y");
+
+        const [px, py] = projection([lon, lat]);
+
+        const constants: Specification.AttributeMap = {
+          cx: px + shiftX,
+          cy: -py + shiftY,
+        };
+
+        const cxconst = solver.attr(constants, "cx", { edit: false });
+        const cyconst = solver.attr(constants, "cy", { edit: false });
+
+        this.solver.addEquals(ConstraintStrength.HARD, cx, cxconst);
+        this.solver.addEquals(ConstraintStrength.HARD, cy, cyconst);
+      }
+
     }
   }
 
@@ -2601,6 +2746,11 @@ export class Region2DConstraintBuilder {
       label: terminology.treemap,
       icon: icons.treeMapIcon,
     };
+    const geoOption = {
+      value: Region2DSublayoutType.Geo,
+      label: terminology.geo,
+      icon: icons.geoIcon,
+    };
     const props = this.plotSegment.object.properties;
     const xMode = props.xData ? props.xData.type : "null";
     const yMode = props.yData ? props.yData.type : "null";
@@ -2618,6 +2768,7 @@ export class Region2DConstraintBuilder {
           jitterOption,
           overlapOption,
           treemapOption,
+          geoOption,
         ];
       }
       return [
@@ -2629,7 +2780,7 @@ export class Region2DConstraintBuilder {
         overlapOption
       ];
     }
-    return [packingOption, jitterOption, overlapOption, treemapOption];
+    return [packingOption, jitterOption, overlapOption, treemapOption, geoOption];
   }
 
   public isSublayoutApplicable() {
@@ -3046,7 +3197,7 @@ export class Region2DConstraintBuilder {
                 expression: `first(${column.name})`,
               });
               return editingProperty;
-            }, "Add", "Add grouping expression"),
+            }, "general/plus", "Add grouping expression"),
             m.vertical([
               m.label(strings.objects.axes.dataExpressions, {
                 ignoreSearch: true,
@@ -3079,6 +3230,226 @@ export class Region2DConstraintBuilder {
                   allowReorder: true,
                 }
               )
+            ]),
+          ]
+        )
+      );
+    }
+    if (type == Region2DSublayoutType.Geo) {
+      extra.push(
+        m.searchWrapper(
+          {
+            searchPattern: [
+              strings.objects.plotSegment.paddingInner,
+              strings.objects.plotSegment.subLayout,
+            ],
+          },
+          [
+            m.vertical([
+              m.label(strings.objects.axes.geoJSON, {
+                ignoreSearch: true,
+              }),
+              m.fileLoader({
+                property: "sublayout",
+                field: ["geo", "GeoJSON"],
+              }, ["json", "geojson"], "Load GeoJSON file", "general/plus"),
+              m.label(strings.objects.axes.latExpressions, {
+                ignoreSearch: true,
+              }),
+              m.inputExpression(
+                {
+                  property: "sublayout",
+                  field: ["geo", "latExpressions"],
+                },
+                {
+                  table: this.plotSegment.object.table,
+                }
+              ),
+              m.label(strings.objects.axes.latExpressions, {
+                ignoreSearch: true,
+              }),
+              m.inputExpression(
+                {
+                  property: "sublayout",
+                  field: ["geo", "lonExpressions"],
+                },
+                {
+                  table: this.plotSegment.object.table,
+                }
+              ),
+              m.inputSelect(
+                {
+                  property: "sublayout",
+                  field: ["geo", "projection"],
+                },
+                {
+                  type: "dropdown",
+                  showLabel: true,
+                  label: strings.objects.plotSegment.geo.projection,
+                  icons: [],
+                  labels: [
+                    'AzimuthalEqualArea',
+                    'AzimuthalEquidistant',
+                    'Gnomonic',
+                    'Orthographic',
+                    'Stereographic',
+                    'Albers',
+                    'ConicConformal',
+                    'ConicEqualArea',
+                    'ConicEquidistant',
+                    'Equirectangular',
+                    'Mercator',
+                    'TransverseMercator',
+                  ],
+                  options: [
+                    'AzimuthalEqualArea',
+                    'AzimuthalEquidistant',
+                    'Gnomonic',
+                    'Orthographic',
+                    'Stereographic',
+                    'Albers',
+                    'ConicConformal',
+                    'ConicEqualArea',
+                    'ConicEquidistant',
+                    'Equirectangular',
+                    'Mercator',
+                    'TransverseMercator',
+                  ],
+                  searchSection: strings.objects.general,
+                }
+              ),
+              m.label(strings.objects.plotSegment.geo.center, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "centerLat"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.x,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -90,
+                  maximum: 90,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "centerLon"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.y,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.label(strings.objects.plotSegment.geo.rotation, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "rotateLambda"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.rotateLambda,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "rotatePhi"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.rotatePhi,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "rotateGamma"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.rotateGamma,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputBoolean(
+                {
+                  property: "sublayout",
+                  field: ["geo", "fit"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.fit,
+                  type: "checkbox",
+                  headerLabel: "Fit"
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "scale"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.scale,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: 1,
+                  maximum: 1000,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.label(strings.objects.plotSegment.geo.translate, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "translateX"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.x,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -1000,
+                  maximum: 1000,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "translateY"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.y,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -1000,
+                  maximum: 1000,
+                  searchSection: strings.objects.style,
+                }
+              ),
             ]),
           ]
         )
