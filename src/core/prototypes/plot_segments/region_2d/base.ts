@@ -34,7 +34,6 @@ import {
 } from "@fluentui/react-icons";
 
 import {
-  geoPath,
   geoAzimuthalEqualArea,
   geoAzimuthalEquidistant,
   geoGnomonic,
@@ -46,8 +45,7 @@ import {
   geoConicEquidistant,
   geoEquirectangular,
   geoMercator,
-  geoTransverseMercator,
-  geoProjection,
+  geoTransverseMercator
 } from "d3-geo";
 
 import React from "react";
@@ -153,6 +151,15 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     latExpressions: string;
     lonExpressions: string;
     GeoJSON: string;
+    scale: number;
+    fit: boolean;
+    rotateLambda: number;
+    rotatePhi: number;
+    rotateGamma: number;
+    translateX: number;
+    translateY: number;
+    centerLat: number;
+    centerLon: number;
   }
 }
 
@@ -2283,24 +2290,30 @@ export class Region2DConstraintBuilder {
     const state = this.plotSegment.state;
     const geoProps = this.plotSegment.object.properties.sublayout.geo;
 
-    debugger;
     const { x1, y1, x2, y2 } = state.attributes;
 
     const width = <number>x2 - <number>x1;
     const height = <number>y2 - <number>y1;
-    
+
     const shiftX = - (<number>x2 - <number>x1) / 2;
     const shiftY = (<number>y2 - <number>y1) / 2;
-    
+
     const parsedGeoJSON = JSON.parse(geoProps.GeoJSON);
     const projectionName = `geo${geoProps.projection || "Mercator"}`;
     const projectionFunc = geoProjections[projectionName];
     const projection = projectionFunc();
-    projection.rotate([0, 0, 0]);
-    projection.fitSize([
-      width,
-      height
-    ], parsedGeoJSON);
+    projection.center([geoProps.centerLon, geoProps.centerLat]);
+    projection.rotate([geoProps.rotateLambda, geoProps.rotatePhi, geoProps.rotateGamma]);
+
+    if (geoProps.fit) {
+      projection.fitSize([
+        width,
+        height
+      ], parsedGeoJSON);
+    } else {
+      projection.scale(geoProps.scale);
+      projection.translate([geoProps.translateX, geoProps.translateY]);
+    }
 
     // let xScale = 1;
     // let yScale = 1;
@@ -2335,7 +2348,6 @@ export class Region2DConstraintBuilder {
       return projection;
     });
 
-    debugger;
     for (const gr in groups) {
       const glyphGroup = groups[gr];
       for (const groupIndex in glyphGroup.group) {
@@ -3241,8 +3253,6 @@ export class Region2DConstraintBuilder {
                 property: "sublayout",
                 field: ["geo", "GeoJSON"],
               }, ["json", "geojson"], "Load GeoJSON file", "general/plus"),
-            ]),
-            m.vertical([
               m.label(strings.objects.axes.latExpressions, {
                 ignoreSearch: true,
               }),
@@ -3266,7 +3276,180 @@ export class Region2DConstraintBuilder {
                 {
                   table: this.plotSegment.object.table,
                 }
-              )
+              ),
+              m.inputSelect(
+                {
+                  property: "sublayout",
+                  field: ["geo", "projection"],
+                },
+                {
+                  type: "dropdown",
+                  showLabel: true,
+                  label: strings.objects.plotSegment.geo.projection,
+                  icons: [],
+                  labels: [
+                    'AzimuthalEqualArea',
+                    'AzimuthalEquidistant',
+                    'Gnomonic',
+                    'Orthographic',
+                    'Stereographic',
+                    'Albers',
+                    'ConicConformal',
+                    'ConicEqualArea',
+                    'ConicEquidistant',
+                    'Equirectangular',
+                    'Mercator',
+                    'TransverseMercator',
+                  ],
+                  options: [
+                    'AzimuthalEqualArea',
+                    'AzimuthalEquidistant',
+                    'Gnomonic',
+                    'Orthographic',
+                    'Stereographic',
+                    'Albers',
+                    'ConicConformal',
+                    'ConicEqualArea',
+                    'ConicEquidistant',
+                    'Equirectangular',
+                    'Mercator',
+                    'TransverseMercator',
+                  ],
+                  searchSection: strings.objects.general,
+                }
+              ),
+              m.label(strings.objects.plotSegment.geo.center, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "centerLat"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.x,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -90,
+                  maximum: 90,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "centerLon"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.y,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.label(strings.objects.plotSegment.geo.rotation, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "rotateLambda"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.rotateLambda,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "rotatePhi"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.rotatePhi,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "rotateGamma"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.rotateGamma,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -180,
+                  maximum: 180,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputBoolean(
+                {
+                  property: "sublayout",
+                  field: ["geo", "fit"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.fit,
+                  type: "checkbox",
+                  headerLabel: "Fit"
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "scale"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.scale,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: 1,
+                  maximum: 500,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.label(strings.objects.plotSegment.geo.translate, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "translateX"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.x,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -1000,
+                  maximum: 1000,
+                  searchSection: strings.objects.style,
+                }
+              ),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "translateY"],
+                },
+                {
+                  label: strings.objects.plotSegment.geo.y,
+                  showUpdown: true,
+                  updownTick: 1,
+                  minimum: -1000,
+                  maximum: 1000,
+                  searchSection: strings.objects.style,
+                }
+              ),
             ]),
           ]
         )

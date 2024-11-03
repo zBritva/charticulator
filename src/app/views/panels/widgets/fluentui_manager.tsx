@@ -139,6 +139,9 @@ export class FluentUIWidgetManager
   public fileLoader(property: Prototypes.Controls.Property, types: string[], text?: string, icon?: string) {
     return (
       <Button
+        style={{
+          width: "100%"
+        }}
         icon={<SVGImageIcon url={R.getSVGIcon(icon)} />}
         // text={importTemplate}
         onClick={async () => {

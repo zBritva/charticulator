@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
@@ -261,7 +262,16 @@ export function createDefaultPlotSegment(
           lonExpressions: `first(${table.columns
             .filter(col => col.metadata.kind === Dataset.DataKind.Numerical && col.name === "longitude")
             .map(col => col.name)[0]})`,
-          GeoJSON: GeoJSON
+          GeoJSON: GeoJSON,
+          scale: 100,
+          rotateGamma: 0,
+          rotateLambda: 0,
+          rotatePhi: 0,
+          translateX: 100,
+          translateY: 100,
+          centerLat: 0,
+          centerLon: 0,
+          fit: true,
         }
       },
     },

@@ -534,7 +534,22 @@ export const strings = {
       directionUpLeft: "Up Left",
       directionUpRight: "Up Right",
       paddingInner: "Inner padding",
-      paddingOuter: "Outer padding"
+      paddingOuter: "Outer padding",
+      geo: {
+        fit: "Fit to Plot segment area",
+        projection: "Projection",
+        scale: "Scale",
+        rotation: "Rotation",
+        rotateLambda: "λ", 
+        rotatePhi: "φ",
+        rotateGamma: "γ",
+        translate: "Translate",
+        x: "x",
+        y: "y",
+        center: "Center",
+        latitude: "Latitude",
+        longitude: "Longitude",
+      }
     },
     visibleOn: {
       visibility: "Visibility",

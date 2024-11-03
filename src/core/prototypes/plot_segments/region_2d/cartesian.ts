@@ -55,8 +55,7 @@ import {
   geoConicEquidistant,
   geoEquirectangular,
   geoMercator,
-  geoTransverseMercator,
-  geoProjection,
+  geoTransverseMercator
 } from "d3-geo";
 
 import { parseSVG } from 'svg-path-parser';
@@ -191,7 +190,16 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         projection: "Equirectangular",
         latExpressions: "",
         lonExpressions: "",
-        GeoJSON: ""
+        GeoJSON: "",
+        rotateGamma: 0,
+        rotateLambda: 0,
+        rotatePhi: 0,
+        fit: true,
+        scale: 100,
+        translateX: 0,
+        translateY: 0,
+        centerLat: 0,
+        centerLon: 0,
       },
       orderReversed: null,
     },
@@ -397,11 +405,18 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       const projectionName = `geo${sublayout.geo.projection || "Mercator"}`;
       const projectionFunc = geoProjections[projectionName];
       const projection = projectionFunc();
-      projection.rotate([0, 0, 0]);
-      projection.fitSize([
-        this.state.attributes.x2 - this.state.attributes.x1,
-        this.state.attributes.y2 - this.state.attributes.y1
-      ], parsedGeoJSON);
+      projection.center([sublayout.geo.centerLon, sublayout.geo.centerLat]);
+      projection.rotate([sublayout.geo.rotateLambda, sublayout.geo.rotatePhi, sublayout.geo.rotateGamma]);
+      
+      if (sublayout.geo.fit) {
+        projection.fitSize([
+          this.state.attributes.x2 - this.state.attributes.x1,
+          this.state.attributes.y2 - this.state.attributes.y1
+        ], parsedGeoJSON);
+      } else {
+        projection.scale(sublayout.geo.scale);
+        projection.translate([sublayout.geo.translateX, sublayout.geo.translateY]);
+      }
       const geoGenerator = geoPath().projection(projection);
       const pathData = geoGenerator(parsedGeoJSON);
 
