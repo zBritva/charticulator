@@ -2298,6 +2298,10 @@ export class Region2DConstraintBuilder {
     const shiftX = - (<number>x2 - <number>x1) / 2;
     const shiftY = (<number>y2 - <number>y1) / 2;
 
+    if (!geoProps.GeoJSON) {
+      return;
+    }
+
     const parsedGeoJSON = JSON.parse(geoProps.GeoJSON);
     const projectionName = `geo${geoProps.projection || "Mercator"}`;
     const projectionFunc = geoProjections[projectionName];

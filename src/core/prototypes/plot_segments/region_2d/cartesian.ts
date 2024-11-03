@@ -58,7 +58,7 @@ import {
   geoTransverseMercator
 } from "d3-geo";
 
-import { parseSVG } from 'svg-path-parser';
+import parseSVG from 'svg-path-parser';
 
 import { FluentUIWidgetManager } from "../../../../app/views/panels/widgets/fluentui_manager";
 import { EventType } from "../../../../app/views/panels/widgets/observer";
@@ -402,50 +402,52 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     const sublayout = this.object.properties.sublayout;
     if (sublayout.type == Region2DSublayoutType.Geo && sublayout.geo && sublayout.geo.GeoJSON) {
       const parsedGeoJSON = JSON.parse(sublayout.geo.GeoJSON);
-      const projectionName = `geo${sublayout.geo.projection || "Mercator"}`;
-      const projectionFunc = geoProjections[projectionName];
-      const projection = projectionFunc();
-      projection.center([sublayout.geo.centerLon, sublayout.geo.centerLat]);
-      projection.rotate([sublayout.geo.rotateLambda, sublayout.geo.rotatePhi, sublayout.geo.rotateGamma]);
-      
-      if (sublayout.geo.fit) {
-        projection.fitSize([
-          this.state.attributes.x2 - this.state.attributes.x1,
-          this.state.attributes.y2 - this.state.attributes.y1
-        ], parsedGeoJSON);
-      } else {
-        projection.scale(sublayout.geo.scale);
-        projection.translate([sublayout.geo.translateX, sublayout.geo.translateY]);
+      if (sublayout.geo.GeoJSON) {
+        const projectionName = `geo${sublayout.geo.projection || "Mercator"}`;
+        const projectionFunc = geoProjections[projectionName];
+        const projection = projectionFunc();
+        projection.center([sublayout.geo.centerLon, sublayout.geo.centerLat]);
+        projection.rotate([sublayout.geo.rotateLambda, sublayout.geo.rotatePhi, sublayout.geo.rotateGamma]);
+        
+        if (sublayout.geo.fit) {
+          projection.fitSize([
+            this.state.attributes.x2 - this.state.attributes.x1,
+            this.state.attributes.y2 - this.state.attributes.y1
+          ], parsedGeoJSON);
+        } else {
+          projection.scale(sublayout.geo.scale);
+          projection.translate([sublayout.geo.translateX, sublayout.geo.translateY]);
+        }
+        const geoGenerator = geoPath().projection(projection);
+        const pathData = geoGenerator(parsedGeoJSON);
+
+        const parsedPath = parseSVG(pathData) as { code: string, x: number, y: number }[];
+
+        const path = Graphics.makePath({
+          strokeColor: {
+            b: 0,
+            g: 0,
+            r: 0,
+          }
+        });
+        path.path.key = `cartesian:${this.object._id}-geopath`;
+        path.path.cmds = parsedPath.map(({ code, x, y }) => {
+          return {
+            cmd: code.toUpperCase(),
+            args: [x, -y]
+          }
+        });
+
+        const group = Graphics.makeGroup([path.path]);
+        group.key = `cartesian:${this.object._id}-geopath-group`;
+        group.transform = {
+          x: -(this.state.attributes.x2 - this.state.attributes.x1) / 2,
+          y: (this.state.attributes.y2 - this.state.attributes.y1) / 2,
+          angle: 0
+        };
+
+        cartesianGraphics.elements.push(group);
       }
-      const geoGenerator = geoPath().projection(projection);
-      const pathData = geoGenerator(parsedGeoJSON);
-
-      const parsedPath = parseSVG(pathData) as { code: string, x: number, y: number }[];
-
-      const path = Graphics.makePath({
-        strokeColor: {
-          b: 0,
-          g: 0,
-          r: 0,
-        }
-      });
-      path.path.key = `cartesian:${this.object._id}-geopath`;
-      path.path.cmds = parsedPath.map(({ code, x, y }) => {
-        return {
-          cmd: code.toUpperCase(),
-          args: [x, -y]
-        }
-      });
-
-      const group = Graphics.makeGroup([path.path]);
-      group.key = `cartesian:${this.object._id}-geopath-group`;
-      group.transform = {
-        x: -(this.state.attributes.x2 - this.state.attributes.x1) / 2,
-        y: (this.state.attributes.y2 - this.state.attributes.y1) / 2,
-        angle: 0
-      };
-
-      cartesianGraphics.elements.push(group);
     }
     return cartesianGraphics;
   }
