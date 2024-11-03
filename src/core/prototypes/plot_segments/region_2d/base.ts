@@ -3415,7 +3415,7 @@ export class Region2DConstraintBuilder {
                   showUpdown: true,
                   updownTick: 1,
                   minimum: 1,
-                  maximum: 500,
+                  maximum: 1000,
                   searchSection: strings.objects.style,
                 }
               ),
