@@ -2298,7 +2298,7 @@ export class Region2DConstraintBuilder {
     const shiftX = - (<number>x2 - <number>x1) / 2;
     const shiftY = (<number>y2 - <number>y1) / 2;
 
-    if (!geoProps.GeoJSON) {
+    if (!geoProps || !geoProps.GeoJSON) {
       return;
     }
 
@@ -2351,6 +2351,10 @@ export class Region2DConstraintBuilder {
 
       return projection;
     });
+
+    if (coordinateColumns.length == 0) {
+      return;
+    }
 
     for (const gr in groups) {
       const glyphGroup = groups[gr];
@@ -3435,8 +3439,8 @@ export class Region2DConstraintBuilder {
                   label: strings.objects.plotSegment.geo.x,
                   showUpdown: true,
                   updownTick: 1,
-                  minimum: -1000,
-                  maximum: 1000,
+                  minimum: -5000,
+                  maximum: 5000,
                   searchSection: strings.objects.style,
                 }
               ),
@@ -3449,8 +3453,8 @@ export class Region2DConstraintBuilder {
                   label: strings.objects.plotSegment.geo.y,
                   showUpdown: true,
                   updownTick: 1,
-                  minimum: -1000,
-                  maximum: 1000,
+                  minimum: -5000,
+                  maximum: 5000,
                   searchSection: strings.objects.style,
                 }
               ),

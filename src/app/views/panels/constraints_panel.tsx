@@ -209,7 +209,6 @@ export const ConstraintsPanel: React.FC<{
                             setConstraints(newConstraints);
                         }}
                         onRemove={() => {
-                            debugger;
                             const newConstraints = [...constraints];
                             const index = newConstraints.findIndex(c => c._id === constraint._id);
                             newConstraints.splice(index, 1);
