@@ -81,6 +81,9 @@ export class ErrorBoundary extends React.Component<
               }}
             />
           </p>
+          <pre>
+            {this.state.errorString}
+          </pre>
         </div>
       );
     }
