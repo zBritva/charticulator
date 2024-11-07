@@ -225,8 +225,8 @@ export class NestedChartElementClass extends EmphasizableMarkClass<
       name: "NestedData",
       tables: [
         {
-          name: "MainTable",
-          displayName: "MainTable",
+          name: "main",
+          displayName: "Main",
           columns: table.columns.map((x) => {
             return {
               name: columnNameMap[x.name],
@@ -436,7 +436,7 @@ export class NestedChartElementClass extends EmphasizableMarkClass<
       super.createDefault(...args)
     );
     const myGlyphID = uniqueID();
-    const tableName = "MainTable";
+    const tableName = "main";
     obj.properties.specification = {
       _id: uniqueID(),
       classID: "chart.rectangle",

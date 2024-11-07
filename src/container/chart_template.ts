@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
@@ -24,10 +25,11 @@ import {
 import { CompiledGroupBy } from "../core/prototypes/group_by";
 import { OrderType } from "../core/specification/spec_types";
 import { DataAxisExpression } from "../core/prototypes/marks/data_axis.attrs";
-import { MappingType, ScaleMapping, ValueMapping } from "../core/specification";
+import { IObject, MappingType, ScaleMapping, ValueMapping } from "../core/specification";
 import { Region2DSublayoutOptions } from "../core/prototypes/plot_segments/region_2d/base";
 import { GuideAttributeNames } from "../core/prototypes/guides";
 import { scaleLinear } from "d3-scale";
+import { NestedChartElementProperties } from "../core/prototypes/marks/nested_chart.attrs";
 
 export interface TemplateInstance {
   chart: Specification.Chart;
@@ -139,209 +141,216 @@ export class ChartTemplate {
     const chart = deepClone(this.template.specification);
 
     // Transform table and expressions with current assignments
-    for (const item of forEachObject(chart)) {
-      // Replace table with assigned table
-      if (item.kind == "chart-element") {
-        // legend with column names
-        if (Prototypes.isType(item.chartElement.classID, "legend.custom")) {
-          const scaleMapping = item.chartElement.mappings
-            .mappingOptions as ScaleMapping;
-          scaleMapping.expression = this.transformExpression(
-            scaleMapping.expression,
-            scaleMapping.table
-          );
-        }
 
-        // Guide
-        if (Prototypes.isType(item.chartElement.classID, "guide.guide")) {
-          const valueProp = this.template.properties.filter(
-            (p) =>
-              p.objectID === item.chartElement._id &&
-              p.target.attribute === GuideAttributeNames.value
-          )[0];
-          if (valueProp) {
-            const valueMapping: Specification.ValueMapping = {
-              type: MappingType.value,
-              value: valueProp.default as number,
-            };
-            item.chartElement.mappings.value = valueMapping;
-          }
-        }
 
-        // PlotSegment
-        if (Prototypes.isType(item.chartElement.classID, "plot-segment")) {
-          const plotSegment = item.chartElement as Specification.PlotSegment;
-          const originalTable = plotSegment.table;
-          plotSegment.table = this.tableAssignment[originalTable];
-          // Also fix filter and gropyBy expressions
-          if (plotSegment.filter) {
-            if (plotSegment.filter.categories) {
-              plotSegment.filter.categories.expression = this.transformExpression(
-                plotSegment.filter.categories.expression,
-                originalTable
-              );
-            }
-            if (plotSegment.filter.expression) {
-              plotSegment.filter.expression = this.transformExpression(
-                plotSegment.filter.expression,
-                originalTable
-              );
+    const transformChart = (chart) => {
+      for (const item of forEachObject(chart)) {
+        // Replace table with assigned table
+        if (item.kind == "chart-element") {
+          // legend with column names
+          if (Prototypes.isType(item.chartElement.classID, "legend.custom")) {
+            const scaleMapping = item.chartElement.mappings
+              .mappingOptions as ScaleMapping;
+            scaleMapping.expression = this.transformExpression(
+              scaleMapping.expression,
+              scaleMapping.table
+            );
+          }
+
+          // Guide
+          if (Prototypes.isType(item.chartElement.classID, "guide.guide")) {
+            const valueProp = this.template.properties.filter(
+              (p) => p.objectID === item.chartElement._id &&
+                p.target.attribute === GuideAttributeNames.value
+            )[0];
+            if (valueProp) {
+              const valueMapping: Specification.ValueMapping = {
+                type: MappingType.value,
+                value: valueProp.default as number,
+              };
+              item.chartElement.mappings.value = valueMapping;
             }
           }
-          if (plotSegment.groupBy) {
-            if (plotSegment.groupBy.expression) {
-              plotSegment.groupBy.expression = this.transformExpression(
-                plotSegment.groupBy.expression,
-                originalTable
-              );
+
+          // PlotSegment
+          if (Prototypes.isType(item.chartElement.classID, "plot-segment")) {
+            const plotSegment = item.chartElement as Specification.PlotSegment;
+            const originalTable = plotSegment.table;
+            plotSegment.table = this.tableAssignment[originalTable];
+            // Also fix filter and gropyBy expressions
+            if (plotSegment.filter) {
+              if (plotSegment.filter.categories) {
+                plotSegment.filter.categories.expression = this.transformExpression(
+                  plotSegment.filter.categories.expression,
+                  originalTable
+                );
+              }
+              if (plotSegment.filter.expression) {
+                plotSegment.filter.expression = this.transformExpression(
+                  plotSegment.filter.expression,
+                  originalTable
+                );
+              }
+            }
+            if (plotSegment.groupBy) {
+              if (plotSegment.groupBy.expression) {
+                plotSegment.groupBy.expression = this.transformExpression(
+                  plotSegment.groupBy.expression,
+                  originalTable
+                );
+              }
+            }
+            if (plotSegment.properties.xData) {
+              if ((plotSegment.properties.xData as any).expression) {
+                (plotSegment.properties
+                  .xData as any).expression = this.transformExpression(
+                    (plotSegment.properties.xData as any).expression,
+                    originalTable
+                  );
+              }
+              if ((plotSegment.properties.xData as any).rawExpression) {
+                (plotSegment.properties
+                  .xData as any).rawExpression = this.transformExpression(
+                    (plotSegment.properties.xData as any).rawExpression,
+                    originalTable
+                  );
+              }
+            }
+            if (plotSegment.properties.yData) {
+              if ((plotSegment.properties.yData as any).expression) {
+                (plotSegment.properties
+                  .yData as any).expression = this.transformExpression(
+                    (plotSegment.properties.yData as any).expression,
+                    originalTable
+                  );
+              }
+              if ((plotSegment.properties.yData as any).rawExpression) {
+                (plotSegment.properties
+                  .yData as any).rawExpression = this.transformExpression(
+                    (plotSegment.properties.yData as any).rawExpression,
+                    originalTable
+                  );
+              }
+            }
+            if (plotSegment.properties.axis) {
+              if ((plotSegment.properties.axis as any).expression) {
+                (plotSegment.properties
+                  .axis as any).expression = this.transformExpression(
+                    (plotSegment.properties.axis as any).expression,
+                    originalTable
+                  );
+              }
+              if ((plotSegment.properties.axis as any).rawExpression) {
+                (plotSegment.properties
+                  .axis as any).rawExpression = this.transformExpression(
+                    (plotSegment.properties.axis as any).rawExpression,
+                    originalTable
+                  );
+              }
+            }
+            if (plotSegment.properties.sublayout) {
+              const expression = (plotSegment.properties
+                .sublayout as Region2DSublayoutOptions).order?.expression;
+              if (expression) {
+                (plotSegment.properties
+                  .sublayout as Region2DSublayoutOptions).order.expression = this.transformExpression(
+                    expression,
+                    originalTable
+                  );
+              }
             }
           }
-          if (plotSegment.properties.xData) {
-            if ((plotSegment.properties.xData as any).expression) {
-              (plotSegment.properties
-                .xData as any).expression = this.transformExpression(
-                (plotSegment.properties.xData as any).expression,
-                originalTable
-              );
-            }
-            if ((plotSegment.properties.xData as any).rawExpression) {
-              (plotSegment.properties
-                .xData as any).rawExpression = this.transformExpression(
-                (plotSegment.properties.xData as any).rawExpression,
-                originalTable
-              );
-            }
-          }
-          if (plotSegment.properties.yData) {
-            if ((plotSegment.properties.yData as any).expression) {
-              (plotSegment.properties
-                .yData as any).expression = this.transformExpression(
-                (plotSegment.properties.yData as any).expression,
-                originalTable
-              );
-            }
-            if ((plotSegment.properties.yData as any).rawExpression) {
-              (plotSegment.properties
-                .yData as any).rawExpression = this.transformExpression(
-                (plotSegment.properties.yData as any).rawExpression,
-                originalTable
-              );
-            }
-          }
-          if (plotSegment.properties.axis) {
-            if ((plotSegment.properties.axis as any).expression) {
-              (plotSegment.properties
-                .axis as any).expression = this.transformExpression(
-                (plotSegment.properties.axis as any).expression,
-                originalTable
-              );
-            }
-            if ((plotSegment.properties.axis as any).rawExpression) {
-              (plotSegment.properties
-                .axis as any).rawExpression = this.transformExpression(
-                (plotSegment.properties.axis as any).rawExpression,
-                originalTable
-              );
-            }
-          }
-          if (plotSegment.properties.sublayout) {
-            const expression = (plotSegment.properties
-              .sublayout as Region2DSublayoutOptions).order?.expression;
-            if (expression) {
-              (plotSegment.properties
-                .sublayout as Region2DSublayoutOptions).order.expression = this.transformExpression(
-                expression,
-                originalTable
-              );
-            }
-          }
-        }
-        // Links
-        if (Prototypes.isType(item.chartElement.classID, "links")) {
-          if (item.chartElement.classID == "links.through") {
-            const props = item.chartElement
-              .properties as Prototypes.Links.LinksProperties;
-            if (props.linkThrough.facetExpressions) {
-              props.linkThrough.facetExpressions = props.linkThrough.facetExpressions.map(
-                (x) =>
-                  this.transformExpression(
+          // Links
+          if (Prototypes.isType(item.chartElement.classID, "links")) {
+            if (item.chartElement.classID == "links.through") {
+              const props = item.chartElement
+                .properties as Prototypes.Links.LinksProperties;
+              if (props.linkThrough.facetExpressions) {
+                props.linkThrough.facetExpressions = props.linkThrough.facetExpressions.map(
+                  (x) => this.transformExpression(
                     x,
                     (getById(
                       this.template.specification.elements,
                       props.linkThrough.plotSegment
                     ) as Specification.PlotSegment).table
                   )
-              );
+                );
+              }
+            }
+            if (item.chartElement.classID == "links.table") {
+              const props = item.chartElement
+                .properties as Prototypes.Links.LinksProperties;
+              props.linkTable.table = this.tableAssignment[props.linkTable.table];
             }
           }
-          if (item.chartElement.classID == "links.table") {
-            const props = item.chartElement
-              .properties as Prototypes.Links.LinksProperties;
-            props.linkTable.table = this.tableAssignment[props.linkTable.table];
-          }
         }
-      }
-      // Glyphs
-      if (item.kind == "glyph") {
-        item.glyph.table = this.tableAssignment[item.glyph.table];
-      }
+        // Glyphs
+        if (item.kind == "glyph") {
+          item.glyph.table = this.tableAssignment[item.glyph.table];
+        }
 
-      if (item.kind == "mark") {
-        if (Prototypes.isType(item.mark.classID, "mark.data-axis")) {
-          try {
-            const glyphId = item.glyph._id;
+        if (item.kind == "mark") {
+          if (Prototypes.isType(item.mark.classID, "mark.data-axis")) {
+            try {
+              const glyphId = item.glyph._id;
 
-            const glyphPlotSegment = [...forEachObject(chart)].find(
-              (item) =>
-                item.kind == "chart-element" &&
-                Prototypes.isType(item.chartElement.classID, "plot-segment") &&
-                (item.chartElement as any).glyph === glyphId
-            );
+              const glyphPlotSegment = [...forEachObject(chart)].find(
+                (item) => item.kind == "chart-element" &&
+                  Prototypes.isType(item.chartElement.classID, "plot-segment") &&
+                  (item.chartElement as any).glyph === glyphId
+              );
 
-            const dataExpressions = item.mark.properties
-              .dataExpressions as DataAxisExpression[];
+              const dataExpressions = item.mark.properties
+                .dataExpressions as DataAxisExpression[];
 
-            // table name in plotSegment can be replaced already
-            const table =
-              Object.keys(this.tableAssignment).find(
-                (key) =>
-                  this.tableAssignment[key] ===
+              // table name in plotSegment can be replaced already
+              const table = Object.keys(this.tableAssignment).find(
+                (key) => this.tableAssignment[key] ===
                   (glyphPlotSegment.chartElement as any).table
               ) || (glyphPlotSegment.chartElement as any).table;
 
-            dataExpressions.forEach((expression) => {
-              expression.expression = this.transformExpression(
-                expression.expression,
-                table
-              );
-            });
-          } catch (ex) {
-            console.error(ex);
+              dataExpressions.forEach((expression) => {
+                expression.expression = this.transformExpression(
+                  expression.expression,
+                  table
+                );
+              });
+            } catch (ex) {
+              console.error(ex);
+            }
+          }
+          if (Prototypes.isType(item.mark.classID, "mark.nested-chart")) {
+            // recursive call for nested chart
+            debugger; 
+            const specification = (item.mark as IObject<NestedChartElementProperties>).properties.specification as Specification.Chart;
+            transformChart(specification);
+          }
+        }
+
+        // Replace data-mapping expressions with assigned columns
+        const mappings = item.object.mappings;
+        for (const [, mapping] of forEachMapping(mappings)) {
+          if (mapping.type == MappingType.scale) {
+            const scaleMapping = mapping as Specification.ScaleMapping;
+            scaleMapping.expression = this.transformExpression(
+              scaleMapping.expression,
+              scaleMapping.table
+            );
+            scaleMapping.table = this.tableAssignment[scaleMapping.table];
+          }
+          if (mapping.type == MappingType.text) {
+            const textMapping = mapping as Specification.TextMapping;
+            textMapping.textExpression = this.transformTextExpression(
+              textMapping.textExpression,
+              textMapping.table
+            );
+            textMapping.table = this.tableAssignment[textMapping.table];
           }
         }
       }
-
-      // Replace data-mapping expressions with assigned columns
-      const mappings = item.object.mappings;
-      for (const [, mapping] of forEachMapping(mappings)) {
-        if (mapping.type == MappingType.scale) {
-          const scaleMapping = mapping as Specification.ScaleMapping;
-          scaleMapping.expression = this.transformExpression(
-            scaleMapping.expression,
-            scaleMapping.table
-          );
-          scaleMapping.table = this.tableAssignment[scaleMapping.table];
-        }
-        if (mapping.type == MappingType.text) {
-          const textMapping = mapping as Specification.TextMapping;
-          textMapping.textExpression = this.transformTextExpression(
-            textMapping.textExpression,
-            textMapping.table
-          );
-          textMapping.table = this.tableAssignment[textMapping.table];
-        }
-      }
     }
+
+    transformChart(chart);
     if (!inference) {
       return {
         chart,
@@ -577,6 +586,8 @@ export class ChartTemplate {
           columnNameMap[newKey] = nestedChart.columnNameMap[key];
         });
         setProperty(object, "columnNameMap", columnNameMap);
+
+        // var specification = (object as IObject<NestedChartElementProperties>).properties.specification as Specification.Chart;
       }
     }
     return {

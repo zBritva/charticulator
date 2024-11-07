@@ -271,11 +271,11 @@ export class ChartComponent extends React.Component<
     return (element, event) => {
       const rowIndices = element.rowIndices;
       const modifiers = {
-        ctrlKey: event.ctrlKey,
-        shiftKey: event.shiftKey,
-        metaKey: event.metaKey,
-        clientX: (event as any).clientX,
-        clientY: (event as any).clientY,
+        ctrlKey: event?.ctrlKey,
+        shiftKey: event?.shiftKey,
+        metaKey: event?.metaKey,
+        clientX: (event as any)?.clientX,
+        clientY: (event as any)?.clientY,
         event,
       };
       handler({ table: element.plotSegment?.table, rowIndices }, modifiers);
