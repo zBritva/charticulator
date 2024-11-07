@@ -582,6 +582,8 @@ export class NestedChartElementClass extends EmphasizableMarkClass<
   }
 
   public getTemplateParameters(): TemplateParameters {
+
+    //TODO get template parameters from nested chart
     return {
       inferences: [
         {
