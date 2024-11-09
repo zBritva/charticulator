@@ -36,6 +36,7 @@ import { Graphics, Prototypes, Specification, SpecTypes } from "../../index";
 import { Controls, strokeStyleToDashArray } from "../common";
 import {
   AttributeMap,
+  DataKind,
   DataType,
   MappingType,
   ParentMapping,
@@ -1472,6 +1473,7 @@ interface AxisAppearanceWidgets {
   wordWrap: boolean;
   isOffset: boolean;
   isOnTop: boolean;
+  isDateField?: boolean;
   mainCollapsePanelHeader?: string;
 }
 
@@ -1697,6 +1699,19 @@ export function buildAxisAppearanceWidgets(
                 ],
               }
             ),
+            options.isDateField != null ? manager.inputFormat(
+              {
+                property: axisProperty,
+                field: "tickFormat",
+              },
+              {
+                blank: strings.core.auto,
+                label: strings.objects.axes.tickFormat,
+                isDateField: options.isDateField,
+                allowNull: true,
+                searchSection: [strings.objects.visibilityAndPosition],
+              }
+            ) : null,
             manager.inputBoolean(
               { property: axisProperty, field: ["style", "wordWrap"] },
               {
@@ -1867,13 +1882,16 @@ export function buildAxisWidgets(
   }
   const mainCollapsePanelHeader = axisName + axisType;
 
-  const makeAppearance = () => {
+  const makeAppearance = (options: {
+    isDateField: boolean
+  }) => {
     return buildAxisAppearanceWidgets(axisProperty, manager, {
       isVisible: data.visible,
       wordWrap: data.style?.wordWrap ?? false,
       isOffset: axisWidgetsConfig.showOffset,
       isOnTop: axisWidgetsConfig.showOnTop,
       mainCollapsePanelHeader: mainCollapsePanelHeader,
+      isDateField: options.isDateField
     });
   };
   if (data != null) {
@@ -2175,7 +2193,9 @@ export function buildAxisWidgets(
               ]
             )
           );
-          widgets.push(makeAppearance());
+          widgets.push(makeAppearance({
+            isDateField: data.dataKind === DataKind.Temporal
+          }));
         }
         break;
       case "categorical":
@@ -2272,7 +2292,9 @@ export function buildAxisWidgets(
               mainCollapsePanelHeader
             )
           );
-          widgets.push(makeAppearance());
+          widgets.push(makeAppearance({
+            isDateField: null
+          }));
         }
         break;
       case "default":
@@ -2487,17 +2509,6 @@ export function buildAxisProperties(
       },
       type: Specification.AttributeType.Color,
       default: rgbToHex(style.tickColor),
-    },
-    {
-      objectID: plotSegment._id,
-      target: {
-        property: {
-          property,
-          field: "tickFormat",
-        },
-      },
-      type: Specification.AttributeType.Text,
-      default: null,
     },
     {
       objectID: plotSegment._id,
@@ -2781,8 +2792,6 @@ function getTickDataAndTickFormatFields(
   manager: Controls.WidgetManager,
   mainCollapsePanelHeader?: string
 ) {
-  const showInputFormat = shouldShowTickFormatForTickExpression(data, manager);
-
   const widgets = [];
   widgets.push(
     // manager.label(strings.objects.axes.tickData),
@@ -2810,25 +2819,25 @@ function getTickDataAndTickFormatFields(
       )
     )
   );
-  if (showInputFormat) {
-    widgets.push(
-      manager.inputFormat(
-        {
-          property: axisProperty,
-          field: "tickFormat",
-        },
-        {
-          blank: strings.core.auto,
-          label: strings.objects.axes.tickFormat,
-          isDateField:
-            data.numericalMode === NumericalMode.Temporal ||
-            data.valueType === DataType.Date,
-          allowNull: true,
-          searchSection: [strings.objects.general, mainCollapsePanelHeader],
-        }
-      )
-    );
-  }
+  // if (showInputFormat) {
+  //   widgets.push(
+  //     manager.inputFormat(
+  //       {
+  //         property: axisProperty,
+  //         field: "tickFormat",
+  //       },
+  //       {
+  //         blank: strings.core.auto,
+  //         label: strings.objects.axes.tickFormat,
+  //         isDateField:
+  //           data.numericalMode === NumericalMode.Temporal ||
+  //           data.valueType === DataType.Date,
+  //         allowNull: true,
+  //         searchSection: [strings.objects.general, mainCollapsePanelHeader],
+  //       }
+  //     )
+  //   );
+  // }
   if (!data.tickDataExpression) {
     widgets.push(
       manager.inputBoolean(

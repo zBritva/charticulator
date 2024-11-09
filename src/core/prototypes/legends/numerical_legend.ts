@@ -471,14 +471,17 @@ export class NumericalNumberLegendClass extends ChartElementClass<
   ): Controls.Widget[] {
     const props = this.object.properties;
 
+    const appearance = buildAxisAppearanceWidgets("axis", manager, {
+      isVisible: props.axis.visible,
+      wordWrap: props.axis.style.wordWrap,
+      isOffset: false,
+      isOnTop: false,
+      isDateField: false,
+    });
+
     return [
       manager.sectionHeader(strings.objects.axis),
-      buildAxisAppearanceWidgets("axis", manager, {
-        isVisible: props.axis.visible,
-        wordWrap: props.axis.style.wordWrap,
-        isOffset: false,
-        isOnTop: false,
-      }),
+      appearance,
       ...PlotSegmentClass.getGridLineAttributePanelWidgets(manager, "axis"),
     ];
   }
