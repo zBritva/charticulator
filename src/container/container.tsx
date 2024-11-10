@@ -219,7 +219,7 @@ export class ChartContainer extends EventEmitter {
     public readonly instance: TemplateInstance,
     public readonly dataset: Dataset.Dataset,
     public renderEvents?: RenderEvents,
-    public localizaiton?: LocalizationConfig,
+    public localization?: LocalizationConfig,
     public utcTimeZone?: boolean
   ) {
     super();
@@ -227,13 +227,13 @@ export class ChartContainer extends EventEmitter {
     this.defaultAttributes = instance.defaultAttributes;
 
     setFormatOptions({
-      currency: localizaiton?.currency != null ? [localizaiton?.currency, ""] : defaultCurrency,
+      currency: localization?.currency != null ? [localization?.currency, ""] : defaultCurrency,
       grouping: defaultDigitsGroup,
-      decimal: localizaiton?.decimalDelimiter ?? defaultNumberFormat.decimal,
+      decimal: localization?.decimalDelimiter ?? defaultNumberFormat.decimal,
       thousands:
-        localizaiton?.thousandsDelimiter ?? defaultNumberFormat.decimal,
+        localization?.thousandsDelimiter ?? defaultNumberFormat.decimal,
     });
-    setBillionsFormatOption(localizaiton?.billionsFormat || "billions");
+    setBillionsFormatOption(localization?.billionsFormat || "billions");
     setTimeZone(utcTimeZone);
   }
 
