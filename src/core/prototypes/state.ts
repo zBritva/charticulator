@@ -371,8 +371,12 @@ export class ChartStateManager {
   /** Get a chart-level element or scale by its id */
   public getClassById(id: string): ObjectClass {
     // eslint-disable-next-line
-    const [object, state] = this.idIndex.get(id);
-    return this.classCache.getClass(state);
+    try {
+      const [object, state] = this.idIndex.get(id);
+      return this.classCache.getClass(state);
+    } catch(e) {
+      return null;
+    }
   }
 
   /** Get classes for chart elements */

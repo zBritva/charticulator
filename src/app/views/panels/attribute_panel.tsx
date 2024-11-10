@@ -130,28 +130,31 @@ export class AttributePanel extends React.Component<
         const layoutClass = this.props.store.chartManager.getClassById(
           markLayout._id
         );
-        object = markLayout;
-        objectClass = layoutClass;
-        manager = new FluentUIWidgetManager(this.props.store, objectClass);
-        manager.onEditMappingHandler = (attribute, mapping) => {
-          new Actions.SetChartElementMapping(
-            markLayout,
-            attribute,
-            mapping
-          ).dispatch(this.props.store.dispatcher);
-        };
-        manager.onMapDataHandler = (attribute, data, hints) => {
-          new Actions.MapDataToChartElementAttribute(
-            markLayout,
-            attribute,
-            objectClass.attributes[attribute].type,
-            data.table.name,
-            data.expression,
-            data.valueType,
-            data.metadata,
-            hints
-          ).dispatch(this.props.store.dispatcher);
-        };
+        if (layoutClass) {
+
+          object = markLayout;
+          objectClass = layoutClass;
+          manager = new FluentUIWidgetManager(this.props.store, objectClass);
+          manager.onEditMappingHandler = (attribute, mapping) => {
+            new Actions.SetChartElementMapping(
+              markLayout,
+              attribute,
+              mapping
+            ).dispatch(this.props.store.dispatcher);
+          };
+          manager.onMapDataHandler = (attribute, data, hints) => {
+            new Actions.MapDataToChartElementAttribute(
+              markLayout,
+              attribute,
+              objectClass.attributes[attribute].type,
+              data.table.name,
+              data.expression,
+              data.valueType,
+              data.metadata,
+              hints
+            ).dispatch(this.props.store.dispatcher);
+          };
+        }
       }
     } else {
       const chart = this.props.store.chart;
