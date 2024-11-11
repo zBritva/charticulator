@@ -49,7 +49,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     const chartManager = store.chartManager;
 
     const [scaleClassName, setScaleClass] = React.useState<string>(editing?.classID);
-
+    const [scaleName, setScaleName] = React.useState<string>(editing?.properties.name);
     const scaleExpression = editing && editing.expression ? Expression.Parse(editing.expression) as FunctionCall : null;
     const scaleExpressionColumn = scaleExpression?.args[0] as StringValue;
     const scaleExpressionTable = store.dataset.tables.find(t => !t.columns.find(c => c.name == scaleExpressionColumn?.value))?.name
@@ -103,6 +103,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     }, [chartManager, domainSourceColumn, table]);
 
     const [scale, scaleClass] = React.useMemo(() => {
+        debugger;
         if (!scaleClassName) {
             return [null, null];
         }
@@ -110,8 +111,11 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             scaleClassName
         ) as Specification.Scale;
 
+        newScale.expression = `first(${domainSourceColumn})`;
+
         if (!editing) {
             newScale.properties.name = chartManager.findUnusedName("Scale");
+            setScaleName(newScale.properties.name);
             chartManager.addScale(newScale);
         }
         const scaleClass = chartManager.getClassById(
@@ -122,7 +126,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
                 expression: `first(${domainSourceColumn})`,
                 autoRange: true,
                 newScale: true,
-                reuseRange: false
+                reuseRange: false,
             })
         }
         if (!editing) {
@@ -212,10 +216,11 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             </Dropdown>
             <Label>{strings.scaleEditor.name}</Label>
             <Input
-                value={scale ? scale.properties.name : ""}
+                value={scaleName}
                 onChange={(_, { value }) => {
                     if (scale) {
                         scale.properties.name = value;
+                        setScaleName(value);
                     }
                 }}
             />

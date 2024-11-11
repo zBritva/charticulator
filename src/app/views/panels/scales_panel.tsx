@@ -408,7 +408,13 @@ export class ScalesPanel extends ContextedComponent<
                   }}
                   onClick={() => {
                   this.setState({
-                    createDialog: false
+                    createDialog: false,
+                    scale: null,
+                    scaleClass: null,
+                    currentScale: null,
+                    domainSourceColumn: null,
+                    domainSourceTable: null,
+                    table: null
                   });
                 }}>
                   {strings.scaleEditor.close}
@@ -435,6 +441,11 @@ export class ScalesPanel extends ContextedComponent<
                             expression = "`" + this.state.domainSourceColumn + "`";
                         } else {
                             expression = `first(${this.state.domainSourceColumn})`;
+                        }
+
+                        const scale = store.chart.scales.find(scale => scale._id == this.state.scale._id);
+                        if (scale) {
+                          scale.expression = expression;
                         }
 
                         property.mark.mappings[property.property] = {

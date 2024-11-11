@@ -122,7 +122,7 @@ export class CategoricalScaleNumber extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const values = <string[]>column.filter((x) => typeof x == "string");
     s.inferParameters(values, OrderType.Order);
@@ -221,7 +221,7 @@ export class CategoricalScaleColor extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
@@ -405,7 +405,7 @@ export class CategoricalScaleEnum extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
@@ -499,7 +499,7 @@ export class CategoricalScaleBoolean extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
@@ -609,7 +609,7 @@ export class CategoricalScaleImage extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
@@ -715,7 +715,7 @@ export class CategoricalScaleBase64Image extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const idValues = idColumn.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(idValues, OrderType.Order);

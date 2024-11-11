@@ -106,7 +106,7 @@ export class LinearScale extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.LinearScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const values = <number[]>column.filter((x) => typeof x == "number");
     s.inferParameters(values);
@@ -304,7 +304,7 @@ export class LinearColorScale extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.LinearScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString();
     }
     const values = <number[]>column.filter((x) => typeof x == "number");
     s.inferParameters(values);
@@ -462,7 +462,7 @@ export class LinearBooleanScale extends ScaleClass<
     const props = this.object.properties;
     const s = new Scale.LinearScale();
     if (options.expression) {
-      s.expression = Expression.parse(options.expression);
+      this.object.expression = Expression.parse(options.expression).toString()
     }
     const values = <number[]>column.filter((x) => typeof x == "number");
     s.inferParameters(values);
