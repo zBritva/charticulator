@@ -16,6 +16,7 @@ import {
 } from "../common";
 import { ScaleClass } from "./index";
 import { InferParametersOptions } from "./scale";
+import { Expression } from "../../../container";
 
 export interface LinearScaleProperties extends Specification.AttributeMap {
   domainMin: number;
@@ -104,6 +105,9 @@ export class LinearScale extends ScaleClass<
     const attrs = this.state.attributes;
     const props = this.object.properties;
     const s = new Scale.LinearScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = <number[]>column.filter((x) => typeof x == "number");
     s.inferParameters(values);
     s.adjustDomain(options);
@@ -299,6 +303,9 @@ export class LinearColorScale extends ScaleClass<
   ): void {
     const props = this.object.properties;
     const s = new Scale.LinearScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = <number[]>column.filter((x) => typeof x == "number");
     s.inferParameters(values);
 
@@ -454,6 +461,9 @@ export class LinearBooleanScale extends ScaleClass<
   ): void {
     const props = this.object.properties;
     const s = new Scale.LinearScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = <number[]>column.filter((x) => typeof x == "number");
     s.inferParameters(values);
     if (options.extendScaleMin || props.min === undefined) {

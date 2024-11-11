@@ -114,6 +114,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         ) as Prototypes.Scales.ScaleClass;
         if (values) {
             scaleClass.inferParameters(values, {
+                expression: `first(${domainSourceColumn})`,
                 autoRange: true,
                 newScale: true,
                 reuseRange: false
@@ -124,7 +125,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         }
 
         return [newScale, scaleClass];
-    }, [scaleClassName, values, chartManager, editing]);
+    }, [scaleClassName, values, chartManager, editing, domainSourceColumn]);
     onScaleChange(scale, scaleClass, domainSourceTable, domainSourceColumn, table);
 
     const manager = React.useMemo(() => {

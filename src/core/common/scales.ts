@@ -6,6 +6,7 @@ import { scaleUtc, scaleLinear, scaleLog, scaleTime } from "d3-scale";
 import { timeFormat, utcFormat } from "d3-time-format";
 import { getSortFunctionByData, isUtcTimeZone } from "./utils";
 import { OrderType } from "../specification/spec_types";
+import { Expression } from "../../container";
 
 export namespace Scale {
   /** Base scale class */
@@ -23,6 +24,7 @@ export namespace Scale {
   export class LinearScale extends BaseScale<number, number> {
     public domainMin: number;
     public domainMax: number;
+    public expression: Expression.Expression;
 
     public inferParameters(values: number[]) {
       values = values.filter(v => !isNaN(v))
@@ -66,6 +68,7 @@ export namespace Scale {
   export class LogarithmicScale extends BaseScale<number, number> {
     public domainMin: number;
     public domainMax: number;
+    public expression: string;
 
     public inferParameters(values: number[]) {
       const min = Math.min(...values);
@@ -98,6 +101,7 @@ export namespace Scale {
   }
 
   export class DateScale extends LinearScale {
+    public expression: Expression.Expression;
     public inferParameters(values: number[], nice: boolean = true) {
       const filteredValues = values.filter((val) => !isNaN(val));
       let scale = (isUtcTimeZone() ? scaleUtc() : scaleTime()).domain([
@@ -127,7 +131,8 @@ export namespace Scale {
     }
   }
 
-  export class CategoricalScale extends BaseScale<string, number> {
+    export class CategoricalScale extends BaseScale<string, number> {
+    public expression: Expression.Expression;
     public domain: Map<string, number>;
     public length: number;
 

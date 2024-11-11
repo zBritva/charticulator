@@ -23,7 +23,7 @@ import { color as d3color } from "d3-color";
 import { OrderType } from "../../specification/spec_types";
 import { ReservedMappingKeyNamePrefix } from "../legends/categorical_legend";
 import { strings } from "../../../strings";
-import { Specification } from "../..";
+import { Expression, Specification } from "../..";
 
 function reuseMapping<T>(
   domain: Map<string, any>,
@@ -121,6 +121,9 @@ export class CategoricalScaleNumber extends ScaleClass<
     const attrs = this.state.attributes;
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = <string[]>column.filter((x) => typeof x == "string");
     s.inferParameters(values, OrderType.Order);
 
@@ -217,6 +220,9 @@ export class CategoricalScaleColor extends ScaleClass<
   ): void {
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
 
@@ -398,6 +404,9 @@ export class CategoricalScaleEnum extends ScaleClass<
   ): void {
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
 
@@ -489,6 +498,9 @@ export class CategoricalScaleBoolean extends ScaleClass<
   ): void {
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
 
@@ -596,6 +608,9 @@ export class CategoricalScaleImage extends ScaleClass<
   ): void {
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const values = column.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(values, OrderType.Order);
 
@@ -699,6 +714,9 @@ export class CategoricalScaleBase64Image extends ScaleClass<
   ): void {
     const props = this.object.properties;
     const s = new Scale.CategoricalScale();
+    if (options.expression) {
+      s.expression = Expression.parse(options.expression);
+    }
     const idValues = idColumn.filter((x) => x != null).map((x) => x.toString());
     s.inferParameters(idValues, OrderType.Order);
 
