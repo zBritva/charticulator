@@ -424,7 +424,7 @@ export class ScalesPanel extends ContextedComponent<
                     } else {
                       const property = propertyList.find(p => p.scale._id == this.state.currentScale._id && !!p.property && !!p.mark);
                       if (property) {
-                        const column = this.state.table.columns.find(col => col.displayName == this.state.domainSourceColumn);
+                        const column = this.state.table.columns.find(col => col.name == this.state.domainSourceColumn);
                         if (!column) {
                           return;
                         }

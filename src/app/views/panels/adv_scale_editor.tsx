@@ -67,7 +67,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             return table;
         } else {
             const tableName = store.dataset.tables.find(
-                (t) => t.displayName == domainSourceTable
+                (t) => t.name == domainSourceTable
             ).name;
             const table = store.chartManager.dataflow.getTable(
                 tableName
