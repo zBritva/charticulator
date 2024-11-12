@@ -55,6 +55,7 @@ import { group } from "d3-array";
 import { hierarchy, treemap } from "d3-hierarchy";
 
 import { precedences } from "../../../../core/expression/intrinsics";
+import { uuid } from "../../../";
 
 const geoProjections = {
   "geoAzimuthalEqualArea": geoAzimuthalEqualArea,
@@ -139,6 +140,7 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
   jitter: {
     vertical: boolean;
     horizontal: boolean;
+    prngSeed: string;
   };
   treemap: {
     paddingInner: number;
@@ -2166,6 +2168,7 @@ export class Region2DConstraintBuilder {
             : {
               horizontal: true,
               vertical: true,
+              prngSeed: uuid()
             }
         )
       );
