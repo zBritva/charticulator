@@ -3,6 +3,7 @@
 import { getRandom } from "../..";
 import { AxisMode } from "../../prototypes/plot_segments/axis";
 import { ConstraintPlugin, ConstraintSolver, Variable } from "../abstract";
+import seedrandom from "seedrandom";
 
 interface NodeType {
   x?: number;
@@ -12,6 +13,7 @@ interface NodeType {
 export interface JitterPluginOptions {
   vertical: boolean;
   horizontal: boolean;
+  prngSeed: string;
 }
 
 export class JitterPlugin extends ConstraintPlugin {
@@ -49,13 +51,17 @@ export class JitterPlugin extends ConstraintPlugin {
   }
 
   public apply() {
+    debugger;
     const x1 = this.solver.getValue(this.x1);
     const x2 = this.solver.getValue(this.x2);
     const y1 = this.solver.getValue(this.y1);
     const y2 = this.solver.getValue(this.y2);
+
+    const rng = seedrandom(this.options.prngSeed);
+
     const nodes = this.points.map(() => {
-      const x = getRandom(x1, x2);
-      const y = getRandom(y1, y2);
+      const x = x1 + rng() * (x2 - x1);
+      const y = y1 + rng() * (y2 - y1);
       // Use forceSimulation's default initialization
       return <NodeType>{
         x,

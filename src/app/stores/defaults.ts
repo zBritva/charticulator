@@ -10,6 +10,7 @@ import {
   SublayoutAlignment,
 } from "../../core/prototypes/plot_segments/region_2d/base";
 import { MappingType } from "../../core/specification";
+import { uuid } from "../backend/indexed_db";
 
 /** Create a default glyph */
 export function createDefaultGlyph(tableName: string) {
@@ -232,6 +233,7 @@ export function createDefaultPlotSegment(
         jitter: {
           vertical: true,
           horizontal: true,
+          prngSeed: uuid()
         },
         treemap: <{
           paddingInner: number;

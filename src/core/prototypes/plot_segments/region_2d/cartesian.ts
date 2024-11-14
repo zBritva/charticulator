@@ -35,7 +35,7 @@ import {
   SublayoutAlignment,
 } from "./base";
 import { PlotSegmentClass } from "../plot_segment";
-import { getSortDirection, SpecTypes, ZoomInfo } from "../../..";
+import { getSortDirection, SpecTypes, uuid, ZoomInfo } from "../../..";
 import { strings } from "../../../../strings";
 import {
   AxisDataBinding,
@@ -173,6 +173,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       jitter: {
         horizontal: true,
         vertical: true,
+        prngSeed: uuid()
       },
       packing: {
         gravityX: 0.1,
