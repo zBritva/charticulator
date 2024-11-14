@@ -51,7 +51,6 @@ export class JitterPlugin extends ConstraintPlugin {
   }
 
   public apply() {
-    debugger;
     const x1 = this.solver.getValue(this.x1);
     const x2 = this.solver.getValue(this.x2);
     const y1 = this.solver.getValue(this.y1);
