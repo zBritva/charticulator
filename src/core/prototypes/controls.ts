@@ -240,10 +240,12 @@ export interface InputExpressionOptions extends SearchSection {
   placeholder?: string;
   noLineHeight?: boolean;
   dropzone?: {
-    type: "axis-data-binding" | "tick-data-binding";
+    type: "axis-data-binding" | "property-data-binding";
     prompt?: string;
-    property?: string;
+    property?: Property | string;
     defineCategories?: boolean;
+    // wraps column to aggregation function call
+    createExpression?: boolean;
   };
   key?: string;
 }

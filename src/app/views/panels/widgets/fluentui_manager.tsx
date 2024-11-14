@@ -43,6 +43,7 @@ import { FluentComboBoxFontFamily } from "./controls";
 import { GroupByEditor } from "./groupby_editor";
 import {
   ChartTemplate,
+  Expression,
   getFormat,
   SpecTypes,
   tickFormatParserExpression,
@@ -987,7 +988,7 @@ export class FluentUIWidgetManager
             if (options.dropzone.type === "axis-data-binding") {
               new Actions.BindDataToAxis(
                 this.objectClass.object as Specification.PlotSegment,
-                options.dropzone.property,
+                options.dropzone.property as string,
                 null,
                 data,
                 true
@@ -1001,9 +1002,17 @@ export class FluentUIWidgetManager
                   } else {
                     newValue = data.metadata?.columnName;
                   }
+                  if (options.dropzone.createExpression) {
+                    const aggregation = Expression.getDefaultAggregationFunction(data.valueType, data.metadata.kind);
+                    newValue = Expression.functionCall(
+                      aggregation,
+                      Expression.parse(newValue)
+                    ).toString();
+                  }
                 } else {
                   newValue = data.expression;
                 }
+
                 this.emitSetProperty(property, newValue);
               } catch (ex) {
                 //put data.expression value

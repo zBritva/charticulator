@@ -3184,11 +3184,12 @@ export class Region2DConstraintBuilder {
                 },
                 {
                   table: this.plotSegment.object.table,
-                  // dropzone: {
-                  //   type: 'axis-data-binding',
-                  //   property: 'measureExpression',
-                  //   prompt: "Data for tree group values"
-                  // },
+                  dropzone: {
+                    createExpression: true,
+                    type: 'property-data-binding',
+                    property: { property: "sublayout", field: ["treemap", "measureExpression"] },
+                    prompt: "Data for tree group values",
+                  },
                 }
               )
             ]),
@@ -3222,11 +3223,18 @@ export class Region2DConstraintBuilder {
                           : [item.field, "expression"],
                     },
                     {
-                      // dropzone: {
-                      //   type: 'axis-data-binding',
-                      //   property: 'expression',
-                      //   prompt: "Data for tree grouping"
-                      // },
+                      dropzone: {
+                        createExpression: true,
+                        type: 'property-data-binding',
+                        property: {
+                          property: "sublayout",
+                          field:
+                            item.field instanceof Array
+                              ? [...item.field, "expression"]
+                              : [item.field, "expression"],
+                        },
+                        prompt: "Data for tree grouping"
+                      },
                       table: this.plotSegment.object.table,
                       key: index?.toString()
                     }
@@ -3271,9 +3279,18 @@ export class Region2DConstraintBuilder {
                 },
                 {
                   table: this.plotSegment.object.table,
+                  dropzone: {
+                    createExpression: true,
+                    type: "property-data-binding",
+                    property: {
+                      property: "sublayout",
+                      field: ["geo", "latExpressions"],
+                    },
+                    prompt: "Data for latitude values"
+                  }
                 }
               ),
-              m.label(strings.objects.axes.latExpressions, {
+              m.label(strings.objects.axes.lonExpressions, {
                 ignoreSearch: true,
               }),
               m.inputExpression(
@@ -3283,6 +3300,15 @@ export class Region2DConstraintBuilder {
                 },
                 {
                   table: this.plotSegment.object.table,
+                  dropzone: {
+                    createExpression: true,
+                    type: "property-data-binding",
+                    property: {
+                      property: "sublayout",
+                      field: ["geo", "lonExpressions"],
+                    },
+                    prompt: "Data for longitude values"
+                  }
                 }
               ),
               m.inputSelect(
