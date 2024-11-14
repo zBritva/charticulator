@@ -37,7 +37,6 @@ import { Controls, strokeStyleToDashArray } from "../common";
 import {
   AttributeMap,
   DataKind,
-  DataType,
   MappingType,
   ParentMapping,
 } from "../../specification";
@@ -46,7 +45,6 @@ import { defaultFont, defaultFontSize } from "../../../app/stores/defaults";
 import {
   AxisDataBinding,
   AxisDataBindingType,
-  NumericalMode,
 } from "../../specification/spec_types";
 import { VirtualScrollBar, VirtualScrollBarPropertes } from "./virtualScroll";
 import {
@@ -55,7 +53,6 @@ import {
   getSortedCategories,
   getTableColumns,
   parseDerivedColumnsExpression,
-  shouldShowTickFormatForTickExpression,
   transformOnResetCategories,
   transformOrderByExpression,
   updateWidgetCategoriesByExpression,
@@ -2809,7 +2806,7 @@ function getTickDataAndTickFormatFields(
           allowNull: true,
           placeholder: strings.core.default,
           dropzone: {
-            type: "tick-data-binding",
+            type: "property-data-binding",
             prompt: strings.objects.dropTickData,
           },
           noLineHeight: true,

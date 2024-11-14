@@ -401,41 +401,62 @@ export class DataAxisClass extends MarkClass<
       ),
       ...axisWidgets,
     ];
-    if (props.dataExpressions.length > 0) {
-      r.push(
-        manager.verticalGroup(
-          {
-            header: strings.objects.axes.dataExpressions,
-          },
-          [
-            manager.arrayWidget(
-              { property: "dataExpressions" },
-              (item, index) => {
-                const expressionInput = manager.inputExpression(
-                  {
-                    property: "dataExpressions",
-                    field:
-                      item.field instanceof Array
-                        ? [...item.field, "expression"]
-                        : [item.field, "expression"],
-                  },
-                  { table: this.getGlyphClass().object.table }
-                );
-                return React.createElement(
-                  "Fragment",
-                  { key: index },
-                  expressionInput
-                );
-              },
-              {
-                allowDelete: true,
-                allowReorder: true,
-              }
-            ),
-          ]
-        )
-      );
-    }
+    r.push(
+      manager.verticalGroup(
+        {
+          header: strings.objects.axes.dataExpressions,
+        },
+        [
+          manager.propertyEditor({
+            property: "dataExpressions",
+          }, (editingProperty) => {
+            (editingProperty as DataAxisExpression[]).push(<DataAxisExpression>{
+              expression: ``,
+            });
+            return editingProperty;
+          }, "general/plus", "Add data expression"),
+          props.dataExpressions.length > 0 ? 
+          manager.arrayWidget(
+            { property: "dataExpressions" },
+            (item, index) => {
+              const expressionInput = manager.inputExpression(
+                {
+                  property: "dataExpressions",
+                  field:
+                    item.field instanceof Array
+                      ? [...item.field, "expression"]
+                      : [item.field, "expression"],
+                },
+                {
+                  table: this.getGlyphClass().object.table,
+                  dropzone: {
+                    createExpression: true,
+                    type: "property-data-binding",
+                    property: {
+                      property: "dataExpressions",
+                      field:
+                        item.field instanceof Array
+                          ? [...item.field, "expression"]
+                          : [item.field, "expression"],
+                    },
+                    prompt: "Add column to axis data"
+                  }
+                }
+              );
+              return React.createElement(
+                "Fragment",
+                { key: index },
+                expressionInput
+              );
+            },
+            {
+              allowDelete: true,
+              allowReorder: true,
+            }
+          ) : null,
+        ]
+      )
+    );
     return r;
   }
 
