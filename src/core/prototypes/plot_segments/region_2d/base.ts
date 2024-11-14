@@ -3121,6 +3121,12 @@ export class Region2DConstraintBuilder {
             ],
           },
           [
+            m.propertyEditor(
+              { property: "sublayout", field: ["jitter", "prngSeed"] },
+              (editingProperty) => {
+              editingProperty = uuid()
+              return editingProperty;
+            }, "general/plus", "Update PRNG seed"),
             m.label(strings.objects.plotSegment.distribution, {
               ignoreSearch: true,
             }),

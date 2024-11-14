@@ -1146,6 +1146,9 @@ export class FluentUIWidgetManager
     }
     return (
       <Button
+        style={{
+          width: "100%"
+        }}
         key={this.getKeyFromProperty(property)}
         icon={<SVGImageIcon url={R.getSVGIcon(icon)} />}
         title={text}
