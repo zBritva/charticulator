@@ -211,14 +211,14 @@ export class ChartRenderer {
           null,
           this.manager
           );
-        gElement.key = `mw-${markGraphics.key}`;
+        gElement.key = `mw-${markGraphics?.key}`;
         gElement.elements.push(markGraphics);
         graphics.push(gElement);
       } else {
         const gElement = makeGroup([]);
         const elementClass = this.manager.getChartElementClass(elementState);
         const elementGraphic = elementClass.getGraphics(this.manager);
-        gElement.key = `el-wrap-${elementGraphic.key}-idx:${elementsIndex}`;
+        gElement.key = `el-wrap-${elementGraphic?.key}-idx:${elementsIndex}`;
         gElement.elements.push(elementGraphic);
         graphics.push(gElement);
       }

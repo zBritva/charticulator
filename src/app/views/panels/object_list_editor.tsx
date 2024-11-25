@@ -75,7 +75,7 @@ export class ObjectListEditor extends ContextedComponent<
             this.dispatch(new Actions.ReorderChartElement(a, b));
           }}
         >
-          {chart.elements.map((element) => {
+          {chart.elements.map((element, index) => {
             return (
               <div
                 tabIndex={0}
@@ -94,7 +94,7 @@ export class ObjectListEditor extends ContextedComponent<
                     this.dispatch(new Actions.SearchUpdated(""));
                   }
                 }}
-                key={element._id}
+                key={`object-list-item-${element?._id || index}`}
               >
                 <SVGImageIcon
                   url={R.getSVGIcon(
