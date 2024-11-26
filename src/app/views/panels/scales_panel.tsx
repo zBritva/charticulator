@@ -448,6 +448,7 @@ export class ScalesPanel extends ContextedComponent<
                           scale.expression = expression;
                         }
 
+                        // TODO rework to use dispatch
                         property.mark.mappings[property.property] = {
                           type: MappingType.scale,
                           table: this.state.domainSourceTable,

@@ -14,7 +14,7 @@ import { strings } from "../../../strings";
 import { Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { FluentColumnLayout } from "./widgets/controls/fluentui_customized_components";
 import { Actions } from "../../actions";
-import { Expression, FunctionCall, StringValue } from "../../../core/expression";
+import { Expression, FunctionCall, StringValue, Variable } from "../../../core/expression";
 
 export interface ScaleEditorProps {
     store: AppStore;
@@ -51,12 +51,12 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     const [scaleClassName, setScaleClass] = React.useState<string>(editing?.classID);
     const [scaleName, setScaleName] = React.useState<string>(editing?.properties.name);
     const scaleExpression = editing && editing.expression ? Expression.Parse(editing.expression) as FunctionCall : null;
-    const scaleExpressionColumn = scaleExpression?.args[0] as StringValue;
-    const scaleExpressionTable = store.dataset.tables.find(t => !t.columns.find(c => c.name == scaleExpressionColumn?.value))?.name
+    const scaleExpressionColumn = scaleExpression?.args[0] as Variable;
+    const scaleExpressionTable = store.dataset.tables.find(t => !t.columns.find(c => c.name == scaleExpressionColumn?.name))?.name
 
     // todo load current column from expression
     const [domainSourceTable, setDomainSourceTable] = React.useState<string>(scaleExpressionTable);
-    const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(scaleExpressionColumn?.value);
+    const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(scaleExpressionColumn?.name);
 
     const table = React.useMemo(() => {
         if (!domainSourceTable && store.dataset.tables.length > 1) {
@@ -103,7 +103,6 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     }, [chartManager, domainSourceColumn, table]);
 
     const [scale, scaleClass] = React.useMemo(() => {
-        debugger;
         if (!scaleClassName) {
             return [null, null];
         }
@@ -111,7 +110,9 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             scaleClassName
         ) as Specification.Scale;
 
-        newScale.expression = `first(${domainSourceColumn})`;
+        if (domainSourceColumn !== undefined) {
+            newScale.expression = `first(${domainSourceColumn})`;
+        }
 
         if (!editing) {
             newScale.properties.name = chartManager.findUnusedName("Scale");
