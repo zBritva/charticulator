@@ -266,6 +266,7 @@ export interface Glyph<
 export interface Scale<
   PropertiesType extends ObjectProperties = ObjectProperties
 > extends IObject<PropertiesType> {
+  expression: string;
   inputType: DataType;
   outputType: AttributeType;
 }

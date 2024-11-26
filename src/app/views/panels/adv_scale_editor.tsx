@@ -14,6 +14,7 @@ import { strings } from "../../../strings";
 import { Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { FluentColumnLayout } from "./widgets/controls/fluentui_customized_components";
 import { Actions } from "../../actions";
+import { Expression, FunctionCall, StringValue, Variable } from "../../../core/expression";
 
 export interface ScaleEditorProps {
     store: AppStore;
@@ -48,10 +49,14 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
     const chartManager = store.chartManager;
 
     const [scaleClassName, setScaleClass] = React.useState<string>(editing?.classID);
+    const [scaleName, setScaleName] = React.useState<string>(editing?.properties.name);
+    const scaleExpression = editing && editing.expression ? Expression.Parse(editing.expression) as FunctionCall : null;
+    const scaleExpressionColumn = scaleExpression?.args[0] as Variable;
+    const scaleExpressionTable = store.dataset.tables.find(t => !t.columns.find(c => c.name == scaleExpressionColumn?.name))?.name
 
     // todo load current column from expression
-    const [domainSourceTable, setDomainSourceTable] = React.useState<string>(null);
-    const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(null);
+    const [domainSourceTable, setDomainSourceTable] = React.useState<string>(scaleExpressionTable);
+    const [domainSourceColumn, setDomainSourceColumn] = React.useState<string>(scaleExpressionColumn?.name);
 
     const table = React.useMemo(() => {
         if (!domainSourceTable && store.dataset.tables.length > 1) {
@@ -67,7 +72,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             return table;
         } else {
             const tableName = store.dataset.tables.find(
-                (t) => t.displayName == domainSourceTable
+                (t) => t.name == domainSourceTable
             ).name;
             const table = store.chartManager.dataflow.getTable(
                 tableName
@@ -105,8 +110,13 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             scaleClassName
         ) as Specification.Scale;
 
+        if (domainSourceColumn !== undefined) {
+            newScale.expression = `first(${domainSourceColumn})`;
+        }
+
         if (!editing) {
             newScale.properties.name = chartManager.findUnusedName("Scale");
+            setScaleName(newScale.properties.name);
             chartManager.addScale(newScale);
         }
         const scaleClass = chartManager.getClassById(
@@ -114,9 +124,10 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         ) as Prototypes.Scales.ScaleClass;
         if (values) {
             scaleClass.inferParameters(values, {
+                expression: `first(${domainSourceColumn})`,
                 autoRange: true,
                 newScale: true,
-                reuseRange: false
+                reuseRange: false,
             })
         }
         if (!editing) {
@@ -124,7 +135,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         }
 
         return [newScale, scaleClass];
-    }, [scaleClassName, values, chartManager, editing]);
+    }, [scaleClassName, values, chartManager, editing, domainSourceColumn]);
     onScaleChange(scale, scaleClass, domainSourceTable, domainSourceColumn, table);
 
     const manager = React.useMemo(() => {
@@ -188,7 +199,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
                 onOptionSelect={(_, { optionValue: tableName }) => setDomainSourceTable(tableName)}
             >
                 {store.dataset.tables.map(table => {
-                    return (<Option key={table.name} text={table.displayName} value={table.displayName}>
+                    return (<Option key={table.name} text={table.displayName} value={table.name}>
                         {table.displayName}
                     </Option>);
                 })}
@@ -206,10 +217,11 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             </Dropdown>
             <Label>{strings.scaleEditor.name}</Label>
             <Input
-                value={scale ? scale.properties.name : ""}
+                value={scaleName}
                 onChange={(_, { value }) => {
                     if (scale) {
                         scale.properties.name = value;
+                        setScaleName(value);
                     }
                 }}
             />

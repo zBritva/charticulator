@@ -408,7 +408,13 @@ export class ScalesPanel extends ContextedComponent<
                   }}
                   onClick={() => {
                   this.setState({
-                    createDialog: false
+                    createDialog: false,
+                    scale: null,
+                    scaleClass: null,
+                    currentScale: null,
+                    domainSourceColumn: null,
+                    domainSourceTable: null,
+                    table: null
                   });
                 }}>
                   {strings.scaleEditor.close}
@@ -424,7 +430,7 @@ export class ScalesPanel extends ContextedComponent<
                     } else {
                       const property = propertyList.find(p => p.scale._id == this.state.currentScale._id && !!p.property && !!p.mark);
                       if (property) {
-                        const column = this.state.table.columns.find(col => col.displayName == this.state.domainSourceColumn);
+                        const column = this.state.table.columns.find(col => col.name == this.state.domainSourceColumn);
                         if (!column) {
                           return;
                         }
@@ -437,6 +443,12 @@ export class ScalesPanel extends ContextedComponent<
                             expression = `first(${this.state.domainSourceColumn})`;
                         }
 
+                        const scale = store.chart.scales.find(scale => scale._id == this.state.scale._id);
+                        if (scale) {
+                          scale.expression = expression;
+                        }
+
+                        // TODO rework to use dispatch
                         property.mark.mappings[property.property] = {
                           type: MappingType.scale,
                           table: this.state.domainSourceTable,
