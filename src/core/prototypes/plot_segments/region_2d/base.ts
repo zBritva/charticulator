@@ -53,11 +53,12 @@ import { DataAxisExpression } from "../../marks/data_axis.attrs";
 
 import { group } from "d3-array";
 import { hierarchy, treemap } from "d3-hierarchy";
-import { forceCenter, forceCollide, forceLink, forceSimulation, forceRadial, forceManyBody } from "d3-force";
+import { forceCenter, forceCollide, forceLink, forceSimulation, forceManyBody } from "d3-force";
 
 
 import { precedences } from "../../../../core/expression/intrinsics";
 import { uuid } from "../../../";
+import { TableType } from "../../../../core/dataset";
 
 const geoProjections = {
   "geoAzimuthalEqualArea": geoAzimuthalEqualArea,
@@ -2418,24 +2419,40 @@ export class Region2DConstraintBuilder {
       return;
     }
 
-    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
-    const dataProjection = table.rows.map((row, index) => {
+    const mainTable = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
+    const linksTable = this.chartStateManager.dataset.tables.find(t => t.type == TableType.Links);
+
+    const nodesIdx = new Map<any, number>();
+
+    const dataProjection = mainTable.rows.map((row, index) => {
       const projection = {
         _id: row._id,
-        glyphState: state.glyphs[index]
+        glyphState: state.glyphs[index],
+        id: row['id'],
+        index
       }
+
+      nodesIdx.set(row['id'], index);
 
       return projection;
     });
 
+    debugger;
     for (const gr in groups) {
       const glyphGroup = groups[gr];
       
       const nodes = glyphGroup.group.map(gr => ({
         x: 0,
         y: 0,
+        id: dataProjection[gr]['id'],
         glyphState: dataProjection[gr].glyphState
       }));
+
+      const links = linksTable ? linksTable.rows.map((l, index) => ({
+        source: nodesIdx.get(l['source_id'] as string),
+        target: nodesIdx.get(l['target_id'] as string),
+        index
+      })) : [];
 
       const sim = forceSimulation(nodes);
       if (forceProps.centerForce) {
@@ -2453,7 +2470,7 @@ export class Region2DConstraintBuilder {
         sim.force('collision', force)
       }
       if (forceProps.linkForce) {
-        const force = forceLink([]);
+        const force = forceLink(links);
         force.strength(forceProps.strength)
         sim.force('links', force)
       }
