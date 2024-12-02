@@ -281,6 +281,7 @@ export function createDefaultPlotSegment(
           linkDistance: 3,
           velocityDecay: 0.4,
           centerForce: true,
+          linkForce: false,
           manyBodyForce: true,
           collideForce: false,
           tick: 10,

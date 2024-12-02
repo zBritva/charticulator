@@ -212,6 +212,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         centerForce: true,
         collideForce: false,
         manyBodyForce: true,
+        linkForce: false,
         radius: 5,
         strength: 1,
         theta: 0.9

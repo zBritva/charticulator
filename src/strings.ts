@@ -514,6 +514,7 @@ export const strings = {
       centerForce: "Center force",
       manyBodyForce: "Many body force",
       collideForce: "Collide force",
+      linkForce: "Links force",
       radius: "Radius",
       strength: "Strength",
       theta: "Theta",

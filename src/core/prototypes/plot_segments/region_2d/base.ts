@@ -174,6 +174,7 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     centerForce: boolean;
     manyBodyForce: boolean;
     collideForce: boolean;
+    linkForce: boolean;
     tick: number;
     radius: number;
     strength: number;
@@ -2451,6 +2452,11 @@ export class Region2DConstraintBuilder {
         force.strength(forceProps.strength)
         sim.force('collision', force)
       }
+      if (forceProps.linkForce) {
+        const force = forceLink([]);
+        force.strength(forceProps.strength)
+        sim.force('links', force)
+      }
       sim.tick(forceProps.tick);
       sim.velocityDecay(forceProps.velocityDecay);
       debugger;
@@ -3716,6 +3722,14 @@ export class Region2DConstraintBuilder {
                 type: "checkbox",
                 ignoreSearch: true,
                 label: strings.objects.plotSegment.collideForce,
+              }
+            ),
+            m.inputBoolean(
+              { property: "sublayout", field: ["force", "linkForce"] },
+              {
+                type: "checkbox",
+                ignoreSearch: true,
+                label: strings.objects.plotSegment.linkForce,
               }
             ),
           ]
