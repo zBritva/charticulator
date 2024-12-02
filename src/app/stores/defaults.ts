@@ -274,6 +274,19 @@ export function createDefaultPlotSegment(
           centerLat: 0,
           centerLon: 0,
           fit: true,
+        },
+        force: {
+          collideRadius: 3,
+          nbodyStrength: 2,
+          linkDistance: 3,
+          velocityDecay: 0.4,
+          centerForce: true,
+          manyBodyForce: true,
+          collideForce: false,
+          tick: 10,
+          radius: 5,
+          strength: 1,
+          theta: 0.9
         }
       },
     },

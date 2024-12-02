@@ -53,6 +53,8 @@ import { DataAxisExpression } from "../../marks/data_axis.attrs";
 
 import { group } from "d3-array";
 import { hierarchy, treemap } from "d3-hierarchy";
+import { forceCenter, forceCollide, forceLink, forceSimulation, forceRadial, forceManyBody } from "d3-force";
+
 
 import { precedences } from "../../../../core/expression/intrinsics";
 import { uuid } from "../../../";
@@ -80,7 +82,8 @@ export enum Region2DSublayoutType {
   Packing = "packing",
   Jitter = "jitter",
   Treemap = "treemap",
-  Geo = "geo"
+  Geo = "geo",
+  Force = "force"
 }
 
 export enum SublayoutAlignment {
@@ -162,6 +165,19 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     translateY: number;
     centerLat: number;
     centerLon: number;
+  },
+  force: {
+    collideRadius: number;
+    nbodyStrength: number;
+    linkDistance: number;
+    velocityDecay: number;
+    centerForce: boolean;
+    manyBodyForce: boolean;
+    collideForce: boolean;
+    tick: number;
+    radius: number;
+    strength: number;
+    theta: number;
   }
 }
 
@@ -228,6 +244,7 @@ export interface Region2DConfigurationTerminology {
   jitter: string;
   treemap: string;
   geo: string;
+  force: string;
 }
 
 export interface Region2DConfigurationIcons {
@@ -243,6 +260,7 @@ export interface Region2DConfigurationIcons {
   packingIcon: string | React.ReactNode;
   jitterIcon: string | React.ReactNode;
   treeMapIcon: string | React.ReactNode;
+  forceIcon: string | React.ReactNode;
   geoIcon: string | React.ReactNode;
   overlapIcon: string | React.ReactNode;
 }
@@ -1339,6 +1357,10 @@ export class Region2DConstraintBuilder {
         if (props.sublayout.type == Region2DSublayoutType.Geo) {
           this.sublayoutGeo(groups);
         }
+        // Force layout
+        if (props.sublayout.type == Region2DSublayoutType.Force) {
+          this.sublayoutForce(groups);
+        }
       }
     }
   }
@@ -2322,14 +2344,6 @@ export class Region2DConstraintBuilder {
       projection.translate([geoProps.translateX, geoProps.translateY]);
     }
 
-    // let xScale = 1;
-    // let yScale = 1;
-    // if (this.config.getXYScale != null) {
-    //   const { x, y } = this.config.getXYScale();
-    //   xScale = x;
-    //   yScale = y;
-    // }
-
     const coordinateColumns = [];
     if (geoProps.latExpressions) {
       const parsed = Expression.parse(geoProps.latExpressions) as Expression.FunctionCall;
@@ -2383,6 +2397,81 @@ export class Region2DConstraintBuilder {
         this.solver.addEquals(ConstraintStrength.HARD, cy, cyconst);
       }
 
+    }
+  }
+
+  public sublayoutForce(groups: SublayoutGroup[]) {
+    const solver = this.solver;
+    const state = this.plotSegment.state;
+    const forceProps = this.plotSegment.object.properties.sublayout.force;
+
+    const { x1, y1, x2, y2 } = state.attributes;
+
+    const width = <number>x2 - <number>x1;
+    const height = <number>y2 - <number>y1;
+
+    const shiftX = - (<number>x2 - <number>x1) / 2;
+    const shiftY = (<number>y2 - <number>y1) / 2;
+
+    if (!forceProps) {
+      return;
+    }
+
+    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
+    const dataProjection = table.rows.map((row, index) => {
+      const projection = {
+        _id: row._id,
+        glyphState: state.glyphs[index]
+      }
+
+      return projection;
+    });
+
+    for (const gr in groups) {
+      const glyphGroup = groups[gr];
+      
+      const nodes = glyphGroup.group.map(gr => ({
+        x: 0,
+        y: 0,
+        glyphState: dataProjection[gr].glyphState
+      }));
+
+      const sim = forceSimulation(nodes);
+      if (forceProps.centerForce) {
+        sim.force('center', forceCenter(width / 2, height / 2))
+      }
+      if (forceProps.manyBodyForce) {
+        const force = forceManyBody();
+        force.strength(forceProps.strength);
+        force.theta(forceProps.theta)
+        sim.force('charge', force)
+      }
+      if (forceProps.collideForce) {
+        const force = forceCollide(forceProps.radius);
+        force.strength(forceProps.strength)
+        sim.force('collision', force)
+      }
+      sim.tick(forceProps.tick);
+      sim.velocityDecay(forceProps.velocityDecay);
+      debugger;
+
+      for (const groupIndex in glyphGroup.group) {
+        const data = nodes[groupIndex];
+
+        const cx = this.solver.attr(data.glyphState.attributes, "x");
+        const cy = this.solver.attr(data.glyphState.attributes, "y");
+
+        const constants: Specification.AttributeMap = {
+          cx: data.x + shiftX,
+          cy: -data.y + shiftY,
+        };
+
+        const cxconst = solver.attr(constants, "cx", { edit: false });
+        const cyconst = solver.attr(constants, "cy", { edit: false });
+
+        this.solver.addEquals(ConstraintStrength.HARD, cx, cxconst);
+        this.solver.addEquals(ConstraintStrength.HARD, cy, cyconst);
+      }
     }
   }
 
@@ -2757,6 +2846,11 @@ export class Region2DConstraintBuilder {
       label: terminology.treemap,
       icon: icons.treeMapIcon,
     };
+    const forceOption = {
+      value: Region2DSublayoutType.Force,
+      label: terminology.force,
+      icon: icons.forceIcon,
+    };
     const geoOption = {
       value: Region2DSublayoutType.Geo,
       label: terminology.geo,
@@ -2780,6 +2874,7 @@ export class Region2DConstraintBuilder {
           overlapOption,
           treemapOption,
           geoOption,
+          forceOption
         ];
       }
       return [
@@ -2791,7 +2886,7 @@ export class Region2DConstraintBuilder {
         overlapOption
       ];
     }
-    return [packingOption, jitterOption, overlapOption, treemapOption, geoOption];
+    return [packingOption, jitterOption, overlapOption];
   }
 
   public isSublayoutApplicable() {
@@ -3124,9 +3219,9 @@ export class Region2DConstraintBuilder {
             m.propertyEditor(
               { property: "sublayout", field: ["jitter", "prngSeed"] },
               (editingProperty) => {
-              editingProperty = uuid()
-              return editingProperty;
-            }, "general/plus", "Update PRNG seed"),
+                editingProperty = uuid()
+                return editingProperty;
+              }, "general/plus", "Update PRNG seed"),
             m.label(strings.objects.plotSegment.distribution, {
               ignoreSearch: true,
             }),
@@ -3494,6 +3589,135 @@ export class Region2DConstraintBuilder {
                 }
               ),
             ]),
+          ]
+        )
+      );
+    }
+    if (type == Region2DSublayoutType.Force) {
+      extra.push(
+        m.searchWrapper(
+          {
+            searchPattern: [
+              strings.objects.plotSegment.paddingInner,
+              strings.objects.plotSegment.subLayout,
+            ],
+          },
+          [
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "collideRadius"] },
+              {
+                minimum: 3,
+                maximum: 30,
+                step: 0.1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.collideRadius,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "nbodyStrength"] },
+              {
+                minimum: -100,
+                maximum: 100,
+                step: 0.1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.nbodyStrength,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "linkDistance"] },
+              {
+                minimum: -100,
+                maximum: 100,
+                step: 0.1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.linkDistance,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "velocityDecay"] },
+              {
+                minimum: -100,
+                maximum: 100,
+                step: 0.1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.velocityDecay,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "tick"] },
+              {
+                minimum: 0,
+                maximum: 100,
+                step: 1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.simTick,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "radius"] },
+              {
+                minimum: 0,
+                maximum: 100,
+                step: 1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.radius,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "strength"] },
+              {
+                minimum: -100,
+                maximum: 100,
+                step: 1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.strength,
+                ignoreSearch: true,
+              }
+            ),
+            m.inputNumber(
+              { property: "sublayout", field: ["force", "theta"] },
+              {
+                minimum: 0,
+                maximum: 10,
+                step: 0.1,
+                showUpdown: true,
+                label: strings.objects.plotSegment.theta,
+                ignoreSearch: true,
+              }
+            ),
+            m.label(strings.objects.plotSegment.forceTypes, {
+              ignoreSearch: true,
+            }),
+            m.inputBoolean(
+              { property: "sublayout", field: ["force", "centerForce"] },
+              {
+                type: "checkbox",
+                ignoreSearch: true,
+                label: strings.objects.plotSegment.centerForce,
+              }
+            ),
+            m.inputBoolean(
+              { property: "sublayout", field: ["force", "manyBodyForce"] },
+              {
+                type: "checkbox",
+                ignoreSearch: true,
+                label: strings.objects.plotSegment.manyBodyForce,
+              }
+            ),
+            m.inputBoolean(
+              { property: "sublayout", field: ["force", "collideForce"] },
+              {
+                type: "checkbox",
+                ignoreSearch: true,
+                label: strings.objects.plotSegment.collideForce,
+              }
+            ),
           ]
         )
       );

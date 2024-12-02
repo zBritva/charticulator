@@ -122,6 +122,7 @@ const icons: Region2DConfigurationIcons = {
   treeMapIcon: "sublayout/treemap",
   overlapIcon: "Stack",
   geoIcon: "sublayout/geo",
+  forceIcon: "sublayout/force",
 };
 
 export const config: Region2DConfiguration = {
@@ -201,6 +202,19 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         translateY: 0,
         centerLat: 0,
         centerLon: 0,
+      },
+      force: {
+        collideRadius: 3,
+        linkDistance: 20,
+        nbodyStrength: 2,
+        velocityDecay: 0.4,
+        tick: 10,
+        centerForce: true,
+        collideForce: false,
+        manyBodyForce: true,
+        radius: 5,
+        strength: 1,
+        theta: 0.9
       },
       orderReversed: null,
     },

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <title>icons</title>
+    <circle cx="6" cy="4" r="3" style="fill:#000;stroke:#000;stroke-width:1px" />
+    <circle cx="27" cy="10" r="3" style="fill:#000;stroke:#000;stroke-width:1px" />
+    <circle cx="8" cy="15" r="3" style="fill:#000;stroke:#000;stroke-width:1px" />
+    <circle cx="21" cy="20" r="3" style="fill:#000;stroke:#000;stroke-width:1px" />
+    <circle cx="16" cy="10" r="3" style="fill:#000;stroke:#000;stroke-width:1px" />
+    <path d="m6,4 L16, 10 L8,15 " fill="transparent" stroke="#000" stroke-width="1px" />
+    <path d="m21,20 L16, 10 L27,10 " fill="transparent" stroke="#000" stroke-width="1px" />
+</svg>
