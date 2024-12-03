@@ -717,17 +717,24 @@ export function renderGraphicalElementSVG(
 
       // if gradient color was set, override color value by ID of gradient
       if (
-        path.style.fillColor == null &&
-        path.style.fillStartColor &&
-        path.style.fillStopColor
+        path.style.fillColor !== null &&
+        path.style.fillStartColor !== null && 
+        path.style.fillStopColor !== null 
       ) {
         style.fill = `url(#${gradientID})`;
+      }
+      if (
+        path.style.strokeColor !== null &&
+        path.style.fillStartColor !== null && 
+        path.style.fillStopColor !== null 
+      ) {
+        style.stroke = `url(#${gradientID})`;
       }
 
       return (
         <g key={`g-${element.key || options.key}`}>
           <defs key={`defs-${element.key || options.key}`}>
-            {path.style.fillColor == null &&
+            {
             path.style.fillStartColor &&
             path.style.fillStopColor ? (
               <linearGradient

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import {
@@ -127,13 +128,23 @@ export interface AnchorCoordinates {
 
 export interface AnchorAttributes extends AnchorCoordinates {
   color: Color;
+  fill: Color;
+  fillStart: Color;
+  fillStop: Color;
+  rotation: number;
   opacity: number;
   strokeWidth: number;
 }
 
 export interface RenderState {
+  fillFunction: (row: Expression.Context) => Specification.AttributeValue;
+  fillStartFunction: (row: Expression.Context) => Specification.AttributeValue;
+  fillStopFunction: (row: Expression.Context) => Specification.AttributeValue;
   colorFunction: (row: Expression.Context) => Specification.AttributeValue;
   opacityFunction: (row: Expression.Context) => Specification.AttributeValue;
+  fillRotationFunction: (
+    row: Expression.Context
+  ) => Specification.AttributeValue;
   strokeWidthFunction: (
     row: Expression.Context
   ) => Specification.AttributeValue;
@@ -161,7 +172,28 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
       name: "color",
       type: Specification.AttributeType.Color,
       solverExclude: true,
-      defaultValue: "#000000",
+      defaultValue: null,
+      stateExclude: true,
+    },
+    fill: {
+      name: "fill",
+      type: Specification.AttributeType.Color,
+      solverExclude: true,
+      defaultValue: null,
+      stateExclude: true,
+    },
+    fillStart: {
+      name: "fillStart",
+      type: Specification.AttributeType.Color,
+      solverExclude: true,
+      defaultValue: null,
+      stateExclude: true,
+    },
+    fillStop: {
+      name: "fillStop",
+      type: Specification.AttributeType.Color,
+      solverExclude: true,
+      defaultValue: null,
       stateExclude: true,
     },
     strokeWidth: {
@@ -245,6 +277,10 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
       color: <Color>renderState.colorFunction(row),
       opacity: <number>renderState.opacityFunction(row),
       strokeWidth: <number>renderState.strokeWidthFunction(row),
+      rotation: <number>renderState.fillRotationFunction(row),
+      fill: <Color>renderState.fillFunction(row),
+      fillStart: <Color>renderState.fillStartFunction(row),
+      fillStop: <Color>renderState.fillStopFunction(row),
     };
   }
 
@@ -540,6 +576,10 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
                 strokeOpacity: anchors[i][0].opacity,
                 strokeWidth: anchors[i][0].strokeWidth,
                 strokeDasharray: strokeDashArray,
+                fillColor: anchors[i][0].fill,
+                fillStartColor: anchors[i][0].fillStart,
+                fillStopColor: anchors[i][0].fillStop,
+                gradientRotation: anchors[i][0].rotation,
                 strokeLinecap: "butt",
                 startArrowColorId: `start-arrow-color-id-${getRandomNumber()}`,
                 endArrowColorId: `end-arrow-color-id-${getRandomNumber()}`,
@@ -652,6 +692,9 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
               const path = Graphics.makePath({
                 fillColor: anchors[i][0].color,
                 fillOpacity: anchors[i][0].opacity,
+                fillStartColor: anchors[i][0].fillStart,
+                fillStopColor: anchors[i][0].fillStop,
+                gradientRotation: anchors[i][0].rotation
               });
               LinksClass.LinkPath(
                 path,
@@ -812,9 +855,20 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
 
     widgets.push(
       manager.verticalGroup({ header: strings.objects.style }, [
-        manager.mappingEditor(strings.objects.color, "color", {
+        manager.mappingEditor(strings.objects.stroke, "color", {
           table: props.linkTable && props.linkTable.table,
           acceptLinksTable: !!(props.linkTable && props.linkTable.table),
+          searchSection: strings.objects.style,
+        }),
+        manager.mappingEditor(strings.objects.fill, "fill", {
+          searchSection: strings.objects.style,
+        }),
+        manager.mappingEditor(strings.objects.gradientStart, "fillStart", {
+          table: props.linkTable && props.linkTable.table,
+          searchSection: strings.objects.style,
+        }),
+        manager.mappingEditor(strings.objects.gradientStop, "fillStop", {
+          table: props.linkTable && props.linkTable.table,
           searchSection: strings.objects.style,
         }),
         manager.mappingEditor(strings.objects.width, "strokeWidth", {
@@ -921,13 +975,11 @@ export class SeriesLinksClass extends LinksClass {
     const linkGroup = Graphics.makeGroup([]);
 
     const renderState: RenderState = {
-      colorFunction: this.parent.resolveMapping(this.object.mappings.color, <
-        Color
-      >{
-        r: 0,
-        g: 0,
-        b: 0,
-      }),
+      colorFunction: this.parent.resolveMapping(this.object.mappings.color, null),
+      fillFunction: this.parent.resolveMapping(this.object.mappings.fill, null),
+      fillStartFunction: this.parent.resolveMapping(this.object.mappings.fillStart, null),
+      fillStopFunction: this.parent.resolveMapping(this.object.mappings.fillStop, null),
+      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.rotation, 0),
       opacityFunction: this.parent.resolveMapping(
         this.object.mappings.opacity,
         1
@@ -1041,13 +1093,11 @@ export class LayoutsLinksClass extends LinksClass {
     const linkGroup = Graphics.makeGroup([]);
 
     const renderState: RenderState = {
-      colorFunction: this.parent.resolveMapping(this.object.mappings.color, <
-        Color
-      >{
-        r: 0,
-        g: 0,
-        b: 0,
-      }),
+      colorFunction: this.parent.resolveMapping(this.object.mappings.color, null),
+      fillFunction: this.parent.resolveMapping(this.object.mappings.fill, null),
+      fillStartFunction: this.parent.resolveMapping(this.object.mappings.fillStart, null),
+      fillStopFunction: this.parent.resolveMapping(this.object.mappings.fillStop, null),
+      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.rotation, 0),
       opacityFunction: this.parent.resolveMapping(
         this.object.mappings.opacity,
         1
@@ -1150,13 +1200,11 @@ export class TableLinksClass extends LinksClass {
     const linkGroup = Graphics.makeGroup([]);
 
     const renderState: RenderState = {
-      colorFunction: this.parent.resolveMapping(this.object.mappings.color, <
-        Color
-      >{
-        r: 0,
-        g: 0,
-        b: 0,
-      }),
+      colorFunction: this.parent.resolveMapping(this.object.mappings.color, null),
+      fillFunction: this.parent.resolveMapping(this.object.mappings.fill, null),
+      fillStartFunction: this.parent.resolveMapping(this.object.mappings.fillStart, null),
+      fillStopFunction: this.parent.resolveMapping(this.object.mappings.fillStop, null),
+      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.rotation, 0),
       opacityFunction: this.parent.resolveMapping(
         this.object.mappings.opacity,
         1

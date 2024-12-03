@@ -22,6 +22,12 @@ export interface LineElementAttributes extends AttributeMap {
   cx: number;
   cy: number;
   stroke: Color;
+  /** color of the rectangle  */
+  fill: Color;
+  /** start color of the rectangle gradient  */
+  fillStart: Color;
+  /** stop color of the rectangle gradient  */
+  fillStop: Color;
   strokeWidth: number;
   opacity: number;
   visible: boolean;

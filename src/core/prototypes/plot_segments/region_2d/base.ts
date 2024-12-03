@@ -2437,7 +2437,6 @@ export class Region2DConstraintBuilder {
       return projection;
     });
 
-    debugger;
     for (const gr in groups) {
       const glyphGroup = groups[gr];
       
@@ -2476,7 +2475,6 @@ export class Region2DConstraintBuilder {
       }
       sim.tick(forceProps.tick);
       sim.velocityDecay(forceProps.velocityDecay);
-      debugger;
 
       for (const groupIndex in glyphGroup.group) {
         const data = nodes[groupIndex];

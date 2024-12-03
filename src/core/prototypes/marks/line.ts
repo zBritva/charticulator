@@ -192,6 +192,9 @@ export class LineElementClass extends EmphasizableMarkClass<
       attrs.x2 + offset.x,
       attrs.y2 + offset.y,
       {
+        fillColor: attrs.fill,
+        fillStartColor: attrs.fillStart,
+        fillStopColor: attrs.fillStop,
         strokeColor: attrs.stroke,
         strokeOpacity: attrs.opacity,
         strokeWidth: attrs.strokeWidth,
