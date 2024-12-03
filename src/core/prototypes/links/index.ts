@@ -697,7 +697,9 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
             const bands: Graphics.Element[] = [];
             for (let i = 0; i < anchors.length - 1; i++) {
               const path = Graphics.makePath({
-                fillColor: anchors[i][0].color,
+                strokeColor: anchors[i][0].color,
+                strokeOpacity: anchors[i][0].opacity,
+                fillColor: anchors[i][0].fill,
                 fillOpacity: anchors[i][0].opacity,
                 fillStartColor: anchors[i][0].fillStart,
                 fillStopColor: anchors[i][0].fillStop,
