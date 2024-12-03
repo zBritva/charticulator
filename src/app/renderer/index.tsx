@@ -738,6 +738,7 @@ export function renderGraphicalElementSVG(
             path.style.fillStartColor &&
             path.style.fillStopColor ? (
               <linearGradient
+                // gradientUnits="userSpaceOnUse"
                 key={`gradient-${gradientID}`}
                 id={gradientID}
                 x1={`${rotation.x1}%`}

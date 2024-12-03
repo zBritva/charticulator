@@ -131,7 +131,7 @@ export interface AnchorAttributes extends AnchorCoordinates {
   fill: Color;
   fillStart: Color;
   fillStop: Color;
-  rotation: number;
+  gradientRotation: number;
   opacity: number;
   strokeWidth: number;
 }
@@ -200,7 +200,14 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
       name: "strokeWidth",
       type: Specification.AttributeType.Number,
       solverExclude: true,
-      defaultValue: "#000000",
+      defaultValue: 1,
+      stateExclude: true,
+    },
+    gradientRotation: {
+      name: "gradientRotation",
+      type: Specification.AttributeType.Number,
+      solverExclude: true,
+      defaultValue: 0,
       stateExclude: true,
     },
     opacity: {
@@ -277,7 +284,7 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
       color: <Color>renderState.colorFunction(row),
       opacity: <number>renderState.opacityFunction(row),
       strokeWidth: <number>renderState.strokeWidthFunction(row),
-      rotation: <number>renderState.fillRotationFunction(row),
+      gradientRotation: <number>renderState.fillRotationFunction(row),
       fill: <Color>renderState.fillFunction(row),
       fillStart: <Color>renderState.fillStartFunction(row),
       fillStop: <Color>renderState.fillStopFunction(row),
@@ -579,7 +586,7 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
                 fillColor: anchors[i][0].fill,
                 fillStartColor: anchors[i][0].fillStart,
                 fillStopColor: anchors[i][0].fillStop,
-                gradientRotation: anchors[i][0].rotation,
+                gradientRotation: anchors[i][0].gradientRotation,
                 strokeLinecap: "butt",
                 startArrowColorId: `start-arrow-color-id-${getRandomNumber()}`,
                 endArrowColorId: `end-arrow-color-id-${getRandomNumber()}`,
@@ -694,7 +701,7 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
                 fillOpacity: anchors[i][0].opacity,
                 fillStartColor: anchors[i][0].fillStart,
                 fillStopColor: anchors[i][0].fillStop,
-                gradientRotation: anchors[i][0].rotation
+                gradientRotation: anchors[i][0].gradientRotation
               });
               LinksClass.LinkPath(
                 path,
@@ -871,6 +878,14 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
           table: props.linkTable && props.linkTable.table,
           searchSection: strings.objects.style,
         }),
+        manager.mappingEditor(strings.objects.rotation, "gradientRotation", {
+          hints: { rangeNumber: [-365, 365] },
+          defaultValue: 0,
+          numberOptions: { showSlider: false, showUpdown: true },
+          table: props.linkTable && props.linkTable.table,
+          acceptLinksTable: !!(props.linkTable && props.linkTable.table),
+          searchSection: strings.objects.style,
+        }),
         manager.mappingEditor(strings.objects.width, "strokeWidth", {
           hints: { rangeNumber: [0, 5] },
           defaultValue: 1,
@@ -979,7 +994,7 @@ export class SeriesLinksClass extends LinksClass {
       fillFunction: this.parent.resolveMapping(this.object.mappings.fill, null),
       fillStartFunction: this.parent.resolveMapping(this.object.mappings.fillStart, null),
       fillStopFunction: this.parent.resolveMapping(this.object.mappings.fillStop, null),
-      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.rotation, 0),
+      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.gradientRotation, 0),
       opacityFunction: this.parent.resolveMapping(
         this.object.mappings.opacity,
         1
@@ -1097,7 +1112,7 @@ export class LayoutsLinksClass extends LinksClass {
       fillFunction: this.parent.resolveMapping(this.object.mappings.fill, null),
       fillStartFunction: this.parent.resolveMapping(this.object.mappings.fillStart, null),
       fillStopFunction: this.parent.resolveMapping(this.object.mappings.fillStop, null),
-      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.rotation, 0),
+      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.gradientRotation, 0),
       opacityFunction: this.parent.resolveMapping(
         this.object.mappings.opacity,
         1
@@ -1204,7 +1219,7 @@ export class TableLinksClass extends LinksClass {
       fillFunction: this.parent.resolveMapping(this.object.mappings.fill, null),
       fillStartFunction: this.parent.resolveMapping(this.object.mappings.fillStart, null),
       fillStopFunction: this.parent.resolveMapping(this.object.mappings.fillStop, null),
-      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.rotation, 0),
+      fillRotationFunction: this.parent.resolveMapping(this.object.mappings.gradientRotation, 0),
       opacityFunction: this.parent.resolveMapping(
         this.object.mappings.opacity,
         1
