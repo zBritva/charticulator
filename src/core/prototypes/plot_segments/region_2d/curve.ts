@@ -92,6 +92,7 @@ export const icons: Region2DConfigurationIcons = {
   jitterIcon: "sublayout/jitter",
   treeMapIcon: "sublayout/treemap",
   geoIcon: "sublayout/geo",
+  forceIcon: "sublayout/force",
 };
 
 export class CurvePlotSegment extends PlotSegmentClass<

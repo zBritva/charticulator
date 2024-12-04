@@ -195,6 +195,15 @@ export class Migrator {
       state = this.setMissedProperties_2_1_6(state);
     }
 
+    if (
+      compareVersion(state.version, "2.7.0") < 0 &&
+      compareVersion(targetVersion, "2.7.0") >= 0
+    ) {
+      // TODO replace fill by stroke for band links
+      // eslint-disable-next-line no-self-assign
+      state = state;
+    }
+
     // After migration, set version to targetVersion
     state.version = targetVersion;
 

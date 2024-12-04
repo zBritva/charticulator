@@ -288,6 +288,10 @@ addSVGIcon(
   require("resources/icons/icons_sublayout-treemap.svg")
 );
 addSVGIcon(
+  "sublayout/force",
+  require("resources/icons/icons_sublayout-force.svg")
+);
+addSVGIcon(
   "sublayout/geo",
   require("resources/icons/icons_scaffold-map.svg")
 );

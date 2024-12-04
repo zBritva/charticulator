@@ -24,6 +24,7 @@ const cartesianTerminology: Region2DConfigurationTerminology = {
   treemap: "Treemap",
   overlap: "Overlap",
   geo: "Geo",
+  force: "Force"
 };
 
 const curveTerminology: Region2DConfigurationTerminology = {
@@ -45,6 +46,7 @@ const curveTerminology: Region2DConfigurationTerminology = {
   treemap: "Treemap",
   overlap: "Overlap",
   geo: "Geo",
+  force: "Force"
 };
 
 const polarTerminology: Region2DConfigurationTerminology = {
@@ -65,7 +67,8 @@ const polarTerminology: Region2DConfigurationTerminology = {
   jitter: "Jitter",
   treemap: "Treemap",
   overlap: "Overlap",
-  geo: "Geo"
+  geo: "Geo",
+  force: "Force"
 };
 
 export const strings = {
@@ -503,6 +506,19 @@ export const strings = {
       autoNumberOfTicks: "Auto Number of Ticks",
     },
     plotSegment: {
+      collideRadius: "Collide radius",
+      nbodyStrength: "N body strength",
+      linkDistance: "Link distance",
+      velocityDecay: "Velocity decay",
+      simTick: "Simulation ticks",
+      centerForce: "Center force",
+      manyBodyForce: "Many body force",
+      collideForce: "Collide force",
+      linkForce: "Links force",
+      radius: "Radius",
+      strength: "Strength",
+      theta: "Theta",
+      forceTypes: "Force types",
       subLayout: "Sub-layout",
       type: "Type",
       gridline: "Gridline",
@@ -513,7 +529,6 @@ export const strings = {
       origin: "Origin",
       inner: "Inner:",
       outer: "Outer:",
-      radius: "Radius",
       angle: "Angle",
       curveCoordinates: "Curve Coordinates",
       normal: "Normal",
