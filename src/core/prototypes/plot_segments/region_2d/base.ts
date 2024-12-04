@@ -2454,9 +2454,9 @@ export class Region2DConstraintBuilder {
       })) : [];
 
       const sim = forceSimulation(nodes);
-      if (forceProps.centerForce) {
+      // if (forceProps.centerForce) {
         sim.force('center', forceCenter(width / 2, height / 2))
-      }
+      // }
       if (forceProps.manyBodyForce) {
         const force = forceManyBody();
         force.strength(forceProps.strength);
@@ -3715,14 +3715,14 @@ export class Region2DConstraintBuilder {
             m.label(strings.objects.plotSegment.forceTypes, {
               ignoreSearch: true,
             }),
-            m.inputBoolean(
-              { property: "sublayout", field: ["force", "centerForce"] },
-              {
-                type: "checkbox",
-                ignoreSearch: true,
-                label: strings.objects.plotSegment.centerForce,
-              }
-            ),
+            // m.inputBoolean(
+            //   { property: "sublayout", field: ["force", "centerForce"] },
+            //   {
+            //     type: "checkbox",
+            //     ignoreSearch: true,
+            //     label: strings.objects.plotSegment.centerForce,
+            //   }
+            // ),
             m.inputBoolean(
               { property: "sublayout", field: ["force", "manyBodyForce"] },
               {
