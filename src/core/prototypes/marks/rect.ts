@@ -344,39 +344,33 @@ export class RectElementClass extends EmphasizableMarkClass<
           manager.mappingEditor(strings.objects.fill, "fill", {
             searchSection: strings.objects.style,
           }),
-          this.object.mappings.fill == null
-            ? manager.mappingEditor(
-                strings.objects.gradientStart,
-                "fillStart",
-                {
-                  searchSection: strings.objects.style,
-                }
-              )
-            : null,
-          this.object.mappings.fill == null
-            ? manager.mappingEditor(strings.objects.gradientStop, "fillStop", {
-                searchSection: strings.objects.style,
-              })
-            : null,
-          this.object.mappings.fill == null
-            ? manager.mappingEditor(
-                strings.objects.gradientRotation,
-                "gradientRotation",
-                {
-                  hints: { rangeNumber: [0, 360] },
-                  defaultValue: 0,
-                  numberOptions: {
-                    showSlider: false,
-                    showUpdown: true,
-                    minimum: 0,
-                    maximum: 360,
-                    step: 1,
-                    updownTick: 1,
-                  },
-                  searchSection: strings.objects.style,
-                }
-              )
-            : null,
+          manager.mappingEditor(
+            strings.objects.gradientStart,
+            "fillStart",
+            {
+              searchSection: strings.objects.style,
+            }
+          ),
+          manager.mappingEditor(strings.objects.gradientStop, "fillStop", {
+            searchSection: strings.objects.style,
+          }),
+          manager.mappingEditor(
+            strings.objects.gradientRotation,
+            "gradientRotation",
+            {
+              hints: { rangeNumber: [0, 360] },
+              defaultValue: 0,
+              numberOptions: {
+                showSlider: false,
+                showUpdown: true,
+                minimum: 0,
+                maximum: 360,
+                step: 1,
+                updownTick: 1,
+              },
+              searchSection: strings.objects.style,
+            }
+          ),
           manager.mappingEditor(strings.objects.stroke, "stroke", {
             searchSection: strings.objects.style,
           }),
