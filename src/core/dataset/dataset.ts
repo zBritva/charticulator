@@ -33,6 +33,8 @@ export interface ColumnMetadata {
   orderByExpression?: string;
 
   columnName?: string;
+
+  derivedColumns?: string[];
 }
 
 export interface Column {
