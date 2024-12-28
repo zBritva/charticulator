@@ -25,7 +25,7 @@ import {
   getConvertableDataKind,
 } from "../../utils";
 import { DropdownListView } from "../panels/widgets/controls";
-import { kind2Icon, type2DerivedColumns } from "./common";
+import { DerivedColumnDescription, kind2Icon, type2DerivedColumns } from "./common";
 import { TableView } from "./table_view";
 import { TableType, tableTypeName } from "../../../core/dataset";
 import { DataType, DataKind } from "../../../core/specification";
@@ -409,33 +409,42 @@ export class ColumnView extends React.Component<
 
   public renderDerivedColumns() {
     const c = this.props.column;
-    const derivedColumns = type2DerivedColumns[c.type];
+    let derivedColumns = type2DerivedColumns[c.type];
+    if (c.metadata.derivedColumns) {
+      if (!derivedColumns) {
+        derivedColumns = [];
+      }
+
+      derivedColumns = derivedColumns.concat(c.metadata.derivedColumns.map(fp => {
+        return {
+          name: fp,
+          metadata: c.metadata,
+          type: c.type,
+          displayName: fp,
+          function: "powerBIderivedColumn"
+        } as DerivedColumnDescription;
+      }))
+    } 
     if (!derivedColumns) {
       return null;
     }
     return (
       <div className="charticulator__dataset-view-derived-fields">
         {derivedColumns.map((desc) => {
-          const expr = Expression.functionCall(
-            desc.function,
-            Expression.variable(this.props.column.name)
-          ).toString();
-          const lambdaExpr = Expression.lambda(
-            ["x"],
-            Expression.functionCall(
+          let expr = "";
+          if (desc.function == "powerBIderivedColumn") {
+            expr = Expression.variable(this.props.column.name).toString();
+          } else {
+            expr = Expression.functionCall(
               desc.function,
-              Expression.fields(
-                Expression.variable("x"),
-                this.props.column.name
-              )
-            )
-          ).toString();
+              Expression.variable(this.props.column.name)
+            ).toString();
+          }
           const type = desc.type;
           return this.renderColumnControl(
             desc.name,
             R.getSVGIcon(kind2Icon[desc.metadata.kind]),
             expr,
-            lambdaExpr,
             type,
             null,
             desc.metadata,
@@ -461,7 +470,6 @@ export class ColumnView extends React.Component<
     label: string,
     icon: string,
     expr: string,
-    lambdaExpr: string,
     type: Dataset.DataType,
     additionalElement: JSX.Element = null,
     metadata: Dataset.ColumnMetadata,
@@ -571,10 +579,6 @@ export class ColumnView extends React.Component<
             c.name,
             R.getSVGIcon(kind2Icon[c.metadata.kind]),
             Expression.variable(c.name).toString(),
-            Expression.lambda(
-              ["x"],
-              Expression.fields(Expression.variable("x"), c.name)
-            ).toString(),
             c.type,
             <Button
               appearance="subtle"
@@ -610,10 +614,6 @@ export class ColumnView extends React.Component<
         c.name,
         R.getSVGIcon(kind2Icon[c.metadata.kind]),
         Expression.variable(c.name).toString(),
-        Expression.lambda(
-          ["x"],
-          Expression.fields(Expression.variable("x"), c.name)
-        ).toString(),
         c.type,
         null,
         c.metadata,

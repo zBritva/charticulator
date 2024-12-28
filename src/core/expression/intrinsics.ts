@@ -4,6 +4,7 @@ import { ValueType } from "./classes";
 import { parseDate } from "../dataset/datetime";
 import { getFormat, isUtcTimeZone } from "../common";
 import { timeFormat, utcFormat } from "d3-time-format";
+import { Column } from "../dataset";
 
 export const constants: { [name: string]: ValueType } = {};
 export const functions: {
@@ -366,5 +367,14 @@ functions.columnName = (columns: any[] | any, ...names: string[]) => {
       .map((column) => column.displayName || column.name);
   } else {
     return columns.displayName || columns.name;
+  }
+};
+
+functions.derivedColumn = (columns: Column[], rootColumnName: string, derivedColumnName: string) => {
+  const derivedColumn = columns.find(col => col.displayName === derivedColumnName);
+  if (derivedColumn) {
+    return derivedColumn.name;
+  } else {
+    return rootColumnName;
   }
 };
