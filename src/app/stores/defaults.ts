@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import { Dataset, Specification, uniqueID } from "../../core";
+import { Dataset, hexToRgb, Specification, uniqueID } from "../../core";
 import {
   GridDirection,
   GridStartPosition,
@@ -241,29 +241,34 @@ export function createDefaultPlotSegment(
           dataExpressions: any[];
           measureExpression: string;
         }>{
-          paddingInner: 0,
-          paddingOuter: 0,
-          dataExpressions: [
-            ...table.columns
-              .filter(col => col.metadata.kind === Dataset.DataKind.Categorical)
-              .map(col => ({
-                expression: `first(${col.name})`,
-                name: col.name
-              }))
-          ],
-          measureExpression: `first(${table.columns
-            .filter(col => col.metadata.kind === Dataset.DataKind.Numerical)
-            .map(col => col.name)[0]})`
-        },
+            paddingInner: 0,
+            paddingOuter: 0,
+            dataExpressions: [
+              ...table.columns
+                .filter(col => col.metadata.kind === Dataset.DataKind.Categorical)
+                .map(col => ({
+                  expression: `first(${col.name})`,
+                  name: col.name
+                }))
+            ],
+            measureExpression: `first(${table.columns
+              .filter(col => col.metadata.kind === Dataset.DataKind.Numerical)
+              .map(col => col.name)[0]})`
+          },
         geo: {
           // longitude/latitude
           projection: "Equirectangular",
           latExpressions: `first(${table.columns
-            .filter(col => col.metadata.kind === Dataset.DataKind.Numerical && col.name === "latitude")
+            .filter(col => col.metadata.kind === Dataset.DataKind.Numerical && col.name.toLowerCase() === "latitude")
             .map(col => col.name)[0]})`,
           lonExpressions: `first(${table.columns
-            .filter(col => col.metadata.kind === Dataset.DataKind.Numerical && col.name === "longitude")
+            .filter(col => col.metadata.kind === Dataset.DataKind.Numerical && col.name.toLowerCase() === "longitude")
             .map(col => col.name)[0]})`,
+          featureProperty: "name",
+          dataExpression: "id",
+          stokeWidth: 1,
+          strokeOpacity: 1,
+          strokeColor: hexToRgb("#000000"),
           GeoJSON: GeoJSON,
           scale: 100,
           rotateGamma: 0,
