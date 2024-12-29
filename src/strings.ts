@@ -494,6 +494,8 @@ export const strings = {
       geoJSON: "GeoJSON",
       latExpressions: "Latitude Expression",
       lonExpressions: "Longitude Expression",
+      featureProperty: "Feature property",
+      dataExpression: "Column property",
       lineColor: "Line Color",
       tickColor: "Tick Label Color",
       tickTextBackgroudColor: "Tick background color",
