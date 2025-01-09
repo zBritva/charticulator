@@ -108,14 +108,14 @@ export const DatasetsView: React.FC<DatasetsViewProps> = ({
           }}
         />
       </div>
-      <ul className="chart-list">
+      <ul className="chart-list" data-testid="dataset-list">
         {currentDatasets.map((dataset, index) => {
           return (
             <li
+              data-testid={`dataset-list-${index}`}
               key={`${dataset.id}-${index}`}
               tabIndex={0}
               onClick={() => {
-                console.log('clickHandler');
                 clickHandler(dataset);
               }}
               onKeyPress={(e) => {

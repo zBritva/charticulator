@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import * as path from "path";
-import { expectShapesCount, loadChart, pathPrefix } from './utils';
+import { expectShapesCount, pathPrefix, takeScreenshot } from './utils';
+import { clickOnAppButton, loadChart } from './actions';
 
 test('has title Charticulator', async ({ page }, testInfo) => {
   await page.goto('/');
@@ -14,13 +15,7 @@ test('has title Charticulator', async ({ page }, testInfo) => {
 test('opens file view', async ({ page }, testInfo) => {
   await page.goto('/');
 
-  // Click the get started link.
-  let appbutton = await page.getByTestId('appbutton');
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(appbutton).toBeVisible();
-
-  await appbutton.click();
+  await clickOnAppButton(page);
 
   let fileViewTabs = await page.getByTestId('file-view-tabs');
 
@@ -82,12 +77,3 @@ test('open World_Population_2017', async ({ page }, testInfo) => {
   await takeScreenshot(testInfo, page);
   await expectShapesCount(page, 94);
 });
-
-async function takeScreenshot(testInfo, page) {
-  // Get a unique place for the screenshot.
-  const screenshotPath = testInfo.outputPath(`page.png`);
-  // Add it to the report
-  testInfo.attachments.push({ name: 'screenshot', path: screenshotPath, contentType: 'image/png' });
-  // Take the screenshot itself.
-  await page.screenshot({ path: screenshotPath, timeout: 5000 });
-}

@@ -517,6 +517,7 @@ export class ColumnView extends React.Component<
       <div
         tabIndex={0}
         key={label}
+        data-testid={`dataset-view-column-${label.replace(/\W/g, "_")}`}
         className="click-handler"
         ref={(e) => (anchor = e)}
         onClick={onClickHandler}

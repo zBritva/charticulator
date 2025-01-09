@@ -74,6 +74,7 @@ export class DraggableElement extends React.Component<
   public render() {
     return (
       <div
+        data-testid="draggable"
         ref="draggableContainer"
         className={classNames(this.props.className, "draggable", [
           "dragging",

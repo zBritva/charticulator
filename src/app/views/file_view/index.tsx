@@ -205,6 +205,7 @@ export class FileView extends React.Component<
               ) : (
                 <div
                   tabIndex={0}
+                  data-testid={`file-view-tabs-${t}`}
                   key={index}
                   className={classNames("el-tab", [
                     "active",
