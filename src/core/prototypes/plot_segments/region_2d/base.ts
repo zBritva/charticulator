@@ -3441,18 +3441,18 @@ export class Region2DConstraintBuilder {
                   }
                 }
               ),
-              m.label(strings.objects.axes.featureProperty, {
-                ignoreSearch: true,
-              }),
-              m.inputText(
-                {
-                  property: "sublayout",
-                  field: ["geo", "featureProperty"],
-                },
-                {
+              // m.label(strings.objects.axes.featureProperty, {
+              //   ignoreSearch: true,
+              // }),
+              // m.inputText(
+              //   {
+              //     property: "sublayout",
+              //     field: ["geo", "featureProperty"],
+              //   },
+              //   {
 
-                }
-              ),
+              //   }
+              // ),
               m.label(strings.objects.stroke, {
                 ignoreSearch: true,
               }),

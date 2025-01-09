@@ -266,7 +266,7 @@ export function createDefaultPlotSegment(
             .map(col => col.name)[0]})`,
           featureProperty: "name",
           dataExpression: "id",
-          stokeWidth: 1,
+          strokeWidth: 1,
           strokeOpacity: 1,
           strokeColor: hexToRgb("#000000"),
           GeoJSON: GeoJSON,
