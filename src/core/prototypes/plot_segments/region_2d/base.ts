@@ -2362,15 +2362,17 @@ export class Region2DConstraintBuilder {
       const column = parsed.args[0].toStringPrecedence(precedences.FUNCTION_ARGUMENT);
       coordinateColumns.push(column);
     }
-    const table = this.chartStateManager.dataset.tables.find(t => t.name == this.plotSegment.object.table);
-    const dataProjection = table.rows.map((row, index) => {
+    const table = this.chartStateManager.dataflow.getTable(this.plotSegment.object.table);
+    const dataProjection = state.dataRowIndices.map((rowIndex, index) => {
       const projection = {
-        _id: row._id,
+        _id: `${index}`,
         glyphState: state.glyphs[index]
       }
 
+      const rowContext = table.getRowContext(index)
+      
       coordinateColumns.forEach(col => {
-        projection[col] = row[col];
+        projection[col] = rowContext.getVariable(col);
       })
 
       return projection;
