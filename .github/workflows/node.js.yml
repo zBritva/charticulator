@@ -25,10 +25,7 @@ jobs:
         node-version: 20
     - run: npm install
     - name: Copy config.yml
-      uses: canastro/copy-action@0.0.2
-      with:
-        source: config.template.yml
-        target: config.yml
+      run: mv .\config.template.yml .\config.yml
     - run: yarn test
     - name: Test results
       uses: actions/upload-artifact@v4
