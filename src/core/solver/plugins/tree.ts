@@ -46,14 +46,6 @@ export class TreePlugin extends ConstraintPlugin {
   }
 
   public apply() {
-    let xScale = 1;
-    let yScale = 1;
-    if (this.getXYScale != null) {
-      const { x, y } = this.getXYScale();
-      xScale = x;
-      yScale = y;
-    }
-
     return true;
   }
 }

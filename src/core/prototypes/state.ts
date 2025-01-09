@@ -372,6 +372,7 @@ export class ChartStateManager {
   public getClassById(id: string): ObjectClass {
     // eslint-disable-next-line
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [object, state] = this.idIndex.get(id);
       return this.classCache.getClass(state);
     } catch(e) {

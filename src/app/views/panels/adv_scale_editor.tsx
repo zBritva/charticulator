@@ -14,7 +14,7 @@ import { strings } from "../../../strings";
 import { Dropdown, Input, Label, Option } from "@fluentui/react-components";
 import { FluentColumnLayout } from "./widgets/controls/fluentui_customized_components";
 import { Actions } from "../../actions";
-import { Expression, FunctionCall, StringValue, Variable } from "../../../core/expression";
+import { Expression, FunctionCall, Variable } from "../../../core/expression";
 
 export interface ScaleEditorProps {
     store: AppStore;

@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
-import { getRandom } from "../..";
 import { AxisMode } from "../../prototypes/plot_segments/axis";
 import { ConstraintPlugin, ConstraintSolver, Variable } from "../abstract";
 import seedrandom from "seedrandom";
