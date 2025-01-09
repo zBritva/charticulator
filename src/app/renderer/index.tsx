@@ -717,7 +717,7 @@ export function renderGraphicalElementSVG(
 
       // if gradient color was set, override color value by ID of gradient
       if (
-        path.style.fillColor != null &&
+        path.style.fillColor == null &&
         path.style.fillStartColor != null && 
         path.style.fillStopColor != null 
       ) {
