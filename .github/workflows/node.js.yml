@@ -25,6 +25,7 @@ jobs:
         node-version: 20
     - run: npm install
     - name: Copy config.yml
+      continue-on-error: true
       run: mv .\config.template.yml .\config.yml
     - run: yarn test
     - name: Test results
