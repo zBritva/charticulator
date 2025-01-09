@@ -35,7 +35,7 @@ import {
   SublayoutAlignment,
 } from "./base";
 import { PlotSegmentClass } from "../plot_segment";
-import { getSortDirection, SpecTypes, uuid, ZoomInfo } from "../../..";
+import { getSortDirection, hexToRgb, SpecTypes, uuid, ZoomInfo } from "../../..";
 import { strings } from "../../../../strings";
 import {
   AxisDataBinding,
@@ -192,6 +192,11 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         projection: "Equirectangular",
         latExpressions: "",
         lonExpressions: "",
+        strokeWidth: 1,
+        strokeColor: hexToRgb("#000000"),
+        strokeOpacity: 0,
+        dataExpression: "id",
+        featureProperty: "name",
         GeoJSON: "",
         rotateGamma: 0,
         rotateLambda: 0,
@@ -434,17 +439,16 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           projection.scale(sublayout.geo.scale);
           projection.translate([sublayout.geo.translateX, sublayout.geo.translateY]);
         }
-        const geoGenerator = geoPath().projection(projection);
+        const geoGenerator = geoPath()
+          .projection(projection)
         const pathData = geoGenerator(parsedGeoJSON);
 
         const parsedPath = parseSVG(pathData) as { code: string, x: number, y: number }[];
 
         const path = Graphics.makePath({
-          strokeColor: {
-            b: 0,
-            g: 0,
-            r: 0,
-          }
+          strokeColor: sublayout.geo.strokeColor || hexToRgb("#000000"),
+          strokeWidth: sublayout.geo.strokeWidth || 1,
+          strokeOpacity: sublayout.geo.strokeOpacity || 1,
         });
         path.path.key = `cartesian:${this.object._id}-geopath`;
         path.path.cmds = parsedPath.map(({ code, x, y }) => {
@@ -461,6 +465,11 @@ export class CartesianPlotSegment extends PlotSegmentClass<
           y: (this.state.attributes.y2 - this.state.attributes.y1) / 2,
           angle: 0
         };
+        group.style = {
+          strokeColor: sublayout.geo.strokeColor || hexToRgb("#0000"),
+          strokeWidth: sublayout.geo.strokeWidth || 1,
+          strokeOpacity: sublayout.geo.strokeOpacity || 1,
+        }
 
         cartesianGraphics.elements.push(group);
       }

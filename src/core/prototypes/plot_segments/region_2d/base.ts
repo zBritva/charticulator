@@ -57,7 +57,7 @@ import { forceCenter, forceCollide, forceLink, forceSimulation, forceManyBody } 
 
 
 import { precedences } from "../../../../core/expression/intrinsics";
-import { uuid } from "../../../";
+import { Color, uuid } from "../../../";
 import { TableType } from "../../../../core/dataset";
 
 const geoProjections = {
@@ -156,6 +156,11 @@ export interface Region2DSublayoutOptions extends Specification.AttributeMap {
     projection: GeoProjection;
     latExpressions: string;
     lonExpressions: string;
+    featureProperty: string;
+    dataExpression: string;
+    strokeWidth: number;
+    strokeOpacity: number;
+    strokeColor: Color;
     GeoJSON: string;
     scale: number;
     fit: boolean;
@@ -3433,6 +3438,82 @@ export class Region2DConstraintBuilder {
                       field: ["geo", "lonExpressions"],
                     },
                     prompt: "Data for longitude values"
+                  }
+                }
+              ),
+              // m.label(strings.objects.axes.featureProperty, {
+              //   ignoreSearch: true,
+              // }),
+              // m.inputText(
+              //   {
+              //     property: "sublayout",
+              //     field: ["geo", "featureProperty"],
+              //   },
+              //   {
+
+              //   }
+              // ),
+              m.label(strings.objects.stroke, {
+                ignoreSearch: true,
+              }),
+              m.inputColor(
+                {
+                  property: "sublayout",
+                  field: ["geo", "strokeColor"],
+                },
+                {
+                  labelKey: "strokeColor",
+                  searchSection: strings.objects.general,
+                }
+              ),
+              m.label(strings.objects.strokeWidth, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "strokeWidth"],
+                },
+                {
+                  searchSection: strings.objects.general,
+                  showUpdown: true,
+                }
+              ),
+              m.label(strings.objects.opacity, {
+                ignoreSearch: true,
+              }),
+              m.inputNumber(
+                {
+                  property: "sublayout",
+                  field: ["geo", "strokeOpacity"],
+                },
+                {
+                  searchSection: strings.objects.general,
+                  showUpdown: true,
+                  minimum: 0,
+                  maximum: 1,
+                  step: 0.1,
+                  showSlider: true,
+                }
+              ),
+              m.label(strings.objects.axes.dataExpression, {
+                ignoreSearch: true,
+              }),
+              m.inputExpression(
+                {
+                  property: "sublayout",
+                  field: ["geo", "dataExpression"],
+                },
+                {
+                  table: this.plotSegment.object.table,
+                  dropzone: {
+                    createExpression: true,
+                    type: "property-data-binding",
+                    property: {
+                      property: "sublayout",
+                      field: ["geo", "dataExpression"],
+                    },
+                    prompt: "Column for binding data values to feature"
                   }
                 }
               ),
