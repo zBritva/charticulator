@@ -10,6 +10,7 @@ import * as R from "../resources";
 import { strings } from "../../strings";
 import { Button } from "@fluentui/react-button";
 import { ToolbarButton } from "@fluentui/react-toolbar";
+import { tokens } from "@fluentui/react-components";
 
 // import { FluentButton } from "../views/panels/widgets/controls/fluentui_customized_components";
 
@@ -143,6 +144,9 @@ export class AppButton extends BaseButton<AppButtonProps> {
     return (
       <span
         tabIndex={0}
+        style={{
+          background: tokens.colorBrandBackground
+        }}
         data-testid="appbutton"
         className="charticulator__button-menu-app charticulator-title__button"
         title={this.props.title}

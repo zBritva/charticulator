@@ -22,6 +22,7 @@ import { noop } from "../../utils/noop";
 import { Button } from "@fluentui/react-button";
 
 import { ArrowExportRegular } from "@fluentui/react-icons";
+import { tokens } from "@fluentui/react-components";
 export class InputGroup extends React.Component<
   React.PropsWithChildren<{
     value: string;
@@ -36,6 +37,9 @@ export class InputGroup extends React.Component<
     return (
       <div className="form-group">
         <input
+          style={{
+            color: tokens.colorNeutralForeground1
+          }}
           ref={(e) => (this.ref = e)}
           type="text"
           required={true}
@@ -44,7 +48,9 @@ export class InputGroup extends React.Component<
             this.props.onChange(this.ref.value);
           }}
         />
-        <label>{this.props.label}</label>
+        <label style={{
+          color: tokens.colorNeutralForeground1
+        }}>{this.props.label}</label>
         <i className="bar" />
       </div>
     );
@@ -195,7 +201,9 @@ export class FileViewExport extends React.Component<
   public render() {
     return (
       <div className="charticulator__file-view-content">
-        <h1>{strings.mainTabs.export}</h1>
+        <h1 style={{
+          color: tokens.colorNeutralForeground1
+        }}>{strings.mainTabs.export}</h1>
         <div className="el-horizontal-layout">
           <div className="el-horizontal-layout-item">
             <div className="charticulator__list-view">
@@ -213,7 +221,9 @@ export class FileViewExport extends React.Component<
                 }}
               >
                 <ArrowExportRegular />
-                <span className="el-text">{strings.fileExport.asImage}</span>
+                <span style={{
+                  color: tokens.colorNeutralForeground1
+                }} className="el-text">{strings.fileExport.asImage}</span>
               </div>
               <div
                 tabIndex={0}
@@ -229,7 +239,9 @@ export class FileViewExport extends React.Component<
                 }}
               >
                 <ArrowExportRegular />
-                <span className="el-text">{strings.fileExport.asHTML}</span>
+                <span style={{
+                  color: tokens.colorNeutralForeground1
+                }} className="el-text">{strings.fileExport.asHTML}</span>
               </div>
               {this.props.store.listExportTemplateTargets().map((name) => (
                 <div
@@ -247,7 +259,9 @@ export class FileViewExport extends React.Component<
                   }}
                 >
                   <ArrowExportRegular />
-                  <span className="el-text">{name}</span>
+                  <span style={{
+                    color: tokens.colorNeutralForeground1
+                  }} className="el-text">{name}</span>
                 </div>
               ))}
             </div>
@@ -260,7 +274,7 @@ export class FileViewExport extends React.Component<
                   telemetryRecorder={telemetryRecorder}
                 >
                   {this.state.exportMode == "image" ||
-                  this.state.exportMode == "html"
+                    this.state.exportMode == "html"
                     ? this.renderExportView(this.state.exportMode)
                     : this.renderExportTemplate()}
                 </ErrorBoundary>
@@ -325,6 +339,9 @@ export class ExportTemplateView extends React.Component<
         return (
           <div className="form-group">
             <input
+              style={{
+                color: tokens.colorNeutralForeground1
+              }}
               ref={(e) => (ref = e)}
               type="text"
               required={true}
@@ -333,7 +350,9 @@ export class ExportTemplateView extends React.Component<
                 onChange(ref.value);
               }}
             />
-            <label>{label}</label>
+            <label style={{
+              color: tokens.colorNeutralForeground1
+            }}>{label}</label>
             <i className="bar" />
           </div>
         );
@@ -528,7 +547,7 @@ export class ExportTemplateView extends React.Component<
           if (inference.axis) {
             if (
               (object.properties[inference.axis.property as string] as any)[
-                keyAutoDomainMax
+              keyAutoDomainMax
               ] === undefined
             ) {
               this.props.store.dispatcher.dispatch(
@@ -611,7 +630,7 @@ export class ExportTemplateView extends React.Component<
           if (inference.axis) {
             if (
               (object.properties[inference.axis.property as string] as any)[
-                keyAutoDomainMin
+              keyAutoDomainMin
               ] === undefined
             ) {
               this.props.store.dispatcher.dispatch(
@@ -784,8 +803,8 @@ export class ExportTemplateView extends React.Component<
             object.properties.exposed === undefined
               ? "true"
               : object.properties.exposed
-              ? "true"
-              : "false"
+                ? "true"
+                : "false"
           }
           tabIndex={0}
           key={key}

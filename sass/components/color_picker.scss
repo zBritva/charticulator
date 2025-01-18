@@ -213,7 +213,7 @@
       border-radius: 2px;
 
       &:hover {
-        background: $gray-210;
+        // background: $gray-210;
       }
     }
     .controls-row {
@@ -295,8 +295,8 @@
       position: relative;
 
       canvas {
-        background: $gray-230
-          url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill-opacity=".1" ><rect x="50" width="50" height="50" /><rect y="50" width="50" height="50" /></svg>');
+        // background: $gray-230
+        //   url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill-opacity=".1" ><rect x="50" width="50" height="50" /><rect y="50" width="50" height="50" /></svg>');
         background-size: 10px 10px;
         display: block;
         pointer-events: all;

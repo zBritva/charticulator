@@ -33,6 +33,13 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
+import { tokens } from "@fluentui/react-components";
+
+declare let CHARTICULATOR_PACKAGE: {
+  version: string;
+  buildTimestamp: number;
+  revision: string;
+};
 
 interface HelpButtonProps {
   hideReportIssues: boolean;
@@ -667,7 +674,9 @@ export class MenuBar extends ContextedComponent<
     return (
       <>
         <PopupContainer controller={this.popupController} />
-        <section className="charticulator__menu-bar">
+        <section style={{
+          background: tokens.colorBrandBackground
+        }} className="charticulator__menu-bar">
           <div className="charticulator__menu-bar-left">
             <AppButton
               name={this.props.name}

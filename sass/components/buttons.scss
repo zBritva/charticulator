@@ -79,7 +79,7 @@
       }
       &:hover,
       &:active {
-        background: $gray-230;
+        // background: $gray-230;
         @include no-shadow;
       }
     }
@@ -234,14 +234,14 @@
 
     &.is-disabled {
       color: $gray-180;
-      background: $gray-210;
+      // background: $gray-210;
       cursor: not-allowed;
       .el-svg-icon {
         filter: invert(80%);
       }
       &:hover,
       &:active {
-        background: $gray-230;
+        // background: $gray-230;
         // @include shadow-ambient;
       }
     }
@@ -534,7 +534,7 @@
 
     &:hover,
     &:active {
-      background: $gray-200;
+      // background: $gray-200;
     }
 
     &.is-active {

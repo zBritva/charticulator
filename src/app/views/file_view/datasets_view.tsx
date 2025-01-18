@@ -9,7 +9,7 @@ import { AppStore } from "../../stores";
 import { DatasetDescription, getConfig } from "../../config";
 import { SVGImageIcon } from "../../components";
 import * as R from "../../resources";
-import { Button, Input } from "@fluentui/react-components";
+import { Button, Input, tokens } from "@fluentui/react-components";
 
 import {
   Dataset,
@@ -88,7 +88,9 @@ export const DatasetsView: React.FC<DatasetsViewProps> = ({
 
   return (
     <section className="charticulator__file-view-content is-fix-width">
-      <h1>{strings.mainTabs.datasets}</h1>
+      <h1 style={{
+        color: tokens.colorNeutralForeground1
+      }}>{strings.mainTabs.datasets}</h1>
       <div style={{
         marginBottom: "12px",
         display: "flex",
@@ -124,33 +126,43 @@ export const DatasetsView: React.FC<DatasetsViewProps> = ({
                 }
               }}
             >
-              {dataset.thumbnail ? <div className="thumbnail">
-                <img src={dataset.thumbnail as string} />
+              {dataset.thumbnail ? <div style={{
+                background: tokens.colorNeutralBackground2
+              }} className="thumbnail">
+                <img style={{
+                  background: "white"
+                }} src={dataset.thumbnail as string} />
               </div> : null}
               <div className="description" onClick={() => clickHandler(dataset)}>
                 <div className="name" onClick={(e) => e.stopPropagation()}>
-                  <h3>{dataset.name}</h3>
+                  <h3 style={{
+                    color: tokens.colorNeutralForeground1
+                  }}>{dataset.name}</h3>
                 </div>
-                <div className="description2">
+                <div style={{
+                    color: tokens.colorNeutralForeground1
+                  }} className="description2">
                   {dataset.description}
                 </div>
                 {dataset.author != null ? (
-                  <div className="author">
+                  <div style={{
+                    color: tokens.colorNeutralForeground1
+                  }} className="author">
                     {strings.fileOpen.author}: {dataset.author.name}
                   </div>
                 ) : null}
                 <div className="footer">
                   <div className="actions">
                     {dataset.author?.contact ?
-                    <Button
-                      appearance="secondary"
-                      icon={<Link12Filled />}
-                      title={strings.fileImport.openUrl}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(dataset.author.contact, "_blank");
-                      }}
-                    /> : null }
+                      <Button
+                        appearance="secondary"
+                        icon={<Link12Filled />}
+                        title={strings.fileImport.openUrl}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(dataset.author.contact, "_blank");
+                        }}
+                      /> : null}
                   </div>
                 </div>
               </div>

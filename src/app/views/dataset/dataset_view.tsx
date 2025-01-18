@@ -46,6 +46,14 @@ import {
   MoreHorizontalRegular,
 } from "@fluentui/react-icons";
 
+import { tokens } from '@fluentui/react-components';
+
+declare let CHARTICULATOR_PACKAGE: {
+  version: string;
+  buildTimestamp: number;
+  revision: string;
+};
+
 export interface DatasetViewProps {
   store: AppStore;
 }
@@ -517,6 +525,9 @@ export class ColumnView extends React.Component<
       <div
         tabIndex={0}
         key={label}
+        style={{
+          backgroundColor: tokens.colorNeutralBackground1
+        }}
         data-testid={`dataset-view-column-${label.replace(/\W/g, "_")}`}
         className="click-handler"
         ref={(e) => (anchor = e)}

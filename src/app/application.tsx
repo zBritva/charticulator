@@ -51,7 +51,7 @@ import { AppStoreState, EditorType } from "./stores/app_store";
 import { LocalizationConfig } from "../container/container";
 
 import { FluentProvider } from "@fluentui/react-provider";
-import { teamsLightTheme } from "@fluentui/tokens";
+import { teamsLightTheme, Theme, webLightTheme } from "@fluentui/tokens";
 import { CDNBackend } from "./backend/cdn";
 import { IndexedDBBackend } from "./backend/indexed_db";
 import { AbstractBackend } from "./backend/abstract";
@@ -59,6 +59,12 @@ import { HybridBackend, IHybridBackendOptions } from "./backend/hybrid";
 import { FileViewImport, MappingMode } from "./views/file_view/import_view";
 
 const defaultWorkerScript = require("raw-loader!../../dist/scripts/worker.bundle.js");
+
+declare let CHARTICULATOR_PACKAGE: {
+  version: string;
+  buildTimestamp: number;
+  revision: string;
+};
 
 export class ApplicationExtensionContext implements ExtensionContext {
   constructor(public app: Application) { }
@@ -134,6 +140,8 @@ export class Application {
 
   private handlers: IHandlers;
 
+  private theme: Partial<Theme>;
+
   private nestedEditor: {
     onOpenEditor: (
       options: Prototypes.Controls.NestedChartEditorOptions,
@@ -155,8 +163,10 @@ export class Application {
     },
     localization: LocalizationConfig,
     utcTimeZone: boolean,
-    handlers?: IHandlers
+    handlers?: IHandlers,
+    theme?: Partial<Theme>
   ) {
+    this.theme = theme || webLightTheme;
     try {
       this.handlers = handlers;
       const UtcTimeZone = parseSafe(
@@ -190,7 +200,7 @@ export class Application {
       setTimeZone(utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone);
     } catch (ex) {
       setFormatOptions({
-        currency: [localization?.currency, ""] ?? defaultCurrency,
+        currency: localization?.currency ? [localization?.currency, ""] : defaultCurrency,
         grouping: defaultDigitsGroup,
         decimal: localization?.decimalDelimiter ?? defaultNumberFormat.decimal,
         thousands:
@@ -304,8 +314,8 @@ export class Application {
     }
 
     this.root.render(<>
-      <FluentProvider theme={teamsLightTheme}>
-        {this.renderMain(handlers)}
+      <FluentProvider theme={this.theme}>
+        {this.renderMain(handlers, this.theme)}
       </FluentProvider>
     </>);
 
@@ -333,14 +343,19 @@ export class Application {
     await this.processHashString();
   }
 
-  private renderMain(handlers: IHandlers) {
-    return (<MainView
-      store={this.appStore}
-      ref={(e) => (this.mainView = e)}
-      viewConfiguration={this.config.MainView}
-      menuBarHandlers={handlers?.menuBarHandlers}
-      tabButtons={handlers?.tabButtons}
-      telemetry={handlers?.telemetry} />);
+  private renderMain(handlers: IHandlers, theme: Partial<Theme>) {
+    return (
+      <FluentProvider theme={theme}>
+        <MainView
+          theme={theme}
+          store={this.appStore}
+          ref={(e) => (this.mainView = e)}
+          viewConfiguration={this.config.MainView}
+          menuBarHandlers={handlers?.menuBarHandlers}
+          tabButtons={handlers?.tabButtons}
+          telemetry={handlers?.telemetry} />
+      </FluentProvider>
+    );
   }
 
   // eslint-disable-next-line
@@ -563,8 +578,8 @@ export class Application {
         new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolveMapping) => {
           this.root.render(
             <>
-              <FluentProvider theme={teamsLightTheme}>
-                {this.renderMain(this.handlers)}
+              <FluentProvider theme={this.theme}>
+                {this.renderMain(this.handlers, this.theme)}
                 <FileViewImport
                   mode={MappingMode.ImportTemplate}
                   tables={tables}
@@ -576,17 +591,13 @@ export class Application {
                     resolveMapping(mapping, tableMapping, datasetTables);
                     resolveImport(true);
                     this.root.render(<>
-                      <FluentProvider theme={teamsLightTheme}>
-                        {this.renderMain(this.handlers)}
-                      </FluentProvider>
+                        {this.renderMain(this.handlers, this.theme)}
                     </>);
                   }}
                   onClose={() => {
                     resolveImport(false);
                     this.root.render(<>
-                      <FluentProvider theme={teamsLightTheme}>
-                        {this.renderMain(this.handlers)}
-                      </FluentProvider>
+                        {this.renderMain(this.handlers, this.theme)}
                     </>);
                   }}
                   onImportDataClick={() => { }}

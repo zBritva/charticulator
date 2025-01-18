@@ -36,6 +36,8 @@ import { EditorType } from "../stores/app_store";
 import { useState } from "react";
 import { useEffect } from "react";
 
+import { tokens } from '@fluentui/react-components';
+
 const minWidthToColapseButtons = Object.freeze({
   guides: 1090,
   plotSegments: 1120,
