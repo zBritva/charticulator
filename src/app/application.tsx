@@ -51,7 +51,8 @@ import { AppStoreState, EditorType } from "./stores/app_store";
 import { LocalizationConfig } from "../container/container";
 
 import { FluentProvider } from "@fluentui/react-provider";
-import { teamsLightTheme, Theme, webLightTheme } from "@fluentui/tokens";
+import { Theme } from "@fluentui/tokens";
+import { darkTheme, lightTheme} from "./theme";
 import { CDNBackend } from "./backend/cdn";
 import { IndexedDBBackend } from "./backend/indexed_db";
 import { AbstractBackend } from "./backend/abstract";
@@ -166,7 +167,7 @@ export class Application {
     handlers?: IHandlers,
     theme?: Partial<Theme>
   ) {
-    this.theme = theme || webLightTheme;
+    this.theme = theme || lightTheme;
     try {
       this.handlers = handlers;
       const UtcTimeZone = parseSafe(
@@ -348,6 +349,18 @@ export class Application {
       <FluentProvider theme={theme}>
         <MainView
           theme={theme}
+          onSwitchTheme={(darkThemeSelection) => {
+            if (darkThemeSelection) {
+              this.theme = darkTheme;
+            } else {
+              this.theme = lightTheme;
+            }
+            this.root.render(<>
+              <FluentProvider theme={this.theme}>
+                {this.renderMain(handlers, this.theme)}
+              </FluentProvider>
+            </>);
+          }}
           store={this.appStore}
           ref={(e) => (this.mainView = e)}
           viewConfiguration={this.config.MainView}

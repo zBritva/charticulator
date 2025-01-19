@@ -70,6 +70,7 @@ export interface MainViewProps {
   telemetry?: TelemetryRecorder;
   tabButtons?: MenubarTabButton[];
   theme?: Partial<Theme>;
+  onSwitchTheme?: (darkTheme: boolean) => void;
 }
 
 export interface MainViewState {
@@ -338,6 +339,7 @@ export class MainView extends React.Component<
           >
             <TelemetryContext.Provider value={this.props.telemetry}>
               <MenuBar
+                onSwitchTheme={this.props.onSwitchTheme}
                 alignButtons={this.viewConfiguration.MenuBarButtons}
                 alignSaveButton={this.viewConfiguration.MenuBarSaveButtons}
                 undoRedoLocation={this.viewConfiguration.UndoRedoLocation}

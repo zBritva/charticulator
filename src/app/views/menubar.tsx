@@ -33,7 +33,7 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
-import { tokens } from "@fluentui/react-components";
+import { Checkbox, Label, Switch, tokens } from "@fluentui/react-components";
 
 declare let CHARTICULATOR_PACKAGE: {
   version: string;
@@ -177,12 +177,14 @@ export interface MenuBarProps {
   name?: string;
   handlers: MenuBarHandlers;
   tabButtons?: MenubarTabButton[];
+  onSwitchTheme?: (type: boolean) => void;
 }
 
 export class MenuBar extends ContextedComponent<
   MenuBarProps,
   {
     showSaveDialog: boolean;
+    darkTheme: boolean;
   }
 > {
   protected editor: EventSubscription;
@@ -193,6 +195,7 @@ export class MenuBar extends ContextedComponent<
     super(props, context);
     this.state = {
       showSaveDialog: false,
+      darkTheme: false 
     };
   }
 
@@ -726,6 +729,18 @@ export class MenuBar extends ContextedComponent<
                 <span className="charticulator__menu-bar-separator" />
               </>
             ) : null}
+            {this.context.store.editorType === EditorType.Chart ?
+            <>
+              <Label>Dark</Label>
+              <Switch
+                title="Preview"
+                value={this.state.darkTheme ? 1 : 0}
+                onChange={(e, data) => {
+                  this.props.onSwitchTheme?.(data.checked);
+                }}
+              />
+            </>
+            : null}
             {(this.context.store.editorType === EditorType.Embedded ||
               this.context.store.editorType === EditorType.NestedEmbedded) &&
             this.props.alignSaveButton == PositionsLeftRight.Right &&
