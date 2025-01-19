@@ -26,7 +26,7 @@ import { ScalesPanel } from "./views/panels/scales_panel";
 import { strings } from "../strings";
 import { FluentUIToolbar } from "./views/fluentui_tool_bar";
 import { MainReactContext } from "./context_component";
-import { FluentProvider, teamsDarkTheme, teamsLightTheme, Theme, tokens } from "@fluentui/react-components";
+import { FluentProvider, Theme, tokens } from "@fluentui/react-components";
 import { ConstraintsPanel } from "./views/panels/constraints_panel";
 import { Color } from "../core";
 

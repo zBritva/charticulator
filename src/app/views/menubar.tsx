@@ -33,7 +33,7 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
-import { Checkbox, Label, Switch, tokens } from "@fluentui/react-components";
+import { Label, Switch, tokens } from "@fluentui/react-components";
 
 declare let CHARTICULATOR_PACKAGE: {
   version: string;
