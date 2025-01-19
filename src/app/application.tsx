@@ -142,6 +142,7 @@ export class Application {
   private handlers: IHandlers;
 
   private theme: Partial<Theme>;
+  private darkTheme: boolean = false;
 
   private nestedEditor: {
     onOpenEditor: (
@@ -316,7 +317,7 @@ export class Application {
 
     this.root.render(<>
       <FluentProvider theme={this.theme}>
-        {this.renderMain(handlers, this.theme)}
+        {this.renderMain(handlers)}
       </FluentProvider>
     </>);
 
@@ -344,12 +345,14 @@ export class Application {
     await this.processHashString();
   }
 
-  private renderMain(handlers: IHandlers, theme: Partial<Theme>) {
+  private renderMain(handlers: IHandlers) {
     return (
-      <FluentProvider theme={theme}>
+      <FluentProvider theme={this.theme}>
         <MainView
-          theme={theme}
+          theme={this.theme}
+          darkTheme={this.darkTheme}
           onSwitchTheme={(darkThemeSelection) => {
+            this.darkTheme = darkThemeSelection;
             if (darkThemeSelection) {
               this.theme = darkTheme;
             } else {
@@ -357,7 +360,7 @@ export class Application {
             }
             this.root.render(<>
               <FluentProvider theme={this.theme}>
-                {this.renderMain(handlers, this.theme)}
+                {this.renderMain(handlers)}
               </FluentProvider>
             </>);
           }}
@@ -592,7 +595,7 @@ export class Application {
           this.root.render(
             <>
               <FluentProvider theme={this.theme}>
-                {this.renderMain(this.handlers, this.theme)}
+                {this.renderMain(this.handlers)}
                 <FileViewImport
                   mode={MappingMode.ImportTemplate}
                   tables={tables}
@@ -604,13 +607,13 @@ export class Application {
                     resolveMapping(mapping, tableMapping, datasetTables);
                     resolveImport(true);
                     this.root.render(<>
-                        {this.renderMain(this.handlers, this.theme)}
+                        {this.renderMain(this.handlers)}
                     </>);
                   }}
                   onClose={() => {
                     resolveImport(false);
                     this.root.render(<>
-                        {this.renderMain(this.handlers, this.theme)}
+                        {this.renderMain(this.handlers)}
                     </>);
                   }}
                   onImportDataClick={() => { }}

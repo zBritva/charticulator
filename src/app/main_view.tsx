@@ -70,6 +70,7 @@ export interface MainViewProps {
   telemetry?: TelemetryRecorder;
   tabButtons?: MenubarTabButton[];
   theme?: Partial<Theme>;
+  darkTheme?: boolean;
   onSwitchTheme?: (darkTheme: boolean) => void;
 }
 
@@ -178,8 +179,8 @@ export class MainView extends React.Component<
         <div style={{
           background: tokens.colorNeutralBackground1
         }} className={`charticulator__panel-editor-toolbar-${config.layout}`}>
-          {/* <Toolbar toolbarLabels={config.toolbarLabels} undoRedoLocation={config.undoRedoLocation} layout={config.layout} /> */}
           <FluentUIToolbar
+            darkTheme={this.props.darkTheme}
             toolbarLabels={config.toolbarLabels}
             undoRedoLocation={config.undoRedoLocation}
             layout={config.layout}
@@ -339,6 +340,7 @@ export class MainView extends React.Component<
           >
             <TelemetryContext.Provider value={this.props.telemetry}>
               <MenuBar
+                darkTheme={this.props.darkTheme}
                 onSwitchTheme={this.props.onSwitchTheme}
                 alignButtons={this.viewConfiguration.MenuBarButtons}
                 alignSaveButton={this.viewConfiguration.MenuBarSaveButtons}

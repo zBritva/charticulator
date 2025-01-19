@@ -178,13 +178,13 @@ export interface MenuBarProps {
   handlers: MenuBarHandlers;
   tabButtons?: MenubarTabButton[];
   onSwitchTheme?: (type: boolean) => void;
+  darkTheme: boolean;
 }
 
 export class MenuBar extends ContextedComponent<
   MenuBarProps,
   {
     showSaveDialog: boolean;
-    darkTheme: boolean;
   }
 > {
   protected editor: EventSubscription;
@@ -195,7 +195,6 @@ export class MenuBar extends ContextedComponent<
     super(props, context);
     this.state = {
       showSaveDialog: false,
-      darkTheme: false 
     };
   }
 
@@ -734,7 +733,7 @@ export class MenuBar extends ContextedComponent<
               <Label>Dark</Label>
               <Switch
                 title="Preview"
-                value={this.state.darkTheme ? 1 : 0}
+                value={this.props.darkTheme ? 1 : 0}
                 onChange={(e, data) => {
                   this.props.onSwitchTheme?.(data.checked);
                 }}
