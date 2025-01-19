@@ -374,7 +374,9 @@ export class ColumnsView extends React.Component<
               </PopoverSurface>
             </Popover>
           </h2>
-          <p className="el-details">{table.displayName || table.name}</p>
+          <p style={{
+            color: tokens.colorNeutralForeground1
+          }} className="el-details">{table.displayName || table.name}</p>
           {table.columns
             .filter((c) => !c.metadata.isRaw)
             .map((c, idx) => (
