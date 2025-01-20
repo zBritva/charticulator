@@ -63,7 +63,10 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             return null;
         }
         if (!domainSourceTable && store.dataset.tables.length == 1) {
-            const tableName = store.dataset.tables[0].name;
+            const tableName = store.dataset.tables[0]?.name;
+            if (!tableName) {
+                return null;
+            }
             const table = store.chartManager.dataflow.getTable(
                 tableName
             );
@@ -72,8 +75,11 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             return table;
         } else {
             const tableName = store.dataset.tables.find(
-                (t) => t.name == domainSourceTable
-            ).name;
+                (t) => t.name == domainSourceTable || t.displayName == domainSourceTable
+            )?.name;
+            if (!tableName) {
+                return null;
+            }
             const table = store.chartManager.dataflow.getTable(
                 tableName
             );
