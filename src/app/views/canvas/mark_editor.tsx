@@ -52,6 +52,7 @@ import {
   ZoomOutRegular,
 } from "@fluentui/react-icons";
 import { Button } from "@fluentui/react-button";
+import { tokens } from "@fluentui/react-components";
 
 export interface MarkEditorViewProps {
   height?: number;
@@ -186,6 +187,7 @@ export class MarkEditorView extends ContextedComponent<
               style={{
                 width: this.state.width + "px",
                 height: this.state.height - 24 + "px",
+                background: tokens.colorNeutralBackground1
               }}
             >
               <div className="mark-view-container-notice">No glyph to edit</div>
@@ -248,7 +250,9 @@ export class MarkEditorView extends ContextedComponent<
                 this.dispatch(new Actions.AddGlyph("glyph.rectangle"));
               }}
             />
-            <span className="glyph-tabs">
+            <span style={{
+              fill: tokens.colorNeutralBackground1
+            }} className="glyph-tabs">
               {this.store.chart.glyphs.map((glyph) => (
                 <span
                   tabIndex={0}
@@ -401,39 +405,39 @@ export class SingleMarkView
               );
               xBounds = [
                 bboxRect.anchorX +
-                  bboxRect.cx +
-                  (bboxRect.width / 2) * cos +
-                  (bboxRect.height / 2) * sin,
+                bboxRect.cx +
+                (bboxRect.width / 2) * cos +
+                (bboxRect.height / 2) * sin,
                 bboxRect.anchorX +
-                  bboxRect.cx -
-                  (bboxRect.width / 2) * cos +
-                  (bboxRect.height / 2) * sin,
+                bboxRect.cx -
+                (bboxRect.width / 2) * cos +
+                (bboxRect.height / 2) * sin,
                 bboxRect.anchorX +
-                  bboxRect.cx +
-                  (bboxRect.width / 2) * cos -
-                  (bboxRect.height / 2) * sin,
+                bboxRect.cx +
+                (bboxRect.width / 2) * cos -
+                (bboxRect.height / 2) * sin,
                 bboxRect.anchorX +
-                  bboxRect.cx -
-                  (bboxRect.width / 2) * cos -
-                  (bboxRect.height / 2) * sin,
+                bboxRect.cx -
+                (bboxRect.width / 2) * cos -
+                (bboxRect.height / 2) * sin,
               ];
               yBounds = [
                 bboxRect.anchorY +
-                  bboxRect.cy +
-                  (bboxRect.width / 2) * -sin +
-                  (bboxRect.height / 2) * cos,
+                bboxRect.cy +
+                (bboxRect.width / 2) * -sin +
+                (bboxRect.height / 2) * cos,
                 bboxRect.anchorY +
-                  bboxRect.cy -
-                  (bboxRect.width / 2) * -sin +
-                  (bboxRect.height / 2) * cos,
+                bboxRect.cy -
+                (bboxRect.width / 2) * -sin +
+                (bboxRect.height / 2) * cos,
                 bboxRect.anchorY +
-                  bboxRect.cy +
-                  (bboxRect.width / 2) * -sin -
-                  (bboxRect.height / 2) * cos,
+                bboxRect.cy +
+                (bboxRect.width / 2) * -sin -
+                (bboxRect.height / 2) * cos,
                 bboxRect.anchorY +
-                  bboxRect.cy -
-                  (bboxRect.width / 2) * -sin -
-                  (bboxRect.height / 2) * cos,
+                bboxRect.cy -
+                (bboxRect.width / 2) * -sin -
+                (bboxRect.height / 2) * cos,
               ];
             }
             break;
@@ -823,7 +827,7 @@ export class SingleMarkView
                 [
                   "coordinator",
                   info.guide.visualType ===
-                    SnappingGuidesVisualTypes.Coordinator,
+                  SnappingGuidesVisualTypes.Coordinator,
                 ],
                 [
                   "single",
@@ -847,7 +851,7 @@ export class SingleMarkView
                 [
                   "coordinator",
                   info.guide.visualType ===
-                    SnappingGuidesVisualTypes.Coordinator,
+                  SnappingGuidesVisualTypes.Coordinator,
                 ],
                 [
                   "single",
@@ -1367,9 +1371,8 @@ export class SingleMarkView
     pt = Geometry.applyZoom(this.state.zoom, pt);
     return (
       <path
-        d={`M${pt.x - 5},${pt.y}L${pt.x},${pt.y - 5}L${pt.x + 5},${pt.y}L${
-          pt.x
-        },${pt.y + 5}Z`}
+        d={`M${pt.x - 5},${pt.y}L${pt.x},${pt.y - 5}L${pt.x + 5},${pt.y}L${pt.x
+          },${pt.y + 5}Z`}
         className="mark-anchor"
       />
     );
@@ -1616,6 +1619,9 @@ export class SingleMarkView
           <div className="mark-view-container">
             <svg
               className="canvas-view canvas-view-mark"
+              style={{
+                fill: tokens.colorNeutralBackground1
+              }}
               ref="canvas"
               x={0}
               y={0}
@@ -1650,6 +1656,9 @@ export class SingleMarkView
         >
           <svg
             className="canvas-view canvas-view-mark"
+            style={{
+              fill: tokens.colorNeutralBackground1
+            }}
             ref="canvas"
             x={0}
             y={0}
@@ -1694,18 +1703,18 @@ export class SingleMarkView
             <g>
               {this.state.dataForDropZones
                 ? zipArray(glyph.marks, glyphState.marks).map(
-                    ([elements, elementState]) => {
-                      return (
-                        <g key={`m${elements._id}`}>
-                          {this.renderDropZoneForElement(
-                            this.state.dataForDropZones,
-                            elements,
-                            elementState
-                          )}
-                        </g>
-                      );
-                    }
-                  )
+                  ([elements, elementState]) => {
+                    return (
+                      <g key={`m${elements._id}`}>
+                        {this.renderDropZoneForElement(
+                          this.state.dataForDropZones,
+                          elements,
+                          elementState
+                        )}
+                      </g>
+                    );
+                  }
+                )
                 : null}
             </g>
             <g>{this.renderDropIndicator()}</g>

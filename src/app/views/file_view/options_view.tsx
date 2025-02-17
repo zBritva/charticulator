@@ -19,6 +19,7 @@ import { MainReactContext } from "../../context_component";
 import { LocalStorageKeys } from "../../globals";
 import { AppStore } from "../../stores";
 import { useLocalStorage } from "../../utils/hooks";
+import { tokens } from "@fluentui/react-components";
 
 export interface FileViewOptionsProps {
   onClose: () => void;
@@ -64,12 +65,17 @@ export const FileViewOptionsView: React.FC<FileViewOptionsProps> = () => {
 
   return (
     <section className="charticulator__file-view-content is-fix-width is-restricted-width">
-      <h1>{strings.mainTabs.options}</h1>
+      <h1 style={{
+        color: tokens.colorNeutralForeground1
+      }}>{strings.mainTabs.options}</h1>
       <div>
         <h2>{strings.options.fileFormat}</h2>
         <div>
           <div className="form-group">
-            <select
+            <select style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }}
               onChange={(e) => {
                 changeLocaleFileFormat({
                   ...localeFileFormat,
@@ -81,14 +87,25 @@ export const FileViewOptionsView: React.FC<FileViewOptionsProps> = () => {
               }}
               value={delimiterSymbol}
             >
-              <option value=",">{strings.options.comma}</option>
-              <option value=";">{strings.options.semicolon}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value=",">{strings.options.comma}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value=";">{strings.options.semicolon}</option>
             </select>
-            <label>{strings.options.delimiter}</label>
+            <label style={{
+              color: tokens.colorNeutralForeground1
+            }}>{strings.options.delimiter}</label>
           </div>
 
           <div className="form-group">
-            <select
+            <select style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }}
               onChange={(e) => {
                 const isDecimalDot =
                   e.target.options[e.target.selectedIndex].value === ","; // values is removeal
@@ -116,14 +133,25 @@ export const FileViewOptionsView: React.FC<FileViewOptionsProps> = () => {
               }}
               value={numberFormatRemove}
             >
-              <option value=",">{strings.options.numberFormatDot}</option>
-              <option value=".">{strings.options.numberFormatComma}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value=",">{strings.options.numberFormatDot}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value=".">{strings.options.numberFormatComma}</option>
             </select>
-            <label>{strings.options.numberFormat}</label>
+            <label style={{
+              color: tokens.colorNeutralForeground1
+            }}>{strings.options.numberFormat}</label>
           </div>
 
           <div className="form-group">
-            <select
+            <select style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }}
               onChange={(e) => {
                 changeLocaleFileFormat({
                   ...localeFileFormat,
@@ -139,24 +167,43 @@ export const FileViewOptionsView: React.FC<FileViewOptionsProps> = () => {
               }}
               value={utcTimeZone ? "true" : "false"}
             >
-              <option value="true">{strings.options.utc}</option>
-              <option value="false">{strings.options.local}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value="true">{strings.options.utc}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value="false">{strings.options.local}</option>
             </select>
-            <label>{strings.options.timeZone}</label>
+            <label style={{
+              color: tokens.colorNeutralForeground1
+            }}>{strings.options.timeZone}</label>
           </div>
 
           <div className="form-group">
-            <select
+            <select style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }}
               onChange={(e) => {
                 setBillionsFormat(e.target.options[e.target.selectedIndex].value as BillionsFormat);
                 setBillionsFormatOption(e.target.options[e.target.selectedIndex].value as BillionsFormat);
               }}
               value={billionsFormat}
             >
-              <option value="giga">{strings.options.giga}</option>
-              <option value="billions">{strings.options.billions}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value="giga">{strings.options.giga}</option>
+              <option style={{
+                color: tokens.colorNeutralForeground1,
+                background: tokens.colorNeutralBackground1
+              }} value="billions">{strings.options.billions}</option>
             </select>
-            <label>{strings.options.bFormat}</label>
+            <label style={{
+              color: tokens.colorNeutralForeground1
+            }}>{strings.options.bFormat}</label>
           </div>
           {/* Uncomment to enable configuration for locale: currency symbol and groupping digits */}
           {/*
@@ -223,7 +270,7 @@ export class FileViewOptions extends React.Component<
     return (
       <FileViewOptionsView
         onClose={this.props.onClose}
-        // store={this.props.store}
+      // store={this.props.store}
       />
     );
   }

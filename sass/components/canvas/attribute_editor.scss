@@ -93,7 +93,7 @@
         margin: 2px 0;
         overflow: hidden;
         border-radius: 2px;
-        background: $gray-200;
+        // background: $gray-200;
         transition: background $transition-default;
 
         svg {
@@ -305,7 +305,7 @@
 
     &:hover {
       cursor: pointer;
-      background: $gray-200;
+      // background: $gray-200;
 
       & > label {
         background: $gray-190;
@@ -486,11 +486,11 @@
       }
 
       &:hover {
-        background: $gray-200;
+        // background: $gray-200;
       }
 
       &.is-active {
-        background: $gray-190;
+        // background: $gray-190;
       }
     }
   }
@@ -529,11 +529,11 @@
       }
 
       &:hover {
-        background: $gray-220;
+        // background: $gray-220;
       }
 
       &.is-active {
-        background: $color-is-active;
+        // background: $color-is-active;
       }
 
       &.auto-height {
@@ -934,7 +934,7 @@
 
           &:hover,
           &:focus {
-            background: $gray-200;
+            // background: $gray-200;
             border-bottom: 1px solid $color-primary;
           }
         }
@@ -968,12 +968,12 @@
 
             &:hover,
             &:focus {
-              background: $gray-210;
+              // background: $gray-210;
             }
 
             &.is-active {
-              background: $gray-210;
-              background-color: $gray-100;
+              // background: $gray-210;
+              // background-color: $gray-100;
               color: $white;
             }
           }
@@ -1074,7 +1074,7 @@
           flex-shrink: 0;
           height: $line-height;
           border: 1px solid $gray-180;
-          background: $gray-210;
+          // background: $gray-210;
           border-radius: 2px;
           box-sizing: border-box;
         }
@@ -1084,7 +1084,7 @@
           flex-shrink: 0;
           height: $line-height;
           border: 1px solid $gray-180;
-          background: $gray-210;
+          // background: $gray-210;
           border-radius: 2px;
           box-sizing: border-box;
 
@@ -1172,14 +1172,14 @@
         border-radius: 2px;
 
         &.has-text {
-          background: $gray-200;
+          // background: $gray-200;
         }
 
         transition: background-color $transition-default;
 
         &:hover,
         &:active {
-          background-color: $color-primary;
+          // background-color: $color-primary;
 
           .svg-image-icon {
             filter: invert(100%);
@@ -1222,7 +1222,7 @@
           }
           &:hover,
           &:active {
-            background: $gray-200;
+            // background: $gray-200;
           }
         }
       }
@@ -1431,7 +1431,7 @@
         transition: background-color $transition-default;
 
         &.has-text {
-          background: $gray-230;
+          // background: $gray-230;
         }
 
         &:hover,
@@ -1584,7 +1584,7 @@
         vertical-align: top;
         height: $line-height;
         border-radius: 2px;
-        background: $gray-230;
+        // background: $gray-230;
         overflow: hidden;
 
         &-item {
@@ -1675,7 +1675,7 @@
           border-radius: 2px;
 
           &:hover {
-            background: $gray-200;
+            // background: $gray-200;
           }
         }
 
@@ -1713,7 +1713,7 @@
           margin: 2px 0;
           overflow: hidden;
           border-radius: 2px;
-          background: $gray-230;
+          // background: $gray-230;
           transition: background $transition-default;
           cursor: pointer;
 
@@ -1836,7 +1836,7 @@
           white-space: nowrap;
 
           &:hover {
-            background: $gray-200;
+            // background: $gray-200;
           }
         }
       }
@@ -1868,7 +1868,7 @@
     }
 
     &:hover {
-      background: $gray-230;
+      // background: $gray-230;
     }
 
     &.is-active {

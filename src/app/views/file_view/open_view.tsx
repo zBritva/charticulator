@@ -12,7 +12,7 @@ import { Actions } from "../../actions";
 import { showOpenFileDialog, readFileAsString } from "../../utils";
 import { strings } from "../../../strings";
 import { AppStore } from "../../stores";
-import { Button, ToggleButton, Input } from "@fluentui/react-components";
+import { Button, ToggleButton, Input, tokens } from "@fluentui/react-components";
 
 import {
   ArrowDownloadRegular,
@@ -173,8 +173,12 @@ export class FileViewOpen extends React.Component<
                     }
                   }}
                 >
-                  <div className="thumbnail">
-                    <img src={chart.metadata.thumbnail as string} />
+                  <div style={{
+                    background: tokens.colorNeutralBackground2
+                  }} className="thumbnail">
+                    <img style={{
+                      color: "white"
+                    }} src={chart.metadata.thumbnail as string} />
                   </div>
                   <div className="description">
                     <div className="name" onClick={(e) => e.stopPropagation()}>
@@ -192,16 +196,22 @@ export class FileViewOpen extends React.Component<
                         }}
                       />
                     </div>
-                    <div className="metadata">
+                    <div style={{
+                      color: tokens.colorNeutralForeground1
+                    }} className="metadata">
                       {strings.fileOpen.dataset}: {chart.metadata.dataset}
                     </div>
                     {chart.author != null ? (
-                      <div className="author">
+                      <div style={{
+                        color: tokens.colorNeutralForeground1
+                      }} className="author">
                         {strings.fileOpen.author}: {chart.author.name}
                       </div>
                     ) : null}
                     <div className="footer">
-                      <div className="metadata">
+                      <div style={{
+                      color: tokens.colorNeutralForeground1
+                    }} className="metadata">
                         {new Date(chart.metadata.timeCreated).toLocaleString()}
                       </div>
                       <div className="actions">
@@ -277,7 +287,9 @@ export class FileViewOpen extends React.Component<
     return (
       <>
         <section className="charticulator__file-view-content is-fix-width">
-          <h1>{strings.mainTabs.open}</h1>
+          <h1 style={{
+            color: tokens.colorNeutralForeground1
+          }}>{strings.mainTabs.open}</h1>
           <div style={{
             marginBottom: "12px",
             display: "flex",

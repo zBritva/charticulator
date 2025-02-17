@@ -6,6 +6,7 @@ import { strings } from "../../../strings";
 import { Actions } from "../../actions";
 import { AppStore } from "../../stores";
 import { ImportDataView } from "./import_data_view";
+import { tokens } from "@fluentui/react-components";
 
 interface FileViewNewProps {
   store: AppStore;
@@ -19,7 +20,9 @@ export class FileViewNew extends React.Component<
   public render() {
     return (
       <section className="charticulator__file-view-content">
-        <h1>{strings.mainTabs.new}</h1>
+        <h1 style={{
+                color: tokens.colorNeutralForeground1
+              }}>{strings.mainTabs.new}</h1>
         <ImportDataView
           store={this.props.store}
           onConfirmImport={(dataset) => {
