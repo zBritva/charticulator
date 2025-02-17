@@ -42,7 +42,7 @@ export const DeleteDialog = ({ context }: DeleteDialogProps): JSX.Element => {
   const onDeleteChart = useCallback(() => {
     context.store.dispatcher.dispatch(new Actions.Reset());
     setIsHidden(true);
-    getDefaultColorGeneratorResetFunction()();
+    getDefaultColorGeneratorResetFunction()?.();
   }, [context]);
 
   return (

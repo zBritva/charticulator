@@ -887,7 +887,7 @@ export class Director {
             title={strings.mappingEditor.bindData}
             icon={
               typeof options?.icon === "string" ? (
-                <SVGImageIcon url={R.getSVGIcon(options?.icon)} />
+                <SVGImageIcon url={R.getSVGIcon(options?.icon)}/>
               ) : (
                 options?.icon
               )
