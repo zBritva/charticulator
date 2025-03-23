@@ -184,6 +184,11 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       });
   });
 
+  REG.add(Actions.DeleteScale, function (action) {
+    this.deleteChartScale(action.scaleID);
+    this.solveConstraintsAndUpdateGraphics(true);
+  });
+
   REG.add(Actions.Open, function (action) {
     this.backendOpenChart(action.id)
       .then(() => {

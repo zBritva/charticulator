@@ -425,6 +425,21 @@ export class AppStore extends BaseStore {
     );
   }
 
+  public deleteChartScale(scaleID: string) {
+    const chart = this.chart;
+      chart.scales
+      .filter(s => s._id == scaleID)
+      .forEach((scale) => {
+        if (!scale.expression) {
+          this.chartManager.removeScale(scale)
+        }
+      });
+
+    chart.scaleMappings = chart.scaleMappings.filter((scaleMapping) =>
+      chart.scales.find((scale) => scale._id === scaleMapping.scale)
+    );
+  }
+
   public onExportTemplate(callback: (type: string, content: string | Blob) => boolean) {
     this.onExportTemplateCallback = callback;
   }

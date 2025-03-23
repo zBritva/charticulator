@@ -1025,3 +1025,13 @@ export class UpdateConstraints extends Action {
     return { name: "UpdateConstraints" };
   }
 }
+
+export class DeleteScale extends Action {
+  constructor(public scaleID: string) {
+    super();
+  }
+
+  public digest(): { name: string } {
+    return { name: "DeleteScale" };
+  }
+}

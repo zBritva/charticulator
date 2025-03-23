@@ -25,6 +25,7 @@ import { ColumnMetadata } from "../../../core/dataset";
 import { Button, Dialog, DialogActions, DialogBody, DialogSurface, DialogTitle } from "@fluentui/react-components";
 import { strings } from "../../../strings";
 import { AdvancedScaleEditor } from "./adv_scale_editor";
+import { DeleteScale } from "src/app/actions/actions";
 
 export class ScalesPanel extends ContextedComponent<
   {
@@ -131,6 +132,9 @@ export class ScalesPanel extends ContextedComponent<
             createDialog: true
           })
         };
+        const onClickDelete = () => {
+          store.dispatcher.dispatch(new DeleteScale(scale._id));
+        }
         return (
           <div key={scale._id} className="el-object-item">
             <SVGImageIcon
@@ -146,6 +150,15 @@ export class ScalesPanel extends ContextedComponent<
             }}>
               <SVGImageIcon
                 url={R.getSVGIcon("Edit")}
+              />
+            </div>
+            <div tabIndex={0} onClick={onClickDelete} onKeyDown={(e) => {
+              if (e.key == "Enter") {
+                onClickDelete
+              }
+            }}>
+              <SVGImageIcon
+                url={R.getSVGIcon("Delete")}
               />
             </div>
           </div>
