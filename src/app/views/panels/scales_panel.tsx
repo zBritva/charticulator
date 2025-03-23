@@ -25,7 +25,7 @@ import { ColumnMetadata } from "../../../core/dataset";
 import { Button, Dialog, DialogActions, DialogBody, DialogSurface, DialogTitle } from "@fluentui/react-components";
 import { strings } from "../../../strings";
 import { AdvancedScaleEditor } from "./adv_scale_editor";
-import { DeleteScale } from "src/app/actions/actions";
+import { DeleteScale } from "../../actions/actions";
 
 export class ScalesPanel extends ContextedComponent<
   {
@@ -34,6 +34,7 @@ export class ScalesPanel extends ContextedComponent<
   {
     isSelected: string;
     createDialog: boolean;
+    deleteScaleDialog: boolean;
     scale: Specification.Scale<Specification.ObjectProperties>,
     scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>
     domainSourceTable: string;
@@ -50,6 +51,7 @@ export class ScalesPanel extends ContextedComponent<
     this.state = {
       isSelected: "",
       createDialog: false,
+      deleteScaleDialog: false,
       scale: null,
       scaleClass: null,
       currentScale: null,
@@ -137,6 +139,37 @@ export class ScalesPanel extends ContextedComponent<
         }
         return (
           <div key={scale._id} className="el-object-item">
+            <Dialog
+              onOpenChange={(e, { open }) => this.setState({deleteScaleDialog: open})}
+              modalType={"non-modal"}
+              open={this.state.deleteScaleDialog}>
+              <DialogSurface>
+                <DialogTitle>{strings.scaleEditor.deleteScale}</DialogTitle>
+                <DialogBody>
+                  <DialogActions>
+                    <Button
+                      style={{
+                        width: 150
+                      }}
+                      onClick={() => {
+                        this.setState({
+                          deleteScaleDialog: false
+                        })
+                    }}>
+                        {strings.button.no}
+                    </Button>
+                    <Button
+                      style={{
+                        width: 150
+                      }}
+                      appearance="primary"
+                      onClick={onClickDelete}>
+                        {strings.button.yes}
+                    </Button>
+                  </DialogActions>
+                </DialogBody>
+              </DialogSurface>
+            </Dialog>
             <SVGImageIcon
               url={R.getSVGIcon(
                 Prototypes.ObjectClasses.GetMetadata(scale.classID).iconPath
@@ -152,9 +185,15 @@ export class ScalesPanel extends ContextedComponent<
                 url={R.getSVGIcon("Edit")}
               />
             </div>
-            <div tabIndex={0} onClick={onClickDelete} onKeyDown={(e) => {
+            <div tabIndex={0} onClick={() => {
+              this.setState({
+                deleteScaleDialog: true
+              })
+            }} onKeyDown={(e) => {
               if (e.key == "Enter") {
-                onClickDelete
+                this.setState({
+                  deleteScaleDialog: true
+                })
               }
             }}>
               <SVGImageIcon

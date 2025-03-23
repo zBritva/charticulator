@@ -162,6 +162,7 @@ export const strings = {
     domainSourceColumn: "Domain source column",
     type: "Scale type",
     createScale: "Create scale",
+    deleteScale: "Are you sure you want to delete the scale?",
     close: "Close",
     add: "Add",
     removeLast: "Remove the last",

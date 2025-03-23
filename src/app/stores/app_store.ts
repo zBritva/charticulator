@@ -430,9 +430,7 @@ export class AppStore extends BaseStore {
       chart.scales
       .filter(s => s._id == scaleID)
       .forEach((scale) => {
-        if (!scale.expression) {
           this.chartManager.removeScale(scale)
-        }
       });
 
     chart.scaleMappings = chart.scaleMappings.filter((scaleMapping) =>
