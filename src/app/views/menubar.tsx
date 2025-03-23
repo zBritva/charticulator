@@ -504,7 +504,7 @@ export class MenuBar extends ContextedComponent<
           text="DONATE"
           title={strings.menuBar.supportDev}
           onClick={
-            props.handlers?.onSupportDevClick || (() => window.open("https://github.com/sponsors/zBritva", "_blank"))
+            props.handlers?.onSupportDevClick || (() => window.open("https://github.com/sponsors/aveirun", "_blank"))
           }
         />
       </>
@@ -593,7 +593,7 @@ export class MenuBar extends ContextedComponent<
     return (
       <>
         <span className="charticulator__menu-bar-separator" />
-        {/* {this.renderSponsorButton(props)} */}
+        {this.renderSponsorButton(props)}
         <span className="charticulator__menu-bar-separator" />
         {this.context.store.editorType === EditorType.Chart
           ? this.renderNewOpenSave()
