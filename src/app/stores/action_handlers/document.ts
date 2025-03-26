@@ -185,6 +185,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
   });
 
   REG.add(Actions.DeleteScale, function (action) {
+    this.saveHistory();
     this.deleteChartScale(action.scaleID);
     this.solveConstraintsAndUpdateGraphics(true);
   });
