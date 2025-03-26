@@ -51,7 +51,8 @@ import { AppStoreState, EditorType } from "./stores/app_store";
 import { LocalizationConfig } from "../container/container";
 
 import { FluentProvider } from "@fluentui/react-provider";
-import { teamsLightTheme } from "@fluentui/tokens";
+import { Theme } from "@fluentui/tokens";
+import { darkTheme, lightTheme} from "./theme";
 import { CDNBackend } from "./backend/cdn";
 import { IndexedDBBackend } from "./backend/indexed_db";
 import { AbstractBackend } from "./backend/abstract";
@@ -59,6 +60,12 @@ import { HybridBackend, IHybridBackendOptions } from "./backend/hybrid";
 import { FileViewImport, MappingMode } from "./views/file_view/import_view";
 
 const defaultWorkerScript = require("raw-loader!../../dist/scripts/worker.bundle.js");
+
+declare let CHARTICULATOR_PACKAGE: {
+  version: string;
+  buildTimestamp: number;
+  revision: string;
+};
 
 export class ApplicationExtensionContext implements ExtensionContext {
   constructor(public app: Application) { }
@@ -134,6 +141,9 @@ export class Application {
 
   private handlers: IHandlers;
 
+  private theme: Partial<Theme>;
+  private darkTheme: boolean = false;
+
   private nestedEditor: {
     onOpenEditor: (
       options: Prototypes.Controls.NestedChartEditorOptions,
@@ -155,8 +165,10 @@ export class Application {
     },
     localization: LocalizationConfig,
     utcTimeZone: boolean,
-    handlers?: IHandlers
+    handlers?: IHandlers,
+    theme?: Partial<Theme>
   ) {
+    this.theme = theme || lightTheme;
     try {
       this.handlers = handlers;
       const UtcTimeZone = parseSafe(
@@ -190,7 +202,7 @@ export class Application {
       setTimeZone(utcTimeZone !== undefined ? utcTimeZone : UtcTimeZone);
     } catch (ex) {
       setFormatOptions({
-        currency: [localization?.currency, ""] ?? defaultCurrency,
+        currency: localization?.currency ? [localization?.currency, ""] : defaultCurrency,
         grouping: defaultDigitsGroup,
         decimal: localization?.decimalDelimiter ?? defaultNumberFormat.decimal,
         thousands:
@@ -304,7 +316,7 @@ export class Application {
     }
 
     this.root.render(<>
-      <FluentProvider theme={teamsLightTheme}>
+      <FluentProvider theme={this.theme}>
         {this.renderMain(handlers)}
       </FluentProvider>
     </>);
@@ -334,13 +346,32 @@ export class Application {
   }
 
   private renderMain(handlers: IHandlers) {
-    return (<MainView
-      store={this.appStore}
-      ref={(e) => (this.mainView = e)}
-      viewConfiguration={this.config.MainView}
-      menuBarHandlers={handlers?.menuBarHandlers}
-      tabButtons={handlers?.tabButtons}
-      telemetry={handlers?.telemetry} />);
+    return (
+      <FluentProvider theme={this.theme}>
+        <MainView
+          theme={this.theme}
+          darkTheme={this.darkTheme}
+          onSwitchTheme={(darkThemeSelection) => {
+            this.darkTheme = darkThemeSelection;
+            if (darkThemeSelection) {
+              this.theme = darkTheme;
+            } else {
+              this.theme = lightTheme;
+            }
+            this.root.render(<>
+              <FluentProvider theme={this.theme}>
+                {this.renderMain(handlers)}
+              </FluentProvider>
+            </>);
+          }}
+          store={this.appStore}
+          ref={(e) => (this.mainView = e)}
+          viewConfiguration={this.config.MainView}
+          menuBarHandlers={handlers?.menuBarHandlers}
+          tabButtons={handlers?.tabButtons}
+          telemetry={handlers?.telemetry} />
+      </FluentProvider>
+    );
   }
 
   // eslint-disable-next-line
@@ -563,7 +594,7 @@ export class Application {
         new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolveMapping) => {
           this.root.render(
             <>
-              <FluentProvider theme={teamsLightTheme}>
+              <FluentProvider theme={this.theme}>
                 {this.renderMain(this.handlers)}
                 <FileViewImport
                   mode={MappingMode.ImportTemplate}
@@ -576,17 +607,13 @@ export class Application {
                     resolveMapping(mapping, tableMapping, datasetTables);
                     resolveImport(true);
                     this.root.render(<>
-                      <FluentProvider theme={teamsLightTheme}>
                         {this.renderMain(this.handlers)}
-                      </FluentProvider>
                     </>);
                   }}
                   onClose={() => {
                     resolveImport(false);
                     this.root.render(<>
-                      <FluentProvider theme={teamsLightTheme}>
                         {this.renderMain(this.handlers)}
-                      </FluentProvider>
                     </>);
                   }}
                   onImportDataClick={() => { }}

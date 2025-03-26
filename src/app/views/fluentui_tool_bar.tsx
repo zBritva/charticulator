@@ -46,6 +46,7 @@ export const FluentUIToolbar: React.FC<{
   layout: LayoutDirection;
   undoRedoLocation: UndoRedoLocation;
   toolbarLabels: boolean;
+  darkTheme?: boolean;
 }> = (props) => {
   const { store } = useContext(MainReactContext);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
@@ -79,6 +80,7 @@ export const FluentUIToolbar: React.FC<{
             </span>
           )}
           <MultiObjectButton
+            invertIcon={props.darkTheme}
             compact={props.layout === LayoutDirection.Vertical}
             tools={[
               {
@@ -108,17 +110,20 @@ export const FluentUIToolbar: React.FC<{
             ]}
           />
           <ObjectButton
+            invertIcon={props.darkTheme}
             classID="mark.symbol"
             title={strings.toolbar.symbol}
             icon="Shapes"
           />
 
           <ObjectButton
+            invertIcon={props.darkTheme}
             classID="mark.line"
             title={strings.toolbar.line}
             icon="Line"
           />
           <MultiObjectButton
+            invertIcon={props.darkTheme}
             compact={props.layout === LayoutDirection.Vertical}
             tools={[
               {
@@ -134,6 +139,7 @@ export const FluentUIToolbar: React.FC<{
             ]}
           />
           <MultiObjectButton
+            invertIcon={props.darkTheme}
             compact={props.layout === LayoutDirection.Vertical}
             tools={[
               {
@@ -149,12 +155,14 @@ export const FluentUIToolbar: React.FC<{
             ]}
           />
           <ObjectButton
+            invertIcon={props.darkTheme}
             classID="mark.data-axis"
             title={strings.toolbar.dataAxis}
             icon="mark/data-axis"
           />
           {store.editorType === EditorType.Embedded ? (
             <ObjectButton
+              invertIcon={props.darkTheme}
               classID="mark.nested-chart"
               title={strings.toolbar.nestedChart}
               icon="BarChartVerticalFilter"
@@ -164,12 +172,14 @@ export const FluentUIToolbar: React.FC<{
             <>
               <span className={"charticulator__toolbar-horizontal-separator"} />
               <FluentToolButton
+                invertIcon={props.darkTheme}
                 title={strings.menuBar.undo}
                 disabled={store.historyManager.statesBefore.length === 0}
                 icon="Undo"
                 onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
               />
               <FluentToolButton
+                invertIcon={props.darkTheme}
                 title={strings.menuBar.redo}
                 disabled={store.historyManager.statesAfter.length === 0}
                 icon="Redo"
@@ -186,8 +196,8 @@ export const FluentUIToolbar: React.FC<{
   const getChartToolItems = (labels: boolean = true) => {
     return [
       <>
-        <LinkButton label={true} />
-        <LegendButton />
+        <LinkButton invertIcon={props.darkTheme} label={true} />
+        <LegendButton invertIcon={props.darkTheme}/>
         <span className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
@@ -201,6 +211,7 @@ export const FluentUIToolbar: React.FC<{
           </span>
         )}
         <MultiObjectButton
+          invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
@@ -252,6 +263,7 @@ export const FluentUIToolbar: React.FC<{
           </>
         )}
         <MultiObjectButton
+          invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
@@ -282,6 +294,7 @@ export const FluentUIToolbar: React.FC<{
             </span>
           )}
           <MultiObjectButton
+            invertIcon={props.darkTheme}
             compact={props.layout === LayoutDirection.Vertical}
             tools={[
               {
@@ -322,6 +335,7 @@ export const FluentUIToolbar: React.FC<{
   const renderScaffoldButton = () => {
     return (
       <MultiObjectButton
+        invertIcon={props.darkTheme}
         compact={props.layout === LayoutDirection.Vertical}
         tools={[
           {
@@ -360,6 +374,7 @@ export const FluentUIToolbar: React.FC<{
   const renderGuidesButton = () => {
     return (
       <MultiObjectButton
+        invertIcon={props.darkTheme}
         compact={props.layout === LayoutDirection.Vertical}
         tools={[
           {
@@ -406,12 +421,14 @@ export const FluentUIToolbar: React.FC<{
         {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
           <>
             <FluentToolButton
+              invertIcon={props.darkTheme}
               title={strings.menuBar.undo}
               disabled={store.historyManager.statesBefore.length === 0}
               icon={"Undo"}
               onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
             />
             <FluentToolButton
+              invertIcon={props.darkTheme}
               title={strings.menuBar.redo}
               disabled={store.historyManager.statesAfter.length === 0}
               icon={"Redo"}
@@ -432,6 +449,7 @@ export const FluentUIToolbar: React.FC<{
           </span>
         )}
         <MultiObjectButton
+          invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
@@ -460,9 +478,12 @@ export const FluentUIToolbar: React.FC<{
             },
           ]}
         />
-        <ObjectButton classID="mark.symbol" title="Symbol" icon="Shapes" />
-        <ObjectButton classID="mark.line" title="Line" icon="Line" />
+        <ObjectButton
+          invertIcon={props.darkTheme} classID="mark.symbol" title="Symbol" icon="Shapes" />
+        <ObjectButton
+          invertIcon={props.darkTheme} classID="mark.line" title="Line" icon="Line" />
         <MultiObjectButton
+          invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
@@ -478,6 +499,7 @@ export const FluentUIToolbar: React.FC<{
           ]}
         />
         <MultiObjectButton
+          invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
@@ -494,18 +516,20 @@ export const FluentUIToolbar: React.FC<{
         />
         <span className={"charticulator__toolbar-horizontal-separator"} />
         <ObjectButton
+          invertIcon={props.darkTheme}
           classID="mark.data-axis"
           title={strings.toolbar.dataAxis}
           icon="mark/data-axis"
         />
         <ObjectButton
+          invertIcon={props.darkTheme}
           classID="mark.nested-chart"
           title={strings.toolbar.nestedChart}
           icon="BarChartVerticalFilter"
         />
-        <LegendButton />
+        <LegendButton invertIcon={props.darkTheme} />
         <span className={"charticulator__toolbar-horizontal-separator"} />
-        <LinkButton label={labels} />
+        <LinkButton invertIcon={props.darkTheme} label={labels} />
         <span className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
@@ -521,26 +545,31 @@ export const FluentUIToolbar: React.FC<{
         {innerWidth > minWidthToColapseButtons.guides ? (
           <>
             <ObjectButton
+              invertIcon={props.darkTheme}
               classID="guide-y"
               title={strings.toolbar.guideY}
               icon="guide/x"
             />
             <ObjectButton
+              invertIcon={props.darkTheme}
               classID="guide-x"
               title={strings.toolbar.guideX}
               icon="guide/y"
             />
             <ObjectButton
+              invertIcon={props.darkTheme}
               classID="guide-coordinator-x"
               title={strings.toolbar.guideX}
               icon="guide/coordinator-x"
             />
             <ObjectButton
+              invertIcon={props.darkTheme}
               classID="guide-coordinator-y"
               title={strings.toolbar.guideY}
               icon="guide/coordinator-y"
             />
             <ObjectButton
+              invertIcon={props.darkTheme}
               classID="guide-coordinator-polar"
               title={strings.toolbar.guidePolar}
               icon="guide/coordinator-polar"
@@ -566,12 +595,14 @@ export const FluentUIToolbar: React.FC<{
           </>
         )}
         <ObjectButton
+          invertIcon={props.darkTheme}
           classID="plot-segment.cartesian"
           title={strings.toolbar.region2D}
           icon="BorderDot"
           noDragging={true}
         />
         <ObjectButton
+          invertIcon={props.darkTheme}
           classID="plot-segment.line"
           title={strings.toolbar.line}
           icon="Line"
@@ -592,24 +623,28 @@ export const FluentUIToolbar: React.FC<{
         {innerWidth > minWidthToColapseButtons.scaffolds ? (
           <>
             <ScaffoldButton
+              darkTheme={props.darkTheme}
               type="cartesian-x"
               title={strings.toolbar.lineH}
               icon="scaffold/cartesian-x"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              darkTheme={props.darkTheme}
               type="cartesian-y"
               title={strings.toolbar.lineV}
               icon="scaffold/cartesian-y"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              darkTheme={props.darkTheme}
               type="polar"
               title={strings.toolbar.polar}
               icon="scaffold/circle"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              darkTheme={props.darkTheme}
               type="curve"
               title={strings.toolbar.curve}
               icon="scaffold/curve"
@@ -664,6 +699,7 @@ export const FluentUIToolbar: React.FC<{
 };
 
 export interface ObjectButtonProps {
+  invertIcon?: boolean;
   title: string;
   text?: string;
   classID: string;
@@ -709,8 +745,8 @@ export class ObjectButton extends ContextedComponent<
             this.props.noDragging
               ? null
               : this.props.onDrag
-              ? this.props.onDrag
-              : () => {
+                ? this.props.onDrag
+                : () => {
                   return new DragData.ObjectType(
                     this.props.classID,
                     this.props.options
@@ -722,6 +758,7 @@ export class ObjectButton extends ContextedComponent<
           renderDragElement={() => {
             return [
               <SVGImageIcon
+                invert={this.props.invertIcon}
                 url={getSVGIcon(this.props.icon)}
                 width={32}
                 height={32}
@@ -735,6 +772,7 @@ export class ObjectButton extends ContextedComponent<
             icon={
               typeof this.props.icon === "string" ? (
                 <SVGImageIcon
+                  invert={this.props.invertIcon}
                   url={R.getSVGIcon(this.props.icon)}
                   width={20}
                   height={20}
@@ -768,6 +806,7 @@ export class MultiObjectButton extends ContextedComponent<
   {
     compact?: boolean;
     tools: ObjectButtonProps[];
+    invertIcon?: boolean;
   },
   {
     currentSelection: {
@@ -855,6 +894,7 @@ export class MultiObjectButton extends ContextedComponent<
         renderDragElement={() => {
           return [
             <SVGImageIcon
+              invert={this.props.invertIcon}
               url={R.getSVGIcon(currentTool.icon)}
               height={20}
               width={20}
@@ -870,6 +910,7 @@ export class MultiObjectButton extends ContextedComponent<
               appearance="subtle"
               icon={
                 <SVGImageIcon
+                  invert={this.props.invertIcon}
                   url={R.getSVGIcon(currentTool.icon)}
                   height={20}
                   width={20}
@@ -903,6 +944,7 @@ export class MultiObjectButton extends ContextedComponent<
                     }}
                     icon={
                       <SVGImageIcon
+                        invert={this.props.invertIcon}
                         key={`icon-${index}`}
                         url={R.getSVGIcon(tool.icon)}
                         height={20}
@@ -927,10 +969,12 @@ export const ScaffoldButton: React.FC<{
   title: string;
   type: string;
   icon: string;
+  darkTheme?: boolean;
 }> = (props) => {
   return (
     <FluentToolButton
       icon={props.icon}
+      invertIcon={props.darkTheme}
       active={props.currentTool == props.type}
       title={props.title}
       onClick={() => {
@@ -945,6 +989,7 @@ export const ScaffoldButton: React.FC<{
 
 export const LinkButton: React.FC<{
   label: boolean;
+  invertIcon?: boolean;
 }> = (props) => {
   // const { store } = React.useContext(MainReactContext);
   const [isOpen, openDialog] = React.useState(false);
@@ -967,6 +1012,7 @@ export const LinkButton: React.FC<{
             value={props.label ? strings.toolbar.link : ""}
             icon={
               <SVGImageIcon
+                invert={props.invertIcon}
                 url={R.getSVGIcon("CharticulatorLine")}
                 height={20}
                 width={20}
@@ -986,7 +1032,9 @@ export const LinkButton: React.FC<{
   );
 };
 
-export const LegendButton: React.FC = () => {
+export const LegendButton: React.FC<{
+  invertIcon?: boolean;
+}> = ({invertIcon}) => {
   // const { store } = React.useContext(MainReactContext);
   const [isOpen, setOpen] = React.useState(false);
 
@@ -1004,6 +1052,7 @@ export const LegendButton: React.FC = () => {
             title={strings.toolbar.legend}
             icon={
               <SVGImageIcon
+                invert={invertIcon}
                 url={R.getSVGIcon("CharticulatorLegend")}
                 height={20}
                 width={20}

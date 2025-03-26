@@ -4,6 +4,7 @@
  * @preferred
  */
 
+import { tokens } from "@fluentui/react-components";
 import { strings } from "./strings";
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -21,9 +22,11 @@ fetch("data/THIRD_PARTY.json")
       }[]
     ) => {
       const creditsEle = document.getElementById("credits");
+      creditsEle.setAttribute("style", `color: ${tokens.colorNeutralForeground1};background: ${tokens.colorNeutralBackground1}`)
       const creditsFrag = document.createDocumentFragment();
       data.forEach((item) => {
         const ele = createElement("div", { class: "credit " });
+        ele.setAttribute("style", `color: ${tokens.colorNeutralForeground1};background: ${tokens.colorNeutralBackground1}`)
         ele.appendChild(createElement("h3", {}, item.name));
         ele.appendChild(createElement("p", { class: "authors" }, item.authors));
         ele.appendChild(

@@ -10,11 +10,11 @@ import * as R from "../resources";
 import { strings } from "../../strings";
 import { Button } from "@fluentui/react-button";
 import { ToolbarButton } from "@fluentui/react-toolbar";
-
-// import { FluentButton } from "../views/panels/widgets/controls/fluentui_customized_components";
+import { tokens } from "@fluentui/react-components";
 
 export interface ToolButtonProps {
   icon?: string | React.JSX.Element;
+  invertIcon?: boolean;
   text?: string;
   title?: string;
   onClick?: () => void;
@@ -51,7 +51,7 @@ export class FluentToolButton extends React.Component<
           renderDragElement={() => {
             if (typeof this.props.icon === "string") {
               return [
-                <SVGImageIcon url={this.props.icon} width={20} height={20} />,
+                <SVGImageIcon url={this.props.icon} width={20} height={20} invert={this.props.invertIcon}/>,
                 { x: -16, y: -16 },
               ];
             } else {
@@ -59,18 +59,17 @@ export class FluentToolButton extends React.Component<
             }
           }}
         >
-          {/* <FluentButton marginTop={"0px"}> */}
           <ToolbarButton
             as="button"
             value={this.props.text}
             onClick={onClick}
             name={this.props.title}
-            // value={this.props.active || this.state.dragging}
             disabled={this.props.disabled}
             title={this.props.title}
             icon={
               typeof this.props.icon === "string" ? (
                 <SVGImageIcon
+                  invert={this.props.invertIcon}
                   url={R.getSVGIcon(this.props.icon)}
                   width={20}
                   height={20}
@@ -80,23 +79,21 @@ export class FluentToolButton extends React.Component<
               )
             }
           ></ToolbarButton>
-          {/* </FluentButton> */}
         </DraggableElement>
       );
     } else {
       return (
-        // <FluentButton marginTop={"0px"}>
         <ToolbarButton
           name={this.props.title}
           as="button"
           value={this.props.text}
-          // value={this.props.active}
           onClick={onClick}
           disabled={this.props.disabled}
           title={this.props.title}
           icon={
             typeof this.props.icon === "string" ? (
               <SVGImageIcon
+                invert={this.props.invertIcon}
                 url={R.getSVGIcon(this.props.icon)}
                 width={20}
                 height={20}
@@ -106,7 +103,6 @@ export class FluentToolButton extends React.Component<
             )
           }
         ></ToolbarButton>
-        // </FluentButton>
       );
     }
   }
@@ -143,6 +139,9 @@ export class AppButton extends BaseButton<AppButtonProps> {
     return (
       <span
         tabIndex={0}
+        style={{
+          background: tokens.colorBrandBackground
+        }}
         data-testid="appbutton"
         className="charticulator__button-menu-app charticulator-title__button"
         title={this.props.title}

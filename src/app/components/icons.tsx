@@ -3,7 +3,7 @@
 import * as React from "react";
 
 export class SVGImageIcon extends React.PureComponent<
-  { url: string; width?: number; height?: number },
+  { url: string; width?: number; height?: number; invert?: boolean },
   Record<string, never>
 > {
   public render() {
@@ -18,7 +18,7 @@ export class SVGImageIcon extends React.PureComponent<
       style.backgroundImage = `url(${this.props.url})`;
       return (
         <span
-          className="el-svg-icon svg-image-icon"
+          className={`el-svg-icon svg-image-icon ${this.props.invert ? "inverted-icon": ""}`}
           style={style}
           onDragStart={() => false}
         />

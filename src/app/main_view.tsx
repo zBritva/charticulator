@@ -26,8 +26,9 @@ import { ScalesPanel } from "./views/panels/scales_panel";
 import { strings } from "../strings";
 import { FluentUIToolbar } from "./views/fluentui_tool_bar";
 import { MainReactContext } from "./context_component";
-import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
+import { FluentProvider, Theme, tokens } from "@fluentui/react-components";
 import { ConstraintsPanel } from "./views/panels/constraints_panel";
+import { Color } from "../core";
 
 export enum UndoRedoLocation {
   MenuBar = "menubar",
@@ -63,10 +64,14 @@ export interface MainViewConfig {
 
 export interface MainViewProps {
   store: AppStore;
+  backgroundColor?: Color;
   viewConfiguration: MainViewConfig;
   menuBarHandlers?: MenuBarHandlers;
   telemetry?: TelemetryRecorder;
   tabButtons?: MenubarTabButton[];
+  theme?: Partial<Theme>;
+  darkTheme?: boolean;
+  onSwitchTheme?: (darkTheme: boolean) => void;
 }
 
 export interface MainViewState {
@@ -171,9 +176,11 @@ export class MainView extends React.Component<
       toolbarLabels: boolean;
     }) => {
       return (
-        <div className={`charticulator__panel-editor-toolbar-${config.layout}`}>
-          {/* <Toolbar toolbarLabels={config.toolbarLabels} undoRedoLocation={config.undoRedoLocation} layout={config.layout} /> */}
+        <div style={{
+          background: tokens.colorNeutralBackground1
+        }} className={`charticulator__panel-editor-toolbar-${config.layout}`}>
           <FluentUIToolbar
+            darkTheme={this.props.darkTheme}
             toolbarLabels={config.toolbarLabels}
             undoRedoLocation={config.undoRedoLocation}
             layout={config.layout}
@@ -184,7 +191,11 @@ export class MainView extends React.Component<
 
     const datasetPanel = () => {
       return (
-        <div className="charticulator__panel charticulator__panel-dataset">
+        <div
+        style={{
+          background: tokens.colorNeutralBackground1
+        }}
+        className="charticulator__panel charticulator__panel-dataset">
           <MinimizablePanelView
             title={strings.mainView.datasetPanelTitle}
             width={'200px'}
@@ -225,6 +236,7 @@ export class MainView extends React.Component<
               this.state.layersViewMaximized
                 ? "none"
                 : undefined,
+            background: tokens.colorNeutralBackground1
           }}
         >
           <MinimizablePanelView
@@ -280,6 +292,7 @@ export class MainView extends React.Component<
               this.state.constraintsViewMaximized
                 ? "none"
                 : undefined,
+            background: tokens.colorNeutralBackground1
           }}
         >
           <MinimizablePanelView
@@ -303,7 +316,9 @@ export class MainView extends React.Component<
 
     const chartPanel = () => {
       return (
-        <div className="charticulator__panel-editor-panel charticulator__panel-editor-panel-chart">
+        <div style={{
+          background: tokens.colorNeutralBackground1
+        }} className="charticulator__panel-editor-panel charticulator__panel-editor-panel-chart">
           <ErrorBoundary telemetryRecorder={this.props.telemetry}>
             <ChartEditorView store={this.props.store} />
           </ErrorBoundary>
@@ -317,7 +332,7 @@ export class MainView extends React.Component<
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => e.preventDefault()}
       >
-        <FluentProvider theme={teamsLightTheme}>
+        <FluentProvider theme={this.props.theme}>
           <MainReactContext.Provider
             value={{
               store: this.props.store,
@@ -325,6 +340,8 @@ export class MainView extends React.Component<
           >
             <TelemetryContext.Provider value={this.props.telemetry}>
               <MenuBar
+                darkTheme={this.props.darkTheme}
+                onSwitchTheme={this.props.onSwitchTheme}
                 alignButtons={this.viewConfiguration.MenuBarButtons}
                 alignSaveButton={this.viewConfiguration.MenuBarSaveButtons}
                 undoRedoLocation={this.viewConfiguration.UndoRedoLocation}

@@ -44,6 +44,7 @@ import { FileViewOptionsView } from "./options_view";
 import { strings } from "../../../strings";
 import { MainReactContext } from "../../context_component";
 import { DatasetsView } from "./datasets_view";
+import { tokens } from "@fluentui/react-components";
 
 export enum MainTabs {
   about = "about",
@@ -182,8 +183,12 @@ export class FileView extends React.Component<
   public render() {
     return (
       <MainReactContext.Provider value={{ store: this.props.store }}>
-        <div className="charticulator__file-view">
-          <div className="charticulator__file-view-tabs" data-testid="file-view-tabs">
+        <div style={{
+            background: tokens.colorNeutralBackground1
+          }} className="charticulator__file-view">
+          <div style={{
+            background: tokens.colorBrandBackground
+          }}  className="charticulator__file-view-tabs" data-testid="file-view-tabs">
             <div
               ref={(r) => (this.buttonBack = r)}
               tabIndex={0}

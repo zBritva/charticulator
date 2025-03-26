@@ -11,6 +11,7 @@ import { strings } from "../../../strings";
 import { AppStore } from "../../stores";
 import { Button } from "@fluentui/react-button";
 import { SaveRegular } from "@fluentui/react-icons";
+import { tokens } from "@fluentui/react-components";
 
 export interface FileViewSaveAsProps {
   onClose: () => void;
@@ -32,17 +33,24 @@ export class FileViewSaveAs extends React.Component<
 
     return (
       <section className="charticulator__file-view-content is-fix-width is-restricted-width">
-        <h1>{strings.mainTabs.save}</h1>
+        <h1 style={{
+          color: tokens.colorNeutralForeground1
+        }}>{strings.mainTabs.save}</h1>
         <section>
           <CurrentChartView store={this.props.store} />
           <div className="form-group">
             <input
+              style={{
+                color: tokens.colorNeutralForeground1
+              }}
               ref={(e) => (inputSaveChartName = e)}
               type="text"
               required={true}
               defaultValue={this.props.store.dataset.name}
             />
-            <label>{strings.fileSave.chartName}</label>
+            <label style={{
+              color: tokens.colorNeutralForeground1
+            }}>{strings.fileSave.chartName}</label>
             <i className="bar" />
           </div>
           <div className="buttons">

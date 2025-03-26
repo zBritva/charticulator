@@ -33,6 +33,13 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
+import { Label, Switch, tokens } from "@fluentui/react-components";
+
+declare let CHARTICULATOR_PACKAGE: {
+  version: string;
+  buildTimestamp: number;
+  revision: string;
+};
 
 interface HelpButtonProps {
   hideReportIssues: boolean;
@@ -170,6 +177,8 @@ export interface MenuBarProps {
   name?: string;
   handlers: MenuBarHandlers;
   tabButtons?: MenubarTabButton[];
+  onSwitchTheme?: (type: boolean) => void;
+  darkTheme: boolean;
 }
 
 export class MenuBar extends ContextedComponent<
@@ -667,7 +676,9 @@ export class MenuBar extends ContextedComponent<
     return (
       <>
         <PopupContainer controller={this.popupController} />
-        <section className="charticulator__menu-bar">
+        <section style={{
+          background: tokens.colorBrandBackground
+        }} className="charticulator__menu-bar">
           <div className="charticulator__menu-bar-left">
             <AppButton
               name={this.props.name}
@@ -717,6 +728,18 @@ export class MenuBar extends ContextedComponent<
                 <span className="charticulator__menu-bar-separator" />
               </>
             ) : null}
+            {this.context.store.editorType === EditorType.Chart ?
+            <>
+              <Label>Dark</Label>
+              <Switch
+                title="Preview"
+                value={this.props.darkTheme ? 1 : 0}
+                onChange={(e, data) => {
+                  this.props.onSwitchTheme?.(data.checked);
+                }}
+              />
+            </>
+            : null}
             {(this.context.store.editorType === EditorType.Embedded ||
               this.context.store.editorType === EditorType.NestedEmbedded) &&
             this.props.alignSaveButton == PositionsLeftRight.Right &&
