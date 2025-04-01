@@ -136,6 +136,12 @@ export enum EditorType {
   Chart = "chart",
 }
 
+declare let CHARTICULATOR_PACKAGE: {
+  version: string;
+  buildTimestamp: number;
+  revision: string;
+};
+
 export class AppStore extends BaseStore {
   public static EVENT_IS_NESTED_EDITOR = "is-nested-editor";
   public static EVENT_NESTED_EDITOR_EDIT = "nested-editor-edit";

@@ -151,7 +151,7 @@
 .charticulator__modal {
   &-default {
     @include shadow-focused-right;
-    background: $gray-220;
+    // background: $gray-220;
     position: absolute;
     left: 0;
     top: 0;
@@ -182,7 +182,7 @@
       overflow: hidden;
       overflow-y: scroll;
       @include shadow-focused;
-      background: $gray-220;
+      // background: $gray-220;
       border-radius: 4px;
     }
   }

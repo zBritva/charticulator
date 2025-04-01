@@ -23,6 +23,12 @@ import {
 import { ChartTemplate, Dataset, Specification } from "../../../container";
 import { TableType } from "../../../core/dataset";
 
+declare let CHARTICULATOR_PACKAGE: {
+  version: string;
+  buildTimestamp: number;
+  revision: string;
+};
+
 /** Handlers for document-level actions such as Load, Save, Import, Export, Undo/Redo, Reset */
 // eslint-disable-next-line
 export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {

@@ -22,10 +22,10 @@
       padding: 0 4px;
       border-radius: 0 0 2px 2px;
       &.is-active {
-        background: $color-is-active;
+        // background: $color-is-active;
       }
       &:hover {
-        background: $gray-220;
+        // background: $gray-220;
       }
       margin-top: 2px;
       margin-right: 1px;
@@ -36,7 +36,7 @@
 
 .mark-editor-single-view {
   .mark-view-container {
-    background: white;
+    // background: $white;
     position: relative;
 
     .mark-view-container-notice {
@@ -48,14 +48,14 @@
       padding: 20px;
       font-size: 14px;
       color: $gray-100;
-      background: $gray-220;
+      // background: $gray-220;
       border-radius: 20px;
     }
   }
 }
 
 .chart-editor-canvas-view {
-  background: white;
+  // background: $white;
   flex: 1;
   overflow: hidden;
 }
@@ -84,7 +84,7 @@
       text-align: center;
       padding: 1em;
       margin: 0 0;
-      background: $white;
+      // background: $white;
 
       @include shadow-ambient;
 
@@ -100,7 +100,7 @@
 }
 
 .canvas-controls {
-  background: $gray-230;
+  // background: $gray-230;
   line-height: 32px;
   height: 32px;
   font-size: 12px;
@@ -143,7 +143,7 @@
       pointer-events: auto;
       position: absolute;
       white-space: nowrap;
-      background: $gray-220;
+      // background: $gray-220;
       border: 1px solid $gray-100;
 
       @include shadow-focused;
@@ -193,7 +193,7 @@
   border-right: 1px solid $gray-200;
   margin-right: 10px;
   display: block;
-  background: $gray-225;
+  // background: $gray-225;
   .drop-indicator {
     fill: transparentize($color-primary, 0.95);
     stroke: $color-primary;
@@ -207,12 +207,12 @@
   }
 
   &.canvas-view-mark {
-    background: #ffffff;
+    // background: $white;
     border-radius: 20px;
   }
 
   .canvas-region {
-    fill: #ffffff;
+    // fill: #ffffff;
     stroke: none;
     pointer-events: none;
   }

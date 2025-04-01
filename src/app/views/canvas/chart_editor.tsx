@@ -59,6 +59,7 @@ import {
   ZoomOutRegular,
 } from "@fluentui/react-icons";
 import { SVGImageIcon } from "../../components";
+import { tokens } from "@fluentui/react-components";
 
 export interface ChartEditorViewProps {
   store: AppStore;
@@ -1270,6 +1271,9 @@ export class ChartEditorView
       <g>
         <path
           className="canvas-region-outer"
+          style={{
+            fill: tokens.colorNeutralForeground1
+          }}
           d={getRoundedRectPath(
             p1t.x - shadowSize,
             p1t.y - shadowSize,
@@ -1280,6 +1284,9 @@ export class ChartEditorView
         />
         <path
           className="canvas-region"
+          style={{
+            fill: tokens.colorNeutralBackground1
+          }}
           d={getRoundedRectPath(p1t.x, p1t.y, p2t.x, p2t.y, cornerInnerRadius)}
         />
         <ResizeHandleView
@@ -1429,7 +1436,9 @@ export class ChartEditorView
     const transform = `translate(${this.state.zoom.centerX},${this.state.zoom.centerY}) scale(${this.state.zoom.scale})`;
     return (
       <div className="chart-editor-view">
-        <div className="chart-editor-canvas-view" ref="canvasContainer">
+        <div style={{
+          background: tokens.colorNeutralBackground1
+        }} className="chart-editor-canvas-view" ref="canvasContainer">
           <svg
             className="canvas-view"
             ref="canvas"
