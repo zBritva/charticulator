@@ -17,7 +17,7 @@
   "scripts": {
     "dev": "node build.js",
     "prebuild": "pegjs --format commonjs --allowed-start-rules start,start_text -o src/core/expression/parser.js src/core/expression/parser.pegjs",
-    "build": "node build.js --mode=production",
+    "build": "node  --max_old_space_size=8192 build.js --mode=production",
     "server": "node build.js server",
     "ssl_server": "node build.js ssl_server",
     "public_server": "node build.js public_server",
