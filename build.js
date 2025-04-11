@@ -217,7 +217,7 @@ let COMMANDS = {
   typescript: "tsc",
 
   // Produce webpack bundles
-  webpack: "node --max_old_space_size=8192 .\node_modules\webpack\bin\webpack.js --mode=" + (isProd ? "production" : "development"),
+  webpack: "node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --mode=" + (isProd ? "production" : "development"),
 
   // Add ?sha256=... and integrity tags to script and css
   add_hash: () => addHASHToHTMLs(),
