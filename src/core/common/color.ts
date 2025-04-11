@@ -384,37 +384,44 @@ const brewer12 = [
   "#b15928",
 ].map(colorFromHTMLColor);
 
-let defaultColorGeneratorFunction: (key: string) => Color = null;
-let defaultColorGeneratorResetFunction: () => void;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-var
+var colors: {
+  defaultColorGeneratorFunction: (key: string) => Color,
+  defaultColorGeneratorResetFunction: () => void
+} = {
+  defaultColorGeneratorFunction: null,
+  defaultColorGeneratorResetFunction: null
+};
+
 
 export function setDefaultColorPaletteGenerator(
   generatorFunction: (key: string) => Color
 ) {
-  defaultColorGeneratorFunction = generatorFunction;
+  colors.defaultColorGeneratorFunction = generatorFunction;
 }
 
 export function getDefaultColorPaletteGenerator() {
-  return defaultColorGeneratorFunction;
+  return colors.defaultColorGeneratorFunction;
 }
 export function setDefaultColorGeneratorResetFunction(
   resetFunction: () => void
 ) {
-  defaultColorGeneratorResetFunction = resetFunction;
+  colors.defaultColorGeneratorResetFunction = resetFunction;
 }
 
 export function getDefaultColorGeneratorResetFunction() {
-  return defaultColorGeneratorResetFunction;
+  return colors.defaultColorGeneratorResetFunction;
 }
 
 export function getDefaultColorPaletteByValue(value: string) {
-  return defaultColorGeneratorFunction?.(value);
+  return colors.defaultColorGeneratorFunction?.(value);
 }
 
 export function getDefaultColorPalette(count: number) {
-  if (defaultColorGeneratorFunction) {
+  if (colors.defaultColorGeneratorFunction) {
     return new Array(count)
       .fill(null)
-      .map((v, index) => defaultColorGeneratorFunction(index.toString()));
+      .map((v, index) => colors.defaultColorGeneratorFunction(index.toString()));
   }
   let r = brewer12;
   if (count <= 3) {
