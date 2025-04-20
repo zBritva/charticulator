@@ -237,6 +237,7 @@ export const strings = {
     delete: "Delete this chart",
     download: "Download this chart",
     open: "Open Chart",
+    import: "Import chart/template",
     filterText: "Filter by name",
     private: "Private",
     public: "Public",

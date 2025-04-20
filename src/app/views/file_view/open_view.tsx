@@ -301,18 +301,43 @@ export class FileViewOpen extends React.Component<
               }}
               data-testid="fileOpenButton"
               icon={<OpenRegular />}
-              title={strings.fileOpen.open}
+              title={strings.fileOpen.import}
               onClick={async () => {
-                const file = await showOpenFileDialog(["chart"]);
+                const file = await showOpenFileDialog(["chart", "json"]);
                 const str = await readFileAsString(file);
                 const data = JSON.parse(str);
-                this.props.store.dispatcher.dispatch(
-                  new Actions.Load(data.state)
-                );
-                this.props.onClose();
+                if (data.state && !data.specification) {
+                  this.props.store.dispatcher.dispatch(
+                    new Actions.Load(data.state)
+                  );
+                  this.props.onClose();
+                }
+                if (!data.state && data.specification) {
+                  this.props.store.dispatcher.dispatch(
+                    new Actions.ImportTemplate(data, (unmappedColumns, tableMapping, datasetTables, tables, resolve) => {
+                      this.setState({
+                        importTemplateDialog: true,
+                        dialogOptions: {
+                          unmappedColumns,
+                          tableMapping,
+                          datasetTables,
+                          tables,
+                          resolve,
+                          format: this.props.store.getLocaleFileFormat(),
+                          close: () => {
+                            this.setState({
+                              dialogOptions: null
+                            });
+                            this.props.onClose();
+                          }
+                        }
+                      })
+                    })
+                  );
+                }
               }}
             >
-              {strings.fileOpen.open}
+              {strings.fileOpen.import}
             </Button>
             <Input
               style={{
