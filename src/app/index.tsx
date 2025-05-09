@@ -53,7 +53,7 @@ export {
 } from "./application";
 export { CharticulatorAppConfig, MainViewConfig } from "./config";
 export { addSVGIcon, getSVGIcon } from "./resources";
-export { ExportTemplateTarget } from "./template";
+export { ExportTemplateTarget } from "./../template";
 export { Widgets } from "./views/panels/index";
 export { expect_deep_approximately_equals } from "./utils/index";
 export { PopupContainer } from "./controllers/popup_controller";

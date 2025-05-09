@@ -29,7 +29,7 @@ import { DerivedColumnDescription, kind2Icon, type2DerivedColumns } from "./comm
 import { TableView } from "./table_view";
 import { TableType, tableTypeName } from "../../../core/dataset";
 import { DataType, DataKind } from "../../../core/specification";
-import { ChartTemplateBuilder } from "../../template";
+import { ChartTemplateBuilder } from "../../../template";
 import { ChartTemplate } from "../../../container";
 import { FileViewImport, MappingMode } from "../file_view/import_view";
 import { strings } from "../../../strings";

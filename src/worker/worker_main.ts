@@ -1,7 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import { CharticulatorWorkerInterface } from ".";
-import * as Core from "../core";
+import {
+  CharticulatorCoreConfig,
+  initialize,
+  Specification,
+  Dataset,
+  Solver,
+  Prototypes
+ } from "../core";
 import { WorkerHostProcess } from "./communication";
 
 export class CharticulatorWorkerProcess
@@ -16,8 +23,8 @@ export class CharticulatorWorkerProcess
     );
   }
 
-  public async initialize(config: Core.CharticulatorCoreConfig) {
-    await Core.initialize({
+  public async initialize(config: CharticulatorCoreConfig) {
+    await initialize({
       ...config,
       localization: {
         currency: "$",
@@ -29,12 +36,12 @@ export class CharticulatorWorkerProcess
   }
 
   public solveChartConstraints(
-    chart: Core.Specification.Chart,
-    chartState: Core.Specification.ChartState,
-    dataset: Core.Dataset.Dataset,
+    chart: Specification.Chart,
+    chartState: Specification.ChartState,
+    dataset: Dataset.Dataset,
     preSolveValues: [
-      Core.Solver.ConstraintStrength,
-      Core.Specification.AttributeMap,
+      Solver.ConstraintStrength,
+      Specification.AttributeMap,
       string,
       number
     ][] = null,
@@ -66,13 +73,13 @@ export class CharticulatorWorkerProcess
     );
   }
   public doSolveChartConstraints(
-    chart: Core.Specification.Chart,
-    chartState: Core.Specification.ChartState,
-    dataset: Core.Dataset.Dataset,
-    additional: (solver: Core.Solver.ChartConstraintSolver) => void = null,
+    chart: Specification.Chart,
+    chartState: Specification.ChartState,
+    dataset: Dataset.Dataset,
+    additional: (solver: Solver.ChartConstraintSolver) => void = null,
     mappingOnly: boolean = false
   ) {
-    const chartManager = new Core.Prototypes.ChartStateManager(
+    const chartManager = new Prototypes.ChartStateManager(
       chart,
       dataset,
       chartState

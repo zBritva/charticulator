@@ -32,7 +32,7 @@ import { Action } from "./actions/actions";
 import { CharticulatorWorker, CharticulatorWorkerInterface } from "../worker";
 import { CharticulatorAppConfig } from "./config";
 
-import { ExportTemplateTarget } from "./template";
+import { ExportTemplateTarget } from "./../template";
 import { parseHashString } from "./utils";
 import { Actions } from "./actions";
 import { DatasetSourceSpecification } from "../core/dataset/loader";

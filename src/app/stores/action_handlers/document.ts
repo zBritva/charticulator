@@ -14,7 +14,7 @@ import { AppStore, EditorType } from "../app_store";
 import { Migrator } from "../migrator";
 import { ActionHandlerRegistry } from "./registry";
 import { getConfig } from "../../config";
-import { ChartTemplateBuilder } from "../../template";
+import { ChartTemplateBuilder } from "../../../template";
 import {
   NestedEditorEventType,
   NestedEditorMessage,

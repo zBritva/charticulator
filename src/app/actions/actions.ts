@@ -14,7 +14,7 @@ import {
   SpecTypes,
 } from "../../core";
 import * as DragData from "./drag_data";
-import { ExportTemplateTarget } from "../template";
+import { ExportTemplateTarget } from "../../template";
 import { DataType } from "../../core/dataset";
 import { ObjectClass } from "../../core/prototypes";
 import {

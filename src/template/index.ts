@@ -22,16 +22,16 @@ import {
   Prototypes,
   Specification,
   SpecTypes,
-} from "../../core";
-import { TableType } from "../../core/dataset";
+} from "../core";
+import { TableType } from "../core/dataset";
 import {
   forEachMapping,
   forEachObject,
   ObjectItemKind,
-} from "../../core/prototypes";
-import { DataAxisExpression } from "../../core/prototypes/marks/data_axis.attrs";
-import { Region2DSublayoutOptions } from "../../core/prototypes/plot_segments/region_2d/base";
-import { MappingType, ScaleMapping } from "../../core/specification";
+} from "../core/prototypes";
+import { DataAxisExpression } from "../core/prototypes/marks/data_axis.attrs";
+import { Region2DSublayoutOptions } from "../core/prototypes/plot_segments/region_2d/base";
+import { MappingType, ScaleMapping } from "../core/specification";
 
 export interface ExportTemplateTargetProperty {
   displayName: string;

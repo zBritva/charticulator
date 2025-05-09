@@ -15,7 +15,7 @@ import {
 } from "../../components";
 import * as R from "../../resources";
 import { AppStore } from "../../stores";
-import { ExportTemplateTarget } from "../../template";
+import { ExportTemplateTarget } from "../../../template";
 import { classNames } from "../../utils";
 import { InputImageProperty } from "../panels/widgets/controls";
 import { noop } from "../../utils/noop";

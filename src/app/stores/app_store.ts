@@ -26,7 +26,7 @@ import { CharticulatorWorkerInterface } from "../../worker";
 import { Actions, DragData } from "../actions";
 import { AbstractBackend } from "../backend/abstract";
 import { IndexedDBBackend } from "../backend/indexed_db";
-import { ChartTemplateBuilder, ExportTemplateTarget } from "../template";
+import { ChartTemplateBuilder, ExportTemplateTarget } from "./../../template/index";
 import {
   b64EncodeUnicode,
   renderDataURLToPNG,
