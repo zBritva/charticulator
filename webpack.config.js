@@ -169,7 +169,10 @@ module.exports = (env, { mode }) => {
       resolve: {
         alias: {
           src: path.resolve(__dirname, '/src'),
-          resources: __dirname + "/resources"
+          resources: __dirname + "/resources",
+          // 'lscg-solver': path.resolve(__dirname, './lscg-solver-umd.js'),
+          [path.resolve(__dirname, '/src/core/common/fetch')]: false,
+          './src/core/common/fetch.ts': false,
         },
         extensions: extensions
       },
