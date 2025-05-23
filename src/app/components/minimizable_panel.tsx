@@ -9,6 +9,8 @@ import * as R from "../resources";
 import { SVGImageIcon } from "./icons";
 import { ArrowLeft12Regular, ArrowMinimizeRegular, ArrowRight12Regular, StackRegular } from "@fluentui/react-icons";
 
+import { tokens } from "@fluentui/react-components";
+
 import {
   DrawerBody,
   DrawerHeader,
@@ -369,6 +371,7 @@ export class FloatingPanel extends React.Component<
         )}
         ref={(e) => (this.refContainer = e)}
         style={{
+          background: tokens.colorNeutralBackground1,
           left: this.state.x + "px",
           top: this.state.y + "px",
           width: this.state.width + "px",
@@ -383,6 +386,9 @@ export class FloatingPanel extends React.Component<
       >
         <div
           className="charticulator__floating-panel-header"
+          style={{
+            background: tokens.colorNeutralBackground1,
+          }}
           ref={(e) => (this.refHeader = e)}
         >
           <span className="title">{this.props.title}</span>
