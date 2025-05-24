@@ -580,6 +580,8 @@ export const strings = {
       visibleDescription: "Axis visibility on chart",
     },
     guides: {
+      splitByRation: "Split",
+      ratio: "Ratio",
       guideCoordinator: "Guide Coordinator",
       count: "Count",
       guide: "Guide",

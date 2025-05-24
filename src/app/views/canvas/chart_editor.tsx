@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
@@ -650,6 +651,7 @@ export class ChartEditorView
     // let boundsGuides = chartClass.getSnappingGuides();
     return this.getSnappingGuides().map((info, idx) => {
       const theGuide = info.guide;
+      // TODO fix ration render
       if (theGuide.visible) {
         if (theGuide.type == "x") {
           const guide = theGuide as Prototypes.SnappingGuides.Axis;
@@ -676,6 +678,7 @@ export class ChartEditorView
           );
         }
         if (theGuide.type == "y") {
+          debugger;
           const guide = theGuide as Prototypes.SnappingGuides.Axis;
           return (
             <line
