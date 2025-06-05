@@ -38,6 +38,11 @@ export function RK4(
   return result;
 }
 
+/**
+ * Performs linear interpolation between points in an array.
+ * @param points An array of numbers.
+ * @param t The interpolation parameter (0 <= t <= 1).
+ */
 export function linearApproximation(
   points: ArrayLike<number>,
   t: number
@@ -58,6 +63,12 @@ export function linearApproximation(
   return points[i1] * (1 - k) + points[i2] * k;
 }
 
+/**
+ * Finds which segment a given value `k` falls into within an array of `bounds`.
+ * @param bounds An array of numbers representing segment boundaries.
+ * @param k The value to locate.
+ * @returns A tuple containing the segment index and the offset within that segment.
+ */
 export function findSegment(bounds: number[], k: number): [number, number] {
   // Linear search
   for (let i = 0; i < bounds.length - 1; i++) {
@@ -77,6 +88,12 @@ export function findSegment(bounds: number[], k: number): [number, number] {
   }
 }
 
+/**
+ * Computes the inverse of a function defined by a set of points, assuming linear interpolation.
+ * This is used to map arc length `s` back to the curve parameter `t`.
+ * @param points An array of numbers representing the function's values.
+ * @param result An optional array to store the inverted points.
+ */
 export function linearInvert(
   points: ArrayLike<number>,
   result: number[] = new Array<number>(points.length)
@@ -100,9 +117,25 @@ export function linearInvert(
 }
 
 export abstract class CurveParameterization {
+  /**
+   * Gets a point on the curve at a given parameter `t`.
+   * @param t The curve parameter (typically 0 <= t <= 1).
+   */
   public abstract getPointAtT(t: number): Point;
+  /**
+   * Gets the tangent vector at a given parameter `t`.
+   * @param t The curve parameter.
+   */
   public abstract getTangentAtT(t: number): Point;
+  /**
+   * Gets the arc length `s` from the start of the curve to the point at parameter `t`.
+   * @param t The curve parameter.
+   */
   public abstract getSFromT(t: number): number;
+  /**
+   * Gets the parameter `t` corresponding to a given arc length `s`.
+   * @param s The arc length along the curve.
+   */
   public abstract getTFromS(s: number): number;
   public abstract getLength(): number;
 

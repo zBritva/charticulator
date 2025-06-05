@@ -76,7 +76,8 @@ module.exports = (env, { mode }) => {
           }
           : {
             app: "./src/app/index.tsx",
-            test: "./src/tests/test_app/index.tsx"
+            test: "./src/tests/test_app/index.tsx",
+            playwright: "./src/tests/playwright/index.tsx"
           },
       output: {
         filename: "[name].bundle.js",
