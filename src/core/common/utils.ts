@@ -544,14 +544,25 @@ export function rgbToHex(color: Color) {
  * @returns Hex representation of color
  */
 export function hexToRgb(hex: string): Color {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
-    : null;
+  let color = null;
+  let result = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
+
+  if (result) {
+    hex = `#${result[1]}${result[1]}${result[2]}${result[2]}${result[3]}${result[3]}`;
+  }
+
+  result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (result) {
+    color = {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    };
+    return color;
+  }
+  else {
+    return null;
+  }
 }
 
 export function isNumbers(array: unknown[]): array is number[] {
@@ -575,11 +586,10 @@ export function testToRange(value: string): boolean {
   return false;
 }
 
-export function isRange(values: string[]): boolean
-{
+export function isRange(values: string[]): boolean {
   return values
-  .map((val) => testToRange(val))
-  .reduceRight((a, b) => a && b)
+    .map((val) => testToRange(val))
+    .reduceRight((a, b) => a && b)
 }
 
 /**
@@ -598,8 +608,8 @@ export function getSortFunctionByData(values: string[]) {
           return +aNum < +bNum
             ? 1
             : +a.split("-").pop() < +b.split("-").pop()
-            ? 1
-            : -1;
+              ? 1
+              : -1;
         }
       };
     }
@@ -747,7 +757,7 @@ export function getFormat() {
       const parsedFormat = format?.replace(tickFormatParserExpression(), "$1");
       const formattedValue = formatLocale(formatOptions).format(parsedFormat)(n);
       if (format === 's' && formatOptions.billionsFormat === 'billions') {
-        return formattedValue.replace('G', 'B') 
+        return formattedValue.replace('G', 'B')
       }
       return formattedValue;
     }
