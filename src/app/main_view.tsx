@@ -58,6 +58,7 @@ export interface MainViewConfig {
   MenuBarButtons: PositionsLeftRight;
   MenuBarSaveButtons: PositionsLeftRight;
   Name?: string;
+  AppButtonName?: string;
   ToolbarLabels: boolean;
   UndoRedoLocation: UndoRedoLocation;
 }
@@ -346,6 +347,7 @@ export class MainView extends React.Component<
                 alignSaveButton={this.viewConfiguration.MenuBarSaveButtons}
                 undoRedoLocation={this.viewConfiguration.UndoRedoLocation}
                 name={this.viewConfiguration.Name}
+                appButtonName={this.viewConfiguration.AppButtonName}
                 ref={(e) => (this.refMenuBar = e)}
                 handlers={this.props.menuBarHandlers}
                 tabButtons={this.props.tabButtons}

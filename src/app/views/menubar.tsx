@@ -175,6 +175,7 @@ export interface MenuBarProps {
   alignButtons: PositionsLeftRight;
   alignSaveButton: PositionsLeftRight;
   name?: string;
+  appButtonName?: string;
   handlers: MenuBarHandlers;
   tabButtons?: MenubarTabButton[];
   onSwitchTheme?: (type: boolean) => void;
@@ -681,9 +682,9 @@ export class MenuBar extends ContextedComponent<
         }} className="charticulator__menu-bar">
           <div className="charticulator__menu-bar-left">
             <AppButton
-              name={this.props.name}
+              name={this.props.appButtonName}
               title={strings.menuBar.home}
-              iconOnly={this.context.store.editorType === EditorType.Embedded}
+              // iconOnly={this.context.store.editorType === EditorType.Embedded}
               onClick={() => this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded)}
             />
             {this.props.alignButtons === PositionsLeftRight.Left ? (
