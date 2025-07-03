@@ -139,6 +139,9 @@ export class ScalesPanel extends ContextedComponent<
         };
         const onClickDelete = () => {
           store.dispatcher.dispatch(new DeleteScale(scale._id));
+          this.setState({
+            deleteScaleDialog: false
+          })
         }
         return (
           <div key={scale._id} className="el-object-item">

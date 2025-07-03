@@ -95,6 +95,10 @@ export class ChartConstraintSolver {
             const scaleClass = <Prototypes.Scales.ScaleClass>(
               this.manager.getClassById(scaleMapping.scale)
             );
+            if (!scaleClass) {
+              console.warn(`Scale ${scaleMapping.scale} not found`);
+              break;
+            }
             if (!info.solverExclude) {
               scaleClass.buildConstraint(
                 dataValue,
@@ -146,6 +150,10 @@ export class ChartConstraintSolver {
           const scaleClass = <Prototypes.Scales.ScaleClass>(
             this.manager.getClassById(scaleMapping.scale)
           );
+          if (!scaleClass) {
+            console.warn(`Scale ${scaleMapping.scale} not found`);
+            break;
+          }
           if (!info.solverExclude) {
             scaleClass.buildConstraint(
               dataValue,
@@ -806,7 +814,7 @@ export class GlyphConstraintAnalyzer extends ConstraintSolver {
   }
 
   // eslint-disable-next-line
-  public setValue() {}
+  public setValue() { }
   public getValue() {
     return 0;
   }
@@ -816,7 +824,7 @@ export class GlyphConstraintAnalyzer extends ConstraintSolver {
   }
 
   // eslint-disable-next-line
-  public destroy() {}
+  public destroy() { }
 
   private ker: Float64Array[];
   private X0: Float64Array[];
