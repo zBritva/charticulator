@@ -26,6 +26,7 @@ import { FluentColumnLayout } from "./fluentui_customized_components";
 import { strings } from "../../../../../strings";
 import { FluentUIGradientPicker } from "../../../../components/fluent_ui_gradient_picker";
 import { EmptyColorButton } from "./fluentui_empty_mapping";
+import { Button } from "@fluentui/react-components";
 
 export interface InputColorProps {
   defaultValue: Color;
@@ -167,8 +168,7 @@ export class FluentInputColor extends React.Component<
         </>
         <Popover open={this.state.open}>
           <PopoverTrigger>
-            {!this.props.pickerBeforeTextField &&
-              (hex == "" ? emptyPicker : picker)}
+            {picker}
           </PopoverTrigger>
           <PopoverSurface>
             <ColorPicker
@@ -187,6 +187,7 @@ export class FluentInputColor extends React.Component<
                 this.setState({ open: !this.state.open });
               }}
             />
+            <Button onClick={() => this.setState({ open: false })}>{strings.scaleEditor.close}</Button>
           </PopoverSurface>
         </Popover>
       </span>

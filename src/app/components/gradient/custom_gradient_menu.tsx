@@ -135,25 +135,6 @@ export class CustomGradientMenu extends React.Component<
   private renderColorPicker(): JSX.Element {
     return (
       <>
-        {/* {this.state.isPickerOpen && (
-          <Callout
-            target={`#${this.state.currentItemId}`}
-            onDismiss={() =>
-              this.changeColorPickerState(this.state.currentItemId, null, null)
-            }
-            alignTargetEdge
-          >
-            <ColorPicker
-              defaultValue={this.state.currentColor}
-              onPick={(color) => {
-                const newGradient = deepClone(this.props.currentGradient);
-                newGradient.colors[this.state.currentItemIdx] = color;
-                this.props.selectGradient(newGradient, true);
-              }}
-              parent={this}
-            />
-          </Callout>
-        )} */}
         <Popover open={this.state.isPickerOpen}>
           <PopoverSurface>
             <ColorPicker

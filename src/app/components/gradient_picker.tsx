@@ -144,25 +144,6 @@ export class GradientPicker extends React.Component<
   private renderColorPicker(): JSX.Element {
     return (
       <>
-        {/* {this.state.isPickerOpen && (
-          <Callout
-            target={`#${this.state.currentItemId}`}
-            onDismiss={() =>
-              this.changeColorPickerState(this.state.currentItemId, null, null)
-            }
-            alignTargetEdge
-          >
-            <ColorPicker
-              defaultValue={this.state.currentColor}
-              onPick={(color) => {
-                const newGradient = deepClone(this.state.currentGradient);
-                newGradient.colors[this.state.currentItemIdx] = color;
-                this.selectGradient(newGradient, true);
-              }}
-              parent={this}
-            />
-          </Callout>
-        )} */}
         <Popover open={this.state.isPickerOpen}>
           <PopoverSurface>
             <ColorPicker

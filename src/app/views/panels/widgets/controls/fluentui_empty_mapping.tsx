@@ -11,7 +11,7 @@ import { Button } from "@fluentui/react-button";
 import { Input } from "@fluentui/react-input";
 import { Label } from "@fluentui/react-label";
 interface EmptyMappingProps {
-  renderColorPicker: () => JSX.Element;
+  renderColorPicker: (trigger: JSX.Element) => JSX.Element;
   onClick: () => void;
   options: Prototypes.Controls.MappingEditorOptions;
   type: Specification.AttributeType;
@@ -24,42 +24,43 @@ export const EmptyMapping = ({
   type,
 }: EmptyMappingProps): JSX.Element => {
   const render = () => {
+    const trigger = type === Specification.AttributeType.Color ? (
+      <EmptyColorInput onClick={onClick} label={options.label} />
+    ) : (
+      <>
+        <FluentColumnLayout>
+          <Label>{options.label}</Label>
+          <Input
+            id={`id_${options.label.replace(/\s/g, "_")}`}
+            placeholder={strings.core.auto}
+            onClick={onClick}
+          />
+        </FluentColumnLayout>
+      </>
+    )
+
     if (options.defaultAuto) {
       return (
         <>
-          {renderColorPicker()}
-          {type === Specification.AttributeType.Color ? (
-            <EmptyColorInput onClick={onClick} label={options.label} />
-          ) : (
-            <>
-              <FluentColumnLayout>
-                <Label>{options.label}</Label>
-                <Input
-                  id={`id_${options.label.replace(/\s/g, "_")}`}
-                  placeholder={strings.core.auto}
-                  onClick={onClick}
-                />
-              </FluentColumnLayout>
-            </>
-          )}
+          {renderColorPicker(trigger)}
         </>
       );
     } else {
+      const trigger = type === Specification.AttributeType.Color ? (
+        <EmptyColorInput onClick={onClick} label={options.label} />
+      ) : (
+        <FluentColumnLayout id={`empty-mapping-column-${options.label.replace(/\s/g, "_")}`}>
+          <Label id={`empty-mapping-label-${options.label.replace(/\s/g, "_")}`}>{options.label}</Label>
+          <Input
+            id={`empty-mapping-${options.label.replace(/\s/g, "_")}`}
+            placeholder={strings.core.none}
+            onClick={onClick}
+          />
+        </FluentColumnLayout>
+      )
       return (
         <>
-          {renderColorPicker()}
-          {type === Specification.AttributeType.Color ? (
-            <EmptyColorInput onClick={onClick} label={options.label} />
-          ) : (
-            <FluentColumnLayout id={`empty-mapping-column-${options.label.replace(/\s/g, "_")}`}>
-              <Label id={`empty-mapping-label-${options.label.replace(/\s/g, "_")}`}>{options.label}</Label>
-              <Input
-                id={`empty-mapping-${options.label.replace(/\s/g, "_")}`}
-                placeholder={strings.core.none}
-                onClick={onClick}
-              />
-            </FluentColumnLayout>
-          )}
+          {renderColorPicker(trigger)}
         </>
       );
     }

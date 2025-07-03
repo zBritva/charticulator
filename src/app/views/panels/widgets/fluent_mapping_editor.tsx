@@ -260,9 +260,10 @@ export class FluentMappingEditor extends React.Component<
     );
   }
 
-  private renderColorPicker(): JSX.Element {
+  private renderColorPicker(trigger: JSX.Element = null): JSX.Element {
     return (
       <Popover open={this.state.isColorPickerOpen}>
+        {trigger}
         <PopoverSurface>
           <ColorPicker
             store={this.props.store}
@@ -280,6 +281,7 @@ export class FluentMappingEditor extends React.Component<
             }}
             parent={this}
           />
+          <Button onClick={() => this.changeColorPickerState()}>{strings.scaleEditor.close}</Button>
         </PopoverSurface>
       </Popover>
     );
