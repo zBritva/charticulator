@@ -260,34 +260,34 @@ export class FluentMappingEditor extends React.Component<
     );
   }
 
-  private renderColorPicker(trigger: JSX.Element = null): JSX.Element {
-    return (
-      <Popover open={this.state.isColorPickerOpen}>
-        {trigger}
-        <PopoverSurface>
-          <ColorPicker
-            store={this.props.store}
-            defaultValue={null}
-            allowNull={true}
-            onPick={(color) => {
-              if (color == null) {
-                this.clearMapping();
-              } else {
-                this.setValueMapping(color);
-              }
-            }}
-            closePicker={() => {
-              this.changeColorPickerState();
-            }}
-            parent={this}
-          />
-          <Button onClick={() => this.changeColorPickerState()}>{strings.scaleEditor.close}</Button>
-        </PopoverSurface>
-      </Popover>
-    );
-  }
-
   private renderCurrentAttributeMapping(setMappingButton?: (e: HTMLElement) => void){
+    // const renderColorPicker = (trigger: JSX.Element = null): JSX.Element => {
+    //   return (
+    //     <Popover open={this.state.isColorPickerOpen}>
+    //       {trigger}
+    //       <PopoverSurface>
+    //         <ColorPicker
+    //           store={this.props.store}
+    //           defaultValue={null}
+    //           allowNull={true}
+    //           onPick={(color) => {
+    //             if (color == null) {
+    //               this.clearMapping();
+    //             } else {
+    //               this.setValueMapping(color);
+    //             }
+    //           }}
+    //           closePicker={() => {
+    //             this.changeColorPickerState();
+    //           }}
+    //           parent={this}
+    //         />
+    //         <Button onClick={() => this.changeColorPickerState()}>{strings.scaleEditor.close}</Button>
+    //       </PopoverSurface>
+    //     </Popover>
+    //   );
+    // }
+
     const parent = this.props.parent;
     const attribute = this.props.attribute;
     const options = this.props.options;
@@ -316,7 +316,11 @@ export class FluentMappingEditor extends React.Component<
             <EmptyMapping
               options={options}
               onClick={onClick.bind(this)}
-              renderColorPicker={this.renderColorPicker.bind(this)}
+              changeColorPickerState={this.changeColorPickerState.bind(this)}
+              isColorPickerOpen={this.state.isColorPickerOpen}
+              setValueMapping={this.setValueMapping.bind(this)}
+              store={this.props.store}
+              clearMapping={this.clearMapping}
               type={this.props.type}
             />
           );
