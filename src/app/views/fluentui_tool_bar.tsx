@@ -908,6 +908,7 @@ export class MultiObjectButton extends ContextedComponent<
           <MenuTrigger disableButtonEnhancement>
             <ToolbarButton
               appearance="subtle"
+              title={currentTool?.title}
               icon={
                 <SVGImageIcon
                   invert={this.props.invertIcon}
