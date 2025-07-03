@@ -450,10 +450,10 @@ export class TextElementClass extends EmphasizableMarkClass<
           manager.mappingEditor(strings.objects.outline, "outline", {
             searchSection: strings.objects.style,
           }),
-          manager.mappingEditor(strings.objects.background, "backgroundColor", {
-            defaultValue: null,
-            searchSection: strings.objects.style,
-          }),
+          // manager.mappingEditor(strings.objects.background, "backgroundColor", {
+          //   defaultValue: null,
+          //   searchSection: strings.objects.style,
+          // }),
           manager.mappingEditor(strings.objects.opacity, "opacity", {
             hints: { rangeNumber: [0, 1] },
             defaultValue: 1,
