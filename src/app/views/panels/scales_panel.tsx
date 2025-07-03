@@ -40,6 +40,7 @@ export class ScalesPanel extends ContextedComponent<
     domainSourceTable: string;
     domainSourceColumn: string;
     currentScale: Specification.Scale<Specification.ObjectProperties>
+    currentScaleMapping: Specification.ScaleMapping
     table: Prototypes.Dataflow.DataflowTable
   }
 > {
@@ -55,6 +56,7 @@ export class ScalesPanel extends ContextedComponent<
       scale: null,
       scaleClass: null,
       currentScale: null,
+      currentScaleMapping: null,
       domainSourceColumn: null,
       domainSourceTable: null,
       table: null
@@ -131,6 +133,7 @@ export class ScalesPanel extends ContextedComponent<
         const onClick = () => {
           this.setState({
             currentScale: scale,
+            currentScaleMapping: element?.mappings[key].type === MappingType.scale ? element.mappings[key] as ScaleMapping : null,
             createDialog: true
           })
         };
@@ -140,7 +143,7 @@ export class ScalesPanel extends ContextedComponent<
         return (
           <div key={scale._id} className="el-object-item">
             <Dialog
-              onOpenChange={(e, { open }) => this.setState({deleteScaleDialog: open})}
+              onOpenChange={(e, { open }) => this.setState({ deleteScaleDialog: open })}
               modalType={"non-modal"}
               open={this.state.deleteScaleDialog}>
               <DialogSurface>
@@ -155,8 +158,8 @@ export class ScalesPanel extends ContextedComponent<
                         this.setState({
                           deleteScaleDialog: false
                         })
-                    }}>
-                        {strings.button.no}
+                      }}>
+                      {strings.button.no}
                     </Button>
                     <Button
                       style={{
@@ -164,7 +167,7 @@ export class ScalesPanel extends ContextedComponent<
                       }}
                       appearance="primary"
                       onClick={onClickDelete}>
-                        {strings.button.yes}
+                      {strings.button.yes}
                     </Button>
                   </DialogActions>
                 </DialogBody>
@@ -381,7 +384,7 @@ export class ScalesPanel extends ContextedComponent<
             width: '100%'
           }}
           onClick={() => this.setState({ createDialog: true })}>
-            {strings.scaleEditor.createScale}
+          {strings.scaleEditor.createScale}
         </Button>
         <ReorderListView
           restrict={true}
@@ -418,15 +421,21 @@ export class ScalesPanel extends ContextedComponent<
           })}
         </ReorderListView>
         <Dialog
-          onOpenChange={(e, { open }) => this.setState({createDialog: open})}
+          onOpenChange={(e, { open }) => this.setState({ createDialog: open })}
           modalType={"non-modal"}
           open={this.state.createDialog}>
           <DialogSurface>
             <DialogTitle>{strings.scaleEditor.createScale}</DialogTitle>
-            <DialogBody>
+            <DialogBody
+              style={{
+                maxHeight: 'calc(100vh - 200px)',
+                overflowY: 'auto'
+              }}
+            >
               <AdvancedScaleEditor
                 store={this.context.store}
                 scale={this.state.currentScale}
+                scaleMapping={this.state.currentScaleMapping}
                 onScaleChange={(scale, scaleClass, domainSourceTable, domainSourceColumn, table) => {
                   const newState: any = {};
                   if (scale != this.state.scale) {
@@ -445,7 +454,7 @@ export class ScalesPanel extends ContextedComponent<
                   if (table != this.state.table) {
                     newState.table = table;
                   }
-                  
+
                   if (newState.scale || newState.scaleClass || newState.domainSourceColumn || newState.table) {
                     this.setState({
                       ...newState
@@ -453,76 +462,82 @@ export class ScalesPanel extends ContextedComponent<
                   }
                 }}
               />
-              <DialogActions>
-                <Button
-                  style={{
-                    width: 150
-                  }}
-                  onClick={() => {
+            </DialogBody>
+            <DialogActions
+              style={{
+                paddingTop: '5px'
+              }}
+            >
+              <Button
+                style={{
+                  width: 150
+                }}
+                onClick={() => {
                   this.setState({
                     createDialog: false,
                     scale: null,
                     scaleClass: null,
                     currentScale: null,
+                    currentScaleMapping: null,
                     domainSourceColumn: null,
                     domainSourceTable: null,
                     table: null
                   });
                 }}>
-                  {strings.scaleEditor.close}
-                </Button>
-                <Button
-                  style={{
-                    width: 150
-                  }}
-                  appearance="primary"
-                  onClick={() => {
-                    if (!this.state.currentScale) {
-                      store.chartManager.addScale(this.state.scale);
-                    } else {
-                      const property = propertyList.find(p => p.scale._id == this.state.currentScale._id && !!p.property && !!p.mark);
-                      if (property) {
-                        const column = this.state.table.columns.find(col => col.name == this.state.domainSourceColumn);
-                        if (!column) {
-                          return;
-                        }
-                        const valueType = column.type;
-
-                        let expression = '';
-                        if (this.state.domainSourceColumn.split(" ").length > 1) {
-                            expression = "`" + this.state.domainSourceColumn + "`";
-                        } else {
-                            expression = `first(${this.state.domainSourceColumn})`;
-                        }
-
-                        const scale = store.chart.scales.find(scale => scale._id == this.state.scale._id);
-                        if (scale) {
-                          scale.expression = expression;
-                        }
-
-                        // TODO rework to use dispatch
-                        property.mark.mappings[property.property] = {
-                          type: MappingType.scale,
-                          table: this.state.domainSourceTable,
-                          expression: expression,
-                          valueType: valueType,
-                          scale: this.state.scale._id,
-                          attribute: property.property,
-                          valueIndex: 0,
-                        } as Specification.ScaleMapping;
+                {strings.scaleEditor.close}
+              </Button>
+              <Button
+                style={{
+                  width: 150
+                }}
+                appearance="primary"
+                onClick={() => {
+                  if (!this.state.currentScale) {
+                    store.chartManager.addScale(this.state.scale);
+                  } else {
+                    const property = propertyList.find(p => p.scale._id == this.state.currentScale._id && !!p.property && !!p.mark);
+                    if (property) {
+                      const column = this.state.table.columns.find(col => col.name == this.state.domainSourceColumn);
+                      if (!column) {
+                        return;
                       }
+                      const valueType = column.type;
+
+                      let expression = '';
+                      if (this.state.domainSourceColumn.split(" ").length > 1) {
+                        expression = "`" + this.state.domainSourceColumn + "`";
+                      } else {
+                        expression = `first(${this.state.domainSourceColumn})`;
+                      }
+
+                      const scale = store.chart.scales.find(scale => scale._id == this.state.scale._id);
+                      if (scale) {
+                        scale.expression = expression;
+                      }
+
+                      // TODO rework to use dispatch
+                      property.mark.mappings[property.property] = {
+                        type: MappingType.scale,
+                        table: this.state.domainSourceTable,
+                        expression: expression,
+                        valueType: valueType,
+                        scale: this.state.scale._id,
+                        attribute: property.property,
+                        valueIndex: 0,
+                      } as Specification.ScaleMapping;
                     }
-                    this.setState({
-                      createDialog: false,
-                      currentScale: null
-                    });
-                    store.solveConstraintsAndUpdateGraphics();
-                    store.emit(AppStore.EVENT_GRAPHICS);
-                  }}>
-                  {this.state.currentScale ? strings.scaleEditor.save : strings.scaleEditor.createScale}
-                </Button>
-              </DialogActions>
-            </DialogBody>
+                  }
+                  this.setState({
+                    createDialog: false,
+                    currentScale: null,
+                    currentScaleMapping: null
+                  });
+                  store.solveConstraintsAndUpdateGraphics();
+                  store.emit(AppStore.EVENT_GRAPHICS);
+                }}>
+                {this.state.currentScale ? strings.scaleEditor.save : strings.scaleEditor.createScale}
+              </Button>
+            </DialogActions>
           </DialogSurface>
         </Dialog>
       </div>

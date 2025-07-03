@@ -20,6 +20,7 @@ export interface ScaleEditorProps {
     store: AppStore;
     // scale for editing
     scale: Specification.Scale<Specification.ObjectProperties>,
+    scaleMapping: Specification.ScaleMapping,
     onScaleChange: (
         scale: Specification.Scale<Specification.ObjectProperties>,
         scaleClass: Prototypes.Scales.ScaleClass<Specification.AttributeMap, Specification.AttributeMap>,
@@ -71,7 +72,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
                 tableName
             );
             setDomainSourceTable(tableName);
-    
+
             return table;
         } else {
             const tableName = store.dataset.tables.find(
@@ -83,7 +84,7 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             const table = store.chartManager.dataflow.getTable(
                 tableName
             );
-    
+
             return table;
         }
     }, [store, domainSourceTable]);
@@ -98,14 +99,14 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         } else {
             expression = `first(${domainSourceColumn})`;
         }
-        
+
         const values = chartManager.getGroupedExpressionVector(
             table.name,
             null, // groupBy, no glyph context
             expression
-          ) as number[] | string[];
+        ) as number[] | string[];
 
-          return values;
+        return values;
     }, [chartManager, domainSourceColumn, table]);
 
     const [scale, scaleClass] = React.useMemo(() => {
@@ -117,7 +118,13 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         ) as Specification.Scale;
 
         if (domainSourceColumn !== undefined) {
-            newScale.expression = `first(${domainSourceColumn})`;
+            let domainSourceExpression = domainSourceColumn;
+            if (domainSourceExpression.split(" ").length > 1) {
+                domainSourceExpression = "first(`" + domainSourceExpression + "`)";
+            } else {
+                domainSourceExpression = `first(${domainSourceExpression})`;
+            }
+            newScale.expression = domainSourceExpression;
         }
 
         if (!editing) {
@@ -129,8 +136,15 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
             newScale._id
         ) as Prototypes.Scales.ScaleClass;
         if (values) {
+            let domainSourceExpression = domainSourceColumn;
+            if (domainSourceExpression.split(" ").length > 1) {
+                domainSourceExpression = "first(`" + domainSourceExpression + "`)";
+            } else {
+                domainSourceExpression = `first(${domainSourceExpression})`;
+            }
+
             scaleClass.inferParameters(values, {
-                expression: `first(${domainSourceColumn})`,
+                expression: domainSourceExpression,
                 autoRange: true,
                 newScale: true,
                 reuseRange: false,
@@ -156,11 +170,11 @@ export const AdvancedScaleEditor: React.FC<ScaleEditorProps> = ({
         manager.onEditMappingHandler = (
             attribute: string,
             mapping: Specification.Mapping
-          ) => {
+        ) => {
             new Actions.SetScaleAttribute(scale, attribute, mapping).dispatch(
-              store.dispatcher
+                store.dispatcher
             );
-          };
+        };
 
         return manager;
     }, [scaleClass, store, scale]);
