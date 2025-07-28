@@ -509,9 +509,22 @@ export class MenuBar extends ContextedComponent<
   public renderSponsorButton(props: MenuBarProps) {
     return (
       <>
+        <div className="el-text">
+          <p style={{marginLeft: "5px"}}>
+            {strings.menuBar.supportDev}
+          </p>
+        </div>
         <MenuButton
           url={R.getSVGIcon("toolbar/support-dev")}
-          text="DONATE"
+          text="STRIPE"
+          title={strings.menuBar.supportDev}
+          onClick={
+            props.handlers?.onSupportDevClick || (() => window.open("https://donate.stripe.com/aFa00jfvgeYMg6K3RDgUM02", "_blank"))
+          }
+        />
+        <MenuButton
+          url={R.getSVGIcon("toolbar/support-dev")}
+          text="GITHUB"
           title={strings.menuBar.supportDev}
           onClick={
             props.handlers?.onSupportDevClick || (() => window.open("https://github.com/sponsors/aveirun", "_blank"))
