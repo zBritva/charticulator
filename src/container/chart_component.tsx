@@ -307,23 +307,21 @@ export class ChartComponent extends React.Component<
             this.props.height / 2
           })`}
         >
-          {this.props.onGlyphClick ? (
-            <rect
-              key={'onGlyphClickHandler'}
-              x={-this.props.width / 2}
-              y={-this.props.height / 2}
-              width={this.props.width}
-              height={this.props.height}
-              style={{
-                fill: "none",
-                pointerEvents: "all",
-                stroke: "none",
-              }}
-              onClick={() => {
-                this.props.onGlyphClick(null, null);
-              }}
-            />
-          ) : null}
+          <rect
+            key={'onGlyphClickHandler'}
+            x={-this.props.width / 2}
+            y={-this.props.height / 2}
+            width={this.props.width}
+            height={this.props.height}
+            style={{
+              fill: "none",
+              pointerEvents: "all",
+              stroke: "none",
+            }}
+            onClick={() => {
+              this.props.onGlyphClick?.(null, null);
+            }}
+          />
           {gfx}
           {this.renderer.renderControls(
             this.manager.chart,

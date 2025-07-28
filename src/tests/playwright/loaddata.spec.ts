@@ -14,7 +14,6 @@ test('has title Charticulator Test', async ({ page }, testInfo) => {
   await expect(page).toHaveTitle(/Charticulator Test/);
 
   const result = await page.evaluate(datasetname => {
-    debugger;
     Charticulator.loadSampleData(datasetname);
   }, "datasetname");
 

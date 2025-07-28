@@ -180,6 +180,10 @@ export class LegendCreationPanel extends ContextedComponent<
                   newScale._id
                 ) as Prototypes.Scales.ScaleClass;
 
+                if (!scaleClass) {
+                  return;
+                }
+
                 scaleClass.inferParameters(
                   expressionData as Specification.DataValue[],
                   {}
