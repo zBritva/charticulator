@@ -236,7 +236,7 @@ function renderEndSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`DA-${element.key}`}
-          d="M 5 0 L 10 5 L 5 10 L 0 5 z"
+          d={`M ${element.endArrowSize/2} 0 L ${element.endArrowSize} ${element.endArrowSize/2} L ${element.endArrowSize/2} ${element.endArrowSize} L 0 ${element.endArrowSize/2} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -248,9 +248,9 @@ function renderEndSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <circle
           key={`OA-${element.key}`}
-          cx="5"
-          cy="5"
-          r="5"
+          cx={element.endArrowSize / 2}
+          cy={element.endArrowSize /2 }
+          r={element.endArrowSize / 2}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -263,7 +263,7 @@ function renderEndSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`A-${element.key}`}
-          d="M 0 0 L 10 5 L 0 10 z"
+          d={`M 0 0 L ${element.endArrowSize} ${element.endArrowSize/2} L 0 ${element.endArrowSize} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -276,12 +276,12 @@ function renderEndSVGArrow(element: Graphics.Path) {
     <marker
       key={`marker-${element.key}`}
       id={element.style.endArrowColorId}
-      viewBox="0 0 10 10"
-      refX="9"
-      refY="5"
+      viewBox={`0 0 ${element.endArrowSize} ${element.endArrowSize}`}
+      refX={element.endArrowSize/2}
+      refY={element.endArrowSize/2}
       markerUnits="strokeWidth"
-      markerWidth="10"
-      markerHeight="10"
+      markerWidth={element.endArrowSize}
+      markerHeight={element.endArrowSize}
       orient="auto"
     >
       {arrowElement}
@@ -298,7 +298,7 @@ function renderStartSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`DA-${element.key}-E`}
-          d="M 5 0 L 10 5 L 5 10 L 0 5 z"
+          d={`M ${element.beginArrowSize/2} 0 L ${element.beginArrowSize} ${element.beginArrowSize/2} L ${element.beginArrowSize/2} ${element.beginArrowSize} L 0 ${element.beginArrowSize/2} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -310,9 +310,9 @@ function renderStartSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <circle
           key={`OA-${element.key}-E`}
-          cx="5"
-          cy="5"
-          r="5"
+          cx={element.beginArrowSize / 2}
+          cy={element.beginArrowSize /2 }
+          r={element.beginArrowSize / 2}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -325,7 +325,7 @@ function renderStartSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`A-${element.key}-E`}
-          d="M 10 0 L 10 10 L 0 5 z"
+          d={`M ${element.beginArrowSize} 0 L ${element.beginArrowSize} ${element.beginArrowSize} L 0 ${element.beginArrowSize/2} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -339,12 +339,12 @@ function renderStartSVGArrow(element: Graphics.Path) {
     <marker
       key={`marker-${element.key}-E`}
       id={element.style.startArrowColorId}
-      viewBox="0 0 10 10"
-      refX="1"
-      refY="5"
+      viewBox={`0 0 ${element.beginArrowSize} ${element.beginArrowSize}`}
+      refX={element.beginArrowSize/2}
+      refY={element.beginArrowSize/2}
       markerUnits="strokeWidth"
-      markerWidth="10"
-      markerHeight="10"
+      markerWidth={element.beginArrowSize}
+      markerHeight={element.beginArrowSize}
       orient="auto"
     >
       {arrowElement}

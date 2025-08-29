@@ -72,6 +72,8 @@ export interface LinksProperties extends Specification.AttributeMap {
 
   beginArrowType?: ArrowType;
   endArrowType?: ArrowType;
+  beginArrowSize?: number;
+  endArrowSize?: number;
 }
 
 export interface LinksAttributes extends Specification.AttributeMap {
@@ -574,6 +576,8 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
       case "line": {
         const beginArrowType = props.beginArrowType ?? ArrowType.NO_ARROW;
         const endArrowType = props.endArrowType ?? ArrowType.NO_ARROW;
+        const beginArrowSize = props.beginArrowSize ?? 10;
+        const endArrowSize = props.endArrowSize ?? 10;
         return Graphics.makeGroup(
           anchorGroups.map((anchors) => {
             const lines: Graphics.Element[] = [];
@@ -593,6 +597,8 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
               });
               path.setBeginArrowType(beginArrowType);
               path.setEndArrowType(endArrowType);
+              path.setBeginArrowSize(beginArrowSize);
+              path.setEndArrowSize(endArrowSize);
               LinksClass.LinkPath(
                 path,
                 linkGraphics,
@@ -802,6 +808,20 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
         )
       );
       lineWidgets.push(
+        manager.inputNumber(
+          {
+            property: 'beginArrowSize',
+          },
+          {
+            maximum: 100,
+            minimum: 1,
+            showUpdown: true,
+            label: strings.objects.arrows.beginArrowSize,
+            step: 1
+          }
+        )
+      );
+      lineWidgets.push(
         manager.inputSelect(
           { property: "endArrowType" },
           {
@@ -823,6 +843,21 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
             icons: ["noArrow", "endArrow", "endDiamondArrow", "endOvalArrow"],
             isLocalIcons: true,
             searchSection: strings.objects.general,
+          }
+        )
+      );
+      
+      lineWidgets.push(
+        manager.inputNumber(
+          {
+            property: 'endArrowSize',
+          },
+          {
+            maximum: 100,
+            minimum: 1,
+            showUpdown: true,
+            label: strings.objects.arrows.endArrowSize,
+            step: 1
           }
         )
       );

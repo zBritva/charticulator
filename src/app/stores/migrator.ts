@@ -1189,6 +1189,8 @@ export class Migrator {
         if (link) {
           link.properties.beginArrowType = ArrowType.NO_ARROW;
           link.properties.endArrowType = ArrowType.NO_ARROW;
+          link.properties.beginArrowSize = 10;
+          link.properties.endArrowSize = 10;
         }
       }
     }
