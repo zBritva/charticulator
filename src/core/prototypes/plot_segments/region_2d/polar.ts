@@ -31,7 +31,7 @@ import {
   Region2DSublayoutType,
 } from "./base";
 import { PlotSegmentClass } from "../plot_segment";
-import { getSortDirection } from "../../..";
+import { getSortDirection, SpecTypes } from "../../..";
 import { ChartStateManager } from "../..";
 import { strings } from "../../../../strings";
 import { AxisDataBinding } from "../../../specification/spec_types";
@@ -481,6 +481,12 @@ export class PolarPlotSegment extends PlotSegmentClass<
         true,
         this.getDisplayFormat(props.yData, props.yData.tickFormat, manager)
       );
+      if (props.yData.tickDataExpression) {
+        axisRenderer.setTicksByData(
+          this.getTickData(props.yData, manager),
+          props.yData.tickFormat
+        );
+      }
       g.elements.push(
         axisRenderer.renderLine(
           center.cx,
@@ -499,6 +505,12 @@ export class PolarPlotSegment extends PlotSegmentClass<
         false,
         this.getDisplayFormat(props.xData, props.xData.tickFormat, manager)
       );
+      if (props.xData.tickDataExpression) {
+        axisRenderer.setTicksByData(
+          this.getTickData(props.xData, manager),
+          props.xData.tickFormat
+        );
+      }
       g.elements.push(
         axisRenderer.renderPolar(
           center.cx,
@@ -511,6 +523,26 @@ export class PolarPlotSegment extends PlotSegmentClass<
     g.key = `polar:${this.object._id}`;
     return g;
   }
+
+  private getTickData = (
+    axis: SpecTypes.AxisDataBinding,
+    manager: ChartStateManager
+  ) => {
+    manager;
+    const table = manager.getTable(this.object.table);
+    const axisExpression = manager.dataflow.cache.parse(axis.expression);
+    const tickDataExpression = manager.dataflow.cache.parse(
+      axis.tickDataExpression
+    );
+    const result = [];
+    for (let i = 0; i < table.rows.length; i++) {
+      const c = table.getRowContext(i);
+      const axisValue = axisExpression.getValue(c);
+      const tickData = tickDataExpression.getValue(c);
+      result.push({ value: axisValue, tick: tickData });
+    }
+    return result;
+  };
 
   public getPlotSegmentBackgroundGraphics(
     manager: ChartStateManager
@@ -868,7 +900,7 @@ export class PolarPlotSegment extends PlotSegmentClass<
                   label: strings.objects.plotSegment.inner,
                   showUpdown: true,
                   step: 0.1
-                 }
+                }
               ),
               manager.inputNumber(
                 { property: "outerRatio" },
