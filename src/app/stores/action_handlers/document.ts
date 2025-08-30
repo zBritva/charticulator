@@ -22,6 +22,7 @@ import {
 } from "../../application";
 import { ChartTemplate, Dataset, Specification } from "../../../container";
 import { TableType } from "../../../core/dataset";
+import { renderLocalSVG } from "../../views/canvas/chart_display";
 
 declare let CHARTICULATOR_PACKAGE: {
   version: string;
@@ -32,16 +33,19 @@ declare let CHARTICULATOR_PACKAGE: {
 /** Handlers for document-level actions such as Load, Save, Import, Export, Undo/Redo, Reset */
 // eslint-disable-next-line
 export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
+  REG.add(Actions.SaveExportTemplatePropertyName, function (action) {
+    this.setPropertyExportName(action.propertyName, action.value);
+  });
+
   // eslint-disable-next-line
   REG.add(Actions.Export, function (action) {
     (async () => {
       // Export as vector graphics
       if (action.type == "svg") {
-        const svg = await this.renderLocalSVG();
+        const svg = await renderLocalSVG();
         const blob = new Blob([svg], { type: "image/svg;charset=utf-8" });
         if (this.onExportTemplateCallback != null) {
-          if (this.onExportTemplateCallback(action.type, blob))
-          {
+          if (this.onExportTemplateCallback(action.type, blob)) {
             return;
           }
         }
@@ -51,7 +55,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       if (action.type == "png" || action.type == "jpeg") {
         const svgDataURL = stringToDataURL(
           "image/svg+xml",
-          await this.renderLocalSVG()
+          await renderLocalSVG()
         );
         renderDataURLToPNG(svgDataURL, {
           mode: "scale",
@@ -60,8 +64,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
         }).then((png) => {
           png.toBlob((blob) => {
             if (this.onExportTemplateCallback != null) {
-              if (this.onExportTemplateCallback(action.type, blob))
-              {
+              if (this.onExportTemplateCallback(action.type, blob)) {
                 return;
               }
             }
@@ -124,8 +127,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
         const blob = new Blob([htmlString]);
 
         if (this.onExportTemplateCallback != null) {
-          if (this.onExportTemplateCallback(action.type, blob))
-          {
+          if (this.onExportTemplateCallback(action.type, blob)) {
             return;
           }
         }
@@ -148,8 +150,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
       });
       if (this.onExportTemplateCallback != null) {
         this.emit(AppStore.EVENT_EXPORT_TEMPLATE, base64);
-        if (this.onExportTemplateCallback("json", blob))
-        {
+        if (this.onExportTemplateCallback("json", blob)) {
           return;
         }
       }

@@ -45,6 +45,7 @@ import { strings } from "../../../strings";
 import { MainReactContext } from "../../context_component";
 import { DatasetsView } from "./datasets_view";
 import { tokens } from "@fluentui/react-components";
+import { renderLocalSVG } from "../canvas/chart_display";
 
 export enum MainTabs {
   about = "about",
@@ -79,7 +80,7 @@ export class CurrentChartView extends React.PureComponent<
     this.renderImage();
   }
   public async renderImage() {
-    const svg = await this.props.store.renderLocalSVG();
+    const svg = await renderLocalSVG();
     this.setState({
       svgDataURL: stringToDataURL("image/svg+xml", svg),
     });

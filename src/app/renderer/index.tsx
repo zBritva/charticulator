@@ -215,8 +215,8 @@ class TextOnPath extends React.PureComponent<{
               this.props.align == "start"
                 ? "0%"
                 : this.props.align == "middle"
-                ? "50%"
-                : "100%"
+                  ? "50%"
+                  : "100%"
             }
           >
             {this.props.text}
@@ -236,7 +236,7 @@ function renderEndSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`DA-${element.key}`}
-          d={`M ${element.endArrowSize/2} 0 L ${element.endArrowSize} ${element.endArrowSize/2} L ${element.endArrowSize/2} ${element.endArrowSize} L 0 ${element.endArrowSize/2} z`}
+          d={`M ${element.endArrowSize / 2} 0 L ${element.endArrowSize} ${element.endArrowSize / 2} L ${element.endArrowSize / 2} ${element.endArrowSize} L 0 ${element.endArrowSize / 2} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -249,7 +249,7 @@ function renderEndSVGArrow(element: Graphics.Path) {
         <circle
           key={`OA-${element.key}`}
           cx={element.endArrowSize / 2}
-          cy={element.endArrowSize /2 }
+          cy={element.endArrowSize / 2}
           r={element.endArrowSize / 2}
           fill={renderColor(
             element.style.strokeColor,
@@ -263,7 +263,7 @@ function renderEndSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`A-${element.key}`}
-          d={`M 0 0 L ${element.endArrowSize} ${element.endArrowSize/2} L 0 ${element.endArrowSize} z`}
+          d={`M 0 0 L ${element.endArrowSize} ${element.endArrowSize / 2} L 0 ${element.endArrowSize} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -277,8 +277,8 @@ function renderEndSVGArrow(element: Graphics.Path) {
       key={`marker-${element.key}`}
       id={element.style.endArrowColorId}
       viewBox={`0 0 ${element.endArrowSize} ${element.endArrowSize}`}
-      refX={element.endArrowSize/2}
-      refY={element.endArrowSize/2}
+      refX={element.endArrowSize / 2}
+      refY={element.endArrowSize / 2}
       markerUnits="strokeWidth"
       markerWidth={element.endArrowSize}
       markerHeight={element.endArrowSize}
@@ -298,7 +298,7 @@ function renderStartSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`DA-${element.key}-E`}
-          d={`M ${element.beginArrowSize/2} 0 L ${element.beginArrowSize} ${element.beginArrowSize/2} L ${element.beginArrowSize/2} ${element.beginArrowSize} L 0 ${element.beginArrowSize/2} z`}
+          d={`M ${element.beginArrowSize / 2} 0 L ${element.beginArrowSize} ${element.beginArrowSize / 2} L ${element.beginArrowSize / 2} ${element.beginArrowSize} L 0 ${element.beginArrowSize / 2} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -311,7 +311,7 @@ function renderStartSVGArrow(element: Graphics.Path) {
         <circle
           key={`OA-${element.key}-E`}
           cx={element.beginArrowSize / 2}
-          cy={element.beginArrowSize /2 }
+          cy={element.beginArrowSize / 2}
           r={element.beginArrowSize / 2}
           fill={renderColor(
             element.style.strokeColor,
@@ -325,7 +325,7 @@ function renderStartSVGArrow(element: Graphics.Path) {
       arrowElement = (
         <path
           key={`A-${element.key}-E`}
-          d={`M ${element.beginArrowSize} 0 L ${element.beginArrowSize} ${element.beginArrowSize} L 0 ${element.beginArrowSize/2} z`}
+          d={`M ${element.beginArrowSize} 0 L ${element.beginArrowSize} ${element.beginArrowSize} L 0 ${element.beginArrowSize / 2} z`}
           fill={renderColor(
             element.style.strokeColor,
             element.style.colorFilter
@@ -340,8 +340,8 @@ function renderStartSVGArrow(element: Graphics.Path) {
       key={`marker-${element.key}-E`}
       id={element.style.startArrowColorId}
       viewBox={`0 0 ${element.beginArrowSize} ${element.beginArrowSize}`}
-      refX={element.beginArrowSize/2}
-      refY={element.beginArrowSize/2}
+      refX={element.beginArrowSize / 2}
+      refY={element.beginArrowSize / 2}
       markerUnits="strokeWidth"
       markerWidth={element.beginArrowSize}
       markerHeight={element.beginArrowSize}
@@ -552,8 +552,8 @@ export function renderGraphicalElementSVG(
         <g key={`g-${element.key || options.key}`}>
           <defs key={`defs-${element.key || options.key}`}>
             {rect.style.fillColor == null &&
-            rect.style.fillStartColor &&
-            rect.style.fillStopColor ? (
+              rect.style.fillStartColor &&
+              rect.style.fillStopColor ? (
               <linearGradient
                 key={`gradient-${gradientID}`}
                 id={gradientID}
@@ -632,8 +632,8 @@ export function renderGraphicalElementSVG(
         <g key={`g-${element.key || options.key}`}>
           <defs key={`defs-${element.key || options.key}`}>
             {ellipse.style.fillColor == null &&
-            ellipse.style.fillStartColor &&
-            ellipse.style.fillStopColor ? (
+              ellipse.style.fillStartColor &&
+              ellipse.style.fillStopColor ? (
               <linearGradient
                 key={`gradient-${gradientID}`}
                 id={gradientID}
@@ -722,15 +722,15 @@ export function renderGraphicalElementSVG(
       // if gradient color was set, override color value by ID of gradient
       if (
         path.style.fillColor == null &&
-        path.style.fillStartColor != null && 
-        path.style.fillStopColor != null 
+        path.style.fillStartColor != null &&
+        path.style.fillStopColor != null
       ) {
         style.fill = `url(#${gradientID})`;
       }
       if (
         path.style.strokeColor != null &&
-        path.style.fillStartColor != null && 
-        path.style.fillStopColor != null 
+        path.style.fillStartColor != null &&
+        path.style.fillStopColor != null
       ) {
         style.stroke = `url(#${gradientID})`;
       }
@@ -739,33 +739,33 @@ export function renderGraphicalElementSVG(
         <g key={`g-${element.key || options.key}`}>
           <defs key={`defs-${element.key || options.key}`}>
             {
-            path.style.fillStartColor &&
-            path.style.fillStopColor ? (
-              <linearGradient
-                // gradientUnits="userSpaceOnUse"
-                key={`gradient-${gradientID}`}
-                id={gradientID}
-                x1={`${rotation.x1}%`}
-                y1={`${rotation.y1}%`}
-                x2={`${rotation.x2}%`}
-                y2={`${rotation.y2}%`}
-              >
-                <stop
-                  offset="0%"
-                  style={{
-                    stopColor: renderColor(path.style.fillStartColor),
-                    stopOpacity: 1,
-                  }}
-                />
-                <stop
-                  offset="100%"
-                  style={{
-                    stopColor: renderColor(path.style.fillStopColor),
-                    stopOpacity: 1,
-                  }}
-                />
-              </linearGradient>
-            ) : null}
+              path.style.fillStartColor &&
+                path.style.fillStopColor ? (
+                <linearGradient
+                  // gradientUnits="userSpaceOnUse"
+                  key={`gradient-${gradientID}`}
+                  id={gradientID}
+                  x1={`${rotation.x1}%`}
+                  y1={`${rotation.y1}%`}
+                  x2={`${rotation.x2}%`}
+                  y2={`${rotation.y2}%`}
+                >
+                  <stop
+                    offset="0%"
+                    style={{
+                      stopColor: renderColor(path.style.fillStartColor),
+                      stopOpacity: 1,
+                    }}
+                  />
+                  <stop
+                    offset="100%"
+                    style={{
+                      stopColor: renderColor(path.style.fillStopColor),
+                      stopOpacity: 1,
+                    }}
+                  />
+                </linearGradient>
+              ) : null}
           </defs>
           <path
             data-key={element.key || options.key}
@@ -891,18 +891,18 @@ export function renderGraphicalElementSVG(
       const component = element as Graphics.ChartContainerElement;
       const subSelection = options.selection
         ? {
-            isSelected: (table: string, rowIndices: number[]) => {
-              // Get parent row indices from component row indices
-              const parentRowIndices = rowIndices.map(
-                (x) => component.selectable.rowIndices[x]
-              );
-              // Query the selection with parent row indices
-              return options.selection.isSelected(
-                component.selectable.plotSegment.table,
-                parentRowIndices
-              );
-            },
-          }
+          isSelected: (table: string, rowIndices: number[]) => {
+            // Get parent row indices from component row indices
+            const parentRowIndices = rowIndices.map(
+              (x) => component.selectable.rowIndices[x]
+            );
+            // Query the selection with parent row indices
+            return options.selection.isSelected(
+              component.selectable.plotSegment.table,
+              parentRowIndices
+            );
+          },
+        }
         : null;
 
       const convertEventHandler = (
