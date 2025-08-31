@@ -1,3 +1,4 @@
+/* eslint-disable powerbi-visuals/insecure-random */
 /* eslint-disable max-lines-per-function */
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Prototypes, Point, ZoomInfo } from "../../../../core";
@@ -7,34 +8,19 @@ import * as R from "../../../resources";
 // as the previous example. They are included here for completeness.
 const TENSION = 0.4;
 
-function getControlPoints(p0, p1, p2, p3) {
-    //   const d1 = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
-    //   const d2 = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-    //   const d3 = Math.sqrt(Math.pow(p3.x - p2.x, 2) + Math.pow(p3.y - p2.y, 2));
-
-    const cp1 = {
-        x: p1.x + (TENSION * (p2.x - p0.x)) / 6,
-        y: p1.y + (TENSION * (p2.y - p0.y)) / 6,
-    };
-    const cp2 = {
-        x: p2.x - (TENSION * (p3.x - p1.x)) / 6,
-        y: p2.y - (TENSION * (p3.y - p1.y)) / 6,
-    };
-
-    return [cp1, cp2];
-}
-
 function generatePathData(points) {
-    if (points.length < 2) return '';
+    if (!points || points.length < 4) {
+        return '';
+    }
+
     let path = `M ${points[0].x} ${points[0].y}`;
-    const extendedPoints = [points[0], ...points, points[points.length - 1]];
-    for (let i = 1; i < extendedPoints.length - 2; i++) {
-        const p0 = extendedPoints[i - 1];
-        const p1 = extendedPoints[i];
-        const p2 = extendedPoints[i + 1];
-        const p3 = extendedPoints[i + 2];
-        const [cp1, cp2] = getControlPoints(p0, p1, p2, p3);
-        path += ` C ${cp1.x},${cp1.y} ${cp2.x},${cp2.y} ${p2.x},${p2.y}`;
+    for (let i = 1; i < points.length; i += 3) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2];
+        if (p3) { // Ensure all points for a segment exist
+            path += ` C ${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`;
+        }
     }
     return path;
 }
@@ -42,7 +28,7 @@ function generatePathData(points) {
 export interface IBezierEditor {
     points: Point[];
     svgRef?: React.RefObject<SVGSVGElement>;
-    onChange: (points: { x: number, y: number }[], pathData: string) => void;
+    onChange: (points: { x: number, y: number }[], pathData: string, curve: Point[][]) => void;
     x: number;
     y: number;
     width: number;
@@ -88,32 +74,23 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
         };
     }, [handle, zoom])
 
+    // TODO segments
     const [points, setPoints] = useState<Point[]>(initialPoints);
+    const [symmetrical, setSymmetrical] = useState(true);
 
-    // useEffect(() => {
-    //     setPoints([
-    //         {
-    //             x: -.5,
-    //             y: -.5,
-    //         },
-    //         {
-    //             x: -.25,
-    //             y: -.25,
-    //         },
-    //         {
-    //             x: 0,
-    //             y: 0,
-    //         },
-    //         {
-    //             x: .25,
-    //             y: .25,
-    //         },
-    //         {
-    //             x: .5,
-    //             y: .5,
-    //         }
-    //     ]);
-    // }, [])
+    useEffect(() => {
+        if (initialPoints.length <= 4) {
+            const extendedPoints = [...initialPoints]
+            for (let i = 0; i < 4 - initialPoints.length; i++) {
+                extendedPoints.push({
+                    x: Math.random(),
+                    y: Math.random(),
+                });
+            }
+            setPoints(extendedPoints);
+            return;
+        }
+    }, [])
 
     const handleMouseDown = (index) => {
         setDraggingIndex(index);
@@ -126,19 +103,63 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
     const handleMouseMove = useCallback((event) => {
         if (draggingIndex === null || !svgRef.current) return;
 
-        // const svgRect = svgRef.current.getBoundingClientRect();
-        // const newX = event.clientX - svgRect.left;
-        // const newY = event.clientY - svgRect.top;
         console.log('mousemove', event.x, event.y, getPoint(event.x, event.y))
         const newPoint = getPoint(event.x, event.y);
 
-        setPoints((prevPoints) => {
-            const newPoints = [...prevPoints];
-            newPoints[draggingIndex] = newPoint;
-            return newPoints;
-        });
+        const newPoints = [...points];
+
+        const oldPoint = newPoints[draggingIndex];
+
+        newPoints[draggingIndex] = { x: newPoint.x, y: newPoint.y };
+
+        if (symmetrical && draggingIndex % 3 !== 0) {
+            let anchorIndex;
+            let siblingIndex;
+
+            // If dragging a 'right' control point (like P2, P5)
+            if ((draggingIndex + 1) % 3 === 0) {
+                anchorIndex = draggingIndex + 1;
+                siblingIndex = draggingIndex + 2;
+            }
+            // If dragging a 'left' control point (like P1, P4)
+            if ((draggingIndex - 1) % 3 === 0) {
+                anchorIndex = draggingIndex - 1;
+                siblingIndex = draggingIndex - 2;
+            }
+
+            if (siblingIndex >= 0 && siblingIndex < newPoints.length) {
+                const anchorPoint = newPoints[anchorIndex];
+                const draggedPoint = newPoints[draggingIndex];
+
+                // Reflect the sibling point through the anchor
+                const dx = anchorPoint.x - draggedPoint.x;
+                const dy = anchorPoint.y - draggedPoint.y;
+
+                newPoints[siblingIndex] = { x: anchorPoint.x + dx, y: anchorPoint.y + dy };
+            }
+        }
+
+        // if dragging anchor point 
+        if ((draggingIndex) % 3 === 0) {
+            const dx = newPoints[draggingIndex].x - oldPoint.x;
+            const dy = newPoints[draggingIndex].y - oldPoint.y;
+
+            if (draggingIndex !== points.length - 1) {
+                newPoints[draggingIndex + 1] = { x: newPoints[draggingIndex + 1].x + dx, y: newPoints[draggingIndex + 1].y + dy };
+            }
+            if (draggingIndex !== 0) {
+                newPoints[draggingIndex - 1] = { x: newPoints[draggingIndex - 1].x + dx, y: newPoints[draggingIndex - 1].y + dy };
+            }
+        }
+
+        setPoints(newPoints);
+        // setPoints((prevPoints) => {
+        //     const newPoints = [...prevPoints];
+        //     newPoints[draggingIndex] = newPoint;
+        //     return newPoints;
+        // });
         // onChange(points.map(transformPoint));
-    }, [draggingIndex, getPoint, setPoints]);
+    }, [draggingIndex, getPoint, setPoints, symmetrical, points]);
 
     // Attach global mouse listeners for smoother dragging
     useEffect(() => {
@@ -163,7 +184,9 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                 onClick={() => {
                     setPoints((prevPoints) => {
                         const newPoints = [...prevPoints];
-                        newPoints.push({ x: 0, y: 0 });
+                        newPoints.push({ x: Math.random(), y: Math.random() });
+                        newPoints.push({ x: Math.random(), y: Math.random() });
+                        newPoints.push({ x: Math.random(), y: Math.random() });
                         return newPoints;
                     });
                 }}
@@ -188,8 +211,13 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
             <g
                 className="handle-button"
                 onClick={() => {
+                    if (points.length <= 4) {
+                        return;
+                    }
                     setPoints((prevPoints) => {
                         const newPoints = [...prevPoints];
+                        newPoints.pop();
+                        newPoints.pop();
                         newPoints.pop();
                         return newPoints;
                     });
@@ -216,12 +244,59 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                 className="handle-button"
                 onClick={() => {
                     const pathData = generatePathData(points.map(transformPoint));
-                    onChange(points, pathData);
+                    let doubledPoint = [];
+                    if (points.length > 4) {
+                        doubledPoint = points.flatMap((point, index) => {
+                            // double anchor points
+                            if ((index) % 3 === 0) {
+                                return [
+                                    point,
+                                    point
+                                ]
+                            }
+
+                            return point;
+                        });
+                    } else {
+                        doubledPoint = points;
+                    }
+
+                    const chunks: Point[][] = [];
+                    const chunkSize = 4;
+                    for (let i = 0; i < doubledPoint.length; i += chunkSize) {
+                        const chunk = doubledPoint.slice(i, i + chunkSize);
+                        chunks.push(chunk)
+                    }
+
+                    onChange(points, pathData, chunks);
                 }}
             >
                 <rect x={cx - 16} y={cy - 16} width={32} height={32} />
                 <image
                     xlinkHref={R.getSVGIcon("Cross")}
+                    x={cx - 12}
+                    y={cy - 12}
+                    width={24}
+                    height={24}
+                />
+            </g>
+        );
+    }
+
+    const renderBezierControlSymmetryButton = (x: number, y: number) => {
+        const margin = 2;
+        const cx = x - 16 - margin;
+        const cy = y + 16 + margin;
+        return (
+            <g
+                className="handle-button"
+                onClick={() => {
+                    setSymmetrical((prev) => !prev);
+                }}
+            >
+                <rect x={cx - 16} y={cy - 16} width={32} height={32} />
+                <image
+                    xlinkHref={symmetrical ? R.getSVGIcon("Cross") : R.getSVGIcon("general/bind-data")}
                     x={cx - 12}
                     y={cy - 12}
                     width={24}
@@ -240,6 +315,11 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
             {renderBezierControlRemoveButton(
                 Math.max(fX(handle.x1), fX(handle.x2)),
                 Math.min(fY(handle.y1), fY(handle.y2)) + 38 * 2
+            )}
+            {/* ADD SYmmetrical checkbox */}
+            {renderBezierControlSymmetryButton(
+                Math.max(fX(handle.x1), fX(handle.x2)),
+                Math.min(fY(handle.y1), fY(handle.y2)) + 38 * 3
             )}
             {renderBezierControlCloseButton(
                 Math.max(fX(handle.x1), fX(handle.x2)),

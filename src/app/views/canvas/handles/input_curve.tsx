@@ -160,18 +160,17 @@ export class InputCurveHandleView extends React.Component<
         width={Math.abs(fX(handle.x1) - fX(handle.x2))}
         height={Math.abs(fY(handle.y1) - fY(handle.y2))}
 
-        points={this.state.points.slice(1, 10)}
+        points={this.state.points}
         handle={handle}
         zoom={this.props.zoom}
 
-        onChange={(points, pathData) => {
-          debugger;
+        onChange={(points, pathData, curve: Point[][]) => {
+          console.log('onChange', points, pathData)
           this.setState({
             points: points,
             drawingCurve: false,
             enabled: false,
           });
-          const curve = this.getBezierCurvesFromMousePoints(points);
           const context = new HandlesDragContext();
           this.props.onDragStart(this.props.handle, context);
           context.emit("end", { value: curve });
@@ -234,6 +233,34 @@ export class InputCurveHandleView extends React.Component<
     );
   }
 
+  public renderClearButton(x: number, y: number) {
+    const margin = 2;
+    const cx = x - 16 - margin;
+    const cy = y + 16 + margin;
+    return (
+      <g
+        className="handle-button"
+        onClick={() => {
+          this.setState({
+            points: [],
+            drawingCurve: false,
+            enabled: false,
+            drawingPen: false,
+          });
+        }}
+      >
+        <rect x={cx - 16} y={cy - 16} width={32} height={32} />
+        <image
+          xlinkHref={R.getSVGIcon("general/eraser")}
+          x={cx - 12}
+          y={cy - 12}
+          width={24}
+          height={24}
+        />
+      </g>
+    );
+  }
+
   public renderBezierCurvesButton(x: number, y: number) {
     const margin = 2;
     const cx = x - 16 - margin;
@@ -246,28 +273,6 @@ export class InputCurveHandleView extends React.Component<
             enabled: true,
             drawingCurve: true,
             drawingPen: false,
-            // points: [
-            //   {
-            //     x: -.5,
-            //     y: -.5,
-            //   },
-            //   {
-            //     x: -.25,
-            //     y: -.25,
-            //   },
-            //   {
-            //     x: 0,
-            //     y: 0,
-            //   },
-            //   {
-            //     x: .25,
-            //     y: .25,
-            //   },
-            //   {
-            //     x: .5,
-            //     y: .5,
-            //   }
-            // ]
           });
         }}
       >
@@ -461,6 +466,10 @@ export class InputCurveHandleView extends React.Component<
             {this.renderBezierCurvesButton(
               Math.max(this.fX(handle.x1), this.fX(handle.x2)),
               Math.min(this.fY(handle.y1), this.fY(handle.y2))
+            )}
+            {this.renderClearButton(
+              Math.max(this.fX(handle.x1), this.fX(handle.x2)),
+              Math.min(this.fY(handle.y1), this.fY(handle.y2)) + 38
             )}
           </g>
         ) : null}
