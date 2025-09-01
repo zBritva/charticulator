@@ -294,7 +294,7 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
             >
                 <rect x={cx - 16} y={cy - 16} width={32} height={32} />
                 <image
-                    xlinkHref={symmetrical ? R.getSVGIcon("Cross") : R.getSVGIcon("general/bind-data")}
+                    xlinkHref={symmetrical ? R.getSVGIcon("general/unbind-data") : R.getSVGIcon("general/bind-data")}
                     x={cx - 12}
                     y={cy - 12}
                     width={24}
