@@ -242,11 +242,27 @@ export class InputCurveHandleView extends React.Component<
         className="handle-button"
         onClick={() => {
           this.setState({
-            points: [],
+            points: [
+              { x: -.5, y: -.5 },
+              { x: 0, y: 0 },
+              { x: 0, y: 0 },
+              { x: .5, y: .5 }
+            ],
             drawingCurve: false,
             enabled: false,
             drawingPen: false,
           });
+          
+          const context = new HandlesDragContext();
+          this.props.onDragStart(this.props.handle, context);
+          context.emit("end", { value: [
+            [
+              { x: -1, y: -1 },
+              { x: 0, y: 0 },
+              { x: 0, y: 0 },
+              { x: 1, y: 1 }
+            ]
+          ] });
         }}
       >
         <rect x={cx - 16} y={cy - 16} width={32} height={32} />
