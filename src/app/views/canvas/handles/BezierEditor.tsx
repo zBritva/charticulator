@@ -6,7 +6,6 @@ import * as R from "../../../resources";
 
 // The helper functions (getControlPoints, generatePathData) remain the same
 // as the previous example. They are included here for completeness.
-const TENSION = 0.4;
 
 function generatePathData(points) {
     if (!points || points.length < 4) {
