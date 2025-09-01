@@ -152,12 +152,6 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
         }
 
         setPoints(newPoints);
-        // setPoints((prevPoints) => {
-        //     const newPoints = [...prevPoints];
-        //     newPoints[draggingIndex] = newPoint;
-        //     return newPoints;
-        // });
-        // onChange(points.map(transformPoint));
     }, [draggingIndex, getPoint, setPoints, symmetrical, points]);
 
     // Attach global mouse listeners for smoother dragging
