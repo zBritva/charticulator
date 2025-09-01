@@ -71,7 +71,7 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
             x: (x - w / 2) / (w / 2),
             y: (y - h / 2) / (w / 2),
         };
-    }, [handle, zoom])
+    }, [handle, zoom, svgRef])
 
     // TODO segments
     const [points, setPoints] = useState<Point[]>(initialPoints);
@@ -82,8 +82,8 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
             const extendedPoints = [...initialPoints]
             for (let i = 0; i < 4 - initialPoints.length; i++) {
                 extendedPoints.push({
-                    x: Math.random(),
-                    y: Math.random(),
+                    x: Math.random() - .5,
+                    y: Math.random() - .5,
                 });
             }
             setPoints(extendedPoints);
@@ -177,9 +177,9 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                 onClick={() => {
                     setPoints((prevPoints) => {
                         const newPoints = [...prevPoints];
-                        newPoints.push({ x: Math.random(), y: Math.random() });
-                        newPoints.push({ x: Math.random(), y: Math.random() });
-                        newPoints.push({ x: Math.random(), y: Math.random() });
+                        newPoints.push({ x: Math.random() - .5, y: Math.random() - .5 });
+                        newPoints.push({ x: Math.random() - .5, y: Math.random() - .5 });
+                        newPoints.push({ x: Math.random() - .5, y: Math.random() - .5 });
                         return newPoints;
                     });
                 }}
@@ -263,7 +263,7 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                         const chunk = doubledPoint.slice(i, i + chunkSize);
                         if (chunk.length == 4) {
                             chunks.push(chunk)
-                        }  
+                        }
                     }
 
                     onChange(points, pathData, chunks);
@@ -323,6 +323,7 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                 Math.max(fX(handle.x1), fX(handle.x2)),
                 Math.min(fY(handle.y1), fY(handle.y2))
             )}
+            {/* The Bezier Curve Path */}
             <path className='editor-curve' d={pathData} fill="none" stroke="#2563eb" strokeWidth="3" />
 
             <g
@@ -369,7 +370,12 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                                 cy={pt.y}
                                 r="4"
                                 fill="#fff"
-                                stroke={points.length - 1 === index ? 'red' : '#ccc'}
+                                stroke={
+                                    points.length - 1 === index ?
+                                    'red' :
+                                    0 === index ? 'green' : 
+                                    index % 3 == 0 ? 'blue' : '#ccc'
+                                }
                                 strokeWidth="2"
                                 style={{ cursor: 'grab' }}
                                 // Mouse/Touch events are now handled by Hammer on the parent SVG
