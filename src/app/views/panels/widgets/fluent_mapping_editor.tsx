@@ -12,7 +12,6 @@ import {
   Specification,
 } from "../../../../core";
 import { DragData } from "../../../actions";
-import { ColorPicker } from "../../../components/fluentui_color_picker";
 import { ContextedComponent } from "../../../context_component";
 import { isKindAcceptable, type2DerivedColumns } from "../../dataset/common";
 import { ScaleEditor } from "../scale_editor";
