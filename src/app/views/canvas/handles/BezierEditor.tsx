@@ -89,7 +89,7 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
             setPoints(extendedPoints);
             return;
         }
-    }, [])
+    }, [initialPoints])
 
     const handleMouseDown = (index) => {
         setDraggingIndex(index);
