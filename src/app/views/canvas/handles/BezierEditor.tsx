@@ -246,8 +246,11 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                     const pathData = generatePathData(points.map(transformPoint));
                     let doubledPoint = [];
                     if (points.length > 4) {
+                        // double anchor points
                         doubledPoint = points.flatMap((point, index) => {
-                            // double anchor points
+                            if (index === 0 || index === points.length - 1) {
+                                return point;
+                            }
                             if ((index) % 3 === 0) {
                                 return [
                                     point,
