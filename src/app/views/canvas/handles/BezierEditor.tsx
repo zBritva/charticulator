@@ -268,7 +268,9 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                     const chunkSize = 4;
                     for (let i = 0; i < doubledPoint.length; i += chunkSize) {
                         const chunk = doubledPoint.slice(i, i + chunkSize);
-                        chunks.push(chunk)
+                        if (chunk.length == 4) {
+                            chunks.push(chunk)
+                        }  
                     }
 
                     onChange(points, pathData, chunks);
