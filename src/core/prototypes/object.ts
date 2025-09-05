@@ -57,6 +57,7 @@ export abstract class ObjectClass<
     enableContextMenu: true,
     enableSelection: true,
     exposed: true,
+    cursor: "default"
   };
 
   /** Default mapping values */
@@ -120,6 +121,24 @@ export abstract class ObjectClass<
               type: "checkbox",
               label: strings.objects.selection,
               searchSection: strings.objects.interactivity,
+            }
+          ),
+          manager.inputSelect(
+            { property: "cursor" },
+            {
+              type: "dropdown",
+              label: strings.objects.cursor.cursor,
+              searchSection: strings.objects.interactivity,
+              options: [
+                "default",
+                "crosshair",
+                "grab"
+              ],
+              labels: [
+                strings.objects.cursor.default,
+                strings.objects.cursor.crosshair,
+                strings.objects.cursor.grab
+              ]
             }
           ),
         ]

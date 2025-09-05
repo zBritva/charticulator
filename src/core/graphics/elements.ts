@@ -67,6 +67,8 @@ export interface Style {
   strokeLinejoin?: "round" | "miter" | "bevel";
   strokeLinecap?: "round" | "butt" | "square";
 
+  cursor?: string;
+
   colorFilter?: ColorFilter;
 
   fillColor?: Color;

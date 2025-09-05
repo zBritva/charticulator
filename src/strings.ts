@@ -474,6 +474,12 @@ export const strings = {
     dropTickData: "Tick data: drop here to assign tick data",
     toolTips: "Tooltips",
     selection: "Selection",
+    cursor: {
+      cursor: "Cursor",
+      default: "Default",
+      crosshair: "Crosshair",
+      grab: "Grab",
+    },
     axes: {
       data: "Data",
       numericalSuffix: ": Numerical",
