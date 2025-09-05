@@ -104,6 +104,10 @@ export class ChartRenderer {
           enableContextMenu: <boolean>cls.object.properties.enableContextMenu,
           enableSelection: <boolean>cls.object.properties.enableSelection,
         };
+        if (!markGraphics.style) {
+          markGraphics.style = {};
+        }
+        markGraphics.style.cursor = <string>cls.object.properties.cursor
         const group = makeGroup([markGraphics]);
         group.key = `gl:${glyph._id}-mkst-gr:${markIndex}-${markGraphics.key}`;
         return group;

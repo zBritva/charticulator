@@ -351,6 +351,7 @@ export function createDefaultChart(
       backgroundOpacity: 1,
       enableContextMenu: true,
       exposed: true,
+      cursor: "default"
     },
     mappings: {
       marginTop: {

@@ -463,9 +463,13 @@ export function renderGraphicalElementSVG(
     onWheel?: (e: React.MouseEvent<Element>) => void;
     onMouseMove?: (e: React.MouseEvent<Element>) => void;
   } = {};
+  if (style) {
+    style.cursor = element.style?.cursor ?? "default";
+  }
   if (element.selectable) {
-    style.cursor = "pointer";
+    // style.cursor = "pointer";
     style.pointerEvents = "all";
+
     if (options.onClick) {
       mouseEvents.onClick = (e: React.MouseEvent<Element>) => {
         e.stopPropagation();

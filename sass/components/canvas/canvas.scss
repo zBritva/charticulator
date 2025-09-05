@@ -124,6 +124,7 @@
 
 .chart-editor-canvas-view {
   position: relative;
+  cursor: grab;
 
   .canvas-view {
     position: absolute;
@@ -241,8 +242,8 @@
   }
 
   .interaction-handler {
-    cursor: -webkit-grab;
-    cursor: grab;
+    // cursor: -webkit-grab;
+    // cursor: grab;
     fill: none;
     stroke: none;
     pointer-events: fill;
@@ -590,10 +591,8 @@
   }
 
   .bounding-box {
-    cursor: default;
-
     &.interactable {
-      cursor: pointer;
+      // cursor: pointer;
     }
 
     * {
