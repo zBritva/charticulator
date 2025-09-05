@@ -10,7 +10,7 @@ import { ColorFillRegular } from "@fluentui/react-icons";
 import { Button } from "@fluentui/react-button";
 import { Input } from "@fluentui/react-input";
 import { Label } from "@fluentui/react-label";
-import { Popover, PopoverSurface } from "@fluentui/react-components";
+import { Popover, PopoverSurface, PopoverTrigger } from "@fluentui/react-components";
 import { ColorPicker } from "../../../../components/fluentui_color_picker";
 import { AppStore } from "../../../../stores";
 
@@ -35,47 +35,66 @@ export const EmptyMapping = ({
   clearMapping,
   setValueMapping
 }: EmptyMappingProps): JSX.Element => {
-  let trigger = null;
-
-  if (type === Specification.AttributeType.Color) {
-    trigger = (
-      <>
-        <EmptyColorInput onClick={onClick} label={options.label} />
-      </>
-    );
-  }
-  else if (options.defaultAuto) {
-    trigger = (
-      <>
-        <FluentColumnLayout>
-          <Label>{options.label}</Label>
-          <Input
-            id={`id_${options.label.replace(/\s/g, "_")}`}
-            placeholder={strings.core.auto}
-            onClick={onClick}
-          />
-        </FluentColumnLayout>
-      </>
-    );
-  } else {
-    trigger = (
-      <>
-        <FluentColumnLayout id={`empty-mapping-column-${options.label.replace(/\s/g, "_")}`}>
-          <Label id={`empty-mapping-label-${options.label.replace(/\s/g, "_")}`}>{options.label}</Label>
-          <Input
-            id={`empty-mapping-${options.label.replace(/\s/g, "_")}`}
-            placeholder={strings.core.none}
-            onClick={onClick}
-          />
-        </FluentColumnLayout>
-      </>
-    );
-  }
-
   return <>
     <Popover open={isColorPickerOpen}>
       <>
-        {trigger}
+        {
+          (type === Specification.AttributeType.Color) ?
+            (
+              <>
+                <div className="el-color-value">
+                  <FluentColumnLayout
+                    id={`empty-mapping-column-${options.label.replace(/\s/g, "_")}`}
+                    style={{
+                      flex: 1,
+                      width: "100%",
+                    }}
+                  >
+                    <Label id={`empty-mapping-label-${options.label.replace(/\s/g, "_")}`}>{options.label}</Label>
+                    <PopoverTrigger>
+                      <Input
+                        id={`empty-mapping-${options.label.replace(/\s/g, "_")}`}
+                        placeholder={strings.core.none}
+                        type="text"
+                        onClick={onClick}
+                      />
+                    </PopoverTrigger>
+                  </FluentColumnLayout>
+                  <EmptyColorButton onClick={onClick} />
+                </div>
+              </>
+            )
+            : (options.defaultAuto) ?
+              (
+                <>
+                  <FluentColumnLayout>
+                    <Label id={`empty-mapping-label-${options.label.replace(/\s/g, "_")}`}>{options.label}</Label>
+                    <PopoverTrigger>
+                      <Input
+                        id={`id_${options.label.replace(/\s/g, "_")}`}
+                        placeholder={strings.core.auto}
+                        onClick={onClick}
+                      />
+                    </PopoverTrigger>
+                  </FluentColumnLayout>
+                </>
+              )
+              :
+              (
+                <>
+                  <FluentColumnLayout id={`empty-mapping-column-${options.label.replace(/\s/g, "_")}`}>
+                    <Label id={`empty-mapping-label-${options.label.replace(/\s/g, "_")}`}>{options.label}</Label>
+                    <PopoverTrigger>
+                      <Input
+                        id={`empty-mapping-${options.label.replace(/\s/g, "_")}`}
+                        placeholder={strings.core.none}
+                        onClick={onClick}
+                      />
+                    </PopoverTrigger>
+                  </FluentColumnLayout>
+                </>
+              )
+        }
       </>
       <PopoverSurface>
         <ColorPicker
@@ -98,37 +117,6 @@ export const EmptyMapping = ({
       </PopoverSurface>
     </Popover>
   </>;
-};
-
-interface EmptyColorInputProps {
-  label: string;
-  onClick: () => void;
-}
-
-const EmptyColorInput = ({
-  label,
-  onClick,
-}: EmptyColorInputProps): JSX.Element => {
-  return (
-    <div className="el-color-value">
-      <FluentColumnLayout
-        id={`empty-mapping-column-${label.replace(/\s/g, "_")}`}
-        style={{
-          flex: 1,
-          width: "100%",
-        }}
-      >
-        <Label id={`empty-mapping-label-${label.replace(/\s/g, "_")}`}>{label}</Label>
-        <Input
-          id={`empty-mapping-${label.replace(/\s/g, "_")}`}
-          placeholder={strings.core.none}
-          type="text"
-          onClick={onClick}
-        />
-      </FluentColumnLayout>
-      <EmptyColorButton onClick={onClick} />
-    </div>
-  );
 };
 
 interface EmptyColorButtonProps {
