@@ -113,9 +113,9 @@ export class FileViewImport extends ContextedComponent<
             <DialogTitle>{strings.templateImport.title}</DialogTitle>
             <DialogContent>
               {tables &&
-                tables.map((table) => {
+                tables.map((table, index) => {
                   return (
-                    <React.Fragment key={`table-${table.name}`}>
+                    <React.Fragment key={`table-${table.name}-${index}`}>
                       <h4>{table.type} table: {table.name}</h4>
                       <h5>
                         {this.props.mode === MappingMode.ImportTemplate

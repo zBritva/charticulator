@@ -78,7 +78,6 @@ export class ExportTemplate extends Action {
 
 export class SaveExportTemplatePropertyName extends Action {
   constructor(
-    public objectId: string,
     public propertyName: string,
     public value: string
   ) {

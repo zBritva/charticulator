@@ -23,6 +23,7 @@ import { Button } from "@fluentui/react-button";
 
 import { ArrowExportRegular } from "@fluentui/react-icons";
 import { tokens } from "@fluentui/react-components";
+import { SaveExportTemplatePropertyName } from "../../actions/actions";
 export class InputGroup extends React.Component<
   React.PropsWithChildren<{
     value: string;
@@ -421,7 +422,11 @@ export class ExportTemplateView extends React.Component<
             displayName || targetProperties[property.name],
             property.default,
             (value) => {
-              this.props.store.setPropertyExportName(property.name, value);
+
+              this.props.store.dispatcher.dispatch(
+                new SaveExportTemplatePropertyName(property.name, value)
+              );
+
               this.setState({
                 targetProperties: {
                   ...targetProperties,

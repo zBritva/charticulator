@@ -158,6 +158,8 @@ export interface Path extends Element {
   transform: string;
   beginArrowType?: ArrowType;
   endArrowType?: ArrowType;
+  beginArrowSize?: number;
+  endArrowSize?: number;
 }
 
 export interface Circle extends Element {
@@ -471,6 +473,15 @@ export class PathMaker {
   public setBeginArrowType(arrowType: ArrowType) {
     this.path.beginArrowType = arrowType;
   }
+
+  public setBeginArrowSize(size: number) {
+    this.path.beginArrowSize = size;
+  }
+
+  public setEndArrowSize(size: number) {
+    this.path.endArrowSize = size;
+  }
+
   public setEndArrowType(arrowType: ArrowType) {
     this.path.endArrowType = arrowType;
   }

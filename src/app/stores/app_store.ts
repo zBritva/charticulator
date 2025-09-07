@@ -33,8 +33,7 @@ import {
   stringToDataURL,
 } from "../utils";
 import {
-  renderChartToLocalString,
-  renderChartToString,
+  renderLocalSVG,
 } from "../views/canvas/chart_display";
 import {
   ActionHandlerRegistry,
@@ -343,22 +342,6 @@ export class AppStore extends BaseStore {
     }
   }
 
-  public renderSVG() {
-    const svg =
-      '<?xml version="1.0" standalone="no"?>' +
-      renderChartToString(this.dataset, this.chart, this.chartState);
-    return svg;
-  }
-
-  public async renderLocalSVG() {
-    const svg = await renderChartToLocalString(
-      this.dataset,
-      this.chart,
-      this.chartState
-    );
-    return '<?xml version="1.0" standalone="no"?>' + svg;
-  }
-
   public handleAction(action: Actions.Action) {
     this.actionHandlers.handleAction(this, action);
   }
@@ -434,7 +417,7 @@ export class AppStore extends BaseStore {
   public deleteChartScale(scaleID: string) {
     const chart = this.chart;
       chart.scales
-      .filter(s => s._id == scaleID)
+      .filter(s => s._id === scaleID)
       .forEach((scale) => {
           this.chartManager.removeScale(scale)
       });
@@ -455,7 +438,7 @@ export class AppStore extends BaseStore {
       const chart = await this.backend.get(this.currentChartID);
       this.updateChartState();
       chart.data.state = this.saveState();
-      const svg = stringToDataURL("image/svg+xml", await this.renderLocalSVG());
+      const svg = stringToDataURL("image/svg+xml", await renderLocalSVG());
       const png = await renderDataURLToPNG(svg, {
         mode: "thumbnail",
         thumbnail: [200, 150],
@@ -477,7 +460,7 @@ export class AppStore extends BaseStore {
   public async backendSaveChartAs(name: string) {
     this.updateChartState();
     const state = this.saveState();
-    const svg = stringToDataURL("image/svg+xml", await this.renderLocalSVG());
+    const svg = stringToDataURL("image/svg+xml", await renderLocalSVG());
     const png = await renderDataURLToPNG(svg, {
       mode: "thumbnail",
       thumbnail: [200, 150],
@@ -557,7 +540,7 @@ export class AppStore extends BaseStore {
 
   public getTable(name: string): Dataset.Table {
     if (this.dataset != null) {
-      return this.dataset.tables.filter((d) => d.name == name)[0];
+      return this.dataset.tables.find((d) => d.name === name) || null;
     } else {
       return null;
     }
@@ -565,13 +548,6 @@ export class AppStore extends BaseStore {
 
   public getTables(): Dataset.Table[] {
     return this.dataset.tables;
-  }
-
-  public getColumnVector(
-    table: Dataset.Table,
-    columnName: string
-  ): Dataset.DataValue[] {
-    return table.rows.map((d) => d[columnName]);
   }
 
   public saveSelectionState(): SelectionState {
@@ -785,6 +761,10 @@ export class AppStore extends BaseStore {
       });
     }
     let table = this.getTable(tableName);
+    if (!table) {
+      // table not found, we can't infer a scale
+      return null;
+    }
 
     // compares the ranges of two expression to determine similarity
     const compareDomainRanges = (

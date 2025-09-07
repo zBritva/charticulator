@@ -624,6 +624,8 @@ export const strings = {
     arrows: {
       beginArrowType: "Begin Arrow Type",
       endArrowType: "End Arrow Type",
+      beginArrowSize: "Begin Arrow Size",
+      endArrowSize: "End Arrow Size",
       noArrow: "No Arrow",
       arrow: "Arrow",
       diamondArrow: "Diamond Arrow",

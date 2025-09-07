@@ -567,6 +567,8 @@ export class LinkCreationPanel extends ContextedComponent<
             closeLink: false,
             beginArrowType: ArrowType.NO_ARROW,
             endArrowType: ArrowType.NO_ARROW,
+            beginArrowSize: 10,
+            endArrowSize: 10,
           } as Prototypes.Links.LinksProperties,
         };
 
@@ -614,6 +616,8 @@ export class LinkCreationPanel extends ContextedComponent<
             closeLink: false,
             beginArrowType: ArrowType.NO_ARROW,
             endArrowType: ArrowType.NO_ARROW,
+            beginArrowSize: 10,
+            endArrowSize: 10,
           } as Prototypes.Links.LinksProperties,
         };
 
@@ -665,6 +669,8 @@ export class LinkCreationPanel extends ContextedComponent<
             closeLink: false,
             beginArrowType: ArrowType.NO_ARROW,
             endArrowType: ArrowType.NO_ARROW,
+            beginArrowSize: 10,
+            endArrowSize: 10,
           } as Prototypes.Links.LinksProperties,
         };
 
