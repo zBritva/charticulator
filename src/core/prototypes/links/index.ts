@@ -817,7 +817,8 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
             minimum: 1,
             showUpdown: true,
             label: strings.objects.arrows.beginArrowSize,
-            step: 1
+            step: 1,
+            updownTick: 1
           }
         )
       );

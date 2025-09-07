@@ -125,6 +125,7 @@ export class FluentValueEditor extends ContextedComponent<
         }
         return (
           <FluentInputNumber
+            step={numberOptions.step}
             key={`input-number-${this.props.label?.replace(/\W/g, "_")}`}
             label={this.props.label}
             stopPropagation={this.props.stopPropagation}
