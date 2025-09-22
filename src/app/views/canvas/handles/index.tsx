@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import * as React from "react";
-import { Prototypes, ZoomInfo } from "../../../../core";
+import { Point, Prototypes, ZoomInfo } from "../../../../core";
 import { HandlesDragContext } from "./common";
 import { InputCurveHandleView } from "./input_curve";
 import { TextAlignmentHandleView } from "./text_alignment";
@@ -17,6 +17,7 @@ export interface HandlesViewProps {
   zoom: ZoomInfo;
   active?: boolean;
   visible?: boolean;
+  points?: Point[];
   handles: Prototypes.Handles.Description[];
   isAttributeSnapped?: (attribute: string) => boolean;
   onDragStart?: (
@@ -139,6 +140,7 @@ export class HandlesView extends React.Component<
             active={this.props.active}
             visible={this.props.visible}
             onDragStart={this.props.onDragStart}
+            points={this.props.points}
             handle={handle as Prototypes.Handles.InputCurve}
           />
         );

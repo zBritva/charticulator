@@ -266,6 +266,7 @@ export const strings = {
     drawSpiral: "Draw Spiral",
     startAngle: "Start Angle",
     windings: "Windings",
+    drawBezierCurvesTitle: "Symmetrical move control points"
   },
   help: {
     contact: "Contact Me",

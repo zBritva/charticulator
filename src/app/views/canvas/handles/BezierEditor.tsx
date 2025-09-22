@@ -314,18 +314,30 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                 Math.max(fX(handle.x1), fX(handle.x2)),
                 Math.min(fY(handle.y1), fY(handle.y2)) + 38 * 2
             )}
-            {/* ADD SYmmetrical checkbox */}
-            {renderBezierControlSymmetryButton(
+            {points.length > 4 ? renderBezierControlSymmetryButton(
                 Math.max(fX(handle.x1), fX(handle.x2)),
                 Math.min(fY(handle.y1), fY(handle.y2)) + 38 * 3
-            )}
+            ) : null}
             {renderBezierControlCloseButton(
                 Math.max(fX(handle.x1), fX(handle.x2)),
                 Math.min(fY(handle.y1), fY(handle.y2))
             )}
             {/* The Bezier Curve Path */}
-            <path className='editor-curve' d={pathData} fill="none" stroke="#2563eb" strokeWidth="3" />
+            <defs>
+                <marker id="red-arrow"
+                    markerHeight="5"
+                    markerWidth="5"
+                    viewBox="0 0 100 100" refX="0" refY="50" orient="auto">
+                    <path fill="red" d="M 0 0 L 100 50 L 0 100 z" />
+                </marker>
 
+                <marker id="green-circle"
+                    markerHeight="5"
+                    markerWidth="5"
+                    viewBox="0 0 20 20" refX="10" refY="10" orient="auto" >
+                    <circle fill="green" cx="10" cy="10" r="10" />
+                </marker>
+            </defs>
             <g
                 className='editor-control-circles'
                 ref={svgRef}
@@ -344,20 +356,20 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                     key={`point-0`}
                     cx={x}
                     cy={y}
-                    r="4"
+                    r="1"
                     fill="#fff"
                     stroke={'green'}
-                    strokeWidth="2"
+                    strokeWidth="1"
                 />
                 <circle
                     className='editor-anchor-point'
                     key={`point-1`}
                     cx={x + width}
                     cy={y + height}
-                    r="4"
+                    r="1"
                     fill="#fff"
                     stroke={'green'}
-                    strokeWidth="2"
+                    strokeWidth="1"
                 />
                 {points.map((point, index) => {
                     const pt = transformPoint(point);
@@ -372,9 +384,9 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                                 fill="#fff"
                                 stroke={
                                     points.length - 1 === index ?
-                                    'red' :
-                                    0 === index ? 'green' : 
-                                    index % 3 == 0 ? 'blue' : '#ccc'
+                                        'red' :
+                                        0 === index ? 'green' :
+                                            index % 3 == 0 ? 'blue' : '#ccc'
                                 }
                                 strokeWidth="2"
                                 style={{ cursor: 'grab' }}
@@ -385,6 +397,7 @@ export function BezierEditor({ handle, zoom, height, width, x, y, onChange, poin
                     );
                 })}
             </g>
+            <path marker-start="url(#green-circle)" marker-end="url(#red-arrow)" className='editor-curve' d={pathData} fill="none" stroke="#2563eb" strokeWidth="3" />
         </>
     );
 }

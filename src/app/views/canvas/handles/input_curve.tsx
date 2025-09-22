@@ -16,6 +16,7 @@ import BezierEditor from "./BezierEditor";
 
 export interface InputCurveHandleViewProps extends HandleViewProps {
   handle: Prototypes.Handles.InputCurve;
+  points?: Point[];
 }
 export interface InputCurveHandleViewState {
   enabled: boolean;
@@ -36,7 +37,7 @@ export class InputCurveHandleView extends React.Component<
     enabled: false,
     drawingPen: false,
     drawingCurve: false,
-    points: [],
+    points: this.props.points || [],
   };
 
   public hammer: HammerManager;
@@ -257,10 +258,10 @@ export class InputCurveHandleView extends React.Component<
           this.props.onDragStart(this.props.handle, context);
           context.emit("end", { value: [
             [
-              { x: -1, y: -1 },
+              { x: -.5, y: -.5 },
               { x: 0, y: 0 },
               { x: 0, y: 0 },
-              { x: 1, y: 1 }
+              { x: .5, y: .5 }
             ]
           ] });
         }}
@@ -293,6 +294,7 @@ export class InputCurveHandleView extends React.Component<
         }}
       >
         <rect x={cx - 16} y={cy - 16} width={32} height={32} />
+        <title>{strings.handles.drawBezierCurvesTitle}</title>
         <image
           xlinkHref={R.getSVGIcon("link/through")}
           x={cx - 12}

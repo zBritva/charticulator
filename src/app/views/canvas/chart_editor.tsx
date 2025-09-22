@@ -75,11 +75,11 @@ export interface ChartEditorViewState {
   currentCreationOptions?: string;
   currentSelection: Selection;
   dropZoneData:
-    | {
-        data?: DragData.DropZoneData;
-        layout?: DragData.ScaffoldType;
-      }
-    | false;
+  | {
+    data?: DragData.DropZoneData;
+    layout?: DragData.ScaffoldType;
+  }
+  | false;
   isSolving: boolean;
   canvasToolbar: boolean;
 }
@@ -660,7 +660,7 @@ export class ChartEditorView
                 [
                   "coordinator",
                   info.guide.visualType ===
-                    SnappingGuidesVisualTypes.Coordinator,
+                  SnappingGuidesVisualTypes.Coordinator,
                 ],
                 [
                   "single",
@@ -684,7 +684,7 @@ export class ChartEditorView
                 [
                   "coordinator",
                   info.guide.visualType ===
-                    SnappingGuidesVisualTypes.Coordinator,
+                  SnappingGuidesVisualTypes.Coordinator,
                 ],
                 [
                   "single",
@@ -936,6 +936,23 @@ export class ChartEditorView
           }
         }
         const handles = layoutClass.getHandles();
+        let points: Point[] = null;
+        if (Prototypes.isType(layout.classID, "plot-segment.curve")) {
+          const chunks = layout.properties.curve as Point[][];
+          if (chunks && chunks.length > 0) {
+            if (chunks.length == 1) {
+              points = chunks[0];
+            } else {
+              chunks.flatMap((chunk, index) => {
+                if (index == 0) {
+                  return chunk;
+                } else {
+                  return chunk.slice(1);
+                }
+              });
+            }
+          }
+        }
         return (
           <g key={`m${layout._id}`}>
             {bbox ? (
@@ -948,14 +965,15 @@ export class ChartEditorView
             ) : null}
             {Prototypes.isType(layout.classID, "plot-segment")
               ? this.renderMarkHandlesInPlotSegment(
-                  layout as Specification.PlotSegment,
-                  layoutState as Specification.PlotSegmentState
-                )
+                layout as Specification.PlotSegment,
+                layoutState as Specification.PlotSegmentState
+              )
               : null}
             <HandlesView
               handles={handles}
               zoom={this.state.zoom}
               active={false}
+              points={points}
               visible={shouldRenderHandles}
               isAttributeSnapped={(attribute) => {
                 if (layout.mappings[attribute] != null) {
