@@ -52,6 +52,8 @@ export enum GuidePropertyNames {
 export interface GuideProperties extends Specification.AttributeMap {
   axis: GuideAxis;
   baseline: Specification.baselineH | Specification.baselineV;
+  splitByRation: boolean;
+  ratio: number;
 }
 
 export class GuideClass extends ChartElementClass<
@@ -68,6 +70,8 @@ export class GuideClass extends ChartElementClass<
 
   public static defaultProperties: Partial<GuideProperties> = {
     baseline: null,
+    splitByRation: false,
+    ratio: 0.6
   };
 
   public attributeNames: GuideAttributeNames[] = [
@@ -105,141 +109,212 @@ export class GuideClass extends ChartElementClass<
 
   // eslint-disable-next-line
   public buildConstraints(solver: ConstraintSolver) {
-    const { rectGlyph, rectChart } = this.getParentType();
-    if (rectGlyph) {
-      switch (this.object.properties.baseline) {
-        case "center":
-        case "middle": {
-          const [, computedBaselineValue] = solver.attrs(
-            this.state.attributes,
-            [
-              GuideAttributeNames.value,
-              GuideAttributeNames.computedBaselineValue,
-            ]
-          );
-          solver.addLinear(
-            ConstraintStrength.HARD,
-            this.state.attributes.value,
-            [[-1, computedBaselineValue]]
-          );
+    if (this.object.properties.splitByRation)
+    {
+      debugger;
+      const { rectGlyph, rectChart } = this.getParentType();
+      if (rectGlyph) {
+        //
+        switch (this.object.properties.baseline) {
+          // x
+          case "center":
+          case "left":
+          case "right": {
+            const parentAttrs = this.parent.state.attributes;
+            const [x1, width] = solver.attrs(
+              parentAttrs,
+              ["x1", "width"],
+            );
+
+            const [computedBaselineValue, value] = solver.attrs(
+              this.state.attributes,
+              [
+                GuideAttributeNames.computedBaselineValue,
+                GuideAttributeNames.value,
+              ],
+            );
+
+            solver.addLinear(
+              ConstraintStrength.HARD,
+              0,
+              [
+                [1, x1],
+                [this.object.properties.ratio, width],
+              ],
+              [[1, computedBaselineValue]]
+            );
+          }
+          break;
+          // y
+          case "middle":
+          case "top":
+          case "bottom": {
+            const parentAttrs = this.parent.state.attributes;
+            const [y1, height] = solver.attrs(
+              parentAttrs,
+              ["y1", "height"],
+            );
+
+            const [computedBaselineValue, value] = solver.attrs(
+              this.state.attributes,
+              [
+                GuideAttributeNames.computedBaselineValue,
+                GuideAttributeNames.value
+              ],
+            );
+
+            solver.addLinear(
+              ConstraintStrength.HARD,
+              0,
+              [
+                [1, y1],
+                [this.object.properties.ratio, height],
+              ],
+              [[1, computedBaselineValue]]
+            );
+          }
           break;
         }
-        case "left": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["width"],
-            ([width], value) => [
-              [-0.5, width],
-              [+1, value],
-            ]
-          );
-          break;
-        }
-        case "right": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["width"],
-            ([width], value) => [
-              [+0.5, width],
-              [+1, value],
-            ]
-          );
-          break;
-        }
-        case "top": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["height"],
-            ([height], value) => [
-              [+0.5, height],
-              [+1, value],
-            ]
-          );
-          break;
-        }
-        case "bottom": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["height"],
-            ([height], value) => [
-              [-0.5, height],
-              [+1, value],
-            ]
-          );
-          break;
-        }
+      } else if (rectChart) {
+        //
       }
-    } else if (rectChart) {
-      switch (this.object.properties.baseline) {
-        case "center": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["cx"],
-            ([cx], value) => [
-              [+1, cx],
-              [+1, value],
-            ]
-          );
-          break;
+    } else {
+      const { rectGlyph, rectChart } = this.getParentType();
+      if (rectGlyph) {
+        switch (this.object.properties.baseline) {
+          case "center":
+          case "middle": {
+            const [, computedBaselineValue] = solver.attrs(
+              this.state.attributes,
+              [
+                GuideAttributeNames.value,
+                GuideAttributeNames.computedBaselineValue,
+              ]
+            );
+            solver.addLinear(
+              ConstraintStrength.HARD,
+              this.state.attributes.value,
+              [[-1, computedBaselineValue]]
+            );
+            break;
+          }
+          case "left": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["width"],
+              ([width], value) => [
+                [-0.5, width],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "right": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["width"],
+              ([width], value) => [
+                [+0.5, width],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "top": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["height"],
+              ([height], value) => [
+                [+0.5, height],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "bottom": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["height"],
+              ([height], value) => [
+                [-0.5, height],
+                [+1, value],
+              ]
+            );
+            break;
+          }
         }
-        case "middle": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["cy"],
-            ([cy], value) => [
-              [+1, cy],
-              [+1, value],
-            ]
-          );
-          break;
-        }
-        case "left": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["width", "marginLeft"],
-            ([width, marginLeft], value) => [
-              [-0.5, width],
-              [+1, marginLeft],
-              [+1, value],
-            ]
-          );
-          break;
-        }
-        case "right": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["width", "marginRight"],
-            ([width, marginRight], value) => [
-              [+0.5, width],
-              [-1, marginRight],
-              [+1, value],
-            ]
-          );
-          break;
-        }
-        case "top": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["height", "marginTop"],
-            ([height, marginTop], value) => [
-              [+0.5, height],
-              [-1, marginTop],
-              [+1, value],
-            ]
-          );
-          break;
-        }
-        case "bottom": {
-          this.computeBaselineFromParentAttribute(
-            solver,
-            ["height", "marginBottom"],
-            ([height, marginBottom], value) => [
-              [-0.5, height],
-              [+1, marginBottom],
-              [+1, value],
-            ]
-          );
-          break;
+      } else if (rectChart) {
+        switch (this.object.properties.baseline) {
+          case "center": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["cx"],
+              ([cx], value) => [
+                [+1, cx],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "middle": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["cy"],
+              ([cy], value) => [
+                [+1, cy],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "left": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["width", "marginLeft"],
+              ([width, marginLeft], value) => [
+                [-0.5, width],
+                [+1, marginLeft],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "right": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["width", "marginRight"],
+              ([width, marginRight], value) => [
+                [+0.5, width],
+                [-1, marginRight],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "top": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["height", "marginTop"],
+              ([height, marginTop], value) => [
+                [+0.5, height],
+                [-1, marginTop],
+                [+1, value],
+              ]
+            );
+            break;
+          }
+          case "bottom": {
+            this.computeBaselineFromParentAttribute(
+              solver,
+              ["height", "marginBottom"],
+              ([height, marginBottom], value) => [
+                [-0.5, height],
+                [+1, marginBottom],
+                [+1, value],
+              ]
+            );
+            break;
+          }
         }
       }
     }
@@ -285,6 +360,10 @@ export class GuideClass extends ChartElementClass<
     const { value } = this.state.attributes;
     const { axis, baseline } = this.object.properties;
     const { rectChart, rectGlyph } = this.getParentType();
+
+    if (this.object.properties.ratio) {
+      return [];
+    }
 
     const handleLineGlyph = () => {
       return <Handles.Line[]>[
@@ -399,7 +478,10 @@ export class GuideClass extends ChartElementClass<
     let options: string[];
     let icons: string[] | React.ReactNode[];
     if (this.object.properties.axis === "x") {
-      const hOptions: Specification.baselineH[] = ["left", "center", "right"];
+      let hOptions: Specification.baselineH[] = ["left", "center", "right"];
+      if (this.object.properties.splitByRation) {
+        hOptions = [hOptions.pop()]
+      }
       options = hOptions;
       labels = [
         strings.alignment.left,
@@ -413,7 +495,10 @@ export class GuideClass extends ChartElementClass<
         React.createElement(AlignRightRegular),
       ];
     } else {
-      const vOptions: Specification.baselineV[] = ["top", "middle", "bottom"];
+      let vOptions: Specification.baselineV[] = ["top", "middle", "bottom"];
+      if (this.object.properties.splitByRation) {
+        vOptions = [vOptions.pop()]
+      }
       options = vOptions;
       labels = [
         strings.alignment.top,
@@ -448,6 +533,29 @@ export class GuideClass extends ChartElementClass<
             searchSection: strings.objects.guides.guide,
           }
         ),
+        manager.inputBoolean(
+          { property: "splitByRation" },
+          {
+            type: "checkbox",
+            label: strings.objects.guides.splitByRation,
+            searchSection: strings.objects.general,
+            styles: {
+              marginTop: 5,
+            },
+          }
+        ),
+        manager.inputNumber(
+          {
+            property: "ratio",
+          },
+          {
+            label: strings.objects.guides.ratio,
+            showUpdown: false,
+            minimum: 0,
+            maximum: 1,
+            searchSection: strings.objects.general,
+          }
+        )
       ])
     );
 
