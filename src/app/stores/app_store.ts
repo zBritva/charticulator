@@ -95,6 +95,7 @@ import {
 } from "../../core/prototypes/plot_segments/utils";
 import { AxisRenderer } from "../../core/prototypes/plot_segments/axis";
 import { CompiledGroupBy } from "../../core/prototypes/group_by";
+import glyph from "./action_handlers/glyph";
 
 export interface ChartStoreStateSolverStatus {
   solving: boolean;
@@ -1678,6 +1679,17 @@ export class AppStore extends BaseStore {
     });
   }
 
+  public updateNestedCharts() {
+    const nestedCharts = this.chart.glyphs.flatMap(g => g.marks.map(m => ({glyph: g, mark: m}))).filter(
+      ({ mark }) => Prototypes.isType(mark.classID, "mark.nested-chart")
+    );
+
+    debugger;
+    nestedCharts.forEach(({ glyph, mark: nestedCharts }) => {
+      debugger;
+    });
+  }
+
   public updateDataAxes() {
     const mapElementWithTable = (table: string) => (el: any) => {
       return {
@@ -2462,6 +2474,7 @@ export class AppStore extends BaseStore {
     });
     this.chartState = this.chartManager.chartState;
     this.updatePlotSegments();
+    this.updateNestedCharts();
     this.updateDataAxes();
     this.updateScales();
     this.solveConstraintsAndUpdateGraphics();

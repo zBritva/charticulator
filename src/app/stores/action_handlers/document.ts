@@ -387,6 +387,7 @@ export default function (REG: ActionHandlerRegistry<AppStore, Actions.Action>) {
     }
 
     this.updatePlotSegments();
+    this.updateNestedCharts();
     this.updateDataAxes();
     this.updateScales();
     this.solveConstraintsAndUpdateGraphics();
