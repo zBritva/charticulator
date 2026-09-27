@@ -11,7 +11,7 @@ import { Button } from "@fluentui/react-button";
 
 import { deepClone, EventSubscription } from "../../core";
 import { Actions } from "../actions";
-import { AppButton, AppButtonWithDialog, MenuButton } from "../components";
+import { AppButton, AppButtonWithDialog, FluentUIMenuButton, SVGImageIcon } from "../components";
 import { MainReactContext } from "../context_component";
 import {
   ModalView,
@@ -33,7 +33,8 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
-import { Label, Switch, tokens } from "@fluentui/react-components";
+import { Label, Popover, PopoverSurface, PopoverTrigger, Switch, tokens } from "@fluentui/react-components";
+import { ArrowExportRegular, ArrowExportRtlRegular, ArrowImportRegular, ArrowRedoFilled, ArrowUndoFilled, CurrencyDollarEuroFilled, DocumentRegular, FolderOpenRegular, Question16Filled, Question16Regular, SaveRegular } from "@fluentui/react-icons";
 
 declare let CHARTICULATOR_PACKAGE: {
   version: string;
@@ -57,95 +58,91 @@ export function HelpButton(props: React.PropsWithChildren<HelpButtonProps>) {
       getConfig().ContactUsHref || "https://www.linkedin.com/in/ilfat-galiev/";
   }
 
+  const [helpPopupOpen, setHelpPopupOpen] = React.useState(false);
+
   return (
     <>
       <div ref={helpButtonRef} />
-      <MenuButton
-        url={R.getSVGIcon("toolbar/help")}
-        title={strings.menuBar.help}
-        ref={helpButtonRef}
-        onClick={() => {
-          globals.popupController.popupAt(
-            (context) => {
-              return (
-                <PopupView
-                  context={context}
-                  className="charticulator__menu-popup"
+      <Popover open={helpPopupOpen}>
+        <PopoverTrigger>
+          <Button
+            appearance="transparent"
+            title={strings.menuBar.help}
+            icon={<Question16Filled />}
+            ref={helpButtonRef}
+            onClick={() => {
+              setHelpPopupOpen((h) => !h);
+            }}
+          >
+          </Button>
+        </PopoverTrigger>
+        <PopoverSurface>
+          <div
+            className="charticulator__menu-dropdown"
+            onClick={() => setHelpPopupOpen(false)}
+          >
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/docs/charticulator/intro/"
+                onClick={props.handlers?.onGettingStartedClick}
+              >
+                {strings.help.gettingStarted}
+              </a>
+            </div>
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/docs/category/gallery"
+                onClick={props.handlers?.onGalleryClick}
+              >
+                {strings.help.gallery}
+              </a>
+            </div>
+            {!props.hideReportIssues ? (
+              <div className="el-item">
+                <a
+                  target="_blank"
+                  href="https://github.com/zbritva/charticulator/issues/new"
+                  onClick={props.handlers?.onIssuesClick}
                 >
-                  <div
-                    className="charticulator__menu-dropdown"
-                    onClick={() => context.close()}
-                  >
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/docs/charticulator/intro/"
-                        onClick={props.handlers?.onGettingStartedClick}
-                      >
-                        {strings.help.gettingStarted}
-                      </a>
-                    </div>
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/docs/category/gallery"
-                        onClick={props.handlers?.onGalleryClick}
-                      >
-                        {strings.help.gallery}
-                      </a>
-                    </div>
-                    {!props.hideReportIssues ? (
-                      <div className="el-item">
-                        <a
-                          target="_blank"
-                          href="https://github.com/zbritva/charticulator/issues/new"
-                          onClick={props.handlers?.onIssuesClick}
-                        >
-                          {strings.help.issues}
-                        </a>
-                      </div>
-                    ) : null}
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/"
-                        onClick={props.handlers?.onHomeClick}
-                      >
-                        {strings.help.home}
-                      </a>
-                    </div>
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://www.linkedin.com/in/ilfat-galiev/"
-                        onClick={contactUsLinkProps.onClick}
-                      >
-                        {strings.help.contact}
-                      </a>
-                    </div>
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/pages/about"
-                        onClick={props.handlers?.onAboutClick}
-                      >
-                        {strings.help.aboutMeUs}
-                      </a>
-                    </div>
-                    <div className="el-item-version">
-                      {strings.help.version(CHARTICULATOR_PACKAGE.version)}
-                    </div>
-                  </div>
-                </PopupView>
-              );
-            },
-            {
-              anchor: helpButtonRef.current as Element,
-              alignX: PopupAlignment.EndInner,
-            }
-          );
-        }}
-      />
+                  {strings.help.issues}
+                </a>
+              </div>
+            ) : null}
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/"
+                onClick={props.handlers?.onHomeClick}
+              >
+                {strings.help.home}
+              </a>
+            </div>
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://www.linkedin.com/in/ilfat-galiev/"
+                onClick={contactUsLinkProps.onClick}
+              >
+                {strings.help.contact}
+              </a>
+            </div>
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/pages/about"
+                onClick={props.handlers?.onAboutClick}
+              >
+                {strings.help.aboutMeUs}
+              </a>
+            </div>
+            <div className="el-item-version">
+              {strings.help.version(CHARTICULATOR_PACKAGE.version)}
+            </div>
+          </div>
+        </PopoverSurface>
+      </Popover>
     </>
   );
 }
@@ -325,8 +322,8 @@ export function MenuBar(props: MenuBarProps) {
             </Button>
           </DialogActions>
         </Dialog>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/save")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("toolbar/save")} width={16} height={16} />}
           text={strings.menuBar.saveNested}
           title={strings.menuBar.save}
           onClick={() => {
@@ -334,8 +331,8 @@ export function MenuBar(props: MenuBarProps) {
             setShowSaveDialog(false);
           }}
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/cross")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("toolbar/cross")} width={16} height={16} />}
           text={strings.menuBar.closeNested}
           title={strings.menuBar.closeNested}
           onClick={() => {
@@ -355,8 +352,8 @@ export function MenuBar(props: MenuBarProps) {
   const renderImportButton = (menuProps: MenuBarProps) => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/import-template")}
+        <FluentUIMenuButton
+          icon={<ArrowExportRtlRegular />}
           text=""
           title={strings.menuBar.importTemplate}
           onClick={
@@ -421,8 +418,8 @@ export function MenuBar(props: MenuBarProps) {
   const renderExportButton = (menuProps: MenuBarProps) => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/export-template")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("toolbar/export-template")} width={16} height={16} />}
           text=""
           title={strings.menuBar.exportTemplate}
           onClick={
@@ -451,22 +448,22 @@ export function MenuBar(props: MenuBarProps) {
   const renderSponsorButton = (menuProps: MenuBarProps) => {
     return (
       <>
-        <div className="el-text">
+        <div>
           <p style={{ marginLeft: "5px" }}>
             {strings.menuBar.supportDev}
           </p>
         </div>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/support-dev")}
-          text="STRIPE"
+        <FluentUIMenuButton
+          icon={<CurrencyDollarEuroFilled />}
+          text="Stripe"
           title={strings.menuBar.supportDev}
           onClick={
             menuProps.handlers?.onSupportDevClick || (() => window.open("https://donate.stripe.com/aFa00jfvgeYMg6K3RDgUM02", "_blank"))
           }
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/support-dev")}
-          text="GITHUB"
+        <FluentUIMenuButton
+          // icon={<CurrencyDollarEuroFilled />}
+          text="GitHub"
           title={strings.menuBar.supportDev}
           onClick={
             menuProps.handlers?.onSupportDevClick || (() => window.open("https://github.com/sponsors/aveirun", "_blank"))
@@ -479,8 +476,8 @@ export function MenuBar(props: MenuBarProps) {
   const renderCopyToClipboard = (menuProps: MenuBarProps) => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("Copy")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("Copy")} width={16} height={16} />}
           text=""
           title={strings.menuBar.copyTemplate}
           onClick={menuProps.handlers?.onCopyToClipboardClick}
@@ -493,8 +490,8 @@ export function MenuBar(props: MenuBarProps) {
     const hasUnsavedChanges = store.chartManager.hasUnsavedChanges();
 
     return (
-      <MenuButton
-        url={R.getSVGIcon("toolbar/save")}
+      <FluentUIMenuButton
+        icon={<SVGImageIcon url={R.getSVGIcon("toolbar/save")} width={16} height={16} />}
         text={strings.menuBar.saveButton}
         disabled={!hasUnsavedChanges}
         title={strings.menuBar.save}
@@ -512,22 +509,22 @@ export function MenuBar(props: MenuBarProps) {
   const renderNewOpenSave = () => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/new")}
+        <FluentUIMenuButton
+          icon={<DocumentRegular />}
           title={strings.menuBar.new}
           onClick={() => {
             showFileModalWindow(MainTabs.new, store.editorType === EditorType.Embedded);
           }}
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/open")}
+        <FluentUIMenuButton
+          icon={<FolderOpenRegular />}
           title={strings.menuBar.open}
           onClick={() => {
             showFileModalWindow(MainTabs.open, store.editorType === EditorType.Embedded);
           }}
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/save")}
+        <FluentUIMenuButton
+          icon={<SaveRegular />}
           title={strings.menuBar.save}
           text={strings.menuBar.saveButton}
           onClick={() => {
@@ -539,8 +536,8 @@ export function MenuBar(props: MenuBarProps) {
           }}
         />
         {renderImportButton(props)}
-        <MenuButton
-          url={R.getSVGIcon("toolbar/export")}
+        <FluentUIMenuButton
+          icon={<ArrowExportRegular />}
           title={strings.menuBar.export}
           onClick={() => {
             showFileModalWindow(MainTabs.export, store.editorType === EditorType.Embedded);
@@ -564,14 +561,14 @@ export function MenuBar(props: MenuBarProps) {
         <span className="charticulator__menu-bar-separator" />
         {props.undoRedoLocation === UndoRedoLocation.MenuBar ? (
           <>
-            <MenuButton
-              url={R.getSVGIcon("Undo")}
+            <FluentUIMenuButton
+              icon={<ArrowUndoFilled />}
               title={strings.menuBar.undo}
               disabled={store.historyManager.statesBefore.length === 0}
               onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
             />
-            <MenuButton
-              url={R.getSVGIcon("Redo")}
+            <FluentUIMenuButton
+              icon={<ArrowRedoFilled />}
               title={strings.menuBar.redo}
               disabled={store.historyManager.statesAfter.length === 0}
               onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
@@ -591,8 +588,8 @@ export function MenuBar(props: MenuBarProps) {
           return (
             <React.Fragment key={button.text || button.tooltip || button.icon}>
               <span className="charticulator__menu-bar-separator" />
-              <MenuButton
-                url={R.getSVGIcon(button.icon)}
+              <FluentUIMenuButton
+                icon={<SVGImageIcon url={R.getSVGIcon(button.icon)} width={16} height={16} />}
                 title={button.tooltip}
                 onClick={button.onClick}
                 text={button.text}
@@ -608,7 +605,7 @@ export function MenuBar(props: MenuBarProps) {
   return (
     <>
       <section style={{
-        background: tokens.colorBrandBackground
+        // background: tokens.colorBrandBackground
       }} className="charticulator__menu-bar">
         <div className="charticulator__menu-bar-left">
           <AppButtonWithDialog
@@ -654,9 +651,9 @@ export function MenuBar(props: MenuBarProps) {
           ) : null}
           {store.editorType === EditorType.Chart ? (
             <>
-              <Label>Dark</Label>
               <Switch
                 title="Preview"
+                label="Dark"
                 value={props.darkTheme ? 1 : 0}
                 onChange={(_e, data) => {
                   props.onSwitchTheme?.(data.checked);

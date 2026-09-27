@@ -6,10 +6,11 @@ import * as R from "../../resources";
 
 import { EventSubscription, Specification, Expression } from "../../../core";
 import { Actions } from "../../actions";
-import { ButtonRaised, EditableTextView } from "../../components";
+import { EditableTextView, SVGImageIcon } from "../../components";
 import { AppStore } from "../../stores";
 import { FluentUIWidgetManager } from "./widgets/fluentui_manager";
 import { FunctionCall, NumberValue } from "../../../core/expression";
+import { Button } from "@fluentui/react-components";
 
 export interface ScaleValueSelectorProps {
   scale: Specification.Scale;
@@ -109,7 +110,7 @@ export class ScaleValueSelector extends React.Component<
                         key={`scale-mapping-${key}`}
                         className={
                           this.props.onSelect &&
-                          this.state.selectedIndex === selectedIndex
+                            this.state.selectedIndex === selectedIndex
                             ? "is-active"
                             : ""
                         }
@@ -147,13 +148,8 @@ export class ScaleValueSelector extends React.Component<
             )}
             {canSelectValue ? (
               <div className="action-buttons">
-                <ButtonRaised
-                  url={R.getSVGIcon("CharticulatorLegend")}
-                  text={
-                    store.isLegendExistForScale(scale._id)
-                      ? "Remove Legend"
-                      : "Add Legend"
-                  }
+                <Button
+                  icon={<SVGImageIcon height={20} url={R.getSVGIcon("CharticulatorLegend")} />}
                   onClick={() => {
                     new Actions.ToggleLegendForScale(
                       scale._id,
@@ -161,7 +157,9 @@ export class ScaleValueSelector extends React.Component<
                       null
                     ).dispatch(store.dispatcher);
                   }}
-                />
+                >
+                  {store.isLegendExistForScale(scale._id) ? "Remove Legend" : "Add Legend"}
+                </Button>
               </div>
             ) : null}
           </section>

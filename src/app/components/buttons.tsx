@@ -10,7 +10,7 @@ import * as R from "../resources";
 import { strings } from "../../strings";
 import { Button } from "@fluentui/react-button";
 import { ToolbarButton } from "@fluentui/react-toolbar";
-import { Dialog, DialogActions, DialogBody, DialogContent, DialogSurface, DialogTitle, DialogTrigger, DrawerBody, DrawerHeader, DrawerHeaderTitle, OverlayDrawer, tokens } from "@fluentui/react-components";
+import { Dialog, DialogActions, DialogBody, DialogContent, DialogSurface, DialogTitle, DialogTrigger, DrawerBody, DrawerHeader, DrawerHeaderTitle, OverlayDrawer, Slot, tokens } from "@fluentui/react-components";
 import { Dismiss24Regular } from "@fluentui/react-icons";
 import { FileView, MainTabs } from "../views/file_view";
 import { AbstractBackend } from "../backend/abstract";
@@ -176,13 +176,14 @@ export function AppButtonWithDialog(props: AppButtonWithDialogProps) {
 export class AppButton extends BaseButton<AppButtonProps> {
   public render() {
     return (
-      <span
+      <Button
+        appearance="transparent"
         tabIndex={0}
         style={{
-          background: tokens.colorBrandBackground
+          // background: tokens.colorBrandBackground
         }}
         data-testid="appbutton"
-        className="charticulator__button-menu-app charticulator-title__button"
+        // className="charticulator__button-menu-app charticulator-title__button"
         title={this.props.title}
         onClick={this._doClick}
         onKeyPress={(e) => {
@@ -191,9 +192,9 @@ export class AppButton extends BaseButton<AppButtonProps> {
           }
         }}
       >
-        <SVGImageIcon url={R.getSVGIcon("app-icon")} />
+        <SVGImageIcon url={R.getSVGIcon("app-icon")} width={16} height={16} />
         {this.props.iconOnly ? null : <span className="el-text">{this.props.name || strings.app.name}</span>}
-      </span>
+      </Button>
     );
   }
 }
@@ -224,51 +225,23 @@ export class MenuButton extends BaseButton<IconButtonProps> {
   }
 }
 
-export class ButtonRaised extends BaseButton<IconButtonProps> {
-  public render() {
-    const props = this.props;
-    if (props.url) {
-      if (props.text) {
-        return (
-          <span
-            className={classNames("charticulator__button-raised", [
-              "is-disabled",
-              this.props.disabled,
-            ])}
-            title={props.title}
-            onClick={this._doClick}
-          >
-            <SVGImageIcon url={props.url} />
-            <span className="el-text">{props.text}</span>
-          </span>
-        );
-      } else {
-        return (
-          <span
-            className={classNames("charticulator__button-raised", [
-              "is-disabled",
-              this.props.disabled,
-            ])}
-            title={props.title}
-            onClick={this._doClick}
-          >
-            <SVGImageIcon url={props.url} />
-          </span>
-        );
-      }
-    } else {
-      return (
-        <span
-          className={classNames("charticulator__button-raised", [
-            "is-disabled",
-            this.props.disabled,
-          ])}
-          title={props.title}
-          onClick={this._doClick}
-        >
-          <span className="el-text">{props.text}</span>
-        </span>
-      );
-    }
-  }
+export interface FluentUiMenuButtonProps extends ButtonProps {
+  icon?: Slot<'span'>;
+  title?: string;
+  text?: string;
+}
+
+export function FluentUIMenuButton(props: FluentUiMenuButtonProps) {
+  return (
+    <>
+      <Button
+        icon={props.icon}
+        title={props.title}
+        onClick={props.onClick}
+        appearance="transparent"
+      >
+        {props.text}
+      </Button>
+    </>
+  );
 }

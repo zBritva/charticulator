@@ -7,10 +7,11 @@ import * as globals from "../../../globals";
 import * as R from "../../../resources";
 import { toSVGNumber } from "../../../utils";
 import { PopupView } from "../../../controllers";
-import { ButtonRaised } from "../../../components";
 import { HandlesDragContext, HandleViewProps } from "./common";
 import { strings } from "../../../../strings";
 import { FluentInputNumber } from "../../panels/widgets/controls/fluentui_input_number";
+
+import { Button } from "@fluentui/react-components"
 
 import BezierEditor from "./BezierEditor";
 
@@ -350,8 +351,7 @@ export class InputCurveHandleView extends React.Component<
                       />
                     </div>
                     <div style={{ textAlign: "right", marginTop: "10px" }}>
-                      <ButtonRaised
-                        text={strings.handles.drawSpiral}
+                      <Button
                         onClick={() => {
                           context.close();
                           // Make sprial and emit.
@@ -419,7 +419,9 @@ export class InputCurveHandleView extends React.Component<
                           }
                           dragContext.emit("end", { value: curve });
                         }}
-                      />
+                      >
+                        {strings.handles.drawSpiral}
+                      </Button>
                     </div>
                   </div>
                 </PopupView>
