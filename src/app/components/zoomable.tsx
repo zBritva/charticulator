@@ -19,15 +19,14 @@ export class ZoomableCanvas extends React.Component<
   React.PropsWithChildren<React.PropsWithChildren<ZoomableCanvasProps>>,
   ZoomableCanvasState
 > {
-  public refs: {
-    container: SVGGElement;
-    handler: SVGRectElement;
-  };
+  private container: React.RefObject<SVGGElement> = React.createRef();
+  private handler: React.RefObject<SVGRectElement> = React.createRef();
 
   public hammer: HammerManager;
 
   constructor(props: ZoomableCanvasProps) {
     super(props);
+
     this.state = {
       zoom: {
         centerX: props.width / 2,
@@ -52,7 +51,7 @@ export class ZoomableCanvas extends React.Component<
   }
 
   public getRelativePoint(point: Point): Point {
-    const r = this.refs.container.getBoundingClientRect();
+    const r = this.container.current.getBoundingClientRect();
     return {
       x: point.x - r.left,
       y: point.y - r.top,
@@ -60,7 +59,7 @@ export class ZoomableCanvas extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.handler);
+    this.hammer = new Hammer(this.handler.current);
     // this.hammer.add(new Hammer.Pan());
     // this.hammer.add(new Hammer.Pinch());
     // let centerX: number = null;
@@ -88,9 +87,9 @@ export class ZoomableCanvas extends React.Component<
   public render() {
     const transform = `translate(${this.state.zoom.centerX},${this.state.zoom.centerY}) scale(${this.state.zoom.scale})`;
     return (
-      <g ref="container">
+      <g ref={this.container}>
         <rect
-          ref="handler"
+          ref={this.handler}
           x={0}
           y={0}
           width={this.props.width}

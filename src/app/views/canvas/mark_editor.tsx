@@ -309,11 +309,9 @@ export interface SingleMarkViewState {
 export class SingleMarkView
   extends ContextedComponent<SingleMarkViewProps, SingleMarkViewState>
   implements Droppable {
-  public refs: {
-    canvas: SVGElement;
-    canvasInteraction: SVGRectElement;
-    zoomable: ZoomableCanvas;
-  };
+  canvas: React.RefObject<SVGSVGElement> = React.createRef<SVGSVGElement>();
+  canvasInteraction: React.RefObject<SVGRectElement> = React.createRef<SVGRectElement>();
+  zoomable: React.RefObject<SVGGElement> = React.createRef<SVGGElement>();
 
   public state: SingleMarkViewState = this.getDefaultState();
 
@@ -543,7 +541,7 @@ export class SingleMarkView
   }
 
   public getRelativePoint(point: Point): Point {
-    const r = this.refs.canvas.getBoundingClientRect();
+    const r = this.canvas.current.getBoundingClientRect();
     return {
       x: point.x - r.left,
       y: point.y - r.top,
@@ -608,7 +606,7 @@ export class SingleMarkView
 
   // eslint-disable-next-line
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.canvasInteraction);
+    this.hammer = new Hammer(this.canvasInteraction.current);
     this.hammer.add(new Hammer.Tap());
     const pan = new Hammer.Pan();
     const pinch = new Hammer.Pinch();
@@ -655,7 +653,7 @@ export class SingleMarkView
       lastDeltaX = e.deltaX;
       lastDeltaY = e.deltaY;
     });
-    this.refs.canvas.onwheel = (e) => {
+    this.canvas.current.onwheel = (e) => {
       const fixPoint = Geometry.unapplyZoom(
         this.state.zoom,
         this.getRelativePoint({ x: e.pageX, y: e.pageY })
@@ -683,7 +681,7 @@ export class SingleMarkView
       e.preventDefault();
     };
 
-    globals.dragController.registerDroppable(this, this.refs.canvas);
+    globals.dragController.registerDroppable(this, this.canvas.current);
     this.tokens.push(
       globals.dragController.addListener("sessionstart", () => {
         const session = globals.dragController.getSession();
@@ -1622,14 +1620,14 @@ export class SingleMarkView
               style={{
                 fill: tokens.colorNeutralBackground1
               }}
-              ref="canvas"
+              ref={this.canvas}
               x={0}
               y={0}
               width={this.props.width - 4}
               height={this.props.height}
             >
               <rect
-                ref="canvasInteraction"
+                ref={this.canvasInteraction}
                 className="interaction-handler"
                 x={0}
                 y={0}
@@ -1659,7 +1657,7 @@ export class SingleMarkView
             style={{
               fill: tokens.colorNeutralBackground1
             }}
-            ref="canvas"
+            ref={this.canvas}
             x={0}
             y={0}
             width={this.props.width - 4}
@@ -1677,7 +1675,7 @@ export class SingleMarkView
               )}
             </defs>
             <rect
-              ref="canvasInteraction"
+              ref={this.canvasInteraction}
               className="interaction-handler"
               x={0}
               y={0}
@@ -1685,7 +1683,7 @@ export class SingleMarkView
               height={this.props.height}
             />
             {this.renderBoundsGuides()}
-            <g ref="zoomable" transform={transform} className="graphics">
+            <g ref={this.zoomable} transform={transform} className="graphics">
               {zipArray(glyph.marks, glyphState.marks).map(
                 ([elements, elementState]) => {
                   return (

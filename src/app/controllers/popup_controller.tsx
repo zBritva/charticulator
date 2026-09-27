@@ -17,7 +17,7 @@ export enum PopupAlignment {
 
 export interface PopupOptions {
   parent?: PopupContext;
-  anchor: Element;
+  anchor?: Element;
   alignX?: PopupAlignment;
   alignY?: PopupAlignment;
 }

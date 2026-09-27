@@ -19,10 +19,8 @@ export class AngleHandleView extends React.Component<
   React.PropsWithChildren<AngleHandleViewProps>,
   AngleHandleViewState
 > {
-  public refs: {
-    margin: SVGGElement;
-    centerCircle: SVGCircleElement;
-  };
+  margin: React.RefObject<SVGGElement> = React.createRef<SVGGElement>();
+  centerCircle: React.RefObject<SVGCircleElement> = React.createRef<SVGCircleElement>();
   public hammer: HammerManager;
 
   constructor(props: AngleHandleViewProps) {
@@ -57,7 +55,7 @@ export class AngleHandleView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.margin);
+    this.hammer = new Hammer(this.margin.current);
     this.hammer.add(new Hammer.Pan({ threshold: 1 }));
 
     let context: HandlesDragContext = null;
@@ -76,7 +74,7 @@ export class AngleHandleView extends React.Component<
     });
     this.hammer.on("pan", (e) => {
       if (context) {
-        const cc = this.refs.centerCircle.getBoundingClientRect();
+        const cc = this.centerCircle.current.getBoundingClientRect();
         const px = e.center.x - (cc.left + cc.width / 2);
         const py = e.center.y - (cc.top + cc.height / 2);
         const newValue = this.clipAngle(
@@ -90,7 +88,7 @@ export class AngleHandleView extends React.Component<
     });
     this.hammer.on("panend", (e) => {
       if (context) {
-        const cc = this.refs.centerCircle.getBoundingClientRect();
+        const cc = this.centerCircle.current.getBoundingClientRect();
         const px = e.center.x - (cc.left + cc.width / 2);
         const py = e.center.y - (cc.top + cc.height / 2);
         const newValue = this.clipAngle(
@@ -138,7 +136,7 @@ export class AngleHandleView extends React.Component<
     }
     return (
       <g
-        ref="margin"
+        ref={this.margin}
         className={classNames(
           "handle",
           "handle-angle",
@@ -147,7 +145,7 @@ export class AngleHandleView extends React.Component<
         )}
       >
         <g transform={`translate(${cx},${cy}) rotate(${180 + handle.value})`}>
-          <circle ref="centerCircle" cx={0} cy={0} r={0} />
+          <circle ref={this.centerCircle} />
           <line
             x1={0}
             y1={0}
@@ -175,9 +173,8 @@ export class AngleHandleView extends React.Component<
         </g>
         {this.state.dragging ? (
           <g
-            transform={`translate(${cx},${cy}) rotate(${
-              180 + this.state.newValue
-            })`}
+            transform={`translate(${cx},${cy}) rotate(${180 + this.state.newValue
+              })`}
           >
             <line
               x1={0}

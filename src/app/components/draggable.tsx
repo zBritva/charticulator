@@ -27,9 +27,7 @@ export class DraggableElement extends React.Component<
   React.PropsWithChildren<DraggableElementProps>,
   DraggableElementState
 > {
-  public refs: {
-    draggableContainer: Element;
-  };
+  public draggableContainer: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
   constructor(props: DraggableElementProps) {
     super(props);
@@ -39,7 +37,7 @@ export class DraggableElement extends React.Component<
   public componentDidMount() {
     globals.dragController.registerDraggable(
       this,
-      this.refs.draggableContainer,
+      this.draggableContainer.current,
       this.props.onTap
     );
   }
@@ -75,7 +73,7 @@ export class DraggableElement extends React.Component<
     return (
       <div
         data-testid="draggable"
-        ref="draggableContainer"
+        ref={this.draggableContainer}
         className={classNames(this.props.className, "draggable", [
           "dragging",
           this.state.dragging,
@@ -97,14 +95,12 @@ export class ClickableSVGElement extends React.Component<
   React.PropsWithChildren<ClickableSVGElementProps>,
   Record<string, unknown>
 > {
-  public refs: {
-    container: SVGGElement;
-  };
+  private container: React.RefObject<SVGGElement> = React.createRef<SVGGElement>();
 
   private hammer: HammerManager;
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.container);
+    this.hammer = new Hammer(this.container.current);
     this.hammer.add(new Hammer.Tap());
     this.hammer.on("tap", () => {
       if (this.props.onClick) {
@@ -120,7 +116,7 @@ export class ClickableSVGElement extends React.Component<
 
   public render() {
     return (
-      <g ref="container" style={{ cursor: "pointer" }}>
+      <g ref={this.container} style={{ cursor: "pointer" }}>
         {this.props.children}
       </g>
     );

@@ -1376,7 +1376,7 @@ export class FluentUIWidgetManager
         key={this.getKeyFromProperty(property)}
       >
         <ReorderListView
-          enabled={options.allowReorder}
+          enabled={options.allowReorder ?? true}
           onReorder={(dragIndex, dropIndex) => {
             ReorderListView.ReorderArray(items, dragIndex, dropIndex);
             this.emitSetProperty(property, items);
@@ -2170,59 +2170,67 @@ export class DropZoneView
   }
 }
 
-export class FluentDetailsButton extends React.Component<
-  React.PropsWithChildren<{
-    widgets: JSX.Element[];
-    manager: Prototypes.Controls.WidgetManager;
-    label?: string;
-  }>,
-  Record<string, unknown>
-> {
-  public inner: DetailsButtonInner;
+interface FluentDetailsButtonProps {
+  widgets: JSX.Element[];
+  manager: Prototypes.Controls.WidgetManager;
+  label?: string;
+}
 
-  public componentDidUpdate() {
-    if (this.inner) {
-      this.inner.forceUpdate();
+export function FluentDetailsButton(
+  props: FluentDetailsButtonProps
+) {
+  const innerRef = React.useRef<DetailsButtonInner | null>(null);
+  const btnRef = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    if (innerRef.current) {
+      innerRef.current.forceUpdate();
     }
-  }
+  });
 
-  public render() {
-    let btn: Element;
-    return (
-      <>
-        {this.props.label ? <Label>{this.props.label}</Label> : null}
-        <Button
-          // iconProps={{
-          //   iconName: "More",
-          // }}
-          icon={<SVGImageIcon url={R.getSVGIcon("general/more-horizontal")} />}
-          ref={(e) => (btn = ReactDOM.findDOMNode(e as any) as Element)}
-          onClick={() => {
-            globals.popupController.popupAt(
-              (context) => {
-                return (
-                  <PopupView context={context}>
-                    <DetailsButtonInner
-                      parent={this}
-                      ref={(e) => (this.inner = e)}
-                    />
-                  </PopupView>
-                );
-              },
-              {
-                anchor: btn,
-                alignX: getAlignment(btn).alignX,
-              }
-            );
-          }}
-        />
-      </>
-    );
-  }
+  return (
+    <>
+      {props.label ? <Label>{props.label}</Label> : null}
+      <Button
+        // iconProps={{
+        //   iconName: "More",
+        // }}
+        icon={<SVGImageIcon url={R.getSVGIcon("general/more-horizontal")} />}
+        ref={btnRef}
+        onClick={() => {
+          const btn = btnRef.current;
+          if (!btn) {
+            return;
+          }
+
+          globals.popupController.popupAt(
+            (context) => {
+              return (
+                <PopupView context={context}>
+                  <DetailsButtonInner
+                    parent={props as any}
+                    ref={(e) => (innerRef.current = e)}
+                  />
+                </PopupView>
+              );
+            },
+            {
+              anchor: btn,
+              alignX: getAlignment(btn).alignX,
+            }
+          );
+        }}
+      />
+    </>
+  );
 }
 
 export class DetailsButtonInner extends React.Component<
-  React.PropsWithChildren<{ parent: FluentDetailsButton }>,
+  React.PropsWithChildren<{
+    parent: {
+      props: FluentDetailsButtonProps;
+    }
+  }>,
   Record<string, unknown>
 > {
   public render() {

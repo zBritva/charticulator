@@ -60,7 +60,7 @@ async function fixDTSBundle(filename) {
 /** Convert a YAML file to JSON */
 async function yamlToJSON(yamlFile, jsonFile) {
   const contents = await fs.readFile(yamlFile);
-  let doc = jsyaml.safeLoad(contents);
+  let doc = jsyaml.load(contents);
   let json = JSON.stringify(doc);
   await fs.writeFile(jsonFile, Buffer.from(json, "utf-8"));
 }
@@ -68,7 +68,7 @@ async function yamlToJSON(yamlFile, jsonFile) {
 /** Convert a YAML file to JavaScript variable */
 async function yamlToJavaScript(yamlFile, javascriptFile, variableName, mixin) {
   const contents = await fs.readFile(yamlFile);
-  let doc = jsyaml.safeLoad(contents);
+  let doc = jsyaml.load(contents);
   if (mixin != undefined) {
     mixin(doc);
   }

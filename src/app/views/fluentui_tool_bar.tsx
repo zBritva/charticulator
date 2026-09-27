@@ -12,7 +12,7 @@ import {
   FluentToolButton,
   SVGImageIcon,
 } from "../components";
-import { ContextedComponent, MainReactContext } from "../context_component";
+import { MainReactContext } from "../context_component";
 
 import { LinkCreationPanel } from "./panels/link_creator";
 import { LegendCreationPanel } from "./panels/legend_creator";
@@ -197,7 +197,7 @@ export const FluentUIToolbar: React.FC<{
     return [
       <>
         <LinkButton invertIcon={props.darkTheme} label={true} />
-        <LegendButton invertIcon={props.darkTheme}/>
+        <LegendButton invertIcon={props.darkTheme} />
         <span className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
@@ -711,259 +711,214 @@ export interface ObjectButtonProps {
   compact?: boolean;
 }
 
-export class ObjectButton extends ContextedComponent<
-  ObjectButtonProps,
-  Record<string, unknown>
-> {
-  public token: EventSubscription;
+export const ObjectButton: React.FC<ObjectButtonProps> = (props) => {
+  const { store, dispatcher } = React.useContext(MainReactContext);
+  const [, setRenderVersion] = React.useState(0);
 
-  public getIsActive() {
+  const getIsActive = React.useCallback(() => {
     return (
-      this.store.currentTool == this.props.classID &&
-      this.store.currentToolOptions == this.props.options
+      store.currentTool == props.classID &&
+      store.currentToolOptions == props.options
     );
-  }
+  }, [store.currentTool, store.currentToolOptions, props.classID, props.options]);
 
-  public componentDidMount() {
-    this.token = this.context.store.addListener(
-      AppStore.EVENT_CURRENT_TOOL,
-      () => {
-        this.forceUpdate();
-      }
-    );
-  }
+  React.useEffect(() => {
+    const token = store.addListener(AppStore.EVENT_CURRENT_TOOL, () => {
+      setRenderVersion((value) => value + 1);
+    });
 
-  public componentWillUnmount() {
-    this.token.remove();
-  }
-
-  public render() {
-    return (
-      <>
-        <DraggableElement
-          dragData={
-            this.props.noDragging
-              ? null
-              : this.props.onDrag
-                ? this.props.onDrag
-                : () => {
-                  return new DragData.ObjectType(
-                    this.props.classID,
-                    this.props.options
-                  );
-                }
-          }
-          onDragStart={() => this.setState({ dragging: true })}
-          onDragEnd={() => this.setState({ dragging: false })}
-          renderDragElement={() => {
-            return [
-              <SVGImageIcon
-                invert={this.props.invertIcon}
-                url={getSVGIcon(this.props.icon)}
-                width={32}
-                height={32}
-              />,
-              { x: -16, y: -16 },
-            ];
-          }}
-        >
-          <ToolbarButton
-            appearance="subtle"
-            icon={
-              typeof this.props.icon === "string" ? (
-                <SVGImageIcon
-                  invert={this.props.invertIcon}
-                  url={R.getSVGIcon(this.props.icon)}
-                  width={20}
-                  height={20}
-                />
-              ) : (
-                this.props.icon
-              )
-            }
-            title={this.props.title}
-            value={this.props.text}
-            // toggle={this.getIsActive()}
-            onClick={() => {
-              this.dispatch(
-                new Actions.SetCurrentTool(
-                  this.props.classID,
-                  this.props.options
-                )
-              );
-              if (this.props.onClick) {
-                this.props.onClick();
-              }
-            }}
-          />
-        </DraggableElement>
-      </>
-    );
-  }
-}
-
-export class MultiObjectButton extends ContextedComponent<
-  {
-    compact?: boolean;
-    tools: ObjectButtonProps[];
-    invertIcon?: boolean;
-  },
-  {
-    currentSelection: {
-      classID: string;
-      options: string;
+    return () => {
+      token.remove();
     };
-    dragging: boolean;
-  }
-> {
-  public state = {
-    currentSelection: {
-      classID: this.props.tools[0].classID,
-      options: this.props.tools[0].options,
-    },
-    dragging: false,
-  };
-  public token: EventSubscription;
+  }, [store]);
 
-  public isActive() {
-    const store = this.store;
-    for (const item of this.props.tools) {
-      if (
-        item.classID == store.currentTool &&
-        item.options == store.currentToolOptions
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }
+  return (
+    <>
+      <DraggableElement
+        dragData={
+          props.noDragging
+            ? null
+            : props.onDrag
+              ? props.onDrag
+              : () => {
+                return new DragData.ObjectType(props.classID, props.options);
+              }
+        }
+        onDragStart={() => setRenderVersion((value) => value + 1)}
+        onDragEnd={() => setRenderVersion((value) => value + 1)}
+        renderDragElement={() => {
+          return [
+            <SVGImageIcon
+              invert={props.invertIcon}
+              url={getSVGIcon(props.icon)}
+              width={32}
+              height={32}
+            />,
+            { x: -16, y: -16 },
+          ];
+        }}
+      >
+        <ToolbarButton
+          appearance="subtle"
+          icon={
+            typeof props.icon === "string" ? (
+              <SVGImageIcon
+                invert={props.invertIcon}
+                url={R.getSVGIcon(props.icon)}
+                width={20}
+                height={20}
+              />
+            ) : (
+              props.icon
+            )
+          }
+          title={props.title}
+          value={props.text}
+          // toggle={getIsActive()}
+          onClick={() => {
+            dispatcher.dispatch(new Actions.SetCurrentTool(props.classID, props.options));
+            if (props.onClick) {
+              props.onClick();
+            }
+          }}
+        />
+      </DraggableElement>
+    </>
+  );
+};
 
-  public getSelectedTool() {
-    for (const item of this.props.tools) {
+export const MultiObjectButton: React.FC<{
+  compact?: boolean;
+  tools: ObjectButtonProps[];
+  invertIcon?: boolean;
+}> = ({ tools, invertIcon }) => {
+  const { store } = React.useContext(MainReactContext);
+  const [currentSelection, setCurrentSelection] = React.useState<{
+    classID: string;
+    options: string;
+  }>({
+    classID: tools[0]?.classID ?? "",
+    options: tools[0]?.options ?? "",
+  });
+  const [, setDragging] = React.useState(false);
+
+  const getSelectedTool = React.useCallback(() => {
+    for (const item of tools) {
       if (
-        item.classID == this.state.currentSelection.classID &&
-        item.options == this.state.currentSelection.options
+        item.classID == currentSelection.classID &&
+        item.options == currentSelection.options
       ) {
         return item;
       }
     }
-    return this.props.tools[0];
-  }
+    return tools[0];
+  }, [currentSelection, tools]);
 
-  public componentDidMount() {
-    this.token = this.store.addListener(AppStore.EVENT_CURRENT_TOOL, () => {
-      for (const item of this.props.tools) {
-        // If the tool is within the tools defined here, we update the current selection
+  React.useEffect(() => {
+    const token = store.addListener(AppStore.EVENT_CURRENT_TOOL, () => {
+      for (const item of tools) {
         if (
-          this.store.currentTool == item.classID &&
-          this.store.currentToolOptions == item.options
+          store.currentTool == item.classID &&
+          store.currentToolOptions == item.options
         ) {
-          this.setState({
-            currentSelection: {
-              classID: item.classID,
-              options: item.options,
-            },
+          setCurrentSelection({
+            classID: item.classID,
+            options: item.options ?? "",
           });
           break;
         }
       }
-      this.forceUpdate();
     });
-  }
 
-  public componentWillUnmount() {
-    this.token.remove();
-  }
+    return () => token.remove();
+  }, [store, tools]);
 
-  public render() {
-    const currentTool = this.getSelectedTool();
+  const currentTool = getSelectedTool();
 
-    return (
-      <DraggableElement
-        dragData={() => {
-          if (currentTool?.onDrag) {
-            return currentTool?.onDrag();
-          }
-          return new DragData.ObjectType(
-            currentTool.classID,
-            currentTool.options
-          );
-        }}
-        onDragStart={() => this.setState({ dragging: true })}
-        onDragEnd={() => this.setState({ dragging: false })}
-        renderDragElement={() => {
-          return [
-            <SVGImageIcon
-              invert={this.props.invertIcon}
-              url={R.getSVGIcon(currentTool.icon)}
-              height={20}
-              width={20}
-              aria-hidden="true"
-            />,
-            { x: 16, y: 16 },
-          ];
-        }}
-      >
-        <Menu>
-          <MenuTrigger disableButtonEnhancement>
-            <ToolbarButton
-              appearance="subtle"
-              title={currentTool?.title}
-              icon={
-                <SVGImageIcon
-                  invert={this.props.invertIcon}
-                  url={R.getSVGIcon(currentTool.icon)}
-                  height={20}
-                  width={20}
-                ></SVGImageIcon>
+  return (
+    <DraggableElement
+      dragData={() => {
+        if (currentTool?.onDrag) {
+          return currentTool.onDrag();
+        }
+        return new DragData.ObjectType(
+          currentTool.classID,
+          currentTool.options
+        );
+      }}
+      onDragStart={() => setDragging(true)}
+      onDragEnd={() => setDragging(false)}
+      renderDragElement={() => {
+        return [
+          <SVGImageIcon
+            invert={invertIcon}
+            url={R.getSVGIcon(currentTool.icon)}
+            height={20}
+            width={20}
+            aria-hidden="true"
+          />,
+          { x: 16, y: 16 },
+        ];
+      }}
+    >
+      <Menu>
+        <MenuTrigger disableButtonEnhancement>
+          <ToolbarButton
+            appearance="subtle"
+            title={currentTool?.title}
+            icon={
+              <SVGImageIcon
+                invert={invertIcon}
+                url={R.getSVGIcon(currentTool.icon)}
+                height={20}
+                width={20}
+              ></SVGImageIcon>
+            }
+            onClick={() => {
+              if (currentTool) {
+                new Actions.SetCurrentTool(
+                  currentTool.classID,
+                  currentTool.options
+                ).dispatch(store.dispatcher);
               }
-              onClick={() => {
-                if (currentTool) {
-                  this.dispatch(
-                    new Actions.SetCurrentTool(
-                      currentTool.classID,
-                      currentTool.options
-                    )
-                  );
-                }
-              }}
-            />
-          </MenuTrigger>
+            }}
+          />
+        </MenuTrigger>
 
-          <MenuPopover>
-            <MenuList>
-              {this.props.tools.map((tool, index) => {
-                return (
-                  <MenuItem
-                    key={`menu-${index}`}
-                    onClick={() => {
-                      if (tool) {
-                        this.dispatch(
-                          new Actions.SetCurrentTool(tool.classID, tool.options)
-                        );
-                      }
-                    }}
-                    icon={
-                      <SVGImageIcon
-                        invert={this.props.invertIcon}
-                        key={`icon-${index}`}
-                        url={R.getSVGIcon(tool.icon)}
-                        height={20}
-                        width={20}
-                      ></SVGImageIcon>
+        <MenuPopover>
+          <MenuList>
+            {tools.map((tool, index) => {
+              return (
+                <MenuItem
+                  key={`menu-${index}`}
+                  onClick={() => {
+                    if (tool) {
+                      new Actions.SetCurrentTool(
+                        tool.classID,
+                        tool.options
+                      ).dispatch(store.dispatcher);
                     }
-                  >
-                    {tool.title}{" "}
-                  </MenuItem>
-                );
-              })}
-            </MenuList>
-          </MenuPopover>
-        </Menu>
-      </DraggableElement>
-    );
-  }
-}
+                  }}
+                  icon={
+                    <SVGImageIcon
+                      invert={invertIcon}
+                      key={`icon-${index}`}
+                      url={R.getSVGIcon(tool.icon)}
+                      height={20}
+                      width={20}
+                    ></SVGImageIcon>
+                  }
+                >
+                  {tool.title}{" "}
+                </MenuItem>
+              );
+            })}
+          </MenuList>
+        </MenuPopover>
+      </Menu>
+    </DraggableElement>
+  );
+};
 
 export const ScaffoldButton: React.FC<{
   currentTool: string;
@@ -1008,7 +963,7 @@ export const LinkButton: React.FC<{
       >
         <PopoverTrigger>
           <ToolbarButton
-            ref={button}
+            ref={button.current}
             title={strings.toolbar.link}
             value={props.label ? strings.toolbar.link : ""}
             icon={
@@ -1035,7 +990,7 @@ export const LinkButton: React.FC<{
 
 export const LegendButton: React.FC<{
   invertIcon?: boolean;
-}> = ({invertIcon}) => {
+}> = ({ invertIcon }) => {
   // const { store } = React.useContext(MainReactContext);
   const [isOpen, setOpen] = React.useState(false);
 

@@ -29,9 +29,7 @@ export class InputCurveHandleView extends React.Component<
   React.PropsWithChildren<InputCurveHandleViewProps>,
   InputCurveHandleViewState
 > {
-  public refs: {
-    interaction: SVGRectElement;
-  };
+  interaction: React.RefObject<SVGRectElement> = React.createRef<SVGRectElement>();
 
   public state: InputCurveHandleViewState = {
     enabled: false,
@@ -43,7 +41,7 @@ export class InputCurveHandleView extends React.Component<
   public hammer: HammerManager;
 
   public getPoint(x: number, y: number): Point {
-    const bbox = this.refs.interaction.getBoundingClientRect();
+    const bbox = this.interaction.current.getBoundingClientRect();
     x -= bbox.left;
     y -= bbox.top + bbox.height;
     x /= this.props.zoom.scale;
@@ -107,7 +105,7 @@ export class InputCurveHandleView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.interaction);
+    this.hammer = new Hammer(this.interaction.current);
 
     this.hammer.on("panstart", (e) => {
       if (this.state.drawingCurve) {
@@ -253,17 +251,19 @@ export class InputCurveHandleView extends React.Component<
             enabled: false,
             drawingPen: false,
           });
-          
+
           const context = new HandlesDragContext();
           this.props.onDragStart(this.props.handle, context);
-          context.emit("end", { value: [
-            [
-              { x: -.5, y: -.5 },
-              { x: 0, y: 0 },
-              { x: 0, y: 0 },
-              { x: .5, y: .5 }
+          context.emit("end", {
+            value: [
+              [
+                { x: -.5, y: -.5 },
+                { x: 0, y: 0 },
+                { x: 0, y: 0 },
+                { x: .5, y: .5 }
+              ]
             ]
-          ] });
+          });
         }}
       >
         <rect x={cx - 16} y={cy - 16} width={32} height={32} />
@@ -458,7 +458,7 @@ export class InputCurveHandleView extends React.Component<
     return (
       <g className="handle">
         <rect
-          ref="interaction"
+          ref={this.interaction}
           style={{
             pointerEvents: this.state.enabled ? "fill" : "none",
             cursor: "crosshair",

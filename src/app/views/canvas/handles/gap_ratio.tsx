@@ -20,14 +20,14 @@ export class GapRatioHandleView extends React.Component<
   React.PropsWithChildren<RelativeLineRatioHandleViewProps>,
   RelativeLineRatioHandleViewState
 > {
-  public refs: {
-    cOrigin: SVGCircleElement;
-    line: SVGLineElement;
-  };
+  cOrigin: React.RefObject<SVGCircleElement>;
+  line: React.RefObject<SVGLineElement>;
   public hammer: HammerManager;
 
   constructor(props: RelativeLineRatioHandleViewProps) {
     super(props);
+    this.cOrigin = React.createRef<SVGCircleElement>();
+    this.line = React.createRef<SVGLineElement>();
     this.state = {
       dragging: false,
       newValue: this.props.handle.value,
@@ -36,7 +36,7 @@ export class GapRatioHandleView extends React.Component<
 
   // eslint-disable-next-line
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.line);
+    this.hammer = new Hammer(this.line.current);
     this.hammer.add(new Hammer.Pan({ threshold: 1 }));
 
     let context: HandlesDragContext = null;
@@ -89,8 +89,8 @@ export class GapRatioHandleView extends React.Component<
     this.hammer.on("panstart", (e) => {
       context = new HandlesDragContext();
       oldValue = this.props.handle.value;
-      if (this.refs.cOrigin) {
-        const bbox = this.refs.cOrigin.getBoundingClientRect();
+      if (this.cOrigin) {
+        const bbox = this.cOrigin.current.getBoundingClientRect();
         xStart = (e.center.x - e.deltaX - bbox.left) / this.props.zoom.scale;
         yStart = -(e.center.y - e.deltaY - bbox.top) / this.props.zoom.scale;
       } else {
@@ -261,8 +261,8 @@ export class GapRatioHandleView extends React.Component<
               ["visible", handle.visible || this.props.visible]
             )}
           >
-            <circle ref="cOrigin" cx={center.x} cy={center.y} r={0} />
-            <g ref="line">
+            <circle ref={this.cOrigin} cx={center.x} cy={center.y} r={0} />
+            <g ref={this.line}>
               <path
                 d={renderSVGPath(pathRegion.path.cmds)}
                 className="element-region handle-ghost"
@@ -368,8 +368,8 @@ export class GapRatioHandleView extends React.Component<
               ["visible", handle.visible || this.props.visible]
             )}
           >
-            <circle ref="cOrigin" cx={center.x} cy={center.y} r={0} />
-            <g ref="line">
+            <circle ref={this.cOrigin} cx={center.x} cy={center.y} r={0} />
+            <g ref={this.line}>
               <path
                 d={renderSVGPath(pathRegion.path.cmds)}
                 className="element-region handle-ghost"
@@ -422,7 +422,7 @@ export class GapRatioHandleView extends React.Component<
               ["visible", handle.visible || this.props.visible]
             )}
           >
-            <g ref="line">
+            <g ref={this.line}>
               <line
                 className="element-line handle-ghost"
                 x1={fxVal}
@@ -480,7 +480,7 @@ export class GapRatioHandleView extends React.Component<
               ["visible", handle.visible || this.props.visible]
             )}
           >
-            <g ref="line">
+            <g ref={this.line}>
               <line
                 className="element-line handle-ghost"
                 y1={fyVal}
@@ -510,18 +510,20 @@ export class GapRatioHandleView extends React.Component<
                 width={Math.abs(fx2 - fx1)}
               />
             </g>
-            {this.state.dragging ? (
-              <g>
-                <line
-                  className={`element-line handle-hint`}
-                  y1={fY(handle.reference + handle.scale * this.state.newValue)}
-                  y2={fY(handle.reference + handle.scale * this.state.newValue)}
-                  x1={fx1}
-                  x2={fx2}
-                />
-              </g>
-            ) : null}
-          </g>
+            {
+              this.state.dragging ? (
+                <g>
+                  <line
+                    className={`element-line handle-hint`}
+                    y1={fY(handle.reference + handle.scale * this.state.newValue)}
+                    y2={fY(handle.reference + handle.scale * this.state.newValue)}
+                    x1={fx1}
+                    x2={fx2}
+                  />
+                </g>
+              ) : null
+            }
+          </g >
         );
       }
     }

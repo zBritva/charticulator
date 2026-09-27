@@ -48,16 +48,15 @@ export class EditingLink extends React.Component<
   React.PropsWithChildren<EditingLinkProps>,
   EditingLinkState
 > {
-  public refs: {
-    container: SVGGElement;
-    handler: SVGRectElement;
-  };
+  private container = React.createRef<SVGGElement>();
+  private handler = React.createRef<SVGRectElement>();
 
   private markPlaceholders = new WeakMap<SVGGElement, MarkAnchorDescription>();
   private hammer: HammerManager;
 
   constructor(props: EditingLinkProps) {
     super(props);
+
     this.state = {
       stage: "select-source",
       firstAnchor: null,
@@ -82,7 +81,7 @@ export class EditingLink extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.container);
+    this.hammer = new Hammer(this.container.current);
     this.hammer.add(new Hammer.Pan());
     this.hammer.add(new Hammer.Tap());
     this.hammer.on("tap panend", (e) => {
@@ -318,10 +317,10 @@ export class EditingLink extends React.Component<
             (row) =>
               row.source_id &&
               tables[0].id2RowGlyphIndex.get(row.source_id.toString()) !=
-                undefined &&
+              undefined &&
               row.target_id &&
               tables[1].id2RowGlyphIndex.get(row.target_id.toString()) !=
-                undefined
+              undefined
           );
           if (rowItem) {
             const [, i0] = tables[0].id2RowGlyphIndex.get(
@@ -499,7 +498,7 @@ export class EditingLink extends React.Component<
   }
 
   public getPointFromEvent(point: Point): Point {
-    const r = this.refs.handler.getBoundingClientRect();
+    const r = this.handler.current.getBoundingClientRect();
     const p = Geometry.unapplyZoom(this.props.zoom, {
       x: point.x - r.left,
       y: point.y - r.top,
@@ -509,9 +508,9 @@ export class EditingLink extends React.Component<
 
   public render() {
     return (
-      <g className="creating-link" ref="container">
+      <g className="creating-link" ref={this.container}>
         {this.renderMarkPlaceholders()}
-      </g>
+      </g >
     );
   }
 }
