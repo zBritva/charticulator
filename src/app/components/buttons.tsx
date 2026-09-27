@@ -10,7 +10,11 @@ import * as R from "../resources";
 import { strings } from "../../strings";
 import { Button } from "@fluentui/react-button";
 import { ToolbarButton } from "@fluentui/react-toolbar";
-import { tokens } from "@fluentui/react-components";
+import { Dialog, DialogActions, DialogBody, DialogContent, DialogSurface, DialogTitle, DialogTrigger, DrawerBody, DrawerHeader, DrawerHeaderTitle, OverlayDrawer, tokens } from "@fluentui/react-components";
+import { Dismiss24Regular } from "@fluentui/react-icons";
+import { FileView, MainTabs } from "../views/file_view";
+import { AbstractBackend } from "../backend/abstract";
+import { AppStore } from "../stores";
 
 export interface ToolButtonProps {
   icon?: string | React.JSX.Element;
@@ -51,7 +55,7 @@ export class FluentToolButton extends React.Component<
           renderDragElement={() => {
             if (typeof this.props.icon === "string") {
               return [
-                <SVGImageIcon url={this.props.icon} width={20} height={20} invert={this.props.invertIcon}/>,
+                <SVGImageIcon url={this.props.icon} width={20} height={20} invert={this.props.invertIcon} />,
                 { x: -16, y: -16 },
               ];
             } else {
@@ -132,6 +136,41 @@ export interface AppButtonProps extends ButtonProps {
   name?: string;
   title: string;
   iconOnly?: boolean;
+}
+
+
+export interface AppButtonWithDialogProps extends AppButtonProps {
+  store: AppStore;
+  defaultTab: MainTabs;
+  isEmbedded?: boolean;
+  children?: React.ReactNode;
+}
+
+export function AppButtonWithDialog(props: AppButtonWithDialogProps) {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const { store, defaultTab, isEmbedded } = props;
+
+  return (
+    <>
+      <AppButton
+        {...props}
+        onClick={() => setDrawerOpen(true)}
+      />
+      <OverlayDrawer
+        open={drawerOpen}
+        onOpenChange={(_, { open }) => setDrawerOpen(open)}
+        style={{ width: `100%`, height: `100%` }}
+      >
+        <FileView
+          backend={store.backend}
+          defaultTab={defaultTab}
+          store={store}
+          disabledTabs={isEmbedded && store.backend != null ? [MainTabs.new, MainTabs.save, MainTabs.options, MainTabs.datasets, MainTabs.about] : []}
+          onClose={() => setDrawerOpen(false)}
+        />
+      </OverlayDrawer>
+    </>
+  );
 }
 
 export class AppButton extends BaseButton<AppButtonProps> {

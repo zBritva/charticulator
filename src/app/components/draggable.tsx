@@ -15,7 +15,7 @@ export interface DraggableElementProps {
   onTap?: () => void;
   onDragStart?: () => void;
   onDragEnd?: () => void;
-  dragData: () => any;
+  dragData?: () => any;
   renderDragElement?: () => [JSX.Element, Point];
 }
 

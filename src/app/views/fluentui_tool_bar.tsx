@@ -5,7 +5,6 @@
 import * as React from "react";
 import * as R from "../resources";
 
-import { EventSubscription } from "../../core";
 import { Actions, DragData } from "../actions";
 import {
   DraggableElement,
@@ -21,7 +20,6 @@ import { strings } from "../../strings";
 import { LayoutDirection, UndoRedoLocation } from "../main_view";
 import { useContext } from "react";
 
-import { ToolbarButton } from "@fluentui/react-toolbar";
 import { Popover } from "@fluentui/react-popover";
 import { PopoverSurface } from "@fluentui/react-popover";
 import { MenuPopover } from "@fluentui/react-menu";
@@ -30,6 +28,7 @@ import { MenuItem } from "@fluentui/react-menu";
 import { MenuList } from "@fluentui/react-menu";
 import { MenuTrigger } from "@fluentui/react-menu";
 import { PopoverTrigger } from "@fluentui/react-popover";
+import { Toolbar, ToolbarButton, ToolbarDivider } from "@fluentui/react-components";
 
 import { getSVGIcon } from "../resources";
 import { EditorType } from "../stores/app_store";
@@ -658,7 +657,7 @@ export const FluentUIToolbar: React.FC<{
     );
   };
 
-  let tooltipsItems = [];
+  let tooltipsItems: React.JSX.Element[] = [];
   if (store.editorType === "embedded") {
     const chartToolItems = getChartToolItems(props.toolbarLabels);
     const glyphToolItems = getGlyphToolItems(props.toolbarLabels);
@@ -666,34 +665,12 @@ export const FluentUIToolbar: React.FC<{
   } else {
     tooltipsItems = [getToolItems(props.toolbarLabels, innerWidth)];
   }
+
   return (
     <>
-      <div
-        className={
-          props.layout === LayoutDirection.Vertical
-            ? "charticulator__toolbar-vertical"
-            : "charticulator__toolbar-horizontal"
-        }
-      >
-        <div className="charticulator__toolbar-buttons-align-left">
-          {tooltipsItems.map((item, index) => {
-            return (
-              <React.Fragment key={index}>
-                <div
-                  key={index}
-                  className={
-                    props.layout === LayoutDirection.Vertical
-                      ? "charticulator__toolbar-vertical-group"
-                      : "charticulator__toolbar-horizontal-group"
-                  }
-                >
-                  {item}
-                </div>
-              </React.Fragment>
-            );
-          })}
-        </div>
-      </div>
+      <Toolbar>
+        {tooltipsItems}
+      </Toolbar>
     </>
   );
 };
@@ -737,7 +714,7 @@ export const ObjectButton: React.FC<ObjectButtonProps> = (props) => {
       <DraggableElement
         dragData={
           props.noDragging
-            ? null
+            ? undefined
             : props.onDrag
               ? props.onDrag
               : () => {

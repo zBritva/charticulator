@@ -11,7 +11,7 @@ import { Button } from "@fluentui/react-button";
 
 import { deepClone, EventSubscription } from "../../core";
 import { Actions } from "../actions";
-import { AppButton, MenuButton } from "../components";
+import { AppButton, AppButtonWithDialog, MenuButton } from "../components";
 import { MainReactContext } from "../context_component";
 import {
   ModalView,
@@ -607,15 +607,15 @@ export function MenuBar(props: MenuBarProps) {
 
   return (
     <>
-      <PopupContainer controller={popupController.current} />
       <section style={{
         background: tokens.colorBrandBackground
       }} className="charticulator__menu-bar">
         <div className="charticulator__menu-bar-left">
-          <AppButton
+          <AppButtonWithDialog
+            store={store}
+            defaultTab={MainTabs.open}
             name={props.appButtonName}
             title={strings.menuBar.home}
-            onClick={() => showFileModalWindow(MainTabs.open, store.editorType === EditorType.Embedded)}
           />
           {props.alignButtons === PositionsLeftRight.Left ? (
             <>
