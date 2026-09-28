@@ -416,10 +416,10 @@ export class AppStore extends BaseStore {
 
   public deleteChartScale(scaleID: string) {
     const chart = this.chart;
-      chart.scales
+    chart.scales
       .filter(s => s._id === scaleID)
       .forEach((scale) => {
-          this.chartManager.removeScale(scale)
+        this.chartManager.removeScale(scale)
       });
 
     chart.scaleMappings = chart.scaleMappings.filter((scaleMapping) =>
@@ -863,7 +863,7 @@ export class AppStore extends BaseStore {
               // TODO: Fix this part
               if (
                 getExpressionUnit(scaleMapping.expression) ==
-                  getExpressionUnit(options.expression) &&
+                getExpressionUnit(options.expression) &&
                 getExpressionUnit(scaleMapping.expression) != null
               ) {
                 const scaleObject = getById(
@@ -1040,7 +1040,7 @@ export class AppStore extends BaseStore {
     let newLegend: Specification.ChartElement;
     // Categorical-color scale
     if (scaleObject.classID == "scale.categorical<string,color>" ||
-    scaleObject.classID == "scale.categorical<string,enum>") {
+      scaleObject.classID == "scale.categorical<string,enum>") {
       if (mapping && mapping.valueIndex != undefined) {
         newLegend = this.chartManager.createObject(`legend.custom`);
       } else {
@@ -1393,10 +1393,10 @@ export class AppStore extends BaseStore {
               mapping.mapping.type === MappingType.scale &&
               (mapping.mapping as ScaleMapping).scale === scaleId
           ) as {
-          element: Specification.Element<Specification.ObjectProperties>;
-          key: string;
-          mapping: ScaleMapping;
-        }[];
+            element: Specification.Element<Specification.ObjectProperties>;
+            key: string;
+            mapping: ScaleMapping;
+          }[];
 
         // Figure out the groupBy
         let groupBy: SpecTypes.GroupBy = null;
@@ -1542,23 +1542,23 @@ export class AppStore extends BaseStore {
           {
             kind:
               xDataProperty.type === "numerical" &&
-              xDataProperty.numericalMode === "temporal"
+                xDataProperty.numericalMode === "temporal"
                 ? DataKind.Temporal
                 : xDataProperty.dataKind
-                ? xDataProperty.dataKind
-                : this.getDataKindByType(xDataProperty.type),
+                  ? xDataProperty.dataKind
+                  : this.getDataKindByType(xDataProperty.type),
             orderMode: xDataProperty.orderMode
               ? xDataProperty.orderMode
               : xDataProperty.valueType === "string" ||
                 xDataProperty.valueType === "number"
-              ? OrderType.Order
-              : null,
+                ? OrderType.Order
+                : null,
             order:
               xDataProperty.order != undefined
                 ? xDataProperty.order
                 : xDataProperty.orderByCategories
-                ? xDataProperty.orderByCategories
-                : null,
+                  ? xDataProperty.orderByCategories
+                  : null,
             orderByExpression:
               xDataProperty.orderByExpression !== undefined
                 ? xDataProperty.orderByExpression
@@ -1593,16 +1593,16 @@ export class AppStore extends BaseStore {
           {
             kind:
               yDataProperty.type === "numerical" &&
-              yDataProperty.numericalMode === "temporal"
+                yDataProperty.numericalMode === "temporal"
                 ? DataKind.Temporal
                 : yDataProperty.dataKind
-                ? yDataProperty.dataKind
-                : this.getDataKindByType(yDataProperty.type),
+                  ? yDataProperty.dataKind
+                  : this.getDataKindByType(yDataProperty.type),
             orderMode: yDataProperty.orderMode
               ? yDataProperty.orderMode
               : yDataProperty.valueType === "string"
-              ? OrderType.Order
-              : null,
+                ? OrderType.Order
+                : null,
             order:
               yDataProperty.order !== undefined ? yDataProperty.order : null,
             orderByExpression:
@@ -1640,19 +1640,19 @@ export class AppStore extends BaseStore {
           {
             kind:
               axisProperty.type === "numerical" &&
-              axisProperty.numericalMode === "temporal"
+                axisProperty.numericalMode === "temporal"
                 ? DataKind.Temporal
                 : axisProperty.dataKind
-                ? axisProperty.dataKind
-                : this.getDataKindByType(axisProperty.type),
+                  ? axisProperty.dataKind
+                  : this.getDataKindByType(axisProperty.type),
             orderMode: axisProperty.orderMode
               ? axisProperty.orderMode
               : axisProperty.valueType === "string"
-              ? OrderType.Order
-              : null,
+                ? OrderType.Order
+                : null,
             order: axisProperty.order !== undefined ? axisProperty.order : null,
             orderByExpression:
-            axisProperty.orderByExpression !== undefined
+              axisProperty.orderByExpression !== undefined
                 ? axisProperty.orderByExpression
                 : null,
           },
@@ -1700,16 +1700,16 @@ export class AppStore extends BaseStore {
         {
           kind:
             axisProperty.type === "numerical" &&
-            axisProperty.numericalMode === "temporal"
+              axisProperty.numericalMode === "temporal"
               ? DataKind.Temporal
               : axisProperty.dataKind
-              ? axisProperty.dataKind
-              : this.getDataKindByType(axisProperty.type),
+                ? axisProperty.dataKind
+                : this.getDataKindByType(axisProperty.type),
           orderMode: axisProperty.orderMode
             ? axisProperty.orderMode
             : axisProperty.valueType === "string"
-            ? OrderType.Order
-            : null,
+              ? OrderType.Order
+              : null,
           order: axisProperty.order,
         },
         axisProperty.rawExpression as string
@@ -1912,8 +1912,8 @@ export class AppStore extends BaseStore {
         <string[]>objectProperties?.allCategories !== undefined
           ? <string[]>objectProperties?.allCategories
           : <string[]>objectProperties?.categories !== undefined
-          ? <string[]>objectProperties?.categories
-          : null,
+            ? <string[]>objectProperties?.categories
+            : null,
       scrollPosition:
         <number>objectProperties?.scrollPosition !== undefined
           ? <number>objectProperties?.scrollPosition
@@ -1948,8 +1948,8 @@ export class AppStore extends BaseStore {
           ? <string[]>objectProperties?.orderByCategories
           : orderByCategories,
       orderByExpression: <string>objectProperties?.orderByExpression !== undefined
-      ? <string>objectProperties?.orderByExpression
-      : column,
+        ? <string>objectProperties?.orderByExpression
+        : column,
       numberOfTicks:
         <number>objectProperties?.numberOfTicks !== undefined
           ? <number>objectProperties?.numberOfTicks
@@ -2045,7 +2045,7 @@ export class AppStore extends BaseStore {
             if (dataBinding.allowScrolling) {
               const start = Math.floor(
                 ((categories.length - dataBinding.windowSize) / 100) *
-                  dataBinding.scrollPosition
+                dataBinding.scrollPosition
               );
               dataBinding.categories = categories.slice(
                 start,
@@ -2155,7 +2155,7 @@ export class AppStore extends BaseStore {
             if (dataBinding.allowScrolling) {
               const start = Math.floor(
                 ((categories.length - dataBinding.windowSize) / 100) *
-                  dataBinding.scrollPosition
+                dataBinding.scrollPosition
               );
               dataBinding.categories = categories.slice(
                 start,
@@ -2420,9 +2420,9 @@ export class AppStore extends BaseStore {
     this.currentSelection = null;
     this.dataset = action.dataset;
     this.originDataset = deepClone(this.dataset);
-  
+
     this.chart = action.specification;
-  
+
     this.chartManager = new Prototypes.ChartStateManager(
       this.chart,
       this.dataset,
@@ -2437,7 +2437,7 @@ export class AppStore extends BaseStore {
       this.solveConstraintsAndUpdateGraphics();
     });
     this.chartState = this.chartManager.chartState;
-  
+
     this.emit(AppStore.EVENT_DATASET);
     this.emit(AppStore.EVENT_SELECTION);
     this.solveConstraintsAndUpdateGraphics();

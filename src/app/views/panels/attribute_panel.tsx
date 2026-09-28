@@ -17,12 +17,6 @@ import {
 import { FluentUIWidgetManager } from "./widgets/fluentui_manager";
 import { strings } from "../../../strings";
 
-function getObjectIcon(classID: string) {
-  return R.getSVGIcon(
-    Prototypes.ObjectClasses.GetMetadata(classID).iconPath || "object"
-  );
-}
-
 export class AttributePanel extends React.Component<
   React.PropsWithChildren<{
     store: AppStore;
@@ -177,7 +171,9 @@ export class AttributePanel extends React.Component<
             <div className="header" key="header">
               <SVGImageIcon
                 key={`attribute-editor-class-icon-${object.properties.name.replace(/\W/g, "_")}`}
-                url={getObjectIcon(object.classID)}
+                url={R.getSVGIcon(
+                  Prototypes.ObjectClasses.GetMetadata(object.classID).iconPath
+                )}
                 height={32}
                 width={32}
               />

@@ -67,7 +67,7 @@ export class LineGuide extends PlotSegmentClass {
 
   public static metadata: ObjectClassMetadata = {
     displayName: "PlotSegment",
-    iconPath: "plot-segment/line",
+    iconPath: "PlotSegmentLine",
     creatingInteraction: {
       type: "line-segment",
       mapping: { x1: "x1", y1: "y1", x2: "x2", y2: "y2" },

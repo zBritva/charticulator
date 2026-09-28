@@ -18,7 +18,7 @@ module.exports = (env, { mode }) => {
   if (mode == null) {
     mode = "production";
   }
-  const extensions = ['.tsx', '.ts', '.jsx', '.js', '.css', 'svg'];
+  const extensions = ['.tsx', '.ts', '.jsx', '.js', '.css', '.svg'];
   const pegjsConfig = {
     test: /\.pegjs$/,
     loader: require.resolve('pegjs-loader'),
@@ -51,6 +51,28 @@ module.exports = (env, { mode }) => {
       require.resolve('css-loader'),
       require.resolve('sass-loader')
     ],
+  };
+  const svgConfig = {
+    test: /\.svg$/i,
+    issuer: /\.[jt]sx?$/,
+    oneOf: [
+      {
+        resourceQuery: /react/,
+        use: [
+          {
+            loader: require.resolve('@svgr/webpack'),
+            options: {
+              typescript: true,
+            }
+          }
+        ],
+        type: 'javascript/auto',
+      },
+      {
+        // Fallback for CSS files or other assets (e.g. background-image)
+        type: 'asset/resource',
+      },
+    ]
   };
   const plugins = [
     new webpack.DefinePlugin({
@@ -99,8 +121,9 @@ module.exports = (env, { mode }) => {
           pegjsConfig,
           typescriptConfig,
           cssConfig,
+          svgConfig,
           {
-            test: /\.(woff|ttf|ico|woff2|jpg|jpeg|png|webp|svg)$/i,
+            test: /\.(woff|ttf|ico|woff2|jpg|jpeg|png|webp)$/i,
             use: [
               {
                 loader: require.resolve('url-loader'),
@@ -155,7 +178,8 @@ module.exports = (env, { mode }) => {
       module: {
         rules: [
           pegjsConfig,
-          typescriptConfig
+          typescriptConfig,
+          svgConfig
         ]
       },
       entry: {
@@ -188,7 +212,8 @@ module.exports = (env, { mode }) => {
       module: {
         rules: [
           pegjsConfig,
-          typescriptConfig
+          typescriptConfig,
+          svgConfig
         ]
       },
       entry: {

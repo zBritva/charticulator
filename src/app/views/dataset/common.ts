@@ -5,10 +5,10 @@ import { OrderType } from "../../../core/specification/spec_types";
 import { strings } from "../../../strings";
 
 export const kind2Icon: { [name in Dataset.DataKind]: string } = {
-  categorical: "type/categorical",
-  numerical: "type/numerical",
-  ordinal: "type/ordinal",
-  temporal: "type/temporal",
+  categorical: "TypeCategorical",
+  numerical: "TypeNumerical",
+  ordinal: "TypeOrdinal",
+  temporal: "TypeTemporal",
 };
 
 export const kind2CompatibleKinds: {

@@ -32,7 +32,7 @@ export abstract class ChartClass extends ObjectClass {
   public manager: ChartStateManager;
 
   public static metadata: ObjectClassMetadata = {
-    iconPath: "chart",
+    iconPath: "Chart",
     displayName: "Chart",
   };
 
@@ -267,7 +267,7 @@ export class RectangleChart extends ChartClass {
         }
       );
       rect.key = `bg-${this.object._id}`;
-      
+
       return rect;
     }
   }

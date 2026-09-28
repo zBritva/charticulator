@@ -57,7 +57,7 @@ export class TextboxElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Textbox",
-    iconPath: "TextField",
+    iconPath: "ElementTextbox",
     creatingInteraction: {
       type: "rectangle",
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },
@@ -201,14 +201,14 @@ export class TextboxElementClass extends EmphasizableMarkClass<
           ),
           props.alignX != "middle"
             ? manager.inputNumber(
-                { property: "paddingX" },
-                {
-                  updownTick: 1,
-                  showUpdown: true,
-                  label: strings.objects.text.margin,
-                  searchSection: strings.objects.layout,
-                }
-              )
+              { property: "paddingX" },
+              {
+                updownTick: 1,
+                showUpdown: true,
+                label: strings.objects.text.margin,
+                searchSection: strings.objects.layout,
+              }
+            )
             : null,
           manager.inputSelect(
             { property: "alignY" },
@@ -231,14 +231,14 @@ export class TextboxElementClass extends EmphasizableMarkClass<
           ),
           props.alignY != "middle"
             ? manager.inputNumber(
-                { property: "paddingY" },
-                {
-                  updownTick: 1,
-                  showUpdown: true,
-                  label: strings.objects.text.margin,
-                  searchSection: strings.objects.layout,
-                }
-              )
+              { property: "paddingY" },
+              {
+                updownTick: 1,
+                showUpdown: true,
+                label: strings.objects.text.margin,
+                searchSection: strings.objects.layout,
+              }
+            )
             : null,
           manager.inputBoolean(
             { property: "wordWrap" },
@@ -251,34 +251,34 @@ export class TextboxElementClass extends EmphasizableMarkClass<
           ),
           props.wordWrap
             ? manager.inputBoolean(
-                { property: "overFlow" },
-                {
-                  type: "checkbox",
-                  label: strings.objects.text.overflow,
-                  searchSection: strings.objects.layout,
-                }
-              )
+              { property: "overFlow" },
+              {
+                type: "checkbox",
+                label: strings.objects.text.overflow,
+                searchSection: strings.objects.layout,
+              }
+            )
             : null,
           props.wordWrap
             ? manager.inputSelect(
-                { property: "alignText" },
-                {
-                  type: "radio",
-                  options: ["end", "middle", "start"],
-                  icons: [
-                    React.createElement(AlignBottomRegular),
-                    React.createElement(AlignCenterHorizontalRegular),
-                    React.createElement(AlignTopRegular),
-                  ],
-                  labels: [
-                    strings.alignment.bottom,
-                    strings.alignment.middle,
-                    strings.alignment.top,
-                  ],
-                  label: strings.alignment.alignment,
-                  searchSection: strings.objects.layout,
-                }
-              )
+              { property: "alignText" },
+              {
+                type: "radio",
+                options: ["end", "middle", "start"],
+                icons: [
+                  React.createElement(AlignBottomRegular),
+                  React.createElement(AlignCenterHorizontalRegular),
+                  React.createElement(AlignTopRegular),
+                ],
+                labels: [
+                  strings.alignment.bottom,
+                  strings.alignment.middle,
+                  strings.alignment.top,
+                ],
+                label: strings.alignment.alignment,
+                searchSection: strings.objects.layout,
+              }
+            )
             : null,
         ]
       ),

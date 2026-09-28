@@ -11,8 +11,8 @@ import { Button } from "@fluentui/react-button";
 
 import { deepClone, EventSubscription } from "../../core";
 import { Actions } from "../actions";
-import { AppButton, MenuButton } from "../components";
-import { ContextedComponent, MainContextInterface } from "../context_component";
+import { AppButton, AppButtonWithDialog, FluentUIMenuButton, SVGImageIcon } from "../components";
+import { MainReactContext } from "../context_component";
 import {
   ModalView,
   PopupAlignment,
@@ -33,7 +33,8 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
-import { Label, Switch, tokens } from "@fluentui/react-components";
+import { Label, Popover, PopoverSurface, PopoverTrigger, Switch, Text } from "@fluentui/react-components";
+import { ArrowExportRegular, ArrowExportRtlRegular, ArrowImportRegular, ArrowRedoFilled, ArrowUndoFilled, CurrencyDollarEuroFilled, DocumentRegular, FolderOpenRegular, Question16Filled, Question16Regular, SaveRegular } from "@fluentui/react-icons";
 
 declare let CHARTICULATOR_PACKAGE: {
   version: string;
@@ -46,107 +47,104 @@ interface HelpButtonProps {
   handlers: MenuBarHandlers;
 }
 
-export class HelpButton extends React.Component<
-  React.PropsWithChildren<HelpButtonProps>,
-  Record<string, unknown>
-> {
-  public render() {
-    const contactUsLinkProps: React.AnchorHTMLAttributes<HTMLAnchorElement> = {
-      onClick: this.props.handlers?.onContactUsLink,
-    };
-    if (!contactUsLinkProps.onClick) {
-      contactUsLinkProps.href =
-        getConfig().ContactUsHref || "https://www.linkedin.com/in/ilfat-galiev/";
-    }
-    return (
-      <MenuButton
-        url={R.getSVGIcon("toolbar/help")}
-        title={strings.menuBar.help}
-        ref="helpButton"
-        onClick={() => {
-          globals.popupController.popupAt(
-            (context) => {
-              return (
-                <PopupView
-                  context={context}
-                  className="charticulator__menu-popup"
-                >
-                  <div
-                    className="charticulator__menu-dropdown"
-                    onClick={() => context.close()}
-                  >
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/docs/charticulator/intro/"
-                        onClick={this.props.handlers?.onGettingStartedClick}
-                      >
-                        {strings.help.gettingStarted}
-                      </a>
-                    </div>
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/docs/category/gallery"
-                        onClick={this.props.handlers?.onGalleryClick}
-                      >
-                        {strings.help.gallery}
-                      </a>
-                    </div>
-                    {this.props.hideReportIssues ? null : (
-                      <div className="el-item">
-                        <a
-                          target="_blank"
-                          href="https://github.com/zbritva/charticulator/issues/new"
-                          onClick={this.props.handlers?.onIssuesClick}
-                        >
-                          {strings.help.issues}
-                        </a>
-                      </div>
-                    )}
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/"
-                        onClick={this.props.handlers?.onHomeClick}
-                        >
-                        {strings.help.home}
-                      </a>
-                    </div>
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://www.linkedin.com/in/ilfat-galiev/"
-                        onClick={contactUsLinkProps.onClick}
-                      >
-                        {strings.help.contact}
-                      </a>
-                    </div>
-                    <div className="el-item">
-                      <a
-                        target="_blank"
-                        href="https://ilfat-galiev.im/pages/about"
-                        onClick={this.props.handlers?.onAboutClick}
-                      >
-                        {strings.help.aboutMeUs}
-                      </a>
-                    </div>
-                    <div className="el-item-version">
-                      {strings.help.version(CHARTICULATOR_PACKAGE.version)}
-                    </div>
-                  </div>
-                </PopupView>
-              );
-            },
-            {
-              anchor: ReactDOM.findDOMNode(this.refs.helpButton) as Element,
-              alignX: PopupAlignment.EndInner,
-            }
-          );
-        }}
-      />
-    );
+export function HelpButton(props: React.PropsWithChildren<HelpButtonProps>) {
+  const helpButtonRef = React.useRef<any>(null);
+  const contactUsLinkProps: React.AnchorHTMLAttributes<HTMLAnchorElement> = {
+    onClick: props.handlers?.onContactUsLink,
+  };
+
+  if (!contactUsLinkProps.onClick) {
+    contactUsLinkProps.href =
+      getConfig().ContactUsHref || "https://www.linkedin.com/in/ilfat-galiev/";
   }
+
+  const [helpPopupOpen, setHelpPopupOpen] = React.useState(false);
+
+  return (
+    <>
+      <div ref={helpButtonRef} />
+      <Popover open={helpPopupOpen}>
+        <PopoverTrigger>
+          <Button
+            appearance="transparent"
+            title={strings.menuBar.help}
+            icon={<Question16Filled />}
+            ref={helpButtonRef}
+            onClick={() => {
+              setHelpPopupOpen((h) => !h);
+            }}
+          >
+          </Button>
+        </PopoverTrigger>
+        <PopoverSurface>
+          <div
+            className="charticulator__menu-dropdown"
+            onClick={() => setHelpPopupOpen(false)}
+          >
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/docs/charticulator/intro/"
+                onClick={props.handlers?.onGettingStartedClick}
+              >
+                {strings.help.gettingStarted}
+              </a>
+            </div>
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/docs/category/gallery"
+                onClick={props.handlers?.onGalleryClick}
+              >
+                {strings.help.gallery}
+              </a>
+            </div>
+            {!props.hideReportIssues ? (
+              <div className="el-item">
+                <a
+                  target="_blank"
+                  href="https://github.com/zbritva/charticulator/issues/new"
+                  onClick={props.handlers?.onIssuesClick}
+                >
+                  {strings.help.issues}
+                </a>
+              </div>
+            ) : null}
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/"
+                onClick={props.handlers?.onHomeClick}
+              >
+                {strings.help.home}
+              </a>
+            </div>
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://www.linkedin.com/in/ilfat-galiev/"
+                onClick={contactUsLinkProps.onClick}
+              >
+                {strings.help.contact}
+              </a>
+            </div>
+            <div className="el-item">
+              <a
+                target="_blank"
+                href="https://ilfat-galiev.im/pages/about"
+                onClick={props.handlers?.onAboutClick}
+              >
+                {strings.help.aboutMeUs}
+              </a>
+            </div>
+            <div className="el-item-version">
+              {strings.help.version(CHARTICULATOR_PACKAGE.version)}
+            </div>
+          </div>
+        </PopoverSurface>
+      </Popover>
+    </>
+  );
 }
 
 export interface MenuBarHandlers {
@@ -182,42 +180,18 @@ export interface MenuBarProps {
   darkTheme: boolean;
 }
 
-export class MenuBar extends ContextedComponent<
-  MenuBarProps,
-  {
-    showSaveDialog: boolean;
-  }
-> {
-  protected editor: EventSubscription;
-  protected graphics: EventSubscription;
-  private popupController: PopupController = new PopupController();
+export function MenuBar(props: MenuBarProps) {
+  const context = React.useContext(MainReactContext);
+  const store = context.store;
+  const [showSaveDialog, setShowSaveDialog] = React.useState(false);
+  const [, forceUpdate] = React.useState(0);
+  const popupController = React.useRef(new PopupController());
 
-  constructor(props: MenuBarProps, context: MainContextInterface) {
-    super(props, context);
-    this.state = {
-      showSaveDialog: false,
-    };
-  }
+  const dispatch = (action: { dispatch: (dispatcher: any) => void }) => {
+    action.dispatch(store.dispatcher);
+  };
 
-  public componentDidMount() {
-    window.addEventListener("keydown", this.onKeyDown);
-    this.editor = this.context.store.addListener(
-      AppStore.EVENT_IS_NESTED_EDITOR,
-      () => this.forceUpdate()
-    );
-    this.graphics = this.context.store.addListener(
-      AppStore.EVENT_GRAPHICS,
-      () => this.forceUpdate()
-    );
-  }
-
-  public componentWillUnmount() {
-    window.removeEventListener("keydown", this.onKeyDown);
-    this.editor.remove();
-    this.graphics.remove();
-  }
-
-  public keyboardMap: { [name: string]: string } = {
+  const keyboardMap: { [name: string]: string } = {
     "ctrl-z": "undo",
     "ctrl-y": "redo",
     "ctrl-s": "save",
@@ -229,190 +203,161 @@ export class MenuBar extends ContextedComponent<
     escape: "escape",
   };
 
-  public onKeyDown = (e: KeyboardEvent) => {
-    if (e.target == document.body) {
-      let prefix = "";
-      if (e.shiftKey) {
-        prefix = "shift-" + prefix;
-      }
-      if (e.ctrlKey || e.metaKey) {
-        prefix = "ctrl-" + prefix;
-      }
-      const name = `${prefix}${e.key}`.toLowerCase();
-      if (this.keyboardMap[name]) {
-        const command = this.keyboardMap[name];
-        switch (command) {
-          case "new":
-            {
-              this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded);
-            }
-            break;
-          case "open":
-            {
-              this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded);
-            }
-            break;
-          case "save":
-            {
-              if (
-                this.context.store.editorType == EditorType.Nested ||
-                this.context.store.editorType == EditorType.Embedded ||
-                this.context.store.editorType == EditorType.NestedEmbedded
-              ) {
-                this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
-              } else {
-                if (this.context.store.currentChartID) {
-                  this.dispatch(new Actions.Save());
-                } else {
-                  this.showFileModalWindow(MainTabs.open, false);
-                }
-              }
-            }
-            break;
-          case "export":
-            {
-              this.showFileModalWindow(MainTabs.export, this.context.store.editorType === EditorType.Embedded);
-            }
-            break;
-          case "undo":
-            {
-              new Actions.Undo().dispatch(this.context.store.dispatcher);
-            }
-            break;
-          case "redo":
-            {
-              new Actions.Redo().dispatch(this.context.store.dispatcher);
-            }
-            break;
-          case "delete":
-            {
-              this.store.deleteSelection();
-            }
-            break;
-          case "escape":
-            {
-              this.store.handleEscapeKey();
-            }
-            break;
-        }
-        e.preventDefault();
-      }
-    }
-  };
-  public hideFileModalWindow() {
+  const hideFileModalWindow = () => {
     globals.popupController.reset();
-  }
+  };
 
-  public showFileModalWindow(defaultTab: MainTabs = MainTabs.open, isEmbedded: boolean) {
-    if (this.context.store.disableFileView) {
+  const showFileModalWindow = (defaultTab: MainTabs = MainTabs.open, isEmbedded: boolean) => {
+    if (store.disableFileView) {
       return;
     }
     globals.popupController.showModal(
-      (context) => {
+      (modalContext) => {
         return (
-          <ModalView context={context}>
+          <ModalView context={modalContext}>
             <FileView
-              backend={this.context.store.backend}
+              backend={store.backend}
               defaultTab={defaultTab}
-              store={this.context.store}
-              disabledTabs={isEmbedded && this.context.store.backend != null ? [MainTabs.new, MainTabs.save, MainTabs.options, MainTabs.datasets, MainTabs.about] : []}
-              onClose={() => context.close()}
+              store={store}
+              disabledTabs={isEmbedded && store.backend != null ? [MainTabs.new, MainTabs.save, MainTabs.options, MainTabs.datasets, MainTabs.about] : []}
+              onClose={() => modalContext.close()}
             />
           </ModalView>
         );
       },
       { anchor: null }
     );
-  }
+  };
 
-  public renderSaveNested() {
+  React.useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.target == document.body) {
+        let prefix = "";
+        if (e.shiftKey) {
+          prefix = "shift-" + prefix;
+        }
+        if (e.ctrlKey || e.metaKey) {
+          prefix = "ctrl-" + prefix;
+        }
+        const name = `${prefix}${e.key}`.toLowerCase();
+        if (keyboardMap[name]) {
+          const command = keyboardMap[name];
+          switch (command) {
+            case "new":
+              showFileModalWindow(MainTabs.open, store.editorType === EditorType.Embedded);
+              break;
+            case "open":
+              showFileModalWindow(MainTabs.open, store.editorType === EditorType.Embedded);
+              break;
+            case "save":
+              if (
+                store.editorType == EditorType.Nested ||
+                store.editorType == EditorType.Embedded ||
+                store.editorType == EditorType.NestedEmbedded
+              ) {
+                store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
+              } else {
+                if (store.currentChartID) {
+                  dispatch(new Actions.Save());
+                } else {
+                  showFileModalWindow(MainTabs.open, false);
+                }
+              }
+              break;
+            case "export":
+              showFileModalWindow(MainTabs.export, store.editorType === EditorType.Embedded);
+              break;
+            case "undo":
+              new Actions.Undo().dispatch(store.dispatcher);
+              break;
+            case "redo":
+              new Actions.Redo().dispatch(store.dispatcher);
+              break;
+            case "delete":
+              store.deleteSelection();
+              break;
+            case "escape":
+              store.handleEscapeKey();
+              break;
+          }
+          e.preventDefault();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    const editor = store.addListener(AppStore.EVENT_IS_NESTED_EDITOR, () => forceUpdate((value) => value + 1));
+    const graphics = store.addListener(AppStore.EVENT_GRAPHICS, () => forceUpdate((value) => value + 1));
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      editor.remove();
+      graphics.remove();
+    };
+  }, [store]);
+
+  const renderSaveNested = () => {
     return (
       <>
         <Dialog
-          // dialogContentProps={{
-          //   title: strings.dialogs.saveChanges.saveChangesTitle,
-          //   subText: strings.dialogs.saveChanges.saveChanges("chart"),
-          // }}
-          open={this.state.showSaveDialog}
-          // minWidth="80%"
+          open={showSaveDialog}
         >
-          {/* <DialogTitle>
-            {strings.dialogs.saveChanges.saveChangesTitle}
-          </DialogTitle> */}
           <DialogActions>
             <Button
-              // styles={primaryButtonStyles}
               onClick={() => {
-                this.setState({
-                  showSaveDialog: false,
-                });
-                this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
-                setTimeout(() =>
-                  this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE)
-                );
+                setShowSaveDialog(false);
+                store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
+                setTimeout(() => store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE));
               }}
-              // text={strings.menuBar.saveButton}
             >
               {strings.menuBar.saveButton}
             </Button>
             <Button
               onClick={() => {
-                this.setState({
-                  showSaveDialog: false,
-                });
-                this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE);
+                setShowSaveDialog(false);
+                store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE);
               }}
-              // text={strings.menuBar.dontSaveButton}
             >
               {strings.menuBar.dontSaveButton}
             </Button>
           </DialogActions>
         </Dialog>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/save")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("toolbar/save")} width={16} height={16} />}
           text={strings.menuBar.saveNested}
           title={strings.menuBar.save}
           onClick={() => {
-            this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
-
-            this.setState({
-              showSaveDialog: false,
-            });
+            store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
+            setShowSaveDialog(false);
           }}
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/cross")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("toolbar/cross")} width={16} height={16} />}
           text={strings.menuBar.closeNested}
           title={strings.menuBar.closeNested}
           onClick={() => {
-            if (this.store.chartManager.hasUnsavedChanges()) {
-              this.setState({
-                showSaveDialog: true,
-              });
+            if (store.chartManager.hasUnsavedChanges()) {
+              setShowSaveDialog(true);
             } else {
-              this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE);
-              this.setState({
-                showSaveDialog: false,
-              });
+              store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE);
+              setShowSaveDialog(false);
             }
           }}
         />
         <span className="charticulator__menu-bar-separator" />
       </>
     );
-  }
+  };
 
-  // eslint-disable-next-line
-  public renderImportButton(props: MenuBarProps) {
+  const renderImportButton = (menuProps: MenuBarProps) => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/import-template")}
+        <FluentUIMenuButton
+          icon={<ArrowExportRtlRegular />}
           text=""
           title={strings.menuBar.importTemplate}
           onClick={
-            props.handlers?.onImportTemplateClick ||
-            // eslint-disable-next-line
+            menuProps.handlers?.onImportTemplateClick ||
             (() => {
               const inputElement = document.createElement("input");
               inputElement.type = "file";
@@ -420,23 +365,19 @@ export class MenuBar extends ContextedComponent<
               inputElement.accept = ["tmplt", "json"]
                 .map((x) => "." + x)
                 .join(",");
-              // eslint-disable-next-line
               inputElement.onchange = () => {
                 if (inputElement.files.length == 1) {
                   file = inputElement.files[0];
                   if (file) {
-                    // eslint-disable-next-line
                     readFileAsString(file).then((str) => {
-                      const template = JSON.parse(
-                        str
-                      ) as Specification.Template.ChartTemplate;
-                      
-                      this.store.dispatcher.dispatch(
+                      const template = JSON.parse(str) as Specification.Template.ChartTemplate;
+
+                      store.dispatcher.dispatch(
                         new Actions.ImportTemplate(template, (unmappedColumns, tableMapping, datasetTables, tables, resolve) => {
-                          this.popupController.showModal(
-                            (context) => {
+                          popupController.current.showModal(
+                            (modalContext) => {
                               return (
-                                <ModalView context={context}>
+                                <ModalView context={modalContext}>
                                   <div onClick={(e) => e.stopPropagation()}>
                                     <FileViewImport
                                       mode={MappingMode.ImportTemplate}
@@ -444,15 +385,15 @@ export class MenuBar extends ContextedComponent<
                                       datasetTables={datasetTables}
                                       tableMapping={tableMapping}
                                       unmappedColumns={unmappedColumns}
-                                      format={this.store.getLocaleFileFormat()}
+                                      format={store.getLocaleFileFormat()}
                                       onSave={(mapping, tableMapping, datasetTables) => {
                                         resolve(mapping, tableMapping, datasetTables);
-                                        context.close();
+                                        modalContext.close();
                                       }}
                                       onClose={() => {
-                                        context.close();
+                                        modalContext.close();
                                       }}
-                                      onImportDataClick={() => {}}
+                                      onImportDataClick={() => { }}
                                     />
                                   </div>
                                 </ModalView>
@@ -472,301 +413,264 @@ export class MenuBar extends ContextedComponent<
         />
       </>
     );
-  }
+  };
 
-  public renderExportButton(props: MenuBarProps) {
+  const renderExportButton = (menuProps: MenuBarProps) => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/export-template")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("toolbar/export-template")} width={16} height={16} />}
           text=""
           title={strings.menuBar.exportTemplate}
           onClick={
-            props.handlers?.onExportTemplateClick ||
+            menuProps.handlers?.onExportTemplateClick ||
             (() => {
-              const template = deepClone(this.store.buildChartTemplate());
-              const target = this.store.createExportTemplateTarget(
+              const template = deepClone(store.buildChartTemplate());
+              const target = store.createExportTemplateTarget(
                 strings.menuBar.defaultTemplateName,
                 template
               );
               const targetProperties: { [name: string]: string } = {};
               for (const property of target.getProperties()) {
                 targetProperties[property.name] =
-                  this.store.getPropertyExportName(property.name) ||
+                  store.getPropertyExportName(property.name) ||
                   property.default;
               }
 
-              this.dispatch(
-                new Actions.ExportTemplate("", target, targetProperties)
-              );
+              dispatch(new Actions.ExportTemplate("", target, targetProperties));
             })
           }
         />
       </>
     );
-  }
+  };
 
-  public renderSponsorButton(props: MenuBarProps) {
+  const renderSponsorButton = (menuProps: MenuBarProps) => {
     return (
       <>
-        <div className="el-text">
-          <p style={{marginLeft: "5px"}}>
+        <div>
+          <p style={{ marginLeft: "5px" }}>
             {strings.menuBar.supportDev}
           </p>
         </div>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/support-dev")}
-          text="STRIPE"
+        <FluentUIMenuButton
+          icon={<CurrencyDollarEuroFilled />}
+          text="Stripe"
           title={strings.menuBar.supportDev}
           onClick={
-            props.handlers?.onSupportDevClick || (() => window.open("https://donate.stripe.com/aFa00jfvgeYMg6K3RDgUM02", "_blank"))
+            menuProps.handlers?.onSupportDevClick || (() => window.open("https://donate.stripe.com/aFa00jfvgeYMg6K3RDgUM02", "_blank"))
           }
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/support-dev")}
-          text="GITHUB"
+        <FluentUIMenuButton
+          // icon={<CurrencyDollarEuroFilled />}
+          text="GitHub"
           title={strings.menuBar.supportDev}
           onClick={
-            props.handlers?.onSupportDevClick || (() => window.open("https://github.com/sponsors/aveirun", "_blank"))
+            menuProps.handlers?.onSupportDevClick || (() => window.open("https://github.com/sponsors/aveirun", "_blank"))
           }
         />
       </>
     );
-  }
+  };
 
-  public renderCopyToClipboard(props: MenuBarProps) {
+  const renderCopyToClipboard = (menuProps: MenuBarProps) => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("Copy")}
+        <FluentUIMenuButton
+          icon={<SVGImageIcon url={R.getSVGIcon("Copy")} width={16} height={16} />}
           text=""
           title={strings.menuBar.copyTemplate}
-          onClick={props.handlers?.onCopyToClipboardClick}
+          onClick={menuProps.handlers?.onCopyToClipboardClick}
         />
       </>
     );
-  }
+  };
 
-  public renderSaveEmbedded() {
-    const hasUnsavedChanges = this.store.chartManager.hasUnsavedChanges();
+  const renderSaveEmbedded = () => {
+    const hasUnsavedChanges = store.chartManager.hasUnsavedChanges();
 
     return (
-      <MenuButton
-        url={R.getSVGIcon("toolbar/save")}
+      <FluentUIMenuButton
+        icon={<SVGImageIcon url={R.getSVGIcon("toolbar/save")} width={16} height={16} />}
         text={strings.menuBar.saveButton}
         disabled={!hasUnsavedChanges}
         title={strings.menuBar.save}
         onClick={() => {
-          this.context.store.dispatcher.dispatch(
-            new Actions.UpdatePlotSegments()
-          );
-          this.context.store.dispatcher.dispatch(new Actions.UpdateDataAxis());
-          this.context.store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
+          store.dispatcher.dispatch(new Actions.UpdatePlotSegments());
+          store.dispatcher.dispatch(new Actions.UpdateDataAxis());
+          store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
         }}
       />
     );
-  }
+  };
 
-  public renderDelete() {
-    return <DeleteDialog context={this.context} />;
-  }
+  const renderDelete = () => <DeleteDialog context={context} />;
 
-  public renderNewOpenSave() {
+  const renderNewOpenSave = () => {
     return (
       <>
-        <MenuButton
-          url={R.getSVGIcon("toolbar/new")}
+        <FluentUIMenuButton
+          icon={<DocumentRegular />}
           title={strings.menuBar.new}
           onClick={() => {
-            this.showFileModalWindow(MainTabs.new, this.context.store.editorType === EditorType.Embedded);
+            showFileModalWindow(MainTabs.new, store.editorType === EditorType.Embedded);
           }}
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/open")}
+        <FluentUIMenuButton
+          icon={<FolderOpenRegular />}
           title={strings.menuBar.open}
           onClick={() => {
-            this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded);
+            showFileModalWindow(MainTabs.open, store.editorType === EditorType.Embedded);
           }}
         />
-        <MenuButton
-          url={R.getSVGIcon("toolbar/save")}
+        <FluentUIMenuButton
+          icon={<SaveRegular />}
           title={strings.menuBar.save}
           text={strings.menuBar.saveButton}
           onClick={() => {
-            if (this.context.store.currentChartID) {
-              this.dispatch(new Actions.Save());
+            if (store.currentChartID) {
+              dispatch(new Actions.Save());
             } else {
-              this.showFileModalWindow(MainTabs.save, this.context.store.editorType === EditorType.Embedded);
+              showFileModalWindow(MainTabs.save, store.editorType === EditorType.Embedded);
             }
           }}
         />
-        {this.renderImportButton(this.props)}
-        <MenuButton
-          url={R.getSVGIcon("toolbar/export")}
+        {renderImportButton(props)}
+        <FluentUIMenuButton
+          icon={<ArrowExportRegular />}
           title={strings.menuBar.export}
           onClick={() => {
-            this.showFileModalWindow(MainTabs.export, this.context.store.editorType === EditorType.Embedded);
+            showFileModalWindow(MainTabs.export, store.editorType === EditorType.Embedded);
           }}
         />
       </>
     );
-  }
+  };
 
-  public toolbarButtons(props: MenuBarProps) {
+  const toolbarButtons = (menuProps: MenuBarProps) => {
     return (
       <>
         <span className="charticulator__menu-bar-separator" />
-        {this.renderSponsorButton(props)}
+        {renderSponsorButton(menuProps)}
         <span className="charticulator__menu-bar-separator" />
-        {this.context.store.editorType === EditorType.Chart
-          ? this.renderNewOpenSave()
+        {store.editorType === EditorType.Chart ? renderNewOpenSave() : null}
+        {store.editorType === EditorType.Embedded &&
+          menuProps.alignSaveButton === menuProps.alignButtons
+          ? renderSaveEmbedded()
           : null}
-        {this.context.store.editorType === EditorType.Embedded &&
-        props.alignSaveButton === props.alignButtons
-          ? this.renderSaveEmbedded()
-          : null}
-        {/* {this.context.store.editorType === EditorType.Embedded ||
-        this.context.store.editorType === EditorType.NestedEmbedded ? (
-          <>
-            <span className="charticulator__menu-bar-separator" />
-            {this.renderImportButton(props)}
-            {this.renderExportButton(props)}
-            {this.renderCopyToClipboard(props)}
-          </>
-        ) : null} */}
         <span className="charticulator__menu-bar-separator" />
-        {this.props.undoRedoLocation === UndoRedoLocation.MenuBar ? (
+        {props.undoRedoLocation === UndoRedoLocation.MenuBar ? (
           <>
-            <MenuButton
-              url={R.getSVGIcon("Undo")}
+            <FluentUIMenuButton
+              icon={<ArrowUndoFilled />}
               title={strings.menuBar.undo}
-              disabled={
-                this.context.store.historyManager.statesBefore.length === 0
-              }
-              onClick={() =>
-                new Actions.Undo().dispatch(this.context.store.dispatcher)
-              }
+              disabled={store.historyManager.statesBefore.length === 0}
+              onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
             />
-            <MenuButton
-              url={R.getSVGIcon("Redo")}
+            <FluentUIMenuButton
+              icon={<ArrowRedoFilled />}
               title={strings.menuBar.redo}
-              disabled={
-                this.context.store.historyManager.statesAfter.length === 0
-              }
-              onClick={() =>
-                new Actions.Redo().dispatch(this.context.store.dispatcher)
-              }
+              disabled={store.historyManager.statesAfter.length === 0}
+              onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
             />
           </>
         ) : null}
         <span className="charticulator__menu-bar-separator" />
-        {this.renderDelete()}
+        {renderDelete()}
       </>
     );
-  }
+  };
 
-  public toolbarTabButtons(props: MenuBarProps) {
+  const toolbarTabButtons = (menuProps: MenuBarProps) => {
     return (
       <>
-        {props.tabButtons?.map((button) => {
+        {menuProps.tabButtons?.map((button) => {
           return (
-            <>
+            <React.Fragment key={button.text || button.tooltip || button.icon}>
               <span className="charticulator__menu-bar-separator" />
-              <MenuButton
-                url={R.getSVGIcon(button.icon)}
+              <FluentUIMenuButton
+                icon={<SVGImageIcon url={R.getSVGIcon(button.icon)} width={16} height={16} />}
                 title={button.tooltip}
                 onClick={button.onClick}
                 text={button.text}
                 disabled={!button.active}
               />
-            </>
+            </React.Fragment>
           );
         })}
       </>
     );
-  }
+  };
 
-  public render() {
-    return (
-      <>
-        <PopupContainer controller={this.popupController} />
-        <section style={{
-          background: tokens.colorBrandBackground
-        }} className="charticulator__menu-bar">
-          <div className="charticulator__menu-bar-left">
-            <AppButton
-              name={this.props.appButtonName}
-              title={strings.menuBar.home}
-              // iconOnly={this.context.store.editorType === EditorType.Embedded}
-              onClick={() => this.showFileModalWindow(MainTabs.open, this.context.store.editorType === EditorType.Embedded)}
-            />
-            {this.props.alignButtons === PositionsLeftRight.Left ? (
-              <>
-                <span className="charticulator__menu-bar-separator" />
-                {this.toolbarButtons(this.props)}
-              </>
-            ) : null}
-            {this.context.store.editorType === EditorType.Embedded &&
-            this.props.alignSaveButton == PositionsLeftRight.Left &&
-            this.props.alignSaveButton !== this.props.alignButtons
-              ? this.renderSaveEmbedded()
-              : null}
-            {this.context.store.editorType === EditorType.Embedded &&
-            this.props.tabButtons
-              ? this.toolbarTabButtons(this.props)
-              : null}
-            {this.context.store.editorType === EditorType.Nested ||
-            this.context.store.editorType === EditorType.NestedEmbedded
-              ? this.renderSaveNested()
-              : null}
-          </div>
-          <div className="charticulator__menu-bar-center el-text">
-            <p
-              className={classNames("charticulator__menu-bar-center", [
-                "nested-chart",
-                this.context.store.editorType === EditorType.NestedEmbedded,
-              ])}
-            >
-              {`${this.context.store.chart?.properties.name}${
-                this.context.store.editorType === EditorType.Embedded ||
-                this.context.store.editorType === EditorType.NestedEmbedded
-                  ? " - " + this.props.name || strings.app.name
-                  : ""
-              }`}
-            </p>
-          </div>
-          <div className="charticulator__menu-bar-right">
-            {this.props.alignButtons === PositionsLeftRight.Right ? (
-              <>
-                {this.toolbarButtons(this.props)}
-                <span className="charticulator__menu-bar-separator" />
-              </>
-            ) : null}
-            {this.context.store.editorType === EditorType.Chart ?
+  return (
+    <>
+      <section style={{
+        // background: tokens.colorBrandBackground
+      }} className="charticulator__menu-bar">
+        <div className="charticulator__menu-bar-left">
+          <AppButtonWithDialog
+            store={store}
+            defaultTab={MainTabs.open}
+            name={props.appButtonName}
+            title={strings.menuBar.home}
+          />
+          {props.alignButtons === PositionsLeftRight.Left ? (
             <>
-              <Label>Dark</Label>
+              <span className="charticulator__menu-bar-separator" />
+              {toolbarButtons(props)}
+            </>
+          ) : null}
+          {store.editorType === EditorType.Embedded &&
+            props.alignSaveButton == PositionsLeftRight.Left &&
+            props.alignSaveButton !== props.alignButtons
+            ? renderSaveEmbedded()
+            : null}
+          {store.editorType === EditorType.Embedded && props.tabButtons ? toolbarTabButtons(props) : null}
+          {(store.editorType === EditorType.Nested || store.editorType === EditorType.NestedEmbedded) ? renderSaveNested() : null}
+        </div>
+        <div className="charticulator__menu-bar-center el-text">
+          <p
+            className={classNames("charticulator__menu-bar-center", [
+              "nested-chart",
+              store.editorType === EditorType.NestedEmbedded,
+            ])}
+          >
+            <Text>
+              {`${store.chart?.properties.name}${store.editorType === EditorType.Embedded ||
+                store.editorType === EditorType.NestedEmbedded
+                ? " - " + props.name || strings.app.name
+                : ""
+                }`}
+            </Text>
+          </p>
+        </div>
+        <div className="charticulator__menu-bar-right">
+          {props.alignButtons === PositionsLeftRight.Right ? (
+            <>
+              {toolbarButtons(props)}
+              <span className="charticulator__menu-bar-separator" />
+            </>
+          ) : null}
+          {store.editorType === EditorType.Chart ? (
+            <>
               <Switch
                 title="Preview"
-                value={this.props.darkTheme ? 1 : 0}
-                onChange={(e, data) => {
-                  this.props.onSwitchTheme?.(data.checked);
+                label="Dark"
+                value={props.darkTheme ? 1 : 0}
+                onChange={(_e, data) => {
+                  props.onSwitchTheme?.(data.checked);
                 }}
               />
             </>
+          ) : null}
+          {(store.editorType === EditorType.Embedded || store.editorType === EditorType.NestedEmbedded) &&
+            props.alignSaveButton == PositionsLeftRight.Right &&
+            props.alignSaveButton !== props.alignButtons
+            ? renderSaveEmbedded()
             : null}
-            {(this.context.store.editorType === EditorType.Embedded ||
-              this.context.store.editorType === EditorType.NestedEmbedded) &&
-            this.props.alignSaveButton == PositionsLeftRight.Right &&
-            this.props.alignSaveButton !== this.props.alignButtons
-              ? this.renderSaveEmbedded()
-              : null}
-            <HelpButton
-              handlers={this.props.handlers}
-              hideReportIssues={false}
-            />
-          </div>
-        </section>
-      </>
-    );
-  }
+          <HelpButton handlers={props.handlers} hideReportIssues={false} />
+        </div>
+      </section>
+    </>
+  );
 }

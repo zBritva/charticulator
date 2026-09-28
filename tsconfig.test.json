@@ -11,15 +11,31 @@
     "jsx": "react",
     "noImplicitAny": false,
     "sourceMap": true,
-    "lib": ["es2020", "dom", "esnext.array"],
+    "lib": [
+      "es2020",
+      "dom",
+      "esnext.array"
+    ],
     "baseUrl": "./src",
     "rootDir": "./src",
     "paths": {
-      "resources/*": ["resources/*"],
-      "src/*": ["./*"],
-      "tests/*": ["./tests/karma"]
+      "resources/*": [
+        "resources/*"
+      ],
+      "src/*": [
+        "./*"
+      ],
+      "tests/*": [
+        "./tests/karma"
+      ]
     },
-    "exclude": ["karma.conf.ts", "node_modules", "dist"],
-    "typeRoots": ["./core/expression", "../node_modules/@types"]
+    "exclude": [
+      "node_modules",
+      "dist"
+    ],
+    "typeRoots": [
+      "./core/expression",
+      "../node_modules/@types"
+    ]
   }
 }

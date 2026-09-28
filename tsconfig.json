@@ -16,13 +16,30 @@
     "jsx": "react",
     "noImplicitAny": false,
     "sourceMap": true,
-    "lib": ["es2020", "dom", "esnext.array", "ES2015.Generator"],
+    "lib": [
+      "es2020",
+      "dom",
+      "esnext.array",
+      "ES2015.Generator"
+    ],
     "baseUrl": "./src",
     "paths": {
-      "resources/*": ["resources/*"],
-      "src/*": ["./*"]
+      "resources/*": [
+        "resources/*"
+      ],
+      "src/*": [
+        "./*"
+      ]
     }
   },
-  "exclude": ["karma.conf.ts", "playwright.config.ts", "node_modules", "dist"],
-  "typeRoots": ["./core/expression", "../node_modules/@types"]
+  "exclude": [
+    "playwright.config.ts",
+    "node_modules",
+    "dist"
+  ],
+  "typeRoots": [
+    "./src/app/resources",
+    "./core/expression",
+    "../node_modules/@types"
+  ]
 }

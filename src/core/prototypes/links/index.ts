@@ -157,7 +157,7 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
   public readonly state: Specification.ObjectState<LinksAttributes>;
 
   public static metadata: ObjectClassMetadata = {
-    iconPath: "CharticulatorLine",
+    iconPath: "Line",
   };
 
   public attributeNames: string[] = ["color", "opacity"];
@@ -758,22 +758,22 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
       ),
       props.linkType == "line"
         ? manager.inputSelect(
-            { property: "linkMarkType" },
-            {
-              type: "dropdown",
-              showLabel: true,
-              options: ["", "8", "1 10"],
-              labels: [
-                strings.objects.links.solid,
-                strings.objects.links.dashed,
-                strings.objects.links.dotted,
-              ],
-              label: strings.objects.links.linkMarkType,
-              icons: ["line", "stroke/dashed", "stroke/dotted"],
-              isLocalIcons: true,
-              searchSection: strings.objects.general,
-            }
-          )
+          { property: "linkMarkType" },
+          {
+            type: "dropdown",
+            showLabel: true,
+            options: ["", "8", "1 10"],
+            labels: [
+              strings.objects.links.solid,
+              strings.objects.links.dashed,
+              strings.objects.links.dotted,
+            ],
+            label: strings.objects.links.linkMarkType,
+            icons: ["line", "stroke/dashed", "stroke/dotted"],
+            isLocalIcons: true,
+            searchSection: strings.objects.general,
+          }
+        )
         : null
     );
     if (props.linkType == "line") {
@@ -847,7 +847,7 @@ export abstract class LinksClass extends ChartElementClass<LinksProperties, Link
           }
         )
       );
-      
+
       lineWidgets.push(
         manager.inputNumber(
           {

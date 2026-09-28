@@ -59,7 +59,7 @@ export class TextElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Text",
-    iconPath: "FontColorA",
+    iconPath: "ElementText",
     creatingInteraction: {
       type: "point",
       mapping: { x: "x", y: "y" },
@@ -114,7 +114,7 @@ export class TextElementClass extends EmphasizableMarkClass<
 
   // Get intrinsic constraints between attributes (e.g., x2 - x1 = width for rectangles)
   // eslint-disable-next-line
-  public buildConstraints(solver: ConstraintSolver): void {}
+  public buildConstraints(solver: ConstraintSolver): void { }
 
   // Get the graphical element from the element
   public getGraphics(
@@ -149,7 +149,7 @@ export class TextElementClass extends EmphasizableMarkClass<
       props.alignment.yMargin
     );
     const p = cs.getLocalTransform(attrs.x + offset.x, attrs.y + offset.y);
-    
+
     if (this.object.properties.ignorePolarRotation) {
       p.angle = 0;
     }
@@ -177,7 +177,7 @@ export class TextElementClass extends EmphasizableMarkClass<
               ...this.generateEmphasisStyle(empasized),
             },
             undefined,
-            `glyph:${glyphIndex}-text:${this.object._id}-value:${textContent[index].replace(/\W/,"_")}-idx:${index}`
+            `glyph:${glyphIndex}-text:${this.object._id}-value:${textContent[index].replace(/\W/, "_")}-idx:${index}`
           )
         );
       }
@@ -198,12 +198,12 @@ export class TextElementClass extends EmphasizableMarkClass<
           ...this.generateEmphasisStyle(empasized),
         },
         undefined,
-        `glyph:${glyphIndex}-text:${this.object._id}-value:${attrs.text.replace(/\W/,"_")}`
+        `glyph:${glyphIndex}-text:${this.object._id}-value:${attrs.text.replace(/\W/, "_")}`
       );
     }
-    text.key = `${glyphIndex}-${this.object._id}-${attrs.text.replace(/\W/,"_")}`;
+    text.key = `${glyphIndex}-${this.object._id}-${attrs.text.replace(/\W/, "_")}`;
     const g = Graphics.makeGroup([text]);
-    g.key = `group:glyph:${glyphIndex}-text:${this.object._id}-value:${attrs.text.replace(/\W/,"_")}`;
+    g.key = `group:glyph:${glyphIndex}-text:${this.object._id}-value:${attrs.text.replace(/\W/, "_")}`;
     g.transform = p;
     return g;
   }
@@ -385,14 +385,14 @@ export class TextElementClass extends EmphasizableMarkClass<
           ),
           props.alignment.x != "middle"
             ? manager.inputNumber(
-                { property: "alignment", field: "xMargin" },
-                {
-                  updownTick: 1,
-                  showUpdown: true,
-                  label: "Margin",
-                  searchSection: strings.objects.anchorAndRotation,
-                }
-              )
+              { property: "alignment", field: "xMargin" },
+              {
+                updownTick: 1,
+                showUpdown: true,
+                label: "Margin",
+                searchSection: strings.objects.anchorAndRotation,
+              }
+            )
             : null,
           manager.inputSelect(
             { property: "alignment", field: "y" },
@@ -411,14 +411,14 @@ export class TextElementClass extends EmphasizableMarkClass<
           ),
           props.alignment.y != "middle"
             ? manager.inputNumber(
-                { property: "alignment", field: "yMargin" },
-                {
-                  updownTick: 1,
-                  showUpdown: true,
-                  label: strings.objects.text.margin,
-                  searchSection: strings.objects.anchorAndRotation,
-                }
-              )
+              { property: "alignment", field: "yMargin" },
+              {
+                updownTick: 1,
+                showUpdown: true,
+                label: strings.objects.text.margin,
+                searchSection: strings.objects.anchorAndRotation,
+              }
+            )
             : null,
           manager.inputNumber(
             { property: "rotation" },

@@ -94,11 +94,9 @@ export class ChartEditorView
     ChartEditorViewState
   >
   implements Droppable {
-  public refs: {
-    canvasContainer: HTMLDivElement;
-    canvas: SVGElement;
-    canvasInteraction: SVGRectElement;
-  };
+  private canvasContainer: React.RefObject<HTMLDivElement> = React.createRef();
+  private canvas: React.RefObject<SVGSVGElement> = React.createRef();
+  private canvasInteraction: React.RefObject<SVGRectElement> = React.createRef();
 
   protected tokens: EventSubscription[];
   protected hammer: HammerManager;
@@ -127,7 +125,7 @@ export class ChartEditorView
   }
 
   public getRelativePoint(point: Point): Point {
-    const r = this.refs.canvas.getBoundingClientRect();
+    const r = this.canvasContainer.current.getBoundingClientRect();
     return {
       x: point.x - r.left,
       y: point.y - r.top,
@@ -153,7 +151,7 @@ export class ChartEditorView
 
   // eslint-disable-next-line
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.canvasInteraction);
+    this.hammer = new Hammer(this.canvasInteraction.current);
     this.hammer.add(new Hammer.Tap());
     const pan = new Hammer.Pan();
     const pinch = new Hammer.Pinch();
@@ -200,7 +198,7 @@ export class ChartEditorView
       lastDeltaX = e.deltaX;
       lastDeltaY = e.deltaY;
     });
-    this.refs.canvas.onwheel = (e) => {
+    this.canvas.current.onwheel = (e) => {
       const fixPoint = Geometry.unapplyZoom(
         this.state.zoom,
         this.getRelativePoint({ x: e.pageX, y: e.pageY })
@@ -228,7 +226,7 @@ export class ChartEditorView
       e.preventDefault();
     };
 
-    globals.dragController.registerDroppable(this, this.refs.canvas);
+    globals.dragController.registerDroppable(this, this.canvas.current);
 
     this.tokens.push(
       this.props.store.addListener(
@@ -273,10 +271,10 @@ export class ChartEditorView
     );
 
     const doResize = () => {
-      if (!this.refs.canvasContainer) {
+      if (!this.canvasContainer.current) {
         return;
       }
-      const rect = this.refs.canvasContainer.getBoundingClientRect();
+      const rect = this.canvasContainer.current.getBoundingClientRect();
       const width = rect.width;
       const height = rect.height;
       this.setState({
@@ -285,7 +283,7 @@ export class ChartEditorView
         zoom: this.getFitViewZoom(width, height),
       });
     };
-    globals.resizeListeners.addListener(this.refs.canvasContainer, doResize);
+    globals.resizeListeners.addListener(this.canvasContainer.current, doResize);
     doResize();
 
     this.tokens.push(
@@ -1456,10 +1454,12 @@ export class ChartEditorView
       <div className="chart-editor-view">
         <div style={{
           background: tokens.colorNeutralBackground1
-        }} className="chart-editor-canvas-view" ref="canvasContainer">
+        }} className="chart-editor-canvas-view"
+          ref={this.canvasContainer}
+        >
           <svg
             className="canvas-view"
-            ref="canvas"
+            ref={this.canvas}
             x={0}
             y={0}
             width={width}
@@ -1468,7 +1468,7 @@ export class ChartEditorView
             <defs>{renderSVGDefs(this.state.graphics)}</defs>
             <rect
               className="interaction-handler"
-              ref="canvasInteraction"
+              ref={this.canvasInteraction}
               x={0}
               y={0}
               width={width}
@@ -1529,7 +1529,7 @@ export class ChartEditorView
               size="small"
               appearance="subtle"
               icon={
-                <SVGImageIcon height={20} url={R.getSVGIcon("rect-zoom")} />
+                <SVGImageIcon height={20} url={R.getSVGIcon("RectZoom")} />
               }
               title={"Rectangle zoom"}
               onClick={() => {
@@ -1540,15 +1540,17 @@ export class ChartEditorView
             />
           </div>
         </div>
-        {this.state.isSolving ? (
-          <div className="solving-hint">
-            <div className="el-box">
-              <img src={R.getSVGIcon("loading")} />
-              {strings.app.working}
+        {
+          this.state.isSolving ? (
+            <div className="solving-hint">
+              <div className="el-box">
+                <img src={R.getSVGIcon("loading")} />
+                {strings.app.working}
+              </div>
             </div>
-          </div>
-        ) : null}
-      </div>
+          ) : null
+        }
+      </div >
     );
   }
 }

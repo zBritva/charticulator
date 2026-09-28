@@ -19,9 +19,7 @@ export class RelativeLineHandleView extends React.Component<
   React.PropsWithChildren<RelativeLineHandleViewProps>,
   RelativeLineHandleViewState
 > {
-  public refs: {
-    line: SVGLineElement;
-  };
+  line: React.RefObject<SVGGElement> = React.createRef<SVGGElement>();
   public hammer: HammerManager;
 
   constructor(props: RelativeLineHandleViewProps) {
@@ -33,7 +31,7 @@ export class RelativeLineHandleView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.line);
+    this.hammer = new Hammer(this.line.current);
     this.hammer.add(new Hammer.Pan({ threshold: 1 }));
 
     let context: HandlesDragContext = null;
@@ -115,7 +113,7 @@ export class RelativeLineHandleView extends React.Component<
               ["visible", handle.visible || this.props.visible]
             )}
           >
-            <g ref="line">
+            <g ref={this.line}>
               <line
                 className="element-line handle-ghost"
                 x1={fX(handle.reference + handle.sign * handle.value)}
@@ -155,7 +153,7 @@ export class RelativeLineHandleView extends React.Component<
               ["visible", handle.visible || this.props.visible]
             )}
           >
-            <g ref="line">
+            <g ref={this.line}>
               <line
                 className="element-line handle-ghost"
                 y1={fY(handle.reference + handle.sign * handle.value)}

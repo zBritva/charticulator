@@ -210,8 +210,8 @@ export class FileViewOpen extends React.Component<
                     ) : null}
                     <div className="footer">
                       <div style={{
-                      color: tokens.colorNeutralForeground1
-                    }} className="metadata">
+                        color: tokens.colorNeutralForeground1
+                      }} className="metadata">
                         {new Date(chart.metadata.timeCreated).toLocaleString()}
                       </div>
                       <div className="actions">
@@ -286,7 +286,7 @@ export class FileViewOpen extends React.Component<
   public render() {
     return (
       <>
-        <section className="charticulator__file-view-content is-fix-width">
+        <section className="charticulator__file-view-content">
           <h1 style={{
             color: tokens.colorNeutralForeground1
           }}>{strings.mainTabs.open}</h1>

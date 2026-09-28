@@ -43,7 +43,7 @@ export class NestedChartElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "NestedChart",
-    iconPath: "BarChartVerticalFilter",
+    iconPath: "NestedChart",
     creatingInteraction: {
       type: "rectangle",
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },
@@ -179,9 +179,9 @@ export class NestedChartElementClass extends EmphasizableMarkClass<
 
     return plotSegmentClass.object.groupBy
       ? {
-          column: plotSegmentClass.object.groupBy.expression,
-          value: data[plotSegmentClass.object.groupBy.expression],
-        }
+        column: plotSegmentClass.object.groupBy.expression,
+        value: data[plotSegmentClass.object.groupBy.expression],
+      }
       : null;
   }
 

@@ -73,7 +73,7 @@ export class NumericalNumberLegendClass extends ChartElementClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Legend",
-    iconPath: "CharticulatorLegend",
+    iconPath: "Legend",
   };
 
   public static defaultProperties: NumericalNumberLegendProperties = {
@@ -100,43 +100,43 @@ export class NumericalNumberLegendClass extends ChartElementClass<
   public attributes: {
     [name in NumericalNumberLegendAttributeNames]: NumericalNumberLegendAttributeDescription;
   } = {
-    x1: {
-      name: NumericalNumberLegendAttributeNames.x1,
-      type: Specification.AttributeType.Number,
-    },
-    y1: {
-      name: NumericalNumberLegendAttributeNames.y1,
-      type: Specification.AttributeType.Number,
-    },
-    x2: {
-      name: NumericalNumberLegendAttributeNames.x2,
-      type: Specification.AttributeType.Number,
-    },
-    y2: {
-      name: NumericalNumberLegendAttributeNames.y2,
-      type: Specification.AttributeType.Number,
-    },
-    cx: {
-      name: NumericalNumberLegendAttributeNames.cx,
-      type: Specification.AttributeType.Number,
-    },
-    cy: {
-      name: NumericalNumberLegendAttributeNames.cx,
-      type: Specification.AttributeType.Number,
-    },
-    radius: {
-      name: NumericalNumberLegendAttributeNames.radius,
-      type: Specification.AttributeType.Number,
-    },
-    startAngle: {
-      name: NumericalNumberLegendAttributeNames.startAngle,
-      type: Specification.AttributeType.Number,
-    },
-    endAngle: {
-      name: NumericalNumberLegendAttributeNames.endAngle,
-      type: Specification.AttributeType.Number,
-    },
-  };
+      x1: {
+        name: NumericalNumberLegendAttributeNames.x1,
+        type: Specification.AttributeType.Number,
+      },
+      y1: {
+        name: NumericalNumberLegendAttributeNames.y1,
+        type: Specification.AttributeType.Number,
+      },
+      x2: {
+        name: NumericalNumberLegendAttributeNames.x2,
+        type: Specification.AttributeType.Number,
+      },
+      y2: {
+        name: NumericalNumberLegendAttributeNames.y2,
+        type: Specification.AttributeType.Number,
+      },
+      cx: {
+        name: NumericalNumberLegendAttributeNames.cx,
+        type: Specification.AttributeType.Number,
+      },
+      cy: {
+        name: NumericalNumberLegendAttributeNames.cx,
+        type: Specification.AttributeType.Number,
+      },
+      radius: {
+        name: NumericalNumberLegendAttributeNames.radius,
+        type: Specification.AttributeType.Number,
+      },
+      startAngle: {
+        name: NumericalNumberLegendAttributeNames.startAngle,
+        type: Specification.AttributeType.Number,
+      },
+      endAngle: {
+        name: NumericalNumberLegendAttributeNames.endAngle,
+        type: Specification.AttributeType.Number,
+      },
+    };
 
   public initializeState(): void {
     const attrs = this.state.attributes;
