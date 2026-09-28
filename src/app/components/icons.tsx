@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import * as React from "react";
+import { getFluentIcon } from "../resources/fluentui_icons";
 
 export class SVGImageIcon extends React.PureComponent<
   { url: string; width?: number; height?: number; invert?: boolean },
@@ -14,11 +15,15 @@ export class SVGImageIcon extends React.PureComponent<
     if (this.props.height != null) {
       style.height = this.props.height + "px";
     }
+    const FluentUIIcon = getFluentIcon(this.props.url);
+    if (FluentUIIcon) {
+      return <FluentUIIcon />;
+    }
     if (this.props.url) {
       style.backgroundImage = `url(${this.props.url})`;
       return (
         <span
-          className={`el-svg-icon svg-image-icon ${this.props.invert ? "inverted-icon": ""}`}
+          className={`el-svg-icon svg-image-icon ${this.props.invert ? "inverted-icon" : ""}`}
           style={style}
           onDragStart={() => false}
         />

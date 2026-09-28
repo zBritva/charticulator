@@ -1529,7 +1529,7 @@ export class ChartEditorView
               size="small"
               appearance="subtle"
               icon={
-                <SVGImageIcon height={20} url={R.getSVGIcon("rect-zoom")} />
+                <SVGImageIcon height={20} url={R.getSVGIcon("RectZoom")} />
               }
               title={"Rectangle zoom"}
               onClick={() => {

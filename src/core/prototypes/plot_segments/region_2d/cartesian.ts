@@ -141,7 +141,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "PlotSegment",
-    iconPath: "plot-segment/cartesian",
+    iconPath: "PlotSegmentCartesian",
     creatingInteraction: {
       type: "rectangle",
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },
@@ -429,7 +429,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
         const projection = projectionFunc();
         projection.center([sublayout.geo.centerLon, sublayout.geo.centerLat]);
         projection.rotate([sublayout.geo.rotateLambda, sublayout.geo.rotatePhi, sublayout.geo.rotateGamma]);
-        
+
         if (sublayout.geo.fit) {
           projection.fitSize([
             this.state.attributes.x2 - this.state.attributes.x1,
@@ -666,10 +666,10 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       const scrollBarRenderTree = axisRenderer.renderVirtualScrollBar(
         attrs.x1,
         (props.xData.side != "default" ? attrs.y2 : attrs.y1) +
-          (props.xData.barOffset
-            ? (props.xData.side === "default" ? -1 : 1) *
-              <number>props.xData.barOffset
-            : 0),
+        (props.xData.barOffset
+          ? (props.xData.side === "default" ? -1 : 1) *
+          <number>props.xData.barOffset
+          : 0),
         AxisMode.X,
         props.xData.scrollPosition ? props.xData.scrollPosition : 0,
         (position) => {
@@ -682,7 +682,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
             const start = Math.floor(
               ((props.xData.allCategories.length - props.xData.windowSize) /
                 100) *
-                props.xData.scrollPosition
+              props.xData.scrollPosition
             );
             props.xData.categories = props.xData.allCategories.slice(
               start,
@@ -734,10 +734,10 @@ export class CartesianPlotSegment extends PlotSegmentClass<
       );
       const scrollBarRenderTree = axisRenderer.renderVirtualScrollBar(
         (props.yData.side != "default" ? attrs.x2 : attrs.x1) +
-          (props.yData.barOffset
-            ? (props.yData.side === "default" ? -1 : 1) *
-              <number>props.yData.barOffset
-            : 0),
+        (props.yData.barOffset
+          ? (props.yData.side === "default" ? -1 : 1) *
+          <number>props.yData.barOffset
+          : 0),
         attrs.y1,
         AxisMode.Y,
         props.yData.scrollPosition ? props.yData.scrollPosition : 0,
@@ -750,7 +750,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
             const start = Math.floor(
               ((props.yData.allCategories.length - props.yData.windowSize) /
                 100) *
-                position
+              position
             );
             props.yData.categories = props.yData.allCategories.slice(
               start,

@@ -65,8 +65,9 @@
   "dependencies": {
     "@fluentui/react-components": "9.74.9",
     "@fluentui/react-datepicker-compat": "0.6.39",
-    "@fluentui/react-icons": "2.0.343",
+    "@fluentui/react-icons": "^2.0.343",
     "@silevis/reactgrid": "4.1.17",
+    "@svgr/webpack": "^8.1.0",
     "d3-array": "3.2.4",
     "d3-color": "3.1.0",
     "d3-dsv": "3.0.1",
@@ -158,7 +159,7 @@
     "typedoc": "0.25.7",
     "typescript": "5.2.2",
     "uglify-es": "3.3.9",
-    "url-loader": "4.1.1",
+    "url-loader": "^4.1.1",
     "webpack": "^5.94.0",
     "webpack-bundle-analyzer": "4.10.1",
     "webpack-cli": "5.1.4"

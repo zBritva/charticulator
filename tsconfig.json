@@ -38,6 +38,7 @@
     "dist"
   ],
   "typeRoots": [
+    "./src/app/resources",
     "./core/expression",
     "../node_modules/@types"
   ]

@@ -54,7 +54,7 @@ export class RectElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Shape",
-    iconPath: "RectangleShape",
+    iconPath: "ElementRectangle",
     creatingInteraction: {
       type: ShapeType.Rectangle,
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },
@@ -295,36 +295,36 @@ export class RectElementClass extends EmphasizableMarkClass<
           ),
           this.object.properties.shape === ShapeType.Triangle
             ? manager.inputBoolean(
-                { property: "cometMark" },
-                {
-                  type: "checkbox",
-                  label: strings.objects.rect.shapes.comet,
-                  styles: {
-                    marginTop: 5,
-                  },
-                  searchSection: strings.objects.general,
-                }
-              )
+              { property: "cometMark" },
+              {
+                type: "checkbox",
+                label: strings.objects.rect.shapes.comet,
+                styles: {
+                  marginTop: 5,
+                },
+                searchSection: strings.objects.general,
+              }
+            )
             : null,
           this.object.properties.shape === ShapeType.Triangle
             ? manager.inputSelect(
-                { property: "orientation" },
-                {
-                  type: "radio",
-                  showLabel: false,
-                  icons: ["GripperBarVertical", "GripperBarHorizontal"],
-                  labels: [
-                    strings.objects.legend.vertical,
-                    strings.objects.legend.horizontal,
-                  ],
-                  options: [
-                    OrientationType.VERTICAL,
-                    OrientationType.HORIZONTAL,
-                  ],
-                  label: strings.objects.legend.orientation,
-                  searchSection: strings.objects.general,
-                }
-              )
+              { property: "orientation" },
+              {
+                type: "radio",
+                showLabel: false,
+                icons: ["GripperBarVertical", "GripperBarHorizontal"],
+                labels: [
+                  strings.objects.legend.vertical,
+                  strings.objects.legend.horizontal,
+                ],
+                options: [
+                  OrientationType.VERTICAL,
+                  OrientationType.HORIZONTAL,
+                ],
+                label: strings.objects.legend.orientation,
+                searchSection: strings.objects.general,
+              }
+            )
             : null,
           manager.mappingEditor(
             strings.objects.visibleOn.visibility,
@@ -376,38 +376,38 @@ export class RectElementClass extends EmphasizableMarkClass<
           }),
           this.object.mappings.stroke != null
             ? manager.mappingEditor(
-                strings.objects.strokeWidth,
-                "strokeWidth",
-                {
-                  hints: { rangeNumber: [0, 5] },
-                  defaultValue: 1,
-                  numberOptions: {
-                    showSlider: true,
-                    sliderRange: [0, 5],
-                    minimum: 0,
-                  },
-                  searchSection: strings.objects.style,
-                }
-              )
+              strings.objects.strokeWidth,
+              "strokeWidth",
+              {
+                hints: { rangeNumber: [0, 5] },
+                defaultValue: 1,
+                numberOptions: {
+                  showSlider: true,
+                  sliderRange: [0, 5],
+                  minimum: 0,
+                },
+                searchSection: strings.objects.style,
+              }
+            )
             : null,
           this.object.mappings.stroke != null
             ? manager.inputSelect(
-                { property: "strokeStyle" },
-                {
-                  type: "dropdown",
-                  showLabel: true,
-                  label: strings.objects.line.lineStyle,
-                  icons: ["line", "stroke/dashed", "stroke/dotted"],
-                  isLocalIcons: true,
-                  labels: [
-                    strings.objects.links.solid,
-                    strings.objects.links.dashed,
-                    strings.objects.links.dotted,
-                  ],
-                  options: ["solid", "dashed", "dotted"],
-                  searchSection: strings.objects.style,
-                }
-              )
+              { property: "strokeStyle" },
+              {
+                type: "dropdown",
+                showLabel: true,
+                label: strings.objects.line.lineStyle,
+                icons: ["line", "stroke/dashed", "stroke/dotted"],
+                isLocalIcons: true,
+                labels: [
+                  strings.objects.links.solid,
+                  strings.objects.links.dashed,
+                  strings.objects.links.dotted,
+                ],
+                options: ["solid", "dashed", "dotted"],
+                searchSection: strings.objects.style,
+              }
+            )
             : null,
           manager.mappingEditor(strings.objects.opacity, "opacity", {
             hints: { rangeNumber: [0, 1] },
@@ -422,31 +422,31 @@ export class RectElementClass extends EmphasizableMarkClass<
           }),
           this.object.properties.shape === ShapeType.Rectangle
             ? manager.inputNumber(
-                {
-                  property: "rx",
-                },
-                {
-                  label: strings.objects.roundX,
-                  showUpdown: true,
-                  updownTick: 1,
-                  minimum: 0,
-                  searchSection: strings.objects.style,
-                }
-              )
+              {
+                property: "rx",
+              },
+              {
+                label: strings.objects.roundX,
+                showUpdown: true,
+                updownTick: 1,
+                minimum: 0,
+                searchSection: strings.objects.style,
+              }
+            )
             : null,
           this.object.properties.shape === ShapeType.Rectangle
             ? manager.inputNumber(
-                {
-                  property: "ry",
-                },
-                {
-                  label: strings.objects.roundY,
-                  showUpdown: true,
-                  updownTick: 1,
-                  minimum: 0,
-                  searchSection: strings.objects.style,
-                }
-              )
+              {
+                property: "ry",
+              },
+              {
+                label: strings.objects.roundY,
+                showUpdown: true,
+                updownTick: 1,
+                minimum: 0,
+                searchSection: strings.objects.style,
+              }
+            )
             : null,
         ]
       ),

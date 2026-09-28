@@ -24,7 +24,6 @@
     margin-top: 1px;
     margin-bottom: 0px;
     border-bottom: 0px solid $gray-180;
-    color: $black;
 
     .svg-image-icon {
       width: 20px;
@@ -52,7 +51,7 @@
     border-radius: 2px;
     overflow: hidden;
 
-    & > label {
+    &>label {
       flex-shrink: 0;
       width: 70px;
       font-size: 12px;
@@ -66,7 +65,7 @@
       transition: background-color $transition-default;
     }
 
-    & > .content {
+    &>.content {
       flex: 1;
       display: flex;
       flex-direction: row;
@@ -228,11 +227,11 @@
           display: flex;
           flex-direction: column;
 
-          & > .editor-row {
+          &>.editor-row {
             display: flex;
             flex-direction: row;
 
-            & > label {
+            &>label {
               display: block;
               width: 60px;
               text-align: right;
@@ -268,7 +267,7 @@
       }
     }
 
-    & > .buttons {
+    &>.buttons {
       flex-shrink: 0;
       height: $line-height;
       line-height: $line-height;
@@ -307,7 +306,7 @@
       cursor: pointer;
       // background: $gray-200;
 
-      & > label {
+      &>label {
         background: $gray-190;
       }
     }
@@ -316,16 +315,16 @@
       cursor: pointer;
       background: $color-primary-light;
 
-      & > label {
+      &>label {
         background: $color-primary;
         color: white;
       }
 
-      & > .content {
+      &>.content {
         opacity: 0;
       }
 
-      & > .buttons {
+      &>.buttons {
         opacity: 0;
       }
 
@@ -455,7 +454,7 @@
     $height: 24px;
 
     .el-children {
-      & > span {
+      &>span {
         display: block;
         color: $gray-100;
         margin: 2px 2px;
@@ -645,7 +644,7 @@
         height: $line-height;
         line-height: $line-height;
 
-        & > .el-layout-item {
+        &>.el-layout-item {
           vertical-align: top;
           width: 100%;
           display: inline-block;
@@ -752,6 +751,7 @@
       border-radius: 2px;
       border: 1px solid $gray-200;
       max-height: 200px;
+
       &-item:not(:last-child) {
         margin-bottom: 2px;
       }
@@ -887,7 +887,7 @@
         flex-direction: row;
         overflow: hidden;
 
-        & > .el-input {
+        &>.el-input {
           @include font-mono;
 
           flex: 1 1;
@@ -916,7 +916,7 @@
           transition: border-color $transition-default;
         }
 
-        & > .el-dropdown {
+        &>.el-dropdown {
           flex-shrink: 0;
 
           .svg-image-icon {
@@ -940,8 +940,9 @@
         }
 
         &:hover {
-          & > .el-dropdown,
-          & > .el-input {
+
+          &>.el-dropdown,
+          &>.el-input {
             border-bottom: 1px solid $color-primary;
           }
         }
@@ -1034,7 +1035,7 @@
           width: 100%;
         }
 
-        & > *:not(:first-child) {
+        &>*:not(:first-child) {
           flex-shrink: 0;
           flex-grow: 0;
         }
@@ -1217,9 +1218,11 @@
         &.is-disabled {
           color: $gray-180;
           cursor: not-allowed;
+
           .el-svg-icon {
             filter: invert(80%);
           }
+
           &:hover,
           &:active {
             // background: $gray-200;
@@ -1413,6 +1416,7 @@
       &-select-container {
         display: flex;
         flex-direction: column;
+
         :last-child {
           margin-top: 5px;
         }
@@ -1422,6 +1426,7 @@
         :last-child {
           float: right;
         }
+
         display: inline-block;
         vertical-align: top;
         cursor: pointer;
@@ -1798,8 +1803,7 @@
     }
 
     &-popup {
-      &-order-widget {
-      }
+      &-order-widget {}
 
       &-details {
         width: 300px;
@@ -1815,6 +1819,7 @@
         min-width: 100px;
         max-height: 700px;
         max-width: 500px;
+
         .el-row {
           margin: 10px 0;
         }
@@ -1905,10 +1910,9 @@
 .charticulator__data-mapping-and-scale-editor {
   position: relative;
 
-  & > .el-data-picker {
-  }
+  &>.el-data-picker {}
 
-  & > .el-scale-editor {
+  &>.el-scale-editor {
     background: $theme-secondary-background;
     position: absolute;
     left: calc(100% + 5px);
@@ -1922,7 +1926,7 @@
     @include shadow-focused;
   }
 
-  & > .el-scale-editor-left {
+  &>.el-scale-editor-left {
     @extend .el-scale-editor;
     right: calc(100% + 5px);
     left: unset;

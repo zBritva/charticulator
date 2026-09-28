@@ -28,7 +28,7 @@ export class AnchorElement extends MarkClass {
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Anchor",
-    iconPath: "mark/anchor",
+    iconPath: "ElementAnchor",
   };
 
   public readonly state: AnchorElementState;

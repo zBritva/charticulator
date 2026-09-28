@@ -56,7 +56,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Image",
-    iconPath: "FileImage",
+    iconPath: "ElementIcon",
     creatingInteraction: {
       type: "rectangle",
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },
@@ -161,55 +161,55 @@ export class ImageElementClass extends EmphasizableMarkClass<
           ),
           ...(this.object.properties.imageMode == "letterbox"
             ? [
-                manager.searchWrapper(
-                  {
-                    searchPattern: [
-                      strings.alignment.align,
-                      strings.objects.icon.image,
-                    ],
-                  },
-                  manager.label(strings.alignment.align),
-                  manager.horizontal(
-                    [0, 1],
-                    manager.inputSelect(
-                      { property: "alignX" },
-                      {
-                        type: "radio",
-                        options: ["start", "middle", "end"],
-                        icons: [
-                          React.createElement(AlignLeftRegular),
-                          React.createElement(AlignCenterVerticalRegular),
-                          React.createElement(AlignRightRegular),
-                        ],
-                        labels: [
-                          strings.alignment.left,
-                          strings.alignment.middle,
-                          strings.alignment.right,
-                        ],
-                        ignoreSearch: true,
-                      }
-                    ),
-                    manager.inputSelect(
-                      { property: "alignY" },
-                      {
-                        type: "radio",
-                        options: ["start", "middle", "end"],
-                        icons: [
-                          React.createElement(AlignBottomRegular),
-                          React.createElement(AlignCenterHorizontalRegular),
-                          React.createElement(AlignTopRegular),
-                        ],
-                        labels: [
-                          strings.alignment.bottom,
-                          strings.alignment.middle,
-                          strings.alignment.top,
-                        ],
-                        ignoreSearch: true,
-                      }
-                    )
+              manager.searchWrapper(
+                {
+                  searchPattern: [
+                    strings.alignment.align,
+                    strings.objects.icon.image,
+                  ],
+                },
+                manager.label(strings.alignment.align),
+                manager.horizontal(
+                  [0, 1],
+                  manager.inputSelect(
+                    { property: "alignX" },
+                    {
+                      type: "radio",
+                      options: ["start", "middle", "end"],
+                      icons: [
+                        React.createElement(AlignLeftRegular),
+                        React.createElement(AlignCenterVerticalRegular),
+                        React.createElement(AlignRightRegular),
+                      ],
+                      labels: [
+                        strings.alignment.left,
+                        strings.alignment.middle,
+                        strings.alignment.right,
+                      ],
+                      ignoreSearch: true,
+                    }
+                  ),
+                  manager.inputSelect(
+                    { property: "alignY" },
+                    {
+                      type: "radio",
+                      options: ["start", "middle", "end"],
+                      icons: [
+                        React.createElement(AlignBottomRegular),
+                        React.createElement(AlignCenterHorizontalRegular),
+                        React.createElement(AlignTopRegular),
+                      ],
+                      labels: [
+                        strings.alignment.bottom,
+                        strings.alignment.middle,
+                        strings.alignment.top,
+                      ],
+                      ignoreSearch: true,
+                    }
                   )
-                ),
-              ]
+                )
+              ),
+            ]
             : []),
         ]
       ),
@@ -253,19 +253,19 @@ export class ImageElementClass extends EmphasizableMarkClass<
           }),
           this.object.mappings.stroke != null
             ? manager.mappingEditor(
-                strings.objects.strokeWidth,
-                "strokeWidth",
-                {
-                  hints: { rangeNumber: [0, 5] },
-                  defaultValue: 1,
-                  numberOptions: {
-                    showSlider: true,
-                    sliderRange: [0, 5],
-                    minimum: 0,
-                  },
-                  searchSection: strings.objects.style,
-                }
-              )
+              strings.objects.strokeWidth,
+              "strokeWidth",
+              {
+                hints: { rangeNumber: [0, 5] },
+                defaultValue: 1,
+                numberOptions: {
+                  showSlider: true,
+                  sliderRange: [0, 5],
+                  minimum: 0,
+                },
+                searchSection: strings.objects.style,
+              }
+            )
             : null,
           manager.mappingEditor(strings.objects.opacity, "opacity", {
             hints: { rangeNumber: [0, 1] },

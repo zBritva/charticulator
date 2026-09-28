@@ -32,7 +32,7 @@ export abstract class GlyphClass extends ObjectClass {
   public readonly state: Specification.GlyphState;
 
   public static metadata: ObjectClassMetadata = {
-    iconPath: "glyph",
+    iconPath: "Glyph",
     displayName: "Glyph",
   };
 

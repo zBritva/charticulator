@@ -4,6 +4,7 @@
 
 import * as React from "react";
 import { CSSProperties } from "react";
+import { Search12Filled, Search12Regular } from "@fluentui/react-icons";
 import * as ReactDOM from "react-dom";
 
 import * as globals from "../../../globals";
@@ -189,7 +190,7 @@ export class FluentUIWidgetManager
           style={{
             width: "100%",
           }}
-          contentBefore={<SVGImageIcon url={R.getSVGIcon("Search")} />}
+          contentBefore={<Search12Filled />}
           autoComplete="off"
           defaultValue={this.store.searchString}
         />

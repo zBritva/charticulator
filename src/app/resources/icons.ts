@@ -1,4 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
+
+import { getFluentIcon } from "./fluentui_icons";
+
 // Licensed under the MIT license.
 const iconRegistry = new Map<string, string>();
 
@@ -13,6 +16,10 @@ export function addSVGIcon(path: string | string[], svgDataURL: string) {
 }
 
 export function getSVGIcon(path: string): string {
+  const fluent = getFluentIcon(path);
+  if (fluent) {
+    return path;
+  }
   const r = iconRegistry.get(path);
   if (r) {
     return r;
@@ -39,7 +46,7 @@ addSVGIcon("general/dropdown", require("resources/icons/icons_dropdown.svg"));
 addSVGIcon("Edit", require("resources/icons/icons_edit.svg"));
 addSVGIcon("general/eraser", require("resources/icons/icons_eraser.svg"));
 addSVGIcon("general/bind-data", require("resources/icons/icons_bind-data.svg"));
-addSVGIcon("general/unbind-data", require("resources/icons/icons_unbind-data .svg"));
+addSVGIcon("general/unbind-data", require("resources/icons/icons_unbind-data.svg"));
 
 addSVGIcon("general/confirm", require("resources/icons/icons_confirm.svg"));
 addSVGIcon(

@@ -7,6 +7,7 @@ import { TemplateParameters } from ".";
 import { Controls, CreatingInteraction } from "./common";
 import { MappingType } from "../specification";
 import { strings } from "../../strings";
+import { Slot } from "@fluentui/react-utilities";
 
 export interface AttributeDescription {
   name: string;
@@ -33,6 +34,7 @@ export interface ObjectClassMetadata {
   displayName?: string;
   /** Object icon resource */
   iconPath?: string;
+  icon?: React.ReactElement;
 
   /** Create by mouse interaction */
   creatingInteraction?: CreatingInteraction.Description;
@@ -87,7 +89,7 @@ export abstract class ObjectClass<
 
   /** Initialize the state of the object */
   // eslint-disable-next-line
-  public initializeState() {}
+  public initializeState() { }
 
   /** Get the UI spec for property panel */
   public getAttributePanelWidgets(
@@ -178,7 +180,7 @@ export abstract class ObjectClass<
 
 /** ObjectClass constructor */
 export interface ObjectClassConstructor {
-  new (
+  new(
     parent: ObjectClass,
     object: Specification.IObject,
     state: Specification.ObjectState

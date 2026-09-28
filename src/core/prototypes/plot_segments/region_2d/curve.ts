@@ -104,7 +104,7 @@ export class CurvePlotSegment extends PlotSegmentClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "PlotSegment",
-    iconPath: "plot-segment/curve",
+    iconPath: "PlotSegmentCurve",
     creatingInteraction: {
       type: "rectangle",
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },

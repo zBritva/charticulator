@@ -33,7 +33,7 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
-import { Label, Popover, PopoverSurface, PopoverTrigger, Switch, tokens } from "@fluentui/react-components";
+import { Label, Popover, PopoverSurface, PopoverTrigger, Switch, Text } from "@fluentui/react-components";
 import { ArrowExportRegular, ArrowExportRtlRegular, ArrowImportRegular, ArrowRedoFilled, ArrowUndoFilled, CurrencyDollarEuroFilled, DocumentRegular, FolderOpenRegular, Question16Filled, Question16Regular, SaveRegular } from "@fluentui/react-icons";
 
 declare let CHARTICULATOR_PACKAGE: {
@@ -635,11 +635,13 @@ export function MenuBar(props: MenuBarProps) {
               store.editorType === EditorType.NestedEmbedded,
             ])}
           >
-            {`${store.chart?.properties.name}${store.editorType === EditorType.Embedded ||
-              store.editorType === EditorType.NestedEmbedded
-              ? " - " + props.name || strings.app.name
-              : ""
-              }`}
+            <Text>
+              {`${store.chart?.properties.name}${store.editorType === EditorType.Embedded ||
+                store.editorType === EditorType.NestedEmbedded
+                ? " - " + props.name || strings.app.name
+                : ""
+                }`}
+            </Text>
           </p>
         </div>
         <div className="charticulator__menu-bar-right">
