@@ -145,8 +145,8 @@ export class CurvePlotSegment extends PlotSegmentClass<
     normalEnd: 0.2,
   };
 
-  public readonly state: CurveState;
-  public readonly object: CurveObject;
+  public declare readonly state: CurveState;
+  public declare readonly object: CurveObject;
 
   public attributeNames: string[] = [
     "x1",

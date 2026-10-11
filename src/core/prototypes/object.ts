@@ -68,7 +68,7 @@ export abstract class ObjectClass<
   /** The stored object */
   public readonly object: Specification.IObject<PropertiesType>;
   /** The stored object state */
-  public readonly state: Specification.ObjectState<AttributesType>;
+  public declare readonly state: Specification.ObjectState<AttributesType>;
   /** The parent object class */
   public readonly parent: ObjectClass;
 

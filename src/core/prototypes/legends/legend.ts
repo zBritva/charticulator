@@ -55,8 +55,8 @@ export interface LegendObject extends Specification.IObject {
 }
 
 export abstract class LegendClass extends ChartElementClass {
-  public readonly object: LegendObject;
-  public readonly state: LegendState;
+  public declare readonly object: LegendObject;
+  public declare readonly state: LegendState;
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Legend",

@@ -123,10 +123,11 @@ let COMMANDS = {
   ],
 
   dtsBundle: [
-    "npx dts-bundle-generator ./dist/scripts/container/index.d.ts --out-file ./dist/scripts/container.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/container/index.d.ts --out-file ./dist/scripts/types/container.bundle.d.ts --no-check --export-referenced-types=false",
     // () => fixDTSBundle("dist/scripts/container.bundle.d.ts"),
-    "npx dts-bundle-generator ./dist/scripts/core/index.d.ts --out-file ./dist/scripts/core.bundle.d.ts --no-check --export-referenced-types=false",
-    "npx dts-bundle-generator ./dist/scripts/app/index.d.ts --out-file ./dist/scripts/app.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/core/index.d.ts --out-file ./dist/scripts/types/core.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/app/index.d.ts --out-file ./dist/scripts/types/app.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/worker/index.d.ts --out-file ./dist/scripts/types/worker.bundle.d.ts --no-check --export-referenced-types=false",
     // () => fixDTSBundle("dist/scripts/app.bundle.d.ts")
   ],
 

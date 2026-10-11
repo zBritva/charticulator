@@ -113,7 +113,7 @@ export class GuidePolarCoordinatorClass extends ChartElementClass<
     },
   };
 
-  public readonly state: PolarGuideState;
+  public declare readonly state: PolarGuideState;
 
   public static defaultAttributes: Partial<PolarGuideCoordinatorAttributes> = {
     angularGuidesCount: 4,

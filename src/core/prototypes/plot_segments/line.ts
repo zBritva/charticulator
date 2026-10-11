@@ -78,8 +78,8 @@ export class LineGuide extends PlotSegmentClass {
     visible: true,
   };
 
-  public readonly state: LineGuideState;
-  public readonly object: LineGuideObject;
+  public declare readonly state: LineGuideState;
+  public declare readonly object: LineGuideObject;
 
   public attributeNames: string[] = ["x1", "x2", "y1", "y2"];
   public attributes: { [name: string]: AttributeDescription } = {

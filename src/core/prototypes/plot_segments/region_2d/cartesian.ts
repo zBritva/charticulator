@@ -226,7 +226,7 @@ export class CartesianPlotSegment extends PlotSegmentClass<
     },
   };
 
-  public readonly state: CartesianState;
+  public declare readonly state: CartesianState;
 
   public chartManager: ChartStateManager;
 

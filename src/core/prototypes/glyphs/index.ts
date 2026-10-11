@@ -28,8 +28,8 @@ import {
 import { strings } from "../../../strings";
 
 export abstract class GlyphClass extends ObjectClass {
-  public readonly object: Specification.Glyph;
-  public readonly state: Specification.GlyphState;
+  public declare readonly object: Specification.Glyph;
+  public declare readonly state: Specification.GlyphState;
 
   public static metadata: ObjectClassMetadata = {
     iconPath: "Glyph",
@@ -78,7 +78,7 @@ export class RectangleGlyph extends GlyphClass {
   public static classID = "glyph.rectangle";
   public static type = "glyph";
 
-  public readonly state: RectangleGlyphState;
+  public declare readonly state: RectangleGlyphState;
 
   // Get a list of elemnt attributes
   public attributeNames: string[] = [

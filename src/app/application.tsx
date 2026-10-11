@@ -37,7 +37,6 @@ import { parseHashString } from "./utils";
 import { Actions } from "./actions";
 import { DatasetSourceSpecification } from "../core/dataset/loader";
 import { LocaleFileFormat } from "../core/dataset/utils";
-import { MainTabs } from "./views/file_view";
 import { makeDefaultDataset } from "./default_dataset";
 import { strings } from "../strings";
 import { LocalStorageKeys } from "./globals";
@@ -132,7 +131,6 @@ export class Application {
   public worker: CharticulatorWorkerInterface;
   public appStore: AppStore;
   public backend: AbstractBackend;
-  public mainView: MainView;
   public extensionContext: ApplicationExtensionContext;
 
   private config: CharticulatorAppConfig;

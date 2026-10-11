@@ -153,8 +153,8 @@ export interface RenderState {
 }
 
 export abstract class LinksClass extends ChartElementClass<LinksProperties, LinksAttributes> {
-  public readonly object: LinksObject;
-  public readonly state: Specification.ObjectState<LinksAttributes>;
+  public declare readonly object: LinksObject;
+  public declare readonly state: Specification.ObjectState<LinksAttributes>;
 
   public static metadata: ObjectClassMetadata = {
     iconPath: "Line",

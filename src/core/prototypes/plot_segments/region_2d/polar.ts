@@ -156,8 +156,8 @@ export class PolarPlotSegment extends PlotSegmentClass<
     autoAlignment: false,
   };
 
-  public readonly state: PolarState;
-  public readonly object: PolarObject;
+  public declare readonly state: PolarState;
+  public declare readonly object: PolarObject;
 
   public attributeNames: string[] = [
     "x1",

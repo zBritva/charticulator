@@ -46,8 +46,8 @@ export class CustomLegendClass extends CategoricalLegendClass {
   public static classID: string = "legend.custom";
   public static type: string = "legend";
 
-  public readonly object: CustomLegendObject;
-  public readonly state: CustomLegendState;
+  public declare readonly object: CustomLegendObject;
+  public declare readonly state: CustomLegendState;
 
   public static metadata: ObjectClassMetadata = {
     displayName: strings.objects.legend.legend,

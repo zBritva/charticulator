@@ -118,3 +118,5 @@ export function initialize(config?: CharticulatorCoreConfig): Promise<void> {
   // }, true);
   return initialize_WASMSolver();
 }
+
+export default initialize;

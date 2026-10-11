@@ -39,7 +39,9 @@ module.exports = (env, { mode }) => {
         options: {
           transpileOnly: false,
           experimentalWatchApi: false,
-          compilerOptions: tsconfig.compilerOptions
+          compilerOptions: {
+            ...tsconfig.compilerOptions,
+          }
         }
       }
     ]
@@ -90,6 +92,9 @@ module.exports = (env, { mode }) => {
     {
       name: "app",
       dependencies: ["worker"],
+      experiments: {
+        outputModule: true, // Enables the ESM output type mechanism
+      },
       // devtool: "eval",
       entry:
         mode == "production"
@@ -105,9 +110,16 @@ module.exports = (env, { mode }) => {
         filename: "[name].bundle.js",
         path: __dirname + "/dist/scripts",
         // Export the app as a global variable "Charticulator"
-        libraryTarget: "var",
-        library: "Charticulator"
+        library: {
+          type: "module",
+        },
+        chunkFormat: 'module',
       },
+      // externals: {
+      //   // Exclude react and react-dom from the final bundle
+      //   react: 'module react',
+      //   'react-dom': 'module react-dom',
+      // },
       optimization: {
         minimize: false,
         usedExports: true,
@@ -223,8 +235,10 @@ module.exports = (env, { mode }) => {
         filename: "[name].bundle.js",
         path: __dirname + "/dist/scripts",
         // Export the app as a global variable "Charticulator"
-        libraryTarget: "var",
-        library: "CharticulatorContainer"
+        library: {
+          type: "module",
+        },
+        chunkFormat: 'module',
       },
       resolve: {
         alias: {

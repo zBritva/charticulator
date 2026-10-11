@@ -31,7 +31,7 @@ export class AnchorElement extends MarkClass {
     iconPath: "ElementAnchor",
   };
 
-  public readonly state: AnchorElementState;
+  public declare readonly state: AnchorElementState;
 
   /** Get a list of elemnt attributes */
   public attributeNames: string[] = ["x", "y"];
