@@ -28,7 +28,7 @@ import { MenuItem } from "@fluentui/react-menu";
 import { MenuList } from "@fluentui/react-menu";
 import { MenuTrigger } from "@fluentui/react-menu";
 import { PopoverTrigger } from "@fluentui/react-popover";
-import { Toolbar, ToolbarButton, ToolbarDivider } from "@fluentui/react-components";
+import { tokens, Toolbar, ToolbarButton, ToolbarDivider } from "@fluentui/react-components";
 
 import { getSVGIcon } from "../resources";
 import { EditorType } from "../stores/app_store";
@@ -410,13 +410,40 @@ export const FluentUIToolbar: React.FC<{
     );
   };
 
+
+  const renderSaveEmbedded = () => {
+    const hasUnsavedChanges = store.chartManager.hasUnsavedChanges();
+
+    return (
+      <FluentToolButton
+        icon={<SVGImageIcon url={R.getSVGIcon("toolbar/save")} width={16} height={16} />}
+        text={strings.menuBar.saveButton}
+        disabled={!hasUnsavedChanges}
+        title={strings.menuBar.save}
+        onClick={() => {
+          store.dispatcher.dispatch(new Actions.UpdatePlotSegments());
+          store.dispatcher.dispatch(new Actions.UpdateDataAxis());
+          store.dispatcher.dispatch(new Actions.Save());
+        }}
+      />
+    );
+  };
+
   // eslint-disable-next-line max-lines-per-function
   const getToolItems = (
     labels: boolean = true,
     innerWidth: number = window.innerWidth
   ) => {
+    const isEmbeddedApp = store.editorType === EditorType.EmbeddedApp || store.editorType === EditorType.NestedEmbeddedApp;
     return (
       <>
+        {isEmbeddedApp ? (
+          <>
+            {renderSaveEmbedded()}
+            <span className={"charticulator__toolbar-horizontal-separator"} />
+          </>
+        ) : null
+        }
         {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
           <>
             <FluentToolButton
@@ -668,7 +695,14 @@ export const FluentUIToolbar: React.FC<{
 
   return (
     <>
-      <Toolbar>
+      <Toolbar
+        aria-label="Editor toolbar"
+        size="medium"
+        style={{
+          border: `2px solid ${tokens.colorNeutralBackground3}`,
+          borderRadius: "8px",
+        }}
+      >
         {tooltipsItems}
       </Toolbar>
     </>

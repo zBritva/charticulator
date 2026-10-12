@@ -33,7 +33,7 @@ import { PositionsLeftRight, UndoRedoLocation } from "../main_view";
 import { getConfig } from "../config";
 import { EditorType } from "../stores/app_store";
 import { DeleteDialog } from "./panels/delete_dialog";
-import { Label, Popover, PopoverSurface, PopoverTrigger, Switch, Text } from "@fluentui/react-components";
+import { Label, Popover, PopoverSurface, PopoverTrigger, Switch, Text, tokens, Toolbar } from "@fluentui/react-components";
 import { ArrowExportRegular, ArrowExportRtlRegular, ArrowImportRegular, ArrowRedoFilled, ArrowUndoFilled, CurrencyDollarEuroFilled, DocumentRegular, FolderOpenRegular, Question16Filled, Question16Regular, SaveRegular } from "@fluentui/react-icons";
 
 declare let CHARTICULATOR_PACKAGE: {
@@ -296,7 +296,7 @@ export function MenuBar(props: MenuBarProps) {
     };
   }, [store]);
 
-  const renderSaveNested = () => {
+  const renderSaveWithConfirmation = () => {
     return (
       <>
         <Dialog
@@ -306,7 +306,7 @@ export function MenuBar(props: MenuBarProps) {
             <Button
               onClick={() => {
                 setShowSaveDialog(false);
-                store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
+                store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT); // TODO trigger unified event
                 setTimeout(() => store.emit(AppStore.EVENT_NESTED_EDITOR_CLOSE));
               }}
             >
@@ -327,7 +327,7 @@ export function MenuBar(props: MenuBarProps) {
           text={strings.menuBar.saveNested}
           title={strings.menuBar.save}
           onClick={() => {
-            store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);
+            store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT); // TODO trigger unified event
             setShowSaveDialog(false);
           }}
         />
@@ -602,75 +602,87 @@ export function MenuBar(props: MenuBarProps) {
     );
   };
 
+  if (store.editorType === EditorType.EmbeddedApp) {
+    return <></>
+  }
+
   return (
     <>
-      <section style={{
-        // background: tokens.colorBrandBackground
-      }} className="charticulator__menu-bar">
-        <div className="charticulator__menu-bar-left">
-          <AppButtonWithDialog
-            store={store}
-            defaultTab={MainTabs.open}
-            name={props.appButtonName}
-            title={strings.menuBar.home}
-          />
-          {props.alignButtons === PositionsLeftRight.Left ? (
-            <>
-              <span className="charticulator__menu-bar-separator" />
-              {toolbarButtons(props)}
-            </>
-          ) : null}
-          {store.editorType === EditorType.Embedded &&
-            props.alignSaveButton == PositionsLeftRight.Left &&
-            props.alignSaveButton !== props.alignButtons
-            ? renderSaveEmbedded()
-            : null}
-          {store.editorType === EditorType.Embedded && props.tabButtons ? toolbarTabButtons(props) : null}
-          {(store.editorType === EditorType.Nested || store.editorType === EditorType.NestedEmbedded) ? renderSaveNested() : null}
-        </div>
-        <div className="charticulator__menu-bar-center el-text">
-          <p
-            className={classNames("charticulator__menu-bar-center", [
-              "nested-chart",
-              store.editorType === EditorType.NestedEmbedded,
-            ])}
-          >
-            <Text>
-              {`${store.chart?.properties.name}${store.editorType === EditorType.Embedded ||
-                store.editorType === EditorType.NestedEmbedded
-                ? " - " + props.name || strings.app.name
-                : ""
-                }`}
-            </Text>
-          </p>
-        </div>
-        <div className="charticulator__menu-bar-right">
-          {props.alignButtons === PositionsLeftRight.Right ? (
-            <>
-              {toolbarButtons(props)}
-              <span className="charticulator__menu-bar-separator" />
-            </>
-          ) : null}
-          {store.editorType === EditorType.Chart ? (
-            <>
-              <Switch
-                title="Preview"
-                label="Dark"
-                value={props.darkTheme ? 1 : 0}
-                onChange={(_e, data) => {
-                  props.onSwitchTheme?.(data.checked);
-                }}
-              />
-            </>
-          ) : null}
-          {(store.editorType === EditorType.Embedded || store.editorType === EditorType.NestedEmbedded) &&
-            props.alignSaveButton == PositionsLeftRight.Right &&
-            props.alignSaveButton !== props.alignButtons
-            ? renderSaveEmbedded()
-            : null}
-          <HelpButton handlers={props.handlers} hideReportIssues={false} />
-        </div>
-      </section>
+      <div className={`charticulator__panel-editor-toolbar-horizontal`}>
+        <Toolbar
+          aria-label="Main toolbar"
+          size="medium"
+          style={{
+            border: `2px solid ${tokens.colorNeutralBackground3}`,
+            borderRadius: "8px",
+            background: tokens.colorBrandBackground
+          }}>
+
+          <div className="charticulator__menu-bar-left">
+            <AppButtonWithDialog
+              store={store}
+              defaultTab={MainTabs.open}
+              name={props.appButtonName}
+              title={strings.menuBar.home}
+            />
+            {props.alignButtons === PositionsLeftRight.Left ? (
+              <>
+                <span className="charticulator__menu-bar-separator" />
+                {toolbarButtons(props)}
+              </>
+            ) : null}
+            {store.editorType === EditorType.Embedded &&
+              props.alignSaveButton == PositionsLeftRight.Left &&
+              props.alignSaveButton !== props.alignButtons
+              ? renderSaveEmbedded()
+              : null}
+            {store.editorType === EditorType.Embedded && props.tabButtons ? toolbarTabButtons(props) : null}
+            {(store.editorType === EditorType.Nested || store.editorType === EditorType.NestedEmbedded) ? renderSaveWithConfirmation() : null}
+          </div>
+          <div className="charticulator__menu-bar-center el-text">
+            <p
+              className={classNames("charticulator__menu-bar-center", [
+                "nested-chart",
+                store.editorType === EditorType.NestedEmbedded,
+              ])}
+            >
+              <Text>
+                {`${store.chart?.properties.name}${store.editorType === EditorType.Embedded ||
+                  store.editorType === EditorType.NestedEmbedded
+                  ? " - " + props.name || strings.app.name
+                  : ""
+                  }`}
+              </Text>
+            </p>
+          </div>
+          <div className="charticulator__menu-bar-right">
+            {props.alignButtons === PositionsLeftRight.Right ? (
+              <>
+                {toolbarButtons(props)}
+                <span className="charticulator__menu-bar-separator" />
+              </>
+            ) : null}
+            {store.editorType === EditorType.Chart ? (
+              <>
+                <Switch
+                  title="Preview"
+                  label="Dark"
+                  value={props.darkTheme ? 1 : 0}
+                  onChange={(_e, data) => {
+                    props.onSwitchTheme?.(data.checked);
+                  }}
+                />
+              </>
+            ) : null}
+            {(store.editorType === EditorType.Embedded || store.editorType === EditorType.NestedEmbedded) &&
+              props.alignSaveButton == PositionsLeftRight.Right &&
+              props.alignSaveButton !== props.alignButtons
+              ? renderSaveEmbedded()
+              : null}
+            <HelpButton handlers={props.handlers} hideReportIssues={false} />
+          </div>
+        </Toolbar>
+      </div>
     </>
   );
 }

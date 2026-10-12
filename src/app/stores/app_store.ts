@@ -131,6 +131,8 @@ export interface ScaleInferenceOptions {
 export enum EditorType {
   Nested = "nested",
   Embedded = "embedded",
+  EmbeddedApp = "embeddedapp",
+  NestedEmbeddedApp = "nestedembeddedapp",
   NestedEmbedded = "nestedembedded",
   Chart = "chart",
 }

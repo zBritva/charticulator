@@ -274,6 +274,7 @@ export class Application {
     }
 
     this.appStore = new AppStore(this.worker, makeDefaultDataset(), this.backend);
+    this.appStore.editorType = this.config.EditorType || EditorType.Chart;
 
     let DelimiterSymbol = ",";
     try {
@@ -444,10 +445,10 @@ export class Application {
         });
       }
 
-      let type =
+      let type = this.config.EditorType ||
         this.config.CorsPolicy && this.config.CorsPolicy.Embedded
-          ? EditorType.Embedded
-          : EditorType.Nested;
+        ? EditorType.Embedded
+        : EditorType.Nested;
 
       // settings from outside overrides the configuration
       if (editorMode) {
