@@ -79,7 +79,12 @@ export {
   UndoRedoLocation,
   MainViewState
 } from "./main_view"
+export {
+  MainReactContext
+} from "./context_component"
 export { CharticulatorAppConfig, MainViewConfig } from "./config";
+export { setConfig } from "./../core";
+
 export { addSVGIcon, getSVGIcon } from "./resources";
 export { ExportTemplateTarget } from "./../template";
 export { Widgets } from "./views/panels/index";

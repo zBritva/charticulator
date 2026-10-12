@@ -76,6 +76,21 @@ module.exports = (env, { mode }) => {
       },
     ]
   };
+  const lscgConfig = {
+    test: /lscg-solver/,
+    use: [
+      {
+        loader: 'exports-loader',
+        options: {
+          exports: 'single desc', // Injects 'var desc;' at the top and exports it
+        },
+      },
+    ],
+  }
+  const externals = {
+    'react': 'react',
+    'react-dom': 'react-dom'
+  }
   const plugins = [
     new webpack.DefinePlugin({
       CHARTICULATOR_PACKAGE: JSON.stringify({
@@ -85,7 +100,7 @@ module.exports = (env, { mode }) => {
       }),
       "process.env": {
         NODE_ENV: JSON.stringify(mode)
-      }
+      },
     })
   ];
   return [
@@ -152,9 +167,11 @@ module.exports = (env, { mode }) => {
         alias: {
           resources: __dirname + "/resources",
           src: path.resolve(__dirname, '/src'),
+          'lscg-solver': path.resolve(__dirname, './lscg-solver-umd.js'),
         },
         extensions: extensions
       },
+      externals,
       plugins: [...plugins, mode === "production" ? new Visualizer({
         reportFilename: 'app.static.html',
         openAnalyzer: false,
@@ -183,6 +200,7 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
+      externals,
       plugins
     },
     {
@@ -191,7 +209,7 @@ module.exports = (env, { mode }) => {
         rules: [
           pegjsConfig,
           typescriptConfig,
-          svgConfig
+          svgConfig,
         ]
       },
       entry: {
@@ -207,7 +225,7 @@ module.exports = (env, { mode }) => {
         alias: {
           src: path.resolve(__dirname, '/src'),
           resources: __dirname + "/resources",
-          // 'lscg-solver': path.resolve(__dirname, './lscg-solver-umd.js'),
+          'lscg-solver': path.resolve(__dirname, './lscg-solver-umd.js'),
           [path.resolve(__dirname, '/src/core/common/fetch')]: false,
           './src/core/common/fetch.ts': false,
         },
@@ -227,6 +245,9 @@ module.exports = (env, { mode }) => {
           typescriptConfig,
           svgConfig
         ]
+      },
+      experiments: {
+        outputModule: true, // Enables the ESM output type mechanism
       },
       entry: {
         container: "./src/container/index.ts"
@@ -253,6 +274,7 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
+      externals,
       plugins: [...plugins, mode === "production" ? new Visualizer({
         reportFilename: 'container.static.html',
         openAnalyzer: false,

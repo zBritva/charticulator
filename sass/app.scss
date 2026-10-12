@@ -48,7 +48,7 @@ li::marker {
 
 .charticulator {
   &__application {
-    position: fixed;
+    // position: fixed;
     left: 0;
     right: 0;
     top: 0;
@@ -80,6 +80,7 @@ li::marker {
       align-items: center;
       // flex: 1;
     }
+
     &-center {
       display: flex;
       align-self: center;
@@ -99,6 +100,7 @@ li::marker {
         text-align: center;
       }
     }
+
     &-right {
       display: flex;
       align-items: center;
@@ -131,28 +133,34 @@ li::marker {
       margin-right: 5px;
     }
   }
+
   &__menu-dropdown {
     .el-item {
       height: 32px;
       line-height: 32px;
+
       a {
         display: block;
         height: 32px;
         line-height: 32px;
         padding: 0 8px;
+
         &,
         &:hover,
         &:active,
         &:focus {
           text-decoration: none;
         }
+
         color: $black;
+
         &:hover,
         &:active {
           background: unset;
         }
       }
     }
+
     .el-item-version {
       font-size: 12px;
       height: 24px;
@@ -259,6 +267,7 @@ li::marker {
           display: flex;
           flex-direction: column;
         }
+
         &-chart {
           flex: 1;
           display: flex;
