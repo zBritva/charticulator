@@ -84,43 +84,52 @@ export interface MainViewState {
 }
 
 
-export const MainView = function ({ store, backgroundColor, viewConfiguration, menuBarHandlers, telemetry, tabButtons, theme, darkTheme, onSwitchTheme }: MainViewProps) {
-  let viewConf: MainViewConfig;
+export class MainView extends React.Component<
+  React.PropsWithChildren<MainViewProps>,
+  MainViewState
+> {
+  public refMenuBar: typeof MenuBar;
 
-  if (!viewConfiguration) {
-    viewConf = {
-      ColumnsPosition: PositionsLeftRight.Left,
-      EditorPanelsPosition: PositionsLeftRight.Left,
-      ToolbarPosition: PositionsLeftRightTop.Top,
-      MenuBarButtons: PositionsLeftRight.Left,
-      MenuBarSaveButtons: PositionsLeftRight.Left,
-      ToolbarLabels: true,
-      UndoRedoLocation: UndoRedoLocation.MenuBar,
+  private viewConfiguration: MainViewConfig;
+
+  constructor(props: MainViewProps) {
+    super(props);
+
+    if (!props.viewConfiguration) {
+      this.viewConfiguration = {
+        ColumnsPosition: PositionsLeftRight.Left,
+        EditorPanelsPosition: PositionsLeftRight.Left,
+        ToolbarPosition: PositionsLeftRightTop.Top,
+        MenuBarButtons: PositionsLeftRight.Left,
+        MenuBarSaveButtons: PositionsLeftRight.Left,
+        ToolbarLabels: true,
+        UndoRedoLocation: UndoRedoLocation.MenuBar,
+      };
+    } else {
+      this.viewConfiguration = props.viewConfiguration;
+    }
+
+    this.state = {
+      constraintsViewMaximized: false,
+      glyphViewMaximized: false,
+      layersViewMaximized: false,
+      attributeViewMaximized: false,
+      scaleViewMaximized: false,
+      currentFocusComponentIndex: 0,
     };
-  } else {
-    viewConf = viewConfiguration;
+
+    props.store.addListener(AppStore.EVENT_GRAPHICS, () => this.forceUpdate());
   }
 
-  const [state, setState] = React.useState<MainViewState>({
-    constraintsViewMaximized: false,
-    glyphViewMaximized: false,
-    layersViewMaximized: false,
-    attributeViewMaximized: false,
-    scaleViewMaximized: false,
-    currentFocusComponentIndex: 0,
-  });
-
-  store.addListener(AppStore.EVENT_GRAPHICS, () => this.forceUpdate());
-
-  const shortcutKeyHandler = (e: KeyboardEvent) => {
+  private shortcutKeyHandler(e: KeyboardEvent) {
     if (e.ctrlKey && e.key === "F6") {
-      const focusableComponents = getFocusableComponents();
-      let newIndex = state.currentFocusComponentIndex;
+      const focusableComponents = this.getFocusableComponents();
+      let newIndex = this.state.currentFocusComponentIndex;
       focusableComponents[newIndex].setAttribute("tabIndex", null);
       if (e.shiftKey) {
-        newIndex = state.currentFocusComponentIndex - 1;
+        newIndex = this.state.currentFocusComponentIndex - 1;
       } else {
-        newIndex = state.currentFocusComponentIndex + 1;
+        newIndex = this.state.currentFocusComponentIndex + 1;
       }
       if (newIndex >= focusableComponents.length) {
         newIndex = 0;
@@ -136,327 +145,329 @@ export const MainView = function ({ store, backgroundColor, viewConfiguration, m
     }
   }
 
-  React.useEffect(() => {
-    document.addEventListener("keydown", shortcutKeyHandler.bind(this));
+  componentDidMount() {
+    document.addEventListener("keydown", this.shortcutKeyHandler.bind(this));
+  }
 
-    return () => {
-      document.removeEventListener("keydown", shortcutKeyHandler);
-    }
-  }, []);
-
-  function getFocusableComponents() {
+  getFocusableComponents() {
     return document.querySelectorAll<HTMLElement>(
       ".charticulator__menu-bar,.charticulator__toolbar-horizontal,.minimizable-pane,.charticulator__floating-panel"
     );
   }
 
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.shortcutKeyHandler);
+  }
+
   // eslint-disable-next-line
-  const toolBarCreator = (config: {
-    undoRedoLocation: UndoRedoLocation;
-    layout: LayoutDirection;
-    toolbarLabels: boolean;
-  }) => {
-    return (
-      <div style={{
-        background: tokens.colorNeutralBackground1
-      }} className={`charticulator__panel-editor-toolbar-${config.layout}`}>
-        <FluentUIToolbar
-          darkTheme={darkTheme}
-          toolbarLabels={config.toolbarLabels}
-          undoRedoLocation={config.undoRedoLocation}
-          layout={config.layout}
-        />
-      </div>
-    );
-  };
-
-  const datasetPanel = () => {
-    return (
-      <div
-        style={{
+  public render() {
+    const toolBarCreator = (config: {
+      undoRedoLocation: UndoRedoLocation;
+      layout: LayoutDirection;
+      toolbarLabels: boolean;
+    }) => {
+      return (
+        <div style={{
           background: tokens.colorNeutralBackground1
-        }}
-        className="charticulator__panel charticulator__panel-dataset">
-        <MinimizablePanelView
-          title={strings.mainView.datasetPanelTitle}
-          width={'200px'}
-        >
-          <MinimizablePane
-            title={strings.mainView.datasetPanelTitle}
-            scroll={true}
-            hideHeader={true}
-          >
-            <ErrorBoundary telemetryRecorder={telemetry}>
-              <DatasetView store={store} />
-            </ErrorBoundary>
-          </MinimizablePane>
-          {state.scaleViewMaximized ? null : (
-            <MinimizablePane
-              title={strings.mainView.scalesPanelTitle}
-              scroll={true}
-              onMaximize={() => this.setState({ scaleViewMaximized: true })}
-            >
-              <ErrorBoundary telemetryRecorder={telemetry}>
-                <ScalesPanel store={store} />
-              </ErrorBoundary>
-            </MinimizablePane>
-          )}
-        </MinimizablePanelView>
-      </div>
-    );
-  };
-
-  const editorPanels = () => {
-    return (
-      <div
-        className="charticulator__panel-editor-panel charticulator__panel-editor-panel-panes"
-        style={{
-          display:
-            state.glyphViewMaximized &&
-              state.attributeViewMaximized &&
-              state.layersViewMaximized
-              ? "none"
-              : undefined,
-          background: tokens.colorNeutralBackground1
-        }}
-      >
-        <MinimizablePanelView
-          title={strings.mainView.properties}
-          width="326px"
-        >
-          {state.glyphViewMaximized ? null : (
-            <MinimizablePane
-              title={strings.mainView.glyphPaneltitle}
-              scroll={false}
-              onMaximize={() => this.setState({ glyphViewMaximized: true })}
-            >
-              <ErrorBoundary telemetryRecorder={telemetry}>
-                <MarkEditorView height={300} />
-              </ErrorBoundary>
-            </MinimizablePane>
-          )}
-          {state.layersViewMaximized ? null : (
-            <MinimizablePane
-              title={strings.mainView.layersPanelTitle}
-              scroll={true}
-              onMaximize={() => this.setState({ layersViewMaximized: true })}
-            >
-              <ErrorBoundary telemetryRecorder={telemetry}>
-                <ObjectListEditor />
-              </ErrorBoundary>
-            </MinimizablePane>
-          )}
-          {state.attributeViewMaximized ? null : (
-            <MinimizablePane
-              title={strings.mainView.attributesPaneltitle}
-              scroll={true}
-              onMaximize={() =>
-                this.setState({ attributeViewMaximized: true })
-              }
-            >
-              <ErrorBoundary telemetryRecorder={telemetry}>
-                <AttributePanel store={store} />
-              </ErrorBoundary>
-            </MinimizablePane>
-          )}
-        </MinimizablePanelView>
-      </div>
-    );
-  };
-
-  const constraintsPanels = () => {
-    return (
-      <div
-        className="charticulator__panel-editor-panel charticulator__panel-editor-panel-panes"
-        style={{
-          display:
-            state.constraintsViewMaximized
-              ? "none"
-              : undefined,
-          background: tokens.colorNeutralBackground1
-        }}
-      >
-        <MinimizablePanelView
-          title={strings.mainView.constraints}
-          width="326px"
-          open={false}
-        >
-          <ErrorBoundary telemetryRecorder={telemetry}>
-            <div style={{
-              height: '100%',
-              display: 'flex',
-              width: '100%',
-            }}>
-              <ConstraintsPanel store={store} />
-            </div>
-          </ErrorBoundary>
-        </MinimizablePanelView>
-      </div>
-    );
-  };
-
-  const chartPanel = () => {
-    return (
-      <div style={{
-        background: tokens.colorNeutralBackground1
-      }} className="charticulator__panel-editor-panel charticulator__panel-editor-panel-chart">
-        <ErrorBoundary telemetryRecorder={telemetry}>
-          <ChartEditorView store={store} />
-        </ErrorBoundary>
-      </div>
-    );
-  };
-
-  return (
-    <div
-      className="charticulator__application"
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => e.preventDefault()}
-    >
-      <FluentProvider theme={theme}>
-        <TelemetryContext.Provider value={telemetry}>
-          <MenuBar
-            darkTheme={darkTheme}
-            onSwitchTheme={onSwitchTheme}
-            alignButtons={viewConf.MenuBarButtons}
-            alignSaveButton={viewConf.MenuBarSaveButtons}
-            undoRedoLocation={viewConf.UndoRedoLocation}
-            name={viewConf.Name}
-            appButtonName={viewConf.AppButtonName}
-            // ref={(e) => (this.refMenuBar = e)}
-            handlers={menuBarHandlers}
-            tabButtons={tabButtons}
+        }} className={`charticulator__panel-editor-toolbar-${config.layout}`}>
+          <FluentUIToolbar
+            darkTheme={this.props.darkTheme}
+            toolbarLabels={config.toolbarLabels}
+            undoRedoLocation={config.undoRedoLocation}
+            layout={config.layout}
           />
-          {viewConf.ToolbarPosition ==
-            PositionsLeftRightTop.Top &&
-            toolBarCreator({
-              layout: LayoutDirection.Horizontal,
-              toolbarLabels: viewConf.ToolbarLabels,
-              undoRedoLocation: viewConf.UndoRedoLocation,
-            })}
-          <section className="charticulator__panel-container">
-            {viewConf.ColumnsPosition ==
-              PositionsLeftRight.Left && datasetPanel()}
-            <div className="charticulator__panel charticulator__panel-editor">
-              <div className="charticulator__panel-editor-panel-container">
-                {viewConf.EditorPanelsPosition ==
-                  PositionsLeftRight.Left && editorPanels()}
-                {viewConf.EditorPanelsPosition ==
-                  PositionsLeftRight.Left && constraintsPanels()}
-                {viewConf.ToolbarPosition ==
-                  PositionsLeftRightTop.Left &&
-                  toolBarCreator({
-                    layout: LayoutDirection.Vertical,
-                    toolbarLabels: viewConf.ToolbarLabels,
-                    undoRedoLocation: viewConf.UndoRedoLocation,
-                  })}
-                {chartPanel()}
-                {viewConf.ToolbarPosition ==
-                  PositionsLeftRightTop.Right &&
-                  toolBarCreator({
-                    layout: LayoutDirection.Vertical,
-                    toolbarLabels: viewConf.ToolbarLabels,
-                    undoRedoLocation: viewConf.UndoRedoLocation,
-                  })}
-                {viewConf.EditorPanelsPosition ==
-                  PositionsLeftRight.Right && editorPanels()}
-                {viewConf.EditorPanelsPosition ==
-                  PositionsLeftRight.Right && constraintsPanels()}
-              </div>
-            </div>
-            {viewConf.ColumnsPosition ==
-              PositionsLeftRight.Right && datasetPanel()}
-          </section>
-          <div className="charticulator__floating-panels">
-            {state.glyphViewMaximized ? (
-              <FloatingPanel
-                peerGroup="panels"
-                title={strings.mainView.glyphPaneltitle}
-                onClose={() => this.setState({ glyphViewMaximized: false })}
-              >
-                <ErrorBoundary telemetryRecorder={telemetry}>
-                  <MarkEditorView />
-                </ErrorBoundary>
-              </FloatingPanel>
-            ) : null}
-            {state.layersViewMaximized ? (
-              <FloatingPanel
+        </div>
+      );
+    };
+
+    const datasetPanel = () => {
+      return (
+        <div
+          style={{
+            background: tokens.colorNeutralBackground1
+          }}
+          className="charticulator__panel charticulator__panel-dataset">
+          <MinimizablePanelView
+            title={strings.mainView.datasetPanelTitle}
+            width={'200px'}
+          >
+            <MinimizablePane
+              title={strings.mainView.datasetPanelTitle}
+              scroll={true}
+              hideHeader={true}
+            >
+              <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                <DatasetView store={this.props.store} />
+              </ErrorBoundary>
+            </MinimizablePane>
+            {this.state.scaleViewMaximized ? null : (
+              <MinimizablePane
+                title={strings.mainView.scalesPanelTitle}
                 scroll={true}
-                peerGroup="panels"
-                title={strings.mainView.layersPanelTitle}
-                onClose={() => this.setState({ layersViewMaximized: false })}
+                onMaximize={() => this.setState({ scaleViewMaximized: true })}
               >
-                <ErrorBoundary telemetryRecorder={telemetry}>
+                <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                  <ScalesPanel store={this.props.store} />
+                </ErrorBoundary>
+              </MinimizablePane>
+            )}
+          </MinimizablePanelView>
+        </div>
+      );
+    };
+
+    const editorPanels = () => {
+      return (
+        <div
+          className="charticulator__panel-editor-panel charticulator__panel-editor-panel-panes"
+          style={{
+            display:
+              this.state.glyphViewMaximized &&
+                this.state.attributeViewMaximized &&
+                this.state.layersViewMaximized
+                ? "none"
+                : undefined,
+            background: tokens.colorNeutralBackground1
+          }}
+        >
+          <MinimizablePanelView
+            title={strings.mainView.properties}
+            width="326px"
+          >
+            {this.state.glyphViewMaximized ? null : (
+              <MinimizablePane
+                title={strings.mainView.glyphPaneltitle}
+                scroll={false}
+                onMaximize={() => this.setState({ glyphViewMaximized: true })}
+              >
+                <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                  <MarkEditorView height={300} />
+                </ErrorBoundary>
+              </MinimizablePane>
+            )}
+            {this.state.layersViewMaximized ? null : (
+              <MinimizablePane
+                title={strings.mainView.layersPanelTitle}
+                scroll={true}
+                onMaximize={() => this.setState({ layersViewMaximized: true })}
+              >
+                <ErrorBoundary telemetryRecorder={this.props.telemetry}>
                   <ObjectListEditor />
                 </ErrorBoundary>
-              </FloatingPanel>
-            ) : null}
-            {state.attributeViewMaximized ? (
-              <FloatingPanel
-                scroll={true}
-                peerGroup="panels"
+              </MinimizablePane>
+            )}
+            {this.state.attributeViewMaximized ? null : (
+              <MinimizablePane
                 title={strings.mainView.attributesPaneltitle}
-                onClose={() =>
-                  this.setState({ attributeViewMaximized: false })
+                scroll={true}
+                onMaximize={() =>
+                  this.setState({ attributeViewMaximized: true })
                 }
               >
-                <ErrorBoundary telemetryRecorder={telemetry}>
-                  <AttributePanel store={store} />
+                <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                  <AttributePanel store={this.props.store} />
                 </ErrorBoundary>
-                <PopupContainer controller={globals.popupController} />
-              </FloatingPanel>
-            ) : null}
-            {store.messageState.size ? (
+              </MinimizablePane>
+            )}
+          </MinimizablePanelView>
+        </div>
+      );
+    };
+
+    const constraintsPanels = () => {
+      return (
+        <div
+          className="charticulator__panel-editor-panel charticulator__panel-editor-panel-panes"
+          style={{
+            display:
+              this.state.constraintsViewMaximized
+                ? "none"
+                : undefined,
+            background: tokens.colorNeutralBackground1
+          }}
+        >
+          <MinimizablePanelView
+            title={strings.mainView.constraints}
+            width="326px"
+            open={false}
+          >
+            <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+              <div style={{
+                height: '100%',
+                display: 'flex',
+                width: '100%',
+              }}>
+                <ConstraintsPanel store={this.props.store} />
+              </div>
+            </ErrorBoundary>
+          </MinimizablePanelView>
+        </div>
+      );
+    };
+
+    const chartPanel = () => {
+      return (
+        <div style={{
+          background: tokens.colorNeutralBackground1
+        }} className="charticulator__panel-editor-panel charticulator__panel-editor-panel-chart">
+          <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+            <ChartEditorView store={this.props.store} />
+          </ErrorBoundary>
+        </div>
+      );
+    };
+
+    return (
+      <div
+        className="charticulator__application"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => e.preventDefault()}
+      >
+        <FluentProvider theme={this.props.theme}>
+          <TelemetryContext.Provider value={this.props.telemetry}>
+            <MenuBar
+              darkTheme={this.props.darkTheme}
+              onSwitchTheme={this.props.onSwitchTheme}
+              alignButtons={this.viewConfiguration.MenuBarButtons}
+              alignSaveButton={this.viewConfiguration.MenuBarSaveButtons}
+              undoRedoLocation={this.viewConfiguration.UndoRedoLocation}
+              name={this.viewConfiguration.Name}
+              appButtonName={this.viewConfiguration.AppButtonName}
+              // ref={(e) => (this.refMenuBar = e)}
+              handlers={this.props.menuBarHandlers}
+              tabButtons={this.props.tabButtons}
+            />
+            {this.viewConfiguration.ToolbarPosition ==
+              PositionsLeftRightTop.Top &&
+              toolBarCreator({
+                layout: LayoutDirection.Horizontal,
+                toolbarLabels: this.viewConfiguration.ToolbarLabels,
+                undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
+              })}
+            <section className="charticulator__panel-container">
+              {this.viewConfiguration.ColumnsPosition ==
+                PositionsLeftRight.Left && datasetPanel()}
+              <div className="charticulator__panel charticulator__panel-editor">
+                <div className="charticulator__panel-editor-panel-container">
+                  {this.viewConfiguration.EditorPanelsPosition ==
+                    PositionsLeftRight.Left && editorPanels()}
+                  {this.viewConfiguration.EditorPanelsPosition ==
+                    PositionsLeftRight.Left && constraintsPanels()}
+                  {this.viewConfiguration.ToolbarPosition ==
+                    PositionsLeftRightTop.Left &&
+                    toolBarCreator({
+                      layout: LayoutDirection.Vertical,
+                      toolbarLabels: this.viewConfiguration.ToolbarLabels,
+                      undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
+                    })}
+                  {chartPanel()}
+                  {this.viewConfiguration.ToolbarPosition ==
+                    PositionsLeftRightTop.Right &&
+                    toolBarCreator({
+                      layout: LayoutDirection.Vertical,
+                      toolbarLabels: this.viewConfiguration.ToolbarLabels,
+                      undoRedoLocation: this.viewConfiguration.UndoRedoLocation,
+                    })}
+                  {this.viewConfiguration.EditorPanelsPosition ==
+                    PositionsLeftRight.Right && editorPanels()}
+                  {this.viewConfiguration.EditorPanelsPosition ==
+                    PositionsLeftRight.Right && constraintsPanels()}
+                </div>
+              </div>
+              {this.viewConfiguration.ColumnsPosition ==
+                PositionsLeftRight.Right && datasetPanel()}
+            </section>
+            <div className="charticulator__floating-panels">
+              {this.state.glyphViewMaximized ? (
+                <FloatingPanel
+                  peerGroup="panels"
+                  title={strings.mainView.glyphPaneltitle}
+                  onClose={() => this.setState({ glyphViewMaximized: false })}
+                >
+                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                    <MarkEditorView />
+                  </ErrorBoundary>
+                </FloatingPanel>
+              ) : null}
+              {this.state.layersViewMaximized ? (
+                <FloatingPanel
+                  scroll={true}
+                  peerGroup="panels"
+                  title={strings.mainView.layersPanelTitle}
+                  onClose={() => this.setState({ layersViewMaximized: false })}
+                >
+                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                    <ObjectListEditor />
+                  </ErrorBoundary>
+                </FloatingPanel>
+              ) : null}
+              {this.state.attributeViewMaximized ? (
+                <FloatingPanel
+                  scroll={true}
+                  peerGroup="panels"
+                  title={strings.mainView.attributesPaneltitle}
+                  onClose={() =>
+                    this.setState({ attributeViewMaximized: false })
+                  }
+                >
+                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                    <AttributePanel store={this.props.store} />
+                  </ErrorBoundary>
+                  <PopupContainer controller={globals.popupController} />
+                </FloatingPanel>
+              ) : null}
+              {this.props.store.messageState.size ? (
+                <div className="charticulator__floating-panels_errors">
+                  <FloatingPanel
+                    floatInCenter={true}
+                    scroll={true}
+                    peerGroup="messages"
+                    title={strings.mainView.errorsPanelTitle}
+                    closeButtonIcon={"ChromeClose"}
+                    height={200}
+                    width={350}
+                  >
+                    <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                      <MessagePanel store={this.props.store} />
+                    </ErrorBoundary>
+                  </FloatingPanel>
+                </div>
+              ) : null}
+              {this.state.scaleViewMaximized ? (
+                <FloatingPanel
+                  scroll={true}
+                  peerGroup="panels"
+                  title={strings.mainView.scalesPanelTitle}
+                  onClose={() => this.setState({ scaleViewMaximized: false })}
+                >
+                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                    <ScalesPanel store={this.props.store} />
+                  </ErrorBoundary>
+                </FloatingPanel>
+              ) : null}
+            </div>
+            <PopupContainer controller={globals.popupController} />
+            {this.props.store.messageState.size ? (
               <div className="charticulator__floating-panels_errors">
                 <FloatingPanel
                   floatInCenter={true}
                   scroll={true}
                   peerGroup="messages"
                   title={strings.mainView.errorsPanelTitle}
-                  closeButtonIcon={"ChromeClose"}
+                  closeButtonIcon={"general/cross"}
                   height={200}
                   width={350}
                 >
-                  <ErrorBoundary telemetryRecorder={telemetry}>
-                    <MessagePanel store={store} />
+                  <ErrorBoundary telemetryRecorder={this.props.telemetry}>
+                    <MessagePanel store={this.props.store} />
                   </ErrorBoundary>
                 </FloatingPanel>
               </div>
             ) : null}
-            {state.scaleViewMaximized ? (
-              <FloatingPanel
-                scroll={true}
-                peerGroup="panels"
-                title={strings.mainView.scalesPanelTitle}
-                onClose={() => this.setState({ scaleViewMaximized: false })}
-              >
-                <ErrorBoundary telemetryRecorder={telemetry}>
-                  <ScalesPanel store={store} />
-                </ErrorBoundary>
-              </FloatingPanel>
-            ) : null}
-          </div>
-          <PopupContainer controller={globals.popupController} />
-          {store.messageState.size ? (
-            <div className="charticulator__floating-panels_errors">
-              <FloatingPanel
-                floatInCenter={true}
-                scroll={true}
-                peerGroup="messages"
-                title={strings.mainView.errorsPanelTitle}
-                closeButtonIcon={"general/cross"}
-                height={200}
-                width={350}
-              >
-                <ErrorBoundary telemetryRecorder={telemetry}>
-                  <MessagePanel store={store} />
-                </ErrorBoundary>
-              </FloatingPanel>
-            </div>
-          ) : null}
-          <DragStateView controller={globals.dragController} />
-        </TelemetryContext.Provider>
-      </FluentProvider>
-    </div>
-  );
+            <DragStateView controller={globals.dragController} />
+          </TelemetryContext.Provider>
+        </FluentProvider>
+      </div>
+    );
+  }
 }
