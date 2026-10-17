@@ -615,8 +615,9 @@ export function MenuBar(props: MenuBarProps) {
           style={{
             border: `2px solid ${tokens.colorNeutralBackground3}`,
             borderRadius: "8px",
-            background: tokens.colorBrandBackground
-          }}>
+            marginLeft: '2px',
+            boxShadow: tokens.shadow4,
+          }}>``
 
           <div className="charticulator__menu-bar-left">
             <AppButtonWithDialog

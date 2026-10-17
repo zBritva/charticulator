@@ -85,25 +85,25 @@ export const FluentUIToolbar: React.FC<{
               {
                 classID: "mark.rect",
                 title: strings.toolbar.rectangle,
-                icon: "RectangleShape",
+                icon: "ElementRect",
                 options: '{"shape":"rectangle"}',
               },
               {
                 classID: "mark.rect",
                 title: strings.toolbar.ellipse,
-                icon: "Ellipse",
+                icon: "ElementEllipse",
                 options: '{"shape":"ellipse"}',
               },
               {
                 classID: "mark.rect",
                 title: strings.toolbar.triangle,
-                icon: "TriangleShape",
+                icon: "ElementTriangle",
                 options: '{"shape":"triangle"}',
               },
               {
                 classID: "mark.polygon",
                 title: strings.toolbar.polygon,
-                icon: "Polygon",
+                icon: "ElementPolygon",
                 options: '{"closed":"true", "pointsCount": "3"}',
               }
             ]}
@@ -112,14 +112,14 @@ export const FluentUIToolbar: React.FC<{
             invertIcon={props.darkTheme}
             classID="mark.symbol"
             title={strings.toolbar.symbol}
-            icon="Shapes"
+            icon="ElementSymbol"
           />
 
           <ObjectButton
             invertIcon={props.darkTheme}
             classID="mark.line"
             title={strings.toolbar.line}
-            icon="Line"
+            icon="ElementLine"
           />
           <MultiObjectButton
             invertIcon={props.darkTheme}
@@ -144,12 +144,12 @@ export const FluentUIToolbar: React.FC<{
               {
                 classID: "mark.icon",
                 title: strings.toolbar.icon,
-                icon: "ImagePixel",
+                icon: "ElementIcon",
               },
               {
                 classID: "mark.image",
                 title: strings.toolbar.image,
-                icon: "FileImage",
+                icon: "ElementImage",
               },
             ]}
           />
@@ -268,13 +268,13 @@ export const FluentUIToolbar: React.FC<{
             {
               classID: "plot-segment.cartesian",
               title: strings.toolbar.region2D,
-              icon: "BorderDot",
+              icon: "PlotRegion",
               noDragging: true,
             },
             {
               classID: "plot-segment.line",
               title: strings.toolbar.line,
-              icon: "Line",
+              icon: "ElementLine",
               noDragging: true,
             },
           ]}
@@ -481,33 +481,33 @@ export const FluentUIToolbar: React.FC<{
             {
               classID: "mark.rect",
               title: strings.toolbar.rectangle,
-              icon: "RectangleShape",
+              icon: "ElementRect",
               options: '{"shape":"rectangle"}',
             },
             {
               classID: "mark.rect",
               title: strings.toolbar.ellipse,
-              icon: "Ellipse",
+              icon: "ElementEllipse",
               options: '{"shape":"ellipse"}',
             },
             {
               classID: "mark.rect",
               title: strings.toolbar.triangle,
-              icon: "TriangleShape",
+              icon: "ElementTriangle",
               options: '{"shape":"triangle"}',
             },
             {
               classID: "mark.polygon",
               title: strings.toolbar.polygon,
-              icon: "Polygon",
+              icon: "ElementPolygon",
               options: '{"closed":"true", "pointsCount": "3"}',
             },
           ]}
         />
         <ObjectButton
-          invertIcon={props.darkTheme} classID="mark.symbol" title="Symbol" icon="Shapes" />
+          invertIcon={props.darkTheme} classID="mark.symbol" title="Symbol" icon="ElementSymbol" />
         <ObjectButton
-          invertIcon={props.darkTheme} classID="mark.line" title="Line" icon="Line" />
+          invertIcon={props.darkTheme} classID="mark.line" title="Line" icon="ElementLine" />
         <MultiObjectButton
           invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
@@ -515,12 +515,12 @@ export const FluentUIToolbar: React.FC<{
             {
               classID: "mark.text",
               title: strings.toolbar.text,
-              icon: "FontColorA",
+              icon: "ElementText",
             },
             {
               classID: "mark.textbox",
               title: strings.toolbar.textbox,
-              icon: "TextField",
+              icon: "ElementTextbox",
             },
           ]}
         />
@@ -531,12 +531,12 @@ export const FluentUIToolbar: React.FC<{
             {
               classID: "mark.icon",
               title: strings.toolbar.icon,
-              icon: "ImagePixel",
+              icon: "ElementIcon",
             },
             {
               classID: "mark.image",
               title: strings.toolbar.image,
-              icon: "FileImage",
+              icon: "ElementImage",
             },
           ]}
         />
@@ -545,13 +545,13 @@ export const FluentUIToolbar: React.FC<{
           invertIcon={props.darkTheme}
           classID="mark.data-axis"
           title={strings.toolbar.dataAxis}
-          icon="mark/data-axis"
+          icon="DataAxis"
         />
         <ObjectButton
           invertIcon={props.darkTheme}
           classID="mark.nested-chart"
           title={strings.toolbar.nestedChart}
-          icon="BarChartVerticalFilter"
+          icon="NestedChart"
         />
         <LegendButton invertIcon={props.darkTheme} />
         <span className={"charticulator__toolbar-horizontal-separator"} />
@@ -574,31 +574,31 @@ export const FluentUIToolbar: React.FC<{
               invertIcon={props.darkTheme}
               classID="guide-y"
               title={strings.toolbar.guideY}
-              icon="guide/x"
+              icon="GuideXline"
             />
             <ObjectButton
               invertIcon={props.darkTheme}
               classID="guide-x"
               title={strings.toolbar.guideX}
-              icon="guide/y"
+              icon="GuideYline"
             />
             <ObjectButton
               invertIcon={props.darkTheme}
               classID="guide-coordinator-x"
               title={strings.toolbar.guideX}
-              icon="guide/coordinator-x"
+              icon="GuideCoordinatorX"
             />
             <ObjectButton
               invertIcon={props.darkTheme}
               classID="guide-coordinator-y"
               title={strings.toolbar.guideY}
-              icon="guide/coordinator-y"
+              icon="GuideCoordinatorY"
             />
             <ObjectButton
               invertIcon={props.darkTheme}
               classID="guide-coordinator-polar"
               title={strings.toolbar.guidePolar}
-              icon="guide/coordinator-polar"
+              icon="GuideCoordinatorPolar"
             />
           </>
         ) : (
@@ -624,14 +624,14 @@ export const FluentUIToolbar: React.FC<{
           invertIcon={props.darkTheme}
           classID="plot-segment.cartesian"
           title={strings.toolbar.region2D}
-          icon="BorderDot"
+          icon="PlotRegion"
           noDragging={true}
         />
         <ObjectButton
           invertIcon={props.darkTheme}
           classID="plot-segment.line"
           title={strings.toolbar.line}
-          icon="Line"
+          icon="PlotSegmentLine"
           noDragging={true}
         />
         <span className={"charticulator__toolbar-horizontal-separator"} />
@@ -652,28 +652,28 @@ export const FluentUIToolbar: React.FC<{
               darkTheme={props.darkTheme}
               type="cartesian-x"
               title={strings.toolbar.lineH}
-              icon="scaffold/cartesian-x"
+              icon="ScaffoldXline"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
               darkTheme={props.darkTheme}
               type="cartesian-y"
               title={strings.toolbar.lineV}
-              icon="scaffold/cartesian-y"
+              icon="ScaffoldYline"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
               darkTheme={props.darkTheme}
               type="polar"
               title={strings.toolbar.polar}
-              icon="scaffold/circle"
+              icon="ScaffoldCircle"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
               darkTheme={props.darkTheme}
               type="curve"
               title={strings.toolbar.curve}
-              icon="scaffold/curve"
+              icon="ScaffoldCurve"
               currentTool={store.currentTool}
             />
           </>
@@ -701,7 +701,7 @@ export const FluentUIToolbar: React.FC<{
         style={{
           border: `2px solid ${tokens.colorNeutralBackground3}`,
           borderRadius: "8px",
-          backgroundColor: tokens.colorNeutralBackground3
+          backgroundColor: tokens.colorNeutralBackground1
         }}
       >
         {tooltipsItems}
@@ -981,7 +981,7 @@ export const LinkButton: React.FC<{
             icon={
               <SVGImageIcon
                 invert={props.invertIcon}
-                url={R.getSVGIcon("CharticulatorLine")}
+                url={R.getSVGIcon("LinkTool")}
                 height={20}
                 width={20}
               />

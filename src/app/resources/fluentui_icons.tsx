@@ -144,8 +144,8 @@ import RotationHandle from "../../../resources/icons/rotation_handle.svg?react";
 import SupportDev from "../../../resources/icons/support-dev.svg?react";
 
 const IconProps = {
-    width: "1.5em",
-    height: "1.5em",
+    // width: "1.5em",
+    // height: "1.5em",
     // viewBox: "0 0 20 20",
     "aria-hidden": true,
     focusable: false,
@@ -453,6 +453,8 @@ export const fluentIconMap = {
     RotationHandle01: RotationHandle01Icon,
     RotationHandle: RotationHandleIcon,
     SupportDev: SupportDevIcon,
+    RectangleShape: ElementRect,
+    FontColorA: ElementText,
 } as const;
 
 export type FluentIconName = keyof typeof fluentIconMap;

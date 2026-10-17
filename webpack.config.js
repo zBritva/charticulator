@@ -64,7 +64,7 @@ module.exports = (env, { mode }) => {
       }
     },
     generator: {
-      filename: 'icons/[name].[hash:6][ext]' // Defines output folder and naming format
+      filename: 'icons/[name].[ext]' // Defines output folder and naming format
     },
     oneOf: [
       {

@@ -168,7 +168,7 @@ export class MainView extends React.Component<
     }) => {
       return (
         <div style={{
-          background: tokens.colorNeutralBackground1
+          // background: tokens.colorNeutralBackground1
         }} className={`charticulator__panel-editor-toolbar-${config.layout}`}>
           <FluentUIToolbar
             darkTheme={this.props.darkTheme}

@@ -236,7 +236,7 @@ export abstract class LegendClass extends ChartElementClass {
               {
                 type: "dropdown",
                 showLabel: true,
-                icons: ["RectangleShape", "TriangleShape", "Ellipse"],
+                icons: ["ElementRect", "ElementTriangle", "ElementEllipse"],
                 labels: [
                   strings.toolbar.rectangle,
                   strings.toolbar.triangle,
