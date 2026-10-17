@@ -434,7 +434,7 @@ export const FluentUIToolbar: React.FC<{
     labels: boolean = true,
     innerWidth: number = window.innerWidth
   ) => {
-    const isEmbeddedApp = store.editorType === EditorType.EmbeddedApp || store.editorType === EditorType.NestedEmbeddedApp;
+    const isEmbeddedApp = store.editorType === EditorType.NestedEmbeddedApp;
     return (
       <>
         {isEmbeddedApp ? (
@@ -701,6 +701,7 @@ export const FluentUIToolbar: React.FC<{
         style={{
           border: `2px solid ${tokens.colorNeutralBackground3}`,
           borderRadius: "8px",
+          backgroundColor: tokens.colorNeutralBackground3
         }}
       >
         {tooltipsItems}

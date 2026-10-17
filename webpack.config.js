@@ -57,6 +57,15 @@ module.exports = (env, { mode }) => {
   const svgConfig = {
     test: /\.svg$/i,
     issuer: /\.[jt]sx?$/,
+    type: 'asset',
+    parser: {
+      dataUrlCondition: {
+        maxSize: 32 * 1024 // Inline SVGs smaller than 8kb as Base64, emit larger ones as files
+      }
+    },
+    generator: {
+      filename: 'icons/[name].[hash:6][ext]' // Defines output folder and naming format
+    },
     oneOf: [
       {
         resourceQuery: /react/,
