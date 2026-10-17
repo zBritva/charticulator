@@ -63,6 +63,8 @@ export class ObjectListEditor extends ContextedComponent<
           }}
         >
           <SVGImageIcon
+            height={16}
+            width={16}
             url={R.getSVGIcon(
               Prototypes.ObjectClasses.GetMetadata(chart.classID).iconPath
             )}
@@ -82,7 +84,7 @@ export class ObjectListEditor extends ContextedComponent<
                 className={classNames("el-object-item", [
                   "is-active",
                   sel instanceof ChartElementSelection &&
-                    sel.chartElement == element,
+                  sel.chartElement == element,
                 ])}
                 onClick={() => {
                   this.dispatch(new Actions.SelectChartElement(element));
@@ -97,6 +99,8 @@ export class ObjectListEditor extends ContextedComponent<
                 key={`object-list-item-${element?._id || index}`}
               >
                 <SVGImageIcon
+                  height={16}
+                  width={16}
                   url={R.getSVGIcon(
                     Prototypes.ObjectClasses.GetMetadata(element.classID)
                       .iconPath
@@ -162,6 +166,8 @@ export class ObjectListEditor extends ContextedComponent<
           }}
         >
           <SVGImageIcon
+            height={16}
+            width={16}
             url={R.getSVGIcon(
               Prototypes.ObjectClasses.GetMetadata(glyph.classID).iconPath
             )}
@@ -192,8 +198,8 @@ export class ObjectListEditor extends ContextedComponent<
                   className={classNames("el-object-item", [
                     "is-active",
                     sel instanceof MarkSelection &&
-                      sel.glyph == glyph &&
-                      sel.mark == mark,
+                    sel.glyph == glyph &&
+                    sel.mark == mark,
                   ])}
                   key={mark._id}
                   onClick={() => {
@@ -206,6 +212,8 @@ export class ObjectListEditor extends ContextedComponent<
                   }}
                 >
                   <SVGImageIcon
+                    height={16}
+                    width={16}
                     url={R.getSVGIcon(
                       Prototypes.ObjectClasses.GetMetadata(mark.classID)
                         .iconPath
@@ -279,7 +287,7 @@ export class ReorderListView extends React.Component<
   React.PropsWithChildren<ReorderListViewProps>,
   ReorderListViewState
 > {
-  private container: HTMLDivElement;
+  private container: React.RefObject<HTMLDivElement> = React.createRef();
   private container2Index = new WeakMap<Element, number>();
   private index2Container = new Map<number, Element>();
   private hammer: HammerManager;
@@ -332,7 +340,7 @@ export class ReorderListView extends React.Component<
     if (!this.props.enabled) {
       return;
     }
-    const hammer = new Hammer(this.container);
+    const hammer = new Hammer(this.container.current);
     this.hammer = hammer;
     hammer.add(new Hammer.Pan());
     hammer.on("panstart", (e) => {
@@ -400,39 +408,41 @@ export class ReorderListView extends React.Component<
     return (
       <div
         className="charticulator__reorder-list-view"
-        ref={(e) => (this.container = e)}
+        ref={this.container}
       >
-        {React.Children.map(this.props.children, (item, index) => {
-          return (
-            <div
-              className="charticulator__reorder-list-view-item"
-              ref={(e) => {
-                if (e) {
-                  this.container2Index.set(e, index);
-                  this.index2Container.set(index, e);
-                } else {
-                  this.index2Container.delete(index);
-                }
-              }}
-            >
-              {item}
-              {this.state.reordering &&
-              this.state.dropIndex &&
-              this.state.dropIndex[0] == index ? (
-                <div
-                  className={classNames(
-                    "charticulator__reorder-list-view-item-hint",
-                    ["is-top", this.state.dropIndex[1] < 0.5]
-                  )}
-                />
-              ) : null}
-              {this.state.reordering && this.state.dragIndex == index ? (
-                <div className="charticulator__reorder-list-view-item-drag-hint" />
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
+        {
+          React.Children.map(this.props.children, (item, index) => {
+            return (
+              <div
+                className="charticulator__reorder-list-view-item"
+                ref={(e) => {
+                  if (e) {
+                    this.container2Index.set(e, index);
+                    this.index2Container.set(index, e);
+                  } else {
+                    this.index2Container.delete(index);
+                  }
+                }}
+              >
+                {item}
+                {this.state.reordering &&
+                  this.state.dropIndex &&
+                  this.state.dropIndex[0] == index ? (
+                  <div
+                    className={classNames(
+                      "charticulator__reorder-list-view-item-hint",
+                      ["is-top", this.state.dropIndex[1] < 0.5]
+                    )}
+                  />
+                ) : null}
+                {this.state.reordering && this.state.dragIndex == index ? (
+                  <div className="charticulator__reorder-list-view-item-drag-hint" />
+                ) : null}
+              </div>
+            );
+          })
+        }
+      </div >
     );
   }
 

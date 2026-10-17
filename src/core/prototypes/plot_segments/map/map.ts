@@ -63,8 +63,8 @@ export class MapPlotSegment extends PlotSegmentClass {
     mapType: "roadmap",
   };
 
-  public readonly state: MapState;
-  public readonly object: MapObject;
+  public declare readonly state: MapState;
+  public declare readonly object: MapObject;
 
   public attributeNames: string[] = ["x1", "x2", "y1", "y2"];
   public attributes: { [name: string]: AttributeDescription } = {
@@ -164,7 +164,7 @@ export class MapPlotSegment extends PlotSegmentClass {
       (128 / 180) *
       (180 -
         (180 / Math.PI) *
-          Math.log(Math.tan(Math.PI / 4 + Geometry.degreesToRadians(lat) / 2)));
+        Math.log(Math.tan(Math.PI / 4 + Geometry.degreesToRadians(lat) / 2)));
 
     return [x, y];
 

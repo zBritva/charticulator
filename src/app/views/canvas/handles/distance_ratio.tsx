@@ -20,10 +20,8 @@ export class DistanceRatioHandleView extends React.Component<
   React.PropsWithChildren<DistanceRatioHandleViewProps>,
   DistanceRatioHandleViewState
 > {
-  public refs: {
-    margin: SVGGElement;
-    centerCircle: SVGCircleElement;
-  };
+  private margin: React.RefObject<SVGGElement> = React.createRef();
+  private centerCircle: React.RefObject<SVGCircleElement> = React.createRef();
   public hammer: HammerManager;
 
   constructor(props: DistanceRatioHandleViewProps) {
@@ -50,7 +48,7 @@ export class DistanceRatioHandleView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.margin);
+    this.hammer = new Hammer(this.margin.current);
     this.hammer.add(new Hammer.Pan({ threshold: 1 }));
 
     let context: HandlesDragContext = null;
@@ -69,7 +67,7 @@ export class DistanceRatioHandleView extends React.Component<
     });
     this.hammer.on("pan", (e) => {
       if (context) {
-        const cc = this.refs.centerCircle.getBoundingClientRect();
+        const cc = this.centerCircle.current.getBoundingClientRect();
         const px = e.center.x - (cc.left + cc.width / 2);
         const py = e.center.y - (cc.top + cc.height / 2);
         let d = Math.sqrt(px * px + py * py) / this.props.zoom.scale;
@@ -86,7 +84,7 @@ export class DistanceRatioHandleView extends React.Component<
     });
     this.hammer.on("panend", (e) => {
       if (context) {
-        const cc = this.refs.centerCircle.getBoundingClientRect();
+        const cc = this.centerCircle.current.getBoundingClientRect();
         const px = e.center.x - (cc.left + cc.width / 2);
         const py = e.center.y - (cc.top + cc.height / 2);
         let d = Math.sqrt(px * px + py * py) / this.props.zoom.scale;
@@ -145,7 +143,7 @@ export class DistanceRatioHandleView extends React.Component<
     };
     return (
       <g
-        ref="margin"
+        ref={this.margin}
         className={classNames(
           "handle",
           "handle-distance",
@@ -154,7 +152,7 @@ export class DistanceRatioHandleView extends React.Component<
         )}
       >
         <g transform={`translate(${cx},${cy})`}>
-          <circle ref="centerCircle" cx={0} cy={0} r={0} />
+          <circle ref={this.centerCircle} />
           <path
             d={makePath(handle.value)}
             className="element-line handle-ghost"

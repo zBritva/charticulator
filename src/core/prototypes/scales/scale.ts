@@ -33,8 +33,8 @@ export abstract class ScaleClass<
   PropertiesType extends AttributeMap = AttributeMap,
   AttributesType extends AttributeMap = AttributeMap
 > extends ObjectClass<PropertiesType, AttributesType> {
-  public readonly object: Scale<PropertiesType>;
-  public readonly state: ScaleState<AttributesType>;
+  public declare readonly object: Scale<PropertiesType>;
+  public declare readonly state: ScaleState<AttributesType>;
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Scale",
@@ -52,7 +52,7 @@ export abstract class ScaleClass<
     // eslint-disable-next-line
     solver: ConstraintSolver
     // eslint-disable-next-line
-  ): void {}
+  ): void { }
 
   public abstract inferParameters(
     column: DataValue[],

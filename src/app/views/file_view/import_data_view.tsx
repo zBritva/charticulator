@@ -18,7 +18,6 @@ import {
   getFileNameWithoutExtension,
   readFileAsString,
 } from "../../utils";
-import { ButtonRaised } from "../../components/index";
 import { SVGImageIcon } from "../../components/icons";
 import { TableView } from "../dataset/table_view";
 import { PopupView } from "../../controllers";
@@ -347,7 +346,7 @@ export class ImportDataView extends React.Component<
             kind: Dataset.DataKind.Categorical
           },
           type: Dataset.DataType.String
-        },{
+        }, {
           displayName: "target_id",
           name: "target_id",
           metadata: {
@@ -371,8 +370,7 @@ export class ImportDataView extends React.Component<
       <div className="charticulator__import-data-view">
         {sampleDatasets != null ? (
           <div ref={(e) => (sampleDatasetDiv = e)}>
-            <ButtonRaised
-              text={strings.fileImport.loadSample}
+            <Button
               onClick={() => {
                 globals.popupController.popupAt(
                   (context) => {
@@ -427,7 +425,9 @@ export class ImportDataView extends React.Component<
                   { anchor: sampleDatasetDiv }
                 );
               }}
-            />
+            >
+              {strings.fileImport.loadSample}
+            </Button>
           </div>
         ) : null}
         <h2>
