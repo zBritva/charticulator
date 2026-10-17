@@ -171,9 +171,7 @@ export class AttributePanel extends React.Component<
             <div className="header" key="header">
               <SVGImageIcon
                 key={`attribute-editor-class-icon-${object.properties.name.replace(/\W/g, "_")}`}
-                url={R.getSVGIcon(
-                  Prototypes.ObjectClasses.GetMetadata(object.classID).iconPath
-                )}
+                url={Prototypes.ObjectClasses.GetMetadata(object.classID).iconPath}
                 height={32}
                 width={32}
               />

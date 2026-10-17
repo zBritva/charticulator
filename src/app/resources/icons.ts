@@ -240,7 +240,7 @@ addSVGIcon(
   "Polygon",
   require("resources/icons/icons_element-polygon.svg")
 );
-addSVGIcon("FileImage", require("resources/icons/icons_element-image.svg"));
+addSVGIcon("ElementImage", require("resources/icons/icons_element-image.svg"));
 addSVGIcon("ImagePixel", require("resources/icons/icons_element-icon.svg"));
 addSVGIcon("Shapes", require("resources/icons/icons_element-symbol.svg"));
 addSVGIcon("Line", require("resources/icons/icons_element-line.svg"));

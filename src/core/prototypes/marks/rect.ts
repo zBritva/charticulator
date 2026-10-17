@@ -54,7 +54,7 @@ export class RectElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Shape",
-    iconPath: "ElementRectangle",
+    iconPath: "ElementRect",
     creatingInteraction: {
       type: ShapeType.Rectangle,
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },

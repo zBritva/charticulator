@@ -56,7 +56,7 @@ export class ImageElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Image",
-    iconPath: "ElementIcon",
+    iconPath: "ElementImage",
     creatingInteraction: {
       type: "rectangle",
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },

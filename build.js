@@ -105,6 +105,21 @@ const devSequence = [
   // "pegjs",
   // "typescript",
   "sass",
+  "webpackapp",
+  "dtsBundle",
+  "config",
+  ...(isProd ? ["add_hash"] : [])
+];
+
+// The default dev sequence
+const npmSequence = [
+  "cleanup",
+  "makedirs",
+  "copy",
+  "third_party_data",
+  // "pegjs",
+  // "typescript",
+  "sass",
   "webpack",
   "dtsBundle",
   "config",
@@ -220,6 +235,8 @@ let COMMANDS = {
   // Produce webpack bundles
   webpack: "node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --mode=" + (isProd ? "production" : "development"),
 
+  webpackapp: "node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --config ./webpack.config.app.js --mode=" + (isProd ? "production" : "development"),
+
   // Add ?sha256=... and integrity tags to script and css
   add_hash: () => addHASHToHTMLs(),
 
@@ -229,17 +246,18 @@ let COMMANDS = {
   public_server: "http-server ./dist -a 0.0.0.0 -p 4000 -c-1 -s",
   watch: {
     //tsc: "tsc -w",
-    webpack: "webpack -w --mode=" + (isProd ? "production" : "development"),
+    webpack: "webpack -w --config ./webpack.config.app.js --mode=" + (isProd ? "production" : "development"),
     sass: "sass --watch sass/app.scss:dist/styles/app.css sass/page.scss:dist/styles/page.css sass/container.scss:dist/styles/container.css",
     server: "http-server ./dist -a 0.0.0.0 -p 4000 -c-1 -s",
   },
   ssl_watch: {
     //tsc: "tsc -w",
-    webpack: "webpack -w --mode=" + (isProd ? "production" : "development"),
+    webpack: "webpack -w --config ./webpack.config.app.js --mode=" + (isProd ? "production" : "development"),
     sass: "sass --watch sass/app.scss:dist/styles/app.css sass/page.scss:dist/styles/page.css",
     server: "http-server ./dist -a 0.0.0.0 -p 4000 -c-1 -s --ssl --cors"
   },
   dev: () => runCommands(devSequence),
+  npm: () => runCommands(npmSequence),
   // eslint-disable-next-line no-undef
   visual_dev: () => runCommands([...devSequence, ...visualSequence])
 };

@@ -17,7 +17,11 @@ export class SVGImageIcon extends React.PureComponent<
     }
     const FluentUIIcon = getFluentIcon(this.props.url);
     if (FluentUIIcon) {
-      return <FluentUIIcon />;
+      return (<>
+        <div style={style}>
+          <FluentUIIcon />
+        </div>
+      </>);
     }
     if (this.props.url) {
       style.backgroundImage = `url(${this.props.url})`;

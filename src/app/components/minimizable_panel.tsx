@@ -135,6 +135,8 @@ export class MinimizablePane extends React.Component<
           onClick={() => this.setState({ minimized: !this.state.minimized })}
           icon={
             <SVGImageIcon
+              height={16}
+              width={16}
               url={R.getSVGIcon(
                 this.state.minimized ? "ChevronRight" : "ChevronDown"
               )}

@@ -1,5 +1,8 @@
 import React from "react";
 import type { FluentIconsProps } from "@fluentui/react-icons";
+import { BinRecycle20Regular } from "@fluentui/react-icons";
+import { Edit20Regular } from "@fluentui/react-icons";
+
 
 import Chart from "../../../resources/icons/icons_chart.svg?react";
 import TriangleRightBottomSvg from "../../../resources/icons/icons_triangle-right-bottom.svg?react";
@@ -336,6 +339,7 @@ export const fluentIconMap = {
     Confirm: ConfirmIcon,
     Copy: CopyIcon,
     Cross: CrossIcon,
+    ChromeClose: CrossIcon,
     DataAxis: DataAxisIcon,
     DigitsLess: DigitsLessIcon,
     DigitsMore: DigitsMoreIcon,
@@ -455,12 +459,12 @@ export const fluentIconMap = {
     SupportDev: SupportDevIcon,
     RectangleShape: ElementRect,
     FontColorA: ElementText,
+    Delete: BinRecycle20Regular,
 } as const;
 
 export type FluentIconName = keyof typeof fluentIconMap;
 
 export function getFluentIcon(name: string | FluentIconName): React.ComponentType | undefined {
-    const key = (typeof name === "string" ? name.replace(/Icon$/, "") : name) as FluentIconName;
-    return fluentIconMap[key];
+    return fluentIconMap[name];
 }
 
