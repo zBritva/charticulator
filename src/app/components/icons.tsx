@@ -9,12 +9,8 @@ export class SVGImageIcon extends React.PureComponent<
 > {
   public render() {
     const style: React.CSSProperties = {};
-    if (this.props.width != null) {
-      style.width = this.props.width + "px";
-    }
-    if (this.props.height != null) {
-      style.height = this.props.height + "px";
-    }
+    style.width = (this.props.width ?? 20) + "px";
+    style.height = (this.props.height ?? 20) + "px";
     const FluentUIIcon = getFluentIcon(this.props.url);
     if (FluentUIIcon) {
       return (<>

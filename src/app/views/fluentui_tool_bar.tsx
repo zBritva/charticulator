@@ -1021,7 +1021,7 @@ export const LegendButton: React.FC<{
             icon={
               <SVGImageIcon
                 invert={invertIcon}
-                url={R.getSVGIcon("CharticulatorLegend")}
+                url={"Legend"}
                 height={20}
                 width={20}
               />

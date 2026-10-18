@@ -227,7 +227,7 @@ export class MarkEditorView extends ContextedComponent<
               size="small"
               appearance="subtle"
               icon={
-                <SVGImageIcon height={20} url={R.getSVGIcon("RectZoom")} />
+                <SVGImageIcon width={20} height={20} url={R.getSVGIcon("RectZoom")} />
               }
               title={"Rectangle zoom"}
               onClick={() => {
@@ -243,7 +243,7 @@ export class MarkEditorView extends ContextedComponent<
               size="small"
               appearance="subtle"
               icon={
-                <SVGImageIcon height={20} url={R.getSVGIcon("general/plus")} />
+                <SVGImageIcon height={20} width={20} url={R.getSVGIcon("Plus")} />
               }
               title={strings.canvas.newGlyph}
               onClick={() => {

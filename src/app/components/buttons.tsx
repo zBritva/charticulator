@@ -212,7 +212,7 @@ export class MenuButton extends BaseButton<IconButtonProps> {
     return (
       <>
         <Button
-          icon={<SVGImageIcon url={props.url} />}
+          icon={<SVGImageIcon height={20} width={20} url={props.url} />}
           title={props.title}
           onClick={this._doClick}
           appearance="transparent"

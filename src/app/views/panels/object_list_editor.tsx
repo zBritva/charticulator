@@ -63,8 +63,8 @@ export class ObjectListEditor extends ContextedComponent<
           }}
         >
           <SVGImageIcon
-            height={16}
-            width={16}
+            height={20}
+            width={20}
             url={R.getSVGIcon(
               Prototypes.ObjectClasses.GetMetadata(chart.classID).iconPath
             )}
@@ -99,8 +99,8 @@ export class ObjectListEditor extends ContextedComponent<
                 key={`object-list-item-${element?._id || index}`}
               >
                 <SVGImageIcon
-                  height={16}
-                  width={16}
+                  height={20}
+                  width={20}
                   url={R.getSVGIcon(
                     Prototypes.ObjectClasses.GetMetadata(element.classID)
                       .iconPath
@@ -166,8 +166,8 @@ export class ObjectListEditor extends ContextedComponent<
           }}
         >
           <SVGImageIcon
-            height={16}
-            width={16}
+            height={20}
+            width={20}
             url={R.getSVGIcon(
               Prototypes.ObjectClasses.GetMetadata(glyph.classID).iconPath
             )}
@@ -212,8 +212,8 @@ export class ObjectListEditor extends ContextedComponent<
                   }}
                 >
                   <SVGImageIcon
-                    height={16}
-                    width={16}
+                    height={20}
+                    width={20}
                     url={R.getSVGIcon(
                       Prototypes.ObjectClasses.GetMetadata(mark.classID)
                         .iconPath

@@ -90,14 +90,14 @@ export class CustomGradientMenu extends React.Component<
                         this.props.selectGradient(newGradient, true);
                       }
                     }}
-                    // underlined
-                    // styles={colorTextInputStyles}
+                  // underlined
+                  // styles={colorTextInputStyles}
                   />
                   <Button
                     // iconProps={{
                     //   iconName: "ChromeClose",
                     // }}
-                    icon={<SVGImageIcon url={R.getSVGIcon("ChromeClose")} />}
+                    icon={<SVGImageIcon height={20} width={20} url={R.getSVGIcon("ChromeClose")} />}
                     // styles={deleteColorStyles}
                     onClick={() => {
                       if (currentGradient.colors.length > 1) {
