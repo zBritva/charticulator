@@ -6,7 +6,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 
-import { MainView } from "./main_view";
+import { MainView, MainViewProps } from "./main_view";
 import { AppStore, Migrator } from "./stores";
 
 import {
@@ -345,7 +345,7 @@ export class Application {
     await this.processHashString();
   }
 
-  private renderMain(handlers: IHandlers) {
+  private renderMain(handlers?: IHandlers) {
     return (
       <MainReactContext.Provider value={{
         store: this.appStore,
@@ -648,5 +648,21 @@ export class Application {
     this.appStore.addListener(AppStore.EVENT_SAVECHART, (data) => {
       callback(data);
     });
+  }
+
+  public static reactMount({ viewConfiguration, theme, store }: MainViewProps & { theme: Theme }) {
+    return (
+      <MainReactContext.Provider value={{
+        store,
+        dispatcher: store.dispatcher,
+      }}>
+        <FluentProvider theme={theme} applyStylesToPortals={true}>
+          <MainView
+            store={store}
+            viewConfiguration={viewConfiguration}
+          />
+        </FluentProvider>
+      </MainReactContext.Provider>
+    )
   }
 }
