@@ -4,6 +4,7 @@ import { Color, Point } from "../common";
 import * as Template from "./template";
 import * as SpecTypes from "./spec_types";
 import { Specification } from "../../container";
+import { Dataset } from "../dataset";
 
 export { Template };
 
@@ -322,6 +323,12 @@ export interface Resource {
   type: string;
   /** Resource data */
   data: any;
+}
+
+export interface ChartRecord {
+  chart: Specification.Chart;
+  dataset: Dataset;
+  [key: string]: any;
 }
 
 /** A chart is a set of chart elements and constraints between them, with guides and scales */
