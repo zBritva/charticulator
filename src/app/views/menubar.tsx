@@ -253,6 +253,7 @@ export function MenuBar(props: MenuBarProps) {
               if (
                 store.editorType == EditorType.Nested ||
                 store.editorType == EditorType.Embedded ||
+                store.editorType == EditorType.EmbeddedApp ||
                 store.editorType == EditorType.NestedEmbedded
               ) {
                 store.emit(AppStore.EVENT_NESTED_EDITOR_EDIT);

@@ -64,137 +64,135 @@ export const FluentUIToolbar: React.FC<{
 
   const getGlyphToolItems = (labels: boolean = true) => {
     return [
-      <>
-        <>
-          <span className={"charticulator__toolbar-horizontal-separator"} />
-          {labels && (
-            <span
-              className={
-                props.layout === LayoutDirection.Vertical
-                  ? "charticulator__toolbar-vertical-label"
-                  : "charticulator__toolbar-label"
-              }
-            >
-              {strings.toolbar.marks}
-            </span>
-          )}
-          <MultiObjectButton
-            invertIcon={props.darkTheme}
-            compact={props.layout === LayoutDirection.Vertical}
-            tools={[
-              {
-                classID: "mark.rect",
-                title: strings.toolbar.rectangle,
-                icon: "ElementRect",
-                options: '{"shape":"rectangle"}',
-              },
-              {
-                classID: "mark.rect",
-                title: strings.toolbar.ellipse,
-                icon: "ElementEllipse",
-                options: '{"shape":"ellipse"}',
-              },
-              {
-                classID: "mark.rect",
-                title: strings.toolbar.triangle,
-                icon: "ElementTriangle",
-                options: '{"shape":"triangle"}',
-              },
-              {
-                classID: "mark.polygon",
-                title: strings.toolbar.polygon,
-                icon: "ElementPolygon",
-                options: '{"closed":"true", "pointsCount": "3"}',
-              }
-            ]}
-          />
-          <ObjectButton
-            invertIcon={props.darkTheme}
-            classID="mark.symbol"
-            title={strings.toolbar.symbol}
-            icon="ElementSymbol"
-          />
+      <React.Fragment key="getGlyphToolItems">
+        <span className={"charticulator__toolbar-horizontal-separator"} />
+        {labels && (
+          <span
+            className={
+              props.layout === LayoutDirection.Vertical
+                ? "charticulator__toolbar-vertical-label"
+                : "charticulator__toolbar-label"
+            }
+          >
+            {strings.toolbar.marks}
+          </span>
+        )}
+        <MultiObjectButton
+          invertIcon={props.darkTheme}
+          compact={props.layout === LayoutDirection.Vertical}
+          tools={[
+            {
+              classID: "mark.rect",
+              title: strings.toolbar.rectangle,
+              icon: "ElementRect",
+              options: '{"shape":"rectangle"}',
+            },
+            {
+              classID: "mark.rect",
+              title: strings.toolbar.ellipse,
+              icon: "ElementEllipse",
+              options: '{"shape":"ellipse"}',
+            },
+            {
+              classID: "mark.rect",
+              title: strings.toolbar.triangle,
+              icon: "ElementTriangle",
+              options: '{"shape":"triangle"}',
+            },
+            {
+              classID: "mark.polygon",
+              title: strings.toolbar.polygon,
+              icon: "ElementPolygon",
+              options: '{"closed":"true", "pointsCount": "3"}',
+            }
+          ]}
+        />
+        <ObjectButton
+          invertIcon={props.darkTheme}
+          classID="mark.symbol"
+          title={strings.toolbar.symbol}
+          icon="ElementSymbol"
+        />
 
+        <ObjectButton
+          invertIcon={props.darkTheme}
+          classID="mark.line"
+          title={strings.toolbar.line}
+          icon="ElementLine"
+        />
+        <MultiObjectButton
+          invertIcon={props.darkTheme}
+          compact={props.layout === LayoutDirection.Vertical}
+          tools={[
+            {
+              classID: "mark.text",
+              title: strings.toolbar.text,
+              icon: "FontColorA",
+            },
+            {
+              classID: "mark.textbox",
+              title: strings.toolbar.textbox,
+              icon: "TextField",
+            },
+          ]}
+        />
+        <MultiObjectButton
+          invertIcon={props.darkTheme}
+          compact={props.layout === LayoutDirection.Vertical}
+          tools={[
+            {
+              classID: "mark.icon",
+              title: strings.toolbar.icon,
+              icon: "ElementIcon",
+            },
+            {
+              classID: "mark.image",
+              title: strings.toolbar.image,
+              icon: "ElementImage",
+            },
+          ]}
+        />
+        <ObjectButton
+          invertIcon={props.darkTheme}
+          classID="mark.data-axis"
+          title={strings.toolbar.dataAxis}
+          icon="mark/data-axis"
+        />
+        {store.editorType === EditorType.Embedded ? (
           <ObjectButton
             invertIcon={props.darkTheme}
-            classID="mark.line"
-            title={strings.toolbar.line}
-            icon="ElementLine"
+            classID="mark.nested-chart"
+            title={strings.toolbar.nestedChart}
+            icon="BarChartVerticalFilter"
           />
-          <MultiObjectButton
-            invertIcon={props.darkTheme}
-            compact={props.layout === LayoutDirection.Vertical}
-            tools={[
-              {
-                classID: "mark.text",
-                title: strings.toolbar.text,
-                icon: "FontColorA",
-              },
-              {
-                classID: "mark.textbox",
-                title: strings.toolbar.textbox,
-                icon: "TextField",
-              },
-            ]}
-          />
-          <MultiObjectButton
-            invertIcon={props.darkTheme}
-            compact={props.layout === LayoutDirection.Vertical}
-            tools={[
-              {
-                classID: "mark.icon",
-                title: strings.toolbar.icon,
-                icon: "ElementIcon",
-              },
-              {
-                classID: "mark.image",
-                title: strings.toolbar.image,
-                icon: "ElementImage",
-              },
-            ]}
-          />
-          <ObjectButton
-            invertIcon={props.darkTheme}
-            classID="mark.data-axis"
-            title={strings.toolbar.dataAxis}
-            icon="mark/data-axis"
-          />
-          {store.editorType === EditorType.Embedded ? (
-            <ObjectButton
+        ) : null}
+        {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
+          <>
+            <span className={"charticulator__toolbar-horizontal-separator"} />
+            <FluentToolButton
               invertIcon={props.darkTheme}
-              classID="mark.nested-chart"
-              title={strings.toolbar.nestedChart}
-              icon="BarChartVerticalFilter"
+              title={strings.menuBar.undo}
+              disabled={store.historyManager.statesBefore.length === 0}
+              icon="Undo"
+              onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
             />
-          ) : null}
-          {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
-            <>
-              <span className={"charticulator__toolbar-horizontal-separator"} />
-              <FluentToolButton
-                invertIcon={props.darkTheme}
-                title={strings.menuBar.undo}
-                disabled={store.historyManager.statesBefore.length === 0}
-                icon="Undo"
-                onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
-              />
-              <FluentToolButton
-                invertIcon={props.darkTheme}
-                title={strings.menuBar.redo}
-                disabled={store.historyManager.statesAfter.length === 0}
-                icon="Redo"
-                onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
-              />
-            </>
-          ) : null}
-        </>
-      </>,
+            <FluentToolButton
+              invertIcon={props.darkTheme}
+              title={strings.menuBar.redo}
+              disabled={store.historyManager.statesAfter.length === 0}
+              icon="Redo"
+              onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
+            />
+          </>
+        ) : null}
+      </React.Fragment>
     ];
   };
 
   // eslint-disable-next-line max-lines-per-function
   const getChartToolItems = (labels: boolean = true) => {
     return [
-      <>
+      <React.Fragment key="getChartToolItems">
         <LinkButton invertIcon={props.darkTheme} label={true} />
         <LegendButton invertIcon={props.darkTheme} />
         <span className={"charticulator__toolbar-horizontal-separator"} />
@@ -327,7 +325,7 @@ export const FluentUIToolbar: React.FC<{
             ]}
           />
         </>
-      </>,
+      </React.Fragment>,
     ];
   };
 
@@ -863,6 +861,7 @@ export const MultiObjectButton: React.FC<{
       renderDragElement={() => {
         return [
           <SVGImageIcon
+            key={`multi-object-button-drag-element-${currentTool.classID}-${currentTool.options}`}
             invert={invertIcon}
             url={R.getSVGIcon(currentTool.icon)}
             height={20}
@@ -902,7 +901,7 @@ export const MultiObjectButton: React.FC<{
             {tools.map((tool, index) => {
               return (
                 <MenuItem
-                  key={`menu-${index}`}
+                  key={`multi-object-button-menu-item-${tool.classID}-${tool.options}-${index}`}
                   onClick={() => {
                     if (tool) {
                       new Actions.SetCurrentTool(
@@ -914,7 +913,7 @@ export const MultiObjectButton: React.FC<{
                   icon={
                     <SVGImageIcon
                       invert={invertIcon}
-                      key={`icon-${index}`}
+                      key={`multi-object-button-menu-item-icon-${tool.classID}-${tool.options}-${index}`}
                       url={R.getSVGIcon(tool.icon)}
                       height={20}
                       width={20}
