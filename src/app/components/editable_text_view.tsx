@@ -18,7 +18,7 @@ export class EditableTextView extends React.Component<
   React.PropsWithChildren<EditableTextViewProps>,
   EditableTextViewState
 > {
-  public refs: {
+  public declare refs: {
     input: HTMLInputElement;
   };
 
@@ -87,11 +87,11 @@ export class EditableTextView extends React.Component<
               }
             }}
             autoFocus={false}
-            // styles={{
-            //   fieldGroup: {
-            //     border: !this.state.editing && "none",
-            //   },
-            // }}
+          // styles={{
+          //   fieldGroup: {
+          //     border: !this.state.editing && "none",
+          //   },
+          // }}
           />
         </>
         {/* </FluentTextField> */}

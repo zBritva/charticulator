@@ -26,13 +26,13 @@ import { MappingType } from "../../specification";
 import { strings } from "../../../strings";
 
 export abstract class ChartClass extends ObjectClass {
-  public readonly object: Specification.Chart;
-  public readonly state: Specification.ChartState;
+  public declare readonly object: Specification.Chart;
+  public declare readonly state: Specification.ChartState;
   public dataflow: DataflowManager;
   public manager: ChartStateManager;
 
   public static metadata: ObjectClassMetadata = {
-    iconPath: "chart",
+    iconPath: "Chart",
     displayName: "Chart",
   };
 
@@ -135,10 +135,10 @@ export class RectangleChart extends ChartClass {
     cursor: "default"
   };
 
-  public readonly object: Specification.Chart & {
+  public declare readonly object: Specification.Chart & {
     properties: { backgroundColor: Color; backgroundOpacity: number };
   };
-  public readonly state: RectangleChartState;
+  public declare readonly state: RectangleChartState;
 
   // Get a list of elemnt attributes
   public attributeNames: string[] = [
@@ -267,7 +267,7 @@ export class RectangleChart extends ChartClass {
         }
       );
       rect.key = `bg-${this.object._id}`;
-      
+
       return rect;
     }
   }

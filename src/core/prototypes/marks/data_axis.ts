@@ -48,7 +48,7 @@ export class DataAxisClass extends MarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "DataAxis",
-    iconPath: "mark/data-axis",
+    iconPath: "DataAxis",
     creatingInteraction: {
       type: "line-segment",
       mapping: { x1: "x1", y1: "y1", x2: "x2", y2: "y2" },
@@ -234,7 +234,7 @@ export class DataAxisClass extends MarkClass<
           0,
           Math.sqrt(
             (attrs.x2 - attrs.x1) * (attrs.x2 - attrs.x1) +
-              (attrs.y2 - attrs.y1) * (attrs.y2 - attrs.y1)
+            (attrs.y2 - attrs.y1) * (attrs.y2 - attrs.y1)
           ),
           false,
           false
@@ -253,7 +253,7 @@ export class DataAxisClass extends MarkClass<
           0,
           0,
           (Math.atan2(attrs.y2 - attrs.y1, attrs.x2 - attrs.x1) / Math.PI) *
-            180,
+          180,
           -1,
           undefined,
           this.object._id
@@ -274,7 +274,7 @@ export class DataAxisClass extends MarkClass<
         0,
         Math.sqrt(
           (attrs.x2 - attrs.x1) * (attrs.x2 - attrs.x1) +
-            (attrs.y2 - attrs.y1) * (attrs.y2 - attrs.y1)
+          (attrs.y2 - attrs.y1) * (attrs.y2 - attrs.y1)
         ),
         false,
         false
@@ -415,45 +415,45 @@ export class DataAxisClass extends MarkClass<
             });
             return editingProperty;
           }, "general/plus", "Add data expression"),
-          props.dataExpressions.length > 0 ? 
-          manager.arrayWidget(
-            { property: "dataExpressions" },
-            (item, index) => {
-              const expressionInput = manager.inputExpression(
-                {
-                  property: "dataExpressions",
-                  field:
-                    item.field instanceof Array
-                      ? [...item.field, "expression"]
-                      : [item.field, "expression"],
-                },
-                {
-                  table: this.getGlyphClass().object.table,
-                  dropzone: {
-                    createExpression: true,
-                    type: "property-data-binding",
-                    property: {
-                      property: "dataExpressions",
-                      field:
-                        item.field instanceof Array
-                          ? [...item.field, "expression"]
-                          : [item.field, "expression"],
-                    },
-                    prompt: "Add column to axis data"
+          props.dataExpressions.length > 0 ?
+            manager.arrayWidget(
+              { property: "dataExpressions" },
+              (item, index) => {
+                const expressionInput = manager.inputExpression(
+                  {
+                    property: "dataExpressions",
+                    field:
+                      item.field instanceof Array
+                        ? [...item.field, "expression"]
+                        : [item.field, "expression"],
+                  },
+                  {
+                    table: this.getGlyphClass().object.table,
+                    dropzone: {
+                      createExpression: true,
+                      type: "property-data-binding",
+                      property: {
+                        property: "dataExpressions",
+                        field:
+                          item.field instanceof Array
+                            ? [...item.field, "expression"]
+                            : [item.field, "expression"],
+                      },
+                      prompt: "Add column to axis data"
+                    }
                   }
-                }
-              );
-              return React.createElement(
-                "Fragment",
-                { key: index },
-                expressionInput
-              );
-            },
-            {
-              allowDelete: true,
-              allowReorder: true,
-            }
-          ) : null,
+                );
+                return React.createElement(
+                  "Fragment",
+                  { key: index },
+                  expressionInput
+                );
+              },
+              {
+                allowDelete: true,
+                allowReorder: true,
+              }
+            ) : null,
         ]
       )
     );

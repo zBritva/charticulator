@@ -55,12 +55,12 @@ export interface LegendObject extends Specification.IObject {
 }
 
 export abstract class LegendClass extends ChartElementClass {
-  public readonly object: LegendObject;
-  public readonly state: LegendState;
+  public declare readonly object: LegendObject;
+  public declare readonly state: LegendState;
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Legend",
-    iconPath: "CharticulatorLegend",
+    iconPath: "Legend",
   };
 
   public static defaultProperties: LegendProperties = {
@@ -189,7 +189,7 @@ export abstract class LegendClass extends ChartElementClass {
         {
           [name: string]: Color;
         }
-      >scaleObject.properties.mapping;
+        >scaleObject.properties.mapping;
       return Object.keys(mapping);
     }
     return [];
@@ -232,52 +232,52 @@ export abstract class LegendClass extends ChartElementClass {
           ),
           this.object.classID === "legend.categorical"
             ? manager.inputSelect(
-                { property: "markerShape" },
-                {
-                  type: "dropdown",
-                  showLabel: true,
-                  icons: ["RectangleShape", "TriangleShape", "Ellipse"],
-                  labels: [
-                    strings.toolbar.rectangle,
-                    strings.toolbar.triangle,
-                    strings.toolbar.ellipse,
-                  ],
-                  options: ["rectangle", "triangle", "circle"],
-                  label: strings.objects.legend.markerShape,
-                  searchSection: strings.objects.legend.labels,
-                }
-              )
+              { property: "markerShape" },
+              {
+                type: "dropdown",
+                showLabel: true,
+                icons: ["ElementRect", "ElementTriangle", "ElementEllipse"],
+                labels: [
+                  strings.toolbar.rectangle,
+                  strings.toolbar.triangle,
+                  strings.toolbar.ellipse,
+                ],
+                options: ["rectangle", "triangle", "circle"],
+                label: strings.objects.legend.markerShape,
+                searchSection: strings.objects.legend.labels,
+              }
+            )
             : null,
           this.object.classID === "legend.categorical"
             ? manager.searchWrapper(
-                {
-                  searchPattern: [
-                    strings.objects.legend.ordering,
-                    strings.objects.legend.labels,
-                  ],
-                },
-                [
-                  manager.label(strings.objects.legend.ordering),
+              {
+                searchPattern: [
+                  strings.objects.legend.ordering,
+                  strings.objects.legend.labels,
+                ],
+              },
+              [
+                manager.label(strings.objects.legend.ordering),
 
-                  manager.reorderWidget(
-                    {
-                      property: "order",
+                manager.reorderWidget(
+                  {
+                    property: "order",
+                  },
+                  {
+                    items: this.getOrderingObjects(),
+                    onConfirm: (items: string[]) => {
+                      manager.emitSetProperty(
+                        {
+                          property: "order",
+                          field: null,
+                        },
+                        items
+                      );
                     },
-                    {
-                      items: this.getOrderingObjects(),
-                      onConfirm: (items: string[]) => {
-                        manager.emitSetProperty(
-                          {
-                            property: "order",
-                            field: null,
-                          },
-                          items
-                        );
-                      },
-                    }
-                  ),
-                ]
-              )
+                  }
+                ),
+              ]
+            )
             : null,
         ]
       ),

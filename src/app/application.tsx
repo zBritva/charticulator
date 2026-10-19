@@ -6,7 +6,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 
-import { MainView } from "./main_view";
+import { MainView, MainViewProps } from "./main_view";
 import { AppStore, Migrator } from "./stores";
 
 import {
@@ -37,7 +37,6 @@ import { parseHashString } from "./utils";
 import { Actions } from "./actions";
 import { DatasetSourceSpecification } from "../core/dataset/loader";
 import { LocaleFileFormat } from "../core/dataset/utils";
-import { MainTabs } from "./views/file_view";
 import { makeDefaultDataset } from "./default_dataset";
 import { strings } from "../strings";
 import { LocalStorageKeys } from "./globals";
@@ -52,12 +51,13 @@ import { LocalizationConfig } from "../container/container";
 
 import { FluentProvider } from "@fluentui/react-provider";
 import { Theme } from "@fluentui/tokens";
-import { darkTheme, lightTheme} from "./theme";
+import { darkTheme, lightTheme } from "./theme";
 import { CDNBackend } from "./backend/cdn";
 import { IndexedDBBackend } from "./backend/indexed_db";
 import { AbstractBackend } from "./backend/abstract";
 import { HybridBackend, IHybridBackendOptions } from "./backend/hybrid";
 import { FileViewImport, MappingMode } from "./views/file_view/import_view";
+import { MainReactContext } from "./context_component";
 
 const defaultWorkerScript = require("raw-loader!../../dist/scripts/worker.bundle.js");
 
@@ -131,7 +131,6 @@ export class Application {
   public worker: CharticulatorWorkerInterface;
   public appStore: AppStore;
   public backend: AbstractBackend;
-  public mainView: MainView;
   public extensionContext: ApplicationExtensionContext;
 
   private config: CharticulatorAppConfig;
@@ -275,6 +274,7 @@ export class Application {
     }
 
     this.appStore = new AppStore(this.worker, makeDefaultDataset(), this.backend);
+    this.appStore.editorType = this.config.EditorType || EditorType.Chart;
 
     let DelimiterSymbol = ",";
     try {
@@ -345,32 +345,37 @@ export class Application {
     await this.processHashString();
   }
 
-  private renderMain(handlers: IHandlers) {
+  private renderMain(handlers?: IHandlers) {
     return (
-      <FluentProvider theme={this.theme}>
-        <MainView
-          theme={this.theme}
-          darkTheme={this.darkTheme}
-          onSwitchTheme={(darkThemeSelection) => {
-            this.darkTheme = darkThemeSelection;
-            if (darkThemeSelection) {
-              this.theme = darkTheme;
-            } else {
-              this.theme = lightTheme;
-            }
-            this.root.render(<>
-              <FluentProvider theme={this.theme}>
-                {this.renderMain(handlers)}
-              </FluentProvider>
-            </>);
-          }}
-          store={this.appStore}
-          ref={(e) => (this.mainView = e)}
-          viewConfiguration={this.config.MainView}
-          menuBarHandlers={handlers?.menuBarHandlers}
-          tabButtons={handlers?.tabButtons}
-          telemetry={handlers?.telemetry} />
-      </FluentProvider>
+      <MainReactContext.Provider value={{
+        store: this.appStore,
+        dispatcher: this.appStore.dispatcher,
+      }}>
+        <FluentProvider theme={this.theme}>
+          <MainView
+            theme={this.theme}
+            darkTheme={this.darkTheme}
+            onSwitchTheme={(darkThemeSelection) => {
+              this.darkTheme = darkThemeSelection;
+              if (darkThemeSelection) {
+                this.theme = darkTheme;
+              } else {
+                this.theme = lightTheme;
+              }
+              this.root.render(<>
+                <FluentProvider theme={this.theme}>
+                  {this.renderMain(handlers)}
+                </FluentProvider>
+              </>);
+            }}
+            store={this.appStore}
+            // ref={(e) => (this.mainView = e)}
+            viewConfiguration={this.config.MainView}
+            menuBarHandlers={handlers?.menuBarHandlers}
+            tabButtons={handlers?.tabButtons}
+            telemetry={handlers?.telemetry} />
+        </FluentProvider>
+      </MainReactContext.Provider>
     );
   }
 
@@ -440,10 +445,10 @@ export class Application {
         });
       }
 
-      let type =
+      let type = this.config.EditorType ||
         this.config.CorsPolicy && this.config.CorsPolicy.Embedded
-          ? EditorType.Embedded
-          : EditorType.Nested;
+        ? EditorType.Embedded
+        : EditorType.Nested;
 
       // settings from outside overrides the configuration
       if (editorMode) {
@@ -563,7 +568,8 @@ export class Application {
       const json = await value.json();
       this.appStore.dispatcher.dispatch(new Actions.Load(json.state));
     } else {
-      this.mainView?.refMenuBar?.showFileModalWindow(MainTabs.new, false);
+      // throw new Error("Not implemented");
+      // this.mainView?.refMenuBar?.showFileModalWindow(MainTabs.new, false);
     }
   }
 
@@ -607,13 +613,13 @@ export class Application {
                     resolveMapping(mapping, tableMapping, datasetTables);
                     resolveImport(true);
                     this.root.render(<>
-                        {this.renderMain(this.handlers)}
+                      {this.renderMain(this.handlers)}
                     </>);
                   }}
                   onClose={() => {
                     resolveImport(false);
                     this.root.render(<>
-                        {this.renderMain(this.handlers)}
+                      {this.renderMain(this.handlers)}
                     </>);
                   }}
                   onImportDataClick={() => { }}
@@ -642,5 +648,21 @@ export class Application {
     this.appStore.addListener(AppStore.EVENT_SAVECHART, (data) => {
       callback(data);
     });
+  }
+
+  public static reactMount({ viewConfiguration, theme, store }: MainViewProps & { theme: Theme }) {
+    return (
+      <MainReactContext.Provider value={{
+        store,
+        dispatcher: store.dispatcher,
+      }}>
+        <FluentProvider theme={theme} applyStylesToPortals={true}>
+          <MainView
+            store={store}
+            viewConfiguration={viewConfiguration}
+          />
+        </FluentProvider>
+      </MainReactContext.Provider>
+    )
   }
 }

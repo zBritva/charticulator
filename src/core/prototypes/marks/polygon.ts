@@ -45,7 +45,7 @@ export class PolygonElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Polygon",
-    iconPath: "Polygon",
+    iconPath: "ElementPolygon",
     creatingInteraction: {
       type: "line-polygon",
       mapping: {

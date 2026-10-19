@@ -27,17 +27,16 @@ export class ResizeHandleView extends React.Component<
   React.PropsWithChildren<ResizeHandleViewProps>,
   ResizeHandleViewState
 > {
-  public refs: {
-    container: SVGGElement;
-    lineX1: SVGLineElement;
-    lineX2: SVGLineElement;
-    lineY1: SVGLineElement;
-    lineY2: SVGLineElement;
-    cornerX1Y1: SVGCircleElement;
-    cornerX1Y2: SVGCircleElement;
-    cornerX2Y1: SVGCircleElement;
-    cornerX2Y2: SVGCircleElement;
-  };
+  private container: React.RefObject<SVGGElement> = React.createRef();
+  private lineX1: React.RefObject<SVGLineElement> = React.createRef();
+  private lineX2: React.RefObject<SVGLineElement> = React.createRef();
+  private lineY1: React.RefObject<SVGLineElement> = React.createRef();
+  private lineY2: React.RefObject<SVGLineElement> = React.createRef();
+  private cornerX1Y1: React.RefObject<SVGCircleElement> = React.createRef();
+  private cornerX1Y2: React.RefObject<SVGCircleElement> = React.createRef();
+  private cornerX2Y1: React.RefObject<SVGCircleElement> = React.createRef();
+  private cornerX2Y2: React.RefObject<SVGCircleElement> = React.createRef();
+
   public state: ResizeHandleViewState = {
     dragging: false,
     newX1: this.props.cx - this.props.width / 2,
@@ -49,7 +48,7 @@ export class ResizeHandleView extends React.Component<
   public hammer: HammerManager;
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.container);
+    this.hammer = new Hammer(this.container.current);
     this.hammer.add(new Hammer.Pan());
 
     let oldWidth: number, oldHeight: number;
@@ -84,31 +83,31 @@ export class ResizeHandleView extends React.Component<
       opX = 0;
       opY = 0;
       while (element) {
-        if (element == this.refs.lineX1) {
+        if (element == this.lineX1.current) {
           opX = -1;
         }
-        if (element == this.refs.lineX2) {
+        if (element == this.lineX2.current) {
           opX = 1;
         }
-        if (element == this.refs.lineY1) {
+        if (element == this.lineY1.current) {
           opY = -1;
         }
-        if (element == this.refs.lineY2) {
+        if (element == this.lineY2.current) {
           opY = 1;
         }
-        if (element == this.refs.cornerX1Y1) {
+        if (element == this.cornerX1Y1.current) {
           opX = -1;
           opY = -1;
         }
-        if (element == this.refs.cornerX1Y2) {
+        if (element == this.cornerX1Y2.current) {
           opX = -1;
           opY = 1;
         }
-        if (element == this.refs.cornerX2Y1) {
+        if (element == this.cornerX2Y1.current) {
           opX = 1;
           opY = -1;
         }
-        if (element == this.refs.cornerX2Y2) {
+        if (element == this.cornerX2Y2.current) {
           opX = 1;
           opY = 1;
         }
@@ -171,9 +170,9 @@ export class ResizeHandleView extends React.Component<
           "active",
           this.state.dragging,
         ])}
-        ref="container"
+        ref={this.container}
       >
-        <g ref="lineY1" style={{ cursor: "ns-resize" }}>
+        <g ref={this.lineY1} style={{ cursor: "ns-resize" }}>
           <line
             className="element-line handle-ghost"
             x1={fX(x1)}
@@ -190,7 +189,7 @@ export class ResizeHandleView extends React.Component<
             y2={fY(y1)}
           />
         </g>
-        <g ref="lineY2" style={{ cursor: "ns-resize" }}>
+        <g ref={this.lineY2} style={{ cursor: "ns-resize" }}>
           <line
             className="element-line handle-ghost"
             x1={fX(x1)}
@@ -206,7 +205,7 @@ export class ResizeHandleView extends React.Component<
             y2={fY(y2)}
           />
         </g>
-        <g ref="lineX1" style={{ cursor: "ew-resize" }}>
+        <g ref={this.lineX1} style={{ cursor: "ew-resize" }}>
           <line
             className="element-line handle-ghost"
             x1={fX(x1)}
@@ -222,7 +221,7 @@ export class ResizeHandleView extends React.Component<
             y2={fY(y2)}
           />
         </g>
-        <g ref="lineX2" style={{ cursor: "ew-resize" }}>
+        <g ref={this.lineX2} style={{ cursor: "ew-resize" }}>
           <line
             className="element-line handle-ghost"
             x1={fX(x2)}
@@ -241,7 +240,7 @@ export class ResizeHandleView extends React.Component<
         <circle
           className="element-shape handle-ghost"
           style={{ cursor: "nesw-resize" }}
-          ref="cornerX1Y1"
+          ref={this.cornerX1Y1}
           cx={fX(x1)}
           cy={fY(y1)}
           r={5}
@@ -249,7 +248,7 @@ export class ResizeHandleView extends React.Component<
         <circle
           className="element-shape handle-ghost"
           style={{ cursor: "nwse-resize" }}
-          ref="cornerX2Y1"
+          ref={this.cornerX2Y1}
           cx={fX(x2)}
           cy={fY(y1)}
           r={5}
@@ -257,7 +256,7 @@ export class ResizeHandleView extends React.Component<
         <circle
           className="element-shape handle-ghost"
           style={{ cursor: "nwse-resize" }}
-          ref="cornerX1Y2"
+          ref={this.cornerX1Y2}
           cx={fX(x1)}
           cy={fY(y2)}
           r={5}
@@ -265,7 +264,7 @@ export class ResizeHandleView extends React.Component<
         <circle
           className="element-shape handle-ghost"
           style={{ cursor: "nesw-resize" }}
-          ref="cornerX2Y2"
+          ref={this.cornerX2Y2}
           cx={fX(x2)}
           cy={fY(y2)}
           r={5}

@@ -13,14 +13,11 @@ export class ScrollView extends React.Component<
   React.PropsWithChildren<Record<string, unknown>>,
   ScrollViewState
 > {
-  public refs: {
-    container: HTMLDivElement;
-  };
-
+  private container: React.RefObject<HTMLDivElement> = React.createRef();
   public hammer: HammerManager;
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.container);
+    this.hammer = new Hammer(this.container.current);
     this.hammer.on("panstart", noop);
   }
 
@@ -30,7 +27,7 @@ export class ScrollView extends React.Component<
 
   public render() {
     return (
-      <div className="scroll-view" ref="container">
+      <div className="scroll-view" ref={this.container}>
         <div className="scroll-view-content">{this.props.children}</div>
         <div className="scroll-bar">
           <div className="scroll-bar-handle" />

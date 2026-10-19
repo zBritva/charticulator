@@ -60,7 +60,7 @@ async function fixDTSBundle(filename) {
 /** Convert a YAML file to JSON */
 async function yamlToJSON(yamlFile, jsonFile) {
   const contents = await fs.readFile(yamlFile);
-  let doc = jsyaml.safeLoad(contents);
+  let doc = jsyaml.load(contents);
   let json = JSON.stringify(doc);
   await fs.writeFile(jsonFile, Buffer.from(json, "utf-8"));
 }
@@ -68,7 +68,7 @@ async function yamlToJSON(yamlFile, jsonFile) {
 /** Convert a YAML file to JavaScript variable */
 async function yamlToJavaScript(yamlFile, javascriptFile, variableName, mixin) {
   const contents = await fs.readFile(yamlFile);
-  let doc = jsyaml.safeLoad(contents);
+  let doc = jsyaml.load(contents);
   if (mixin != undefined) {
     mixin(doc);
   }
@@ -105,6 +105,21 @@ const devSequence = [
   // "pegjs",
   // "typescript",
   "sass",
+  "webpackapp",
+  "dtsBundle",
+  "config",
+  ...(isProd ? ["add_hash"] : [])
+];
+
+// The default dev sequence
+const npmSequence = [
+  "cleanup",
+  "makedirs",
+  "copy",
+  "third_party_data",
+  // "pegjs",
+  // "typescript",
+  "sass",
   "webpack",
   "dtsBundle",
   "config",
@@ -123,10 +138,11 @@ let COMMANDS = {
   ],
 
   dtsBundle: [
-    "npx dts-bundle-generator ./dist/scripts/container/index.d.ts --out-file ./dist/scripts/container.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/container/index.d.ts --out-file ./dist/scripts/types/container.bundle.d.ts --no-check --export-referenced-types=false",
     // () => fixDTSBundle("dist/scripts/container.bundle.d.ts"),
-    "npx dts-bundle-generator ./dist/scripts/core/index.d.ts --out-file ./dist/scripts/core.bundle.d.ts --no-check --export-referenced-types=false",
-    "npx dts-bundle-generator ./dist/scripts/app/index.d.ts --out-file ./dist/scripts/app.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/core/index.d.ts --out-file ./dist/scripts/types/core.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/app/index.d.ts --out-file ./dist/scripts/types/app.bundle.d.ts --no-check --export-referenced-types=false",
+    "npx dts-bundle-generator ./dist/scripts/types/worker/index.d.ts --out-file ./dist/scripts/types/worker.bundle.d.ts --no-check --export-referenced-types=false",
     // () => fixDTSBundle("dist/scripts/app.bundle.d.ts")
   ],
 
@@ -219,6 +235,8 @@ let COMMANDS = {
   // Produce webpack bundles
   webpack: "node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --mode=" + (isProd ? "production" : "development"),
 
+  webpackapp: "node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --config ./webpack.config.app.js --mode=" + (isProd ? "production" : "development"),
+
   // Add ?sha256=... and integrity tags to script and css
   add_hash: () => addHASHToHTMLs(),
 
@@ -228,17 +246,18 @@ let COMMANDS = {
   public_server: "http-server ./dist -a 0.0.0.0 -p 4000 -c-1 -s",
   watch: {
     //tsc: "tsc -w",
-    webpack: "webpack -w --mode=" + (isProd ? "production" : "development"),
+    webpack: "webpack -w --config ./webpack.config.app.js --mode=" + (isProd ? "production" : "development"),
     sass: "sass --watch sass/app.scss:dist/styles/app.css sass/page.scss:dist/styles/page.css sass/container.scss:dist/styles/container.css",
     server: "http-server ./dist -a 0.0.0.0 -p 4000 -c-1 -s",
   },
   ssl_watch: {
     //tsc: "tsc -w",
-    webpack: "webpack -w --mode=" + (isProd ? "production" : "development"),
+    webpack: "webpack -w --config ./webpack.config.app.js --mode=" + (isProd ? "production" : "development"),
     sass: "sass --watch sass/app.scss:dist/styles/app.css sass/page.scss:dist/styles/page.css",
     server: "http-server ./dist -a 0.0.0.0 -p 4000 -c-1 -s --ssl --cors"
   },
   dev: () => runCommands(devSequence),
+  npm: () => runCommands(npmSequence),
   // eslint-disable-next-line no-undef
   visual_dev: () => runCommands([...devSequence, ...visualSequence])
 };
