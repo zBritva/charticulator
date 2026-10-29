@@ -332,6 +332,7 @@ export const FluentUIToolbar: React.FC<{
   const renderScaffoldButton = () => {
     return (
       <MultiObjectButton
+        key={"saffoldButton"}
         invertIcon={props.darkTheme}
         compact={props.layout === LayoutDirection.Vertical}
         tools={[
@@ -371,6 +372,7 @@ export const FluentUIToolbar: React.FC<{
   const renderGuidesButton = () => {
     return (
       <MultiObjectButton
+        key={"guidesButton"}
         invertIcon={props.darkTheme}
         compact={props.layout === LayoutDirection.Vertical}
         tools={[
@@ -414,6 +416,7 @@ export const FluentUIToolbar: React.FC<{
 
     return (
       <FluentToolButton
+        key={"saveEmbedded"}
         icon={<SVGImageIcon url={R.getSVGIcon("toolbar/save")} width={16} height={16} />}
         text={strings.menuBar.saveButton}
         disabled={!hasUnsavedChanges}
@@ -434,17 +437,18 @@ export const FluentUIToolbar: React.FC<{
   ) => {
     const isEmbeddedApp = store.editorType === EditorType.NestedEmbeddedApp;
     return (
-      <>
+      <React.Fragment key="toolItemsFragment">
         {isEmbeddedApp ? (
-          <>
+          <React.Fragment key={"saveEmbeddedFragment"}>
             {renderSaveEmbedded()}
             <span className={"charticulator__toolbar-horizontal-separator"} />
-          </>
+          </React.Fragment>
         ) : null
         }
         {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
           <>
             <FluentToolButton
+              key={"undoButton"}
               invertIcon={props.darkTheme}
               title={strings.menuBar.undo}
               disabled={store.historyManager.statesBefore.length === 0}
@@ -452,17 +456,19 @@ export const FluentUIToolbar: React.FC<{
               onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
             />
             <FluentToolButton
+              key={"redoButton"}
               invertIcon={props.darkTheme}
               title={strings.menuBar.redo}
               disabled={store.historyManager.statesAfter.length === 0}
               icon={"Redo"}
               onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
             />
-            <span className={"charticulator__toolbar-horizontal-separator"} />
+            <span key={"separator1"} className={"charticulator__toolbar-horizontal-separator"} />
           </>
         ) : null}
         {labels && (
           <span
+            key={"marksLabel"}
             className={
               props.layout === LayoutDirection.Vertical
                 ? "charticulator__toolbar-vertical-label"
@@ -473,6 +479,7 @@ export const FluentUIToolbar: React.FC<{
           </span>
         )}
         <MultiObjectButton
+          key={"marksButton"}
           invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
@@ -503,10 +510,13 @@ export const FluentUIToolbar: React.FC<{
           ]}
         />
         <ObjectButton
+          key={"symbolMark"}
           invertIcon={props.darkTheme} classID="mark.symbol" title="Symbol" icon="ElementSymbol" />
         <ObjectButton
+          key={"lineMark"}
           invertIcon={props.darkTheme} classID="mark.line" title="Line" icon="ElementLine" />
         <MultiObjectButton
+          key={"textMarksButton"}
           invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
@@ -523,6 +533,7 @@ export const FluentUIToolbar: React.FC<{
           ]}
         />
         <MultiObjectButton
+          key={"imageMarksButton"}
           invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
@@ -538,25 +549,28 @@ export const FluentUIToolbar: React.FC<{
             },
           ]}
         />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <span key={"separator2"} className={"charticulator__toolbar-horizontal-separator"} />
         <ObjectButton
+          key={"dataAxis"}
           invertIcon={props.darkTheme}
           classID="mark.data-axis"
           title={strings.toolbar.dataAxis}
           icon="DataAxis"
         />
         <ObjectButton
+          key={"nestedChart"}
           invertIcon={props.darkTheme}
           classID="mark.nested-chart"
           title={strings.toolbar.nestedChart}
           icon="NestedChart"
         />
-        <LegendButton invertIcon={props.darkTheme} />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
-        <LinkButton invertIcon={props.darkTheme} label={labels} />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <LegendButton key={"legendButton"} invertIcon={props.darkTheme} />
+        <span key={"separator3"} className={"charticulator__toolbar-horizontal-separator"} />
+        <LinkButton key={"linkButton"} invertIcon={props.darkTheme} label={labels} />
+        <span key={"separator4"} className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
+            key={"guidesLabel"}
             className={
               props.layout === LayoutDirection.Vertical
                 ? "charticulator__toolbar-vertical-label"
@@ -569,30 +583,35 @@ export const FluentUIToolbar: React.FC<{
         {innerWidth > minWidthToColapseButtons.guides ? (
           <>
             <ObjectButton
+              key={"guideY"}
               invertIcon={props.darkTheme}
               classID="guide-y"
               title={strings.toolbar.guideY}
               icon="GuideXline"
             />
             <ObjectButton
+              key={"guideX"}
               invertIcon={props.darkTheme}
               classID="guide-x"
               title={strings.toolbar.guideX}
               icon="GuideYline"
             />
             <ObjectButton
+              key={"guideCoordinatorX"}
               invertIcon={props.darkTheme}
               classID="guide-coordinator-x"
               title={strings.toolbar.guideX}
               icon="GuideCoordinatorX"
             />
             <ObjectButton
+              key={"guideCoordinatorY"}
               invertIcon={props.darkTheme}
               classID="guide-coordinator-y"
               title={strings.toolbar.guideY}
               icon="GuideCoordinatorY"
             />
             <ObjectButton
+              key={"guideCoordinatorPolar"}
               invertIcon={props.darkTheme}
               classID="guide-coordinator-polar"
               title={strings.toolbar.guidePolar}
@@ -602,10 +621,11 @@ export const FluentUIToolbar: React.FC<{
         ) : (
           renderGuidesButton()
         )}
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <span key={"separator5"} className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <>
             <span
+              key={"plotLabel"}
               className={
                 props.layout === LayoutDirection.Vertical
                   ? "charticulator__toolbar-vertical-label"
@@ -619,6 +639,7 @@ export const FluentUIToolbar: React.FC<{
           </>
         )}
         <ObjectButton
+          key={"plotSegmentCartesian"}
           invertIcon={props.darkTheme}
           classID="plot-segment.cartesian"
           title={strings.toolbar.region2D}
@@ -626,15 +647,17 @@ export const FluentUIToolbar: React.FC<{
           noDragging={true}
         />
         <ObjectButton
+          key={"plotSegmentLine"}
           invertIcon={props.darkTheme}
           classID="plot-segment.line"
           title={strings.toolbar.line}
           icon="PlotSegmentLine"
           noDragging={true}
         />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <span key={"separator6"} className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
+            key={"scaffoldsLabel"}
             className={
               props.layout === LayoutDirection.Vertical
                 ? "charticulator__toolbar-vertical-label"
@@ -647,6 +670,7 @@ export const FluentUIToolbar: React.FC<{
         {innerWidth > minWidthToColapseButtons.scaffolds ? (
           <>
             <ScaffoldButton
+              key={"scaffoldCartesianX"}
               darkTheme={props.darkTheme}
               type="cartesian-x"
               title={strings.toolbar.lineH}
@@ -654,6 +678,7 @@ export const FluentUIToolbar: React.FC<{
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              key={"scaffoldCartesianY"}
               darkTheme={props.darkTheme}
               type="cartesian-y"
               title={strings.toolbar.lineV}
@@ -661,6 +686,7 @@ export const FluentUIToolbar: React.FC<{
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              key={"scaffoldPolar"}
               darkTheme={props.darkTheme}
               type="polar"
               title={strings.toolbar.polar}
@@ -668,6 +694,7 @@ export const FluentUIToolbar: React.FC<{
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              key={"scaffoldCurve"}
               darkTheme={props.darkTheme}
               type="curve"
               title={strings.toolbar.curve}
@@ -678,7 +705,7 @@ export const FluentUIToolbar: React.FC<{
         ) : (
           renderScaffoldButton()
         )}
-      </>
+      </React.Fragment>
     );
   };
 
@@ -875,10 +902,12 @@ export const MultiObjectButton: React.FC<{
       <Menu>
         <MenuTrigger disableButtonEnhancement>
           <ToolbarButton
+            key={`multi-object-button-toolbar-button-${currentTool.classID}-${currentTool.options}`}
             appearance="subtle"
             title={currentTool?.title}
             icon={
               <SVGImageIcon
+                key={`multi-object-button-icon-${currentTool.classID}-${currentTool.options}`}
                 invert={invertIcon}
                 url={R.getSVGIcon(currentTool.icon)}
                 height={20}
@@ -964,7 +993,7 @@ export const LinkButton: React.FC<{
   const button = React.useRef();
 
   return (
-    <span id="linkCreator">
+    <span id="linkCreator" key="linkCreator">
       <Popover
         open={isOpen}
         positioning={{
@@ -1012,10 +1041,11 @@ export const LegendButton: React.FC<{
   }, [setOpen]);
 
   return (
-    <span id="createLegend">
+    <span id="createLegend" key="createLegend">
       <Popover open={isOpen}>
         <PopoverTrigger>
           <ToolbarButton
+            key="legendButton"
             title={strings.toolbar.legend}
             icon={
               <SVGImageIcon
