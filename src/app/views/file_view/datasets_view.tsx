@@ -87,7 +87,7 @@ export const DatasetsView: React.FC<DatasetsViewProps> = ({
   }
 
   return (
-    <section className="charticulator__file-view-content is-fix-width">
+    <section className="charticulator__file-view-content">
       <h1 style={{
         color: tokens.colorNeutralForeground1
       }}>{strings.mainTabs.datasets}</h1>
@@ -140,8 +140,8 @@ export const DatasetsView: React.FC<DatasetsViewProps> = ({
                   }}>{dataset.name}</h3>
                 </div>
                 <div style={{
-                    color: tokens.colorNeutralForeground1
-                  }} className="description2">
+                  color: tokens.colorNeutralForeground1
+                }} className="description2">
                   {dataset.description}
                 </div>
                 {dataset.author != null ? (

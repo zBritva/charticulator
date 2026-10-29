@@ -6,6 +6,7 @@ import * as ReactDOM from "react-dom";
 import { CharticulatorCoreConfig, initialize } from "../../core";
 import { popupController } from "../../app/globals";
 import { PopupContainer } from "../../app/controllers";
+import { createRoot } from "react-dom/client";
 
 const registeredTests: Array<{
   name: string;
@@ -34,7 +35,7 @@ export class TestApplicationView extends React.Component<
   }
 
   public render() {
-    let TestComponent = null;
+    let TestComponent: any = null;
     for (const c of registeredTests) {
       if (c.name == this.state.currentTest) {
         TestComponent = c.component;
@@ -79,6 +80,7 @@ export class TestApplicationView extends React.Component<
 }
 
 export class TestApplication {
+  private root: ReturnType<typeof createRoot> | undefined;
   public initialize(config: CharticulatorCoreConfig, containerID: string) {
     return initialize({
       ...config,
@@ -89,10 +91,15 @@ export class TestApplication {
         billionsFormat: "billions",
       },
     }).then(() => {
-      ReactDOM.render(
-        <TestApplicationView />,
-        document.getElementById(containerID)
-      );
+      const el = document.getElementById(containerID);
+      if (el) {
+        this.root = createRoot(el);
+        this.root.render(
+          <TestApplicationView />
+        );
+      } else {
+        console.error(`Container element with ID "${containerID}" not found.`);
+      }
     });
   }
 }

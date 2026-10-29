@@ -58,6 +58,8 @@ ExternalDatasets:
 CorsPolicy:
   Embedded: true
 
+EditorType: "embeddedapp"
+
 #------------------------------------------------
 # Backend configuration
 #------------------------------------------------

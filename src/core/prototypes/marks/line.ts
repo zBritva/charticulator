@@ -40,7 +40,7 @@ export class LineElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Line",
-    iconPath: "Line",
+    iconPath: "ElementLine",
     creatingInteraction: {
       type: "line-segment",
       mapping: { x1: "x1", y1: "y1", x2: "x2", y2: "y2" },

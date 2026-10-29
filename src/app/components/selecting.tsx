@@ -28,9 +28,7 @@ export class SelectionView extends React.Component<
   React.PropsWithChildren<SelectionViewProps>,
   SelectionViewState
 > {
-  public refs: {
-    handler: SVGRectElement;
-  };
+  private handlerRef = React.createRef<SVGRectElement>();
 
   constructor(props: SelectionViewProps) {
     super(props);
@@ -46,7 +44,7 @@ export class SelectionView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.handler);
+    this.hammer = new Hammer(this.handlerRef.current);
     this.hammer.add(new Hammer.Pan());
     this.hammer.add(new Hammer.Tap());
 
@@ -61,7 +59,7 @@ export class SelectionView extends React.Component<
 
     let currentMarquee: MarqueeSelection = null;
     this.hammer.on("panstart", (e) => {
-      const rect = this.refs.handler.getBoundingClientRect();
+      const rect = this.handlerRef.current.getBoundingClientRect();
       const [x, y] = [e.center.x - rect.left, e.center.y - rect.top];
       currentMarquee = {
         x1: x,
@@ -71,7 +69,7 @@ export class SelectionView extends React.Component<
       };
     });
     this.hammer.on("pan", (e) => {
-      const rect = this.refs.handler.getBoundingClientRect();
+      const rect = this.handlerRef.current.getBoundingClientRect();
       const [x, y] = [e.center.x - rect.left, e.center.y - rect.top];
       currentMarquee.x2 = x;
       currentMarquee.y2 = y;
@@ -80,7 +78,7 @@ export class SelectionView extends React.Component<
       });
     });
     this.hammer.on("panend", (e) => {
-      const rect = this.refs.handler.getBoundingClientRect();
+      const rect = this.handlerRef.current.getBoundingClientRect();
       const [x, y] = [e.center.x - rect.left, e.center.y - rect.top];
       currentMarquee.x2 = x;
       currentMarquee.y2 = y;
@@ -97,7 +95,7 @@ export class SelectionView extends React.Component<
     return (
       <g>
         <rect
-          ref="handler"
+          ref={this.handlerRef}
           className="interaction-handler"
           style={{ cursor: "crosshair" }}
           x={this.props.x}

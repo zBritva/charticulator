@@ -342,21 +342,19 @@ class XYCanvas extends React.PureComponent<
   XYCanvasProps,
   Record<string, unknown>
 > {
-  public refs: {
-    canvasElement: HTMLCanvasElement;
-  };
+  private canvasElement: React.RefObject<HTMLCanvasElement> = React.createRef();
 
   private hammer: HammerManager;
 
   public componentDidMount() {
     this.renderCanvas();
 
-    this.hammer = new Hammer(this.refs.canvasElement);
+    this.hammer = new Hammer(this.canvasElement.current);
     this.hammer.add(new Hammer.Pan({ threshold: 0 }));
     this.hammer.add(new Hammer.Tap());
 
     this.hammer.on("panstart tap pan panend", (e) => {
-      const bounds = this.refs.canvasElement.getBoundingClientRect();
+      const bounds = this.canvasElement.current.getBoundingClientRect();
       let x = e.center.x - bounds.left;
       let y = e.center.y - bounds.top;
       x /= this.props.width;
@@ -378,7 +376,7 @@ class XYCanvas extends React.PureComponent<
   }
 
   public renderCanvas() {
-    const canvas = this.refs.canvasElement;
+    const canvas = this.canvasElement.current;
     const width = canvas.width;
     const height = canvas.height;
     const ctx = canvas.getContext("2d");
@@ -423,7 +421,7 @@ class XYCanvas extends React.PureComponent<
       <div className="canvas-xy">
         <div className="canvas-container" style={{ padding: "2px 2px" }}>
           <canvas
-            ref="canvasElement"
+            ref={this.canvasElement}
             width={canvasWidth}
             height={canvasHeight}
             style={{ width: width + "px", height: height + "px" }}
@@ -469,25 +467,19 @@ class ZCanvas extends React.PureComponent<
   ZCanvasProps,
   Record<string, unknown>
 > {
-  public refs: {
-    canvasElement: HTMLCanvasElement;
-  };
-
-  constructor(props: ZCanvasProps) {
-    super(props);
-  }
+  private canvasElement = React.createRef<HTMLCanvasElement>();
 
   private hammer: HammerManager;
 
   public componentDidMount() {
     this.renderCanvas();
 
-    this.hammer = new Hammer(this.refs.canvasElement);
+    this.hammer = new Hammer(this.canvasElement.current);
     this.hammer.add(new Hammer.Pan({ threshold: 0 }));
     this.hammer.add(new Hammer.Tap());
 
     this.hammer.on("panstart tap pan panend", (e) => {
-      const bounds = this.refs.canvasElement.getBoundingClientRect();
+      const bounds = this.canvasElement.current.getBoundingClientRect();
       let y = e.center.y - bounds.top;
       y /= this.props.height;
       const isEnd = e.type == "tap" || e.type == "panend";
@@ -506,7 +498,7 @@ class ZCanvas extends React.PureComponent<
   }
 
   public renderCanvas() {
-    const canvas = this.refs.canvasElement;
+    const canvas = this.canvasElement.current;
     const width = canvas.width;
     const height = canvas.height;
     const ctx = canvas.getContext("2d");
@@ -541,7 +533,7 @@ class ZCanvas extends React.PureComponent<
       <div className="canvas-z">
         <div className="canvas-container" style={{ padding: "2px 2px" }}>
           <canvas
-            ref="canvasElement"
+            ref={this.canvasElement}
             width={canvasWidth}
             height={canvasHeight}
             style={{ width: width + "px", height: height + "px" }}

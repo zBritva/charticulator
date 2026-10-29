@@ -53,7 +53,7 @@ export class IconElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Icon",
-    iconPath: "ImagePixel",
+    iconPath: "ElementIcon",
     creatingInteraction: {
       type: "point",
       mapping: { x: "x", y: "y" },
@@ -388,12 +388,12 @@ export class IconElementClass extends EmphasizableMarkClass<
             ),
             props.alignment.x != "middle"
               ? manager.inputNumber(
-                  { property: "alignment", field: "xMargin" },
-                  {
-                    label: strings.margins.margin,
-                    searchSection: strings.objects.anchorAndRotation,
-                  }
-                )
+                { property: "alignment", field: "xMargin" },
+                {
+                  label: strings.margins.margin,
+                  searchSection: strings.objects.anchorAndRotation,
+                }
+              )
               : null
           ),
           manager.horizontal(
@@ -419,12 +419,12 @@ export class IconElementClass extends EmphasizableMarkClass<
             ),
             props.alignment.y != "middle"
               ? manager.inputNumber(
-                  { property: "alignment", field: "yMargin" },
-                  {
-                    label: strings.margins.margin,
-                    searchSection: strings.objects.anchorAndRotation,
-                  }
-                )
+                { property: "alignment", field: "yMargin" },
+                {
+                  label: strings.margins.margin,
+                  searchSection: strings.objects.anchorAndRotation,
+                }
+              )
               : null
           ),
         ]

@@ -41,7 +41,7 @@ export interface PolarGuideCoordinatorAttributesExtend
 
 export interface PolarGuideCoordinatorAttributes
   extends PolarGuideCoordinatorAttributesExtend,
-    Specification.AttributeMap {}
+  Specification.AttributeMap { }
 
 export interface PolarGuideState
   extends ObjectState<PolarGuideCoordinatorAttributes> {
@@ -59,19 +59,19 @@ interface PolarGuideCoordinatorPropertiesExtend {
 
 export interface PolarGuideCoordinatorProperties
   extends PolarGuideCoordinatorPropertiesExtend,
-    Specification.AttributeMap {}
+  Specification.AttributeMap { }
 
 export const PolarGuidePropertyNames: Extract<
   keyof PolarGuideCoordinatorPropertiesExtend,
   string
 >[] = [
-  "angularGuidesCount",
-  "endAngle",
-  "innerRatio",
-  "outerRatio",
-  "radialGuidesCount",
-  "startAngle",
-];
+    "angularGuidesCount",
+    "endAngle",
+    "innerRatio",
+    "outerRatio",
+    "radialGuidesCount",
+    "startAngle",
+  ];
 
 export interface GuidePolarCoordinatorProperties
   extends Specification.AttributeMap {
@@ -106,14 +106,14 @@ export class GuidePolarCoordinatorClass extends ChartElementClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "GuidePolarCoordinator",
-    iconPath: "guide/coordinator-polar",
+    iconPath: "GuideCoordinatorPolar",
     creatingInteraction: {
       type: "rectangle",
       mapping: { xMin: "x1", yMin: "y1", xMax: "x2", yMax: "y2" },
     },
   };
 
-  public readonly state: PolarGuideState;
+  public declare readonly state: PolarGuideState;
 
   public static defaultAttributes: Partial<PolarGuideCoordinatorAttributes> = {
     angularGuidesCount: 4,
