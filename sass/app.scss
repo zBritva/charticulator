@@ -48,7 +48,7 @@ li::marker {
 
 .charticulator {
   &__application {
-    position: fixed;
+    // position: fixed;
     left: 0;
     right: 0;
     top: 0;
@@ -73,7 +73,6 @@ li::marker {
 
     display: flex;
     flex-direction: row;
-    color: $theme-header-foreground;
     justify-content: space-between;
 
     &-left {
@@ -81,6 +80,7 @@ li::marker {
       align-items: center;
       // flex: 1;
     }
+
     &-center {
       display: flex;
       align-self: center;
@@ -100,6 +100,7 @@ li::marker {
         text-align: center;
       }
     }
+
     &-right {
       display: flex;
       align-items: center;
@@ -132,28 +133,34 @@ li::marker {
       margin-right: 5px;
     }
   }
+
   &__menu-dropdown {
     .el-item {
       height: 32px;
       line-height: 32px;
+
       a {
         display: block;
         height: 32px;
         line-height: 32px;
         padding: 0 8px;
+
         &,
         &:hover,
         &:active,
         &:focus {
           text-decoration: none;
         }
+
         color: $black;
+
         &:hover,
         &:active {
           background: unset;
         }
       }
     }
+
     .el-item-version {
       font-size: 12px;
       height: 24px;
@@ -218,12 +225,12 @@ li::marker {
         display: flex;
         flex-direction: row;
         padding-top: 4px;
-        padding-left: 10px;
-        padding-right: 10px;
+        // padding-left: 10px;
+        // padding-right: 10px;
         padding-bottom: 4px;
-        background: $gray-230;
+        // background: $gray-230;
         border-bottom: $panel-border-width solid $panel-border-color;
-        border-left: $panel-border-width solid $panel-border-color;
+        // border-left: $panel-border-width solid $panel-border-color;
         // z-index: 9;
         // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
       }
@@ -260,6 +267,7 @@ li::marker {
           display: flex;
           flex-direction: column;
         }
+
         &-chart {
           flex: 1;
           display: flex;

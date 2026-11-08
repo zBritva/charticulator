@@ -265,7 +265,7 @@ export class LinearColorScale extends ScaleClass<
     range: getDefaultGradient(),
   };
 
-  public readonly object: {
+  public declare readonly object: {
     properties: LinearColorScaleProperties;
   } & Specification.Scale;
 
@@ -292,10 +292,10 @@ export class LinearColorScale extends ScaleClass<
     // eslint-disable-next-line
     solver: ConstraintSolver
     // eslint-disable-next-line
-  ) {}
+  ) { }
 
   // eslint-disable-next-line
-  public initializeState(): void {}
+  public initializeState(): void { }
 
   public inferParameters(
     column: Specification.DataValue[],
@@ -497,22 +497,22 @@ export class LinearBooleanScale extends ScaleClass<
         manager.vertical(
           this.object.inputType === Specification.DataType.Date
             ? manager.inputDate(
-                { property: "min" },
-                {
-                  label: isEqual
-                    ? strings.objects.scales.date
-                    : strings.objects.scales.startDate,
-                }
-              )
+              { property: "min" },
+              {
+                label: isEqual
+                  ? strings.objects.scales.date
+                  : strings.objects.scales.startDate,
+              }
+            )
             : manager.inputNumber(
-                { property: "min" },
-                {
-                  stopPropagation: true,
-                  label: isEqual
-                    ? strings.objects.scales.value
-                    : strings.objects.scales.minimumValue,
-                }
-              )
+              { property: "min" },
+              {
+                stopPropagation: true,
+                label: isEqual
+                  ? strings.objects.scales.value
+                  : strings.objects.scales.minimumValue,
+              }
+            )
         )
       );
     }
@@ -526,16 +526,16 @@ export class LinearBooleanScale extends ScaleClass<
       minMax.push(
         this.object.inputType === Specification.DataType.Date
           ? manager.inputDate(
-              { property: "max" },
-              { label: strings.objects.scales.endDate }
-            )
+            { property: "max" },
+            { label: strings.objects.scales.endDate }
+          )
           : manager.inputNumber(
-              { property: "max" },
-              {
-                stopPropagation: true,
-                label: strings.objects.scales.maximumValue,
-              }
-            )
+            { property: "max" },
+            {
+              stopPropagation: true,
+              label: strings.objects.scales.maximumValue,
+            }
+          )
       );
     }
     return [

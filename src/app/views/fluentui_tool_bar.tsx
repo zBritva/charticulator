@@ -5,14 +5,13 @@
 import * as React from "react";
 import * as R from "../resources";
 
-import { EventSubscription } from "../../core";
 import { Actions, DragData } from "../actions";
 import {
   DraggableElement,
   FluentToolButton,
   SVGImageIcon,
 } from "../components";
-import { ContextedComponent, MainReactContext } from "../context_component";
+import { MainReactContext } from "../context_component";
 
 import { LinkCreationPanel } from "./panels/link_creator";
 import { LegendCreationPanel } from "./panels/legend_creator";
@@ -21,7 +20,6 @@ import { strings } from "../../strings";
 import { LayoutDirection, UndoRedoLocation } from "../main_view";
 import { useContext } from "react";
 
-import { ToolbarButton } from "@fluentui/react-toolbar";
 import { Popover } from "@fluentui/react-popover";
 import { PopoverSurface } from "@fluentui/react-popover";
 import { MenuPopover } from "@fluentui/react-menu";
@@ -30,6 +28,7 @@ import { MenuItem } from "@fluentui/react-menu";
 import { MenuList } from "@fluentui/react-menu";
 import { MenuTrigger } from "@fluentui/react-menu";
 import { PopoverTrigger } from "@fluentui/react-popover";
+import { tokens, Toolbar, ToolbarButton, ToolbarDivider } from "@fluentui/react-components";
 
 import { getSVGIcon } from "../resources";
 import { EditorType } from "../stores/app_store";
@@ -65,139 +64,137 @@ export const FluentUIToolbar: React.FC<{
 
   const getGlyphToolItems = (labels: boolean = true) => {
     return [
-      <>
-        <>
-          <span className={"charticulator__toolbar-horizontal-separator"} />
-          {labels && (
-            <span
-              className={
-                props.layout === LayoutDirection.Vertical
-                  ? "charticulator__toolbar-vertical-label"
-                  : "charticulator__toolbar-label"
-              }
-            >
-              {strings.toolbar.marks}
-            </span>
-          )}
-          <MultiObjectButton
-            invertIcon={props.darkTheme}
-            compact={props.layout === LayoutDirection.Vertical}
-            tools={[
-              {
-                classID: "mark.rect",
-                title: strings.toolbar.rectangle,
-                icon: "RectangleShape",
-                options: '{"shape":"rectangle"}',
-              },
-              {
-                classID: "mark.rect",
-                title: strings.toolbar.ellipse,
-                icon: "Ellipse",
-                options: '{"shape":"ellipse"}',
-              },
-              {
-                classID: "mark.rect",
-                title: strings.toolbar.triangle,
-                icon: "TriangleShape",
-                options: '{"shape":"triangle"}',
-              },
-              {
-                classID: "mark.polygon",
-                title: strings.toolbar.polygon,
-                icon: "Polygon",
-                options: '{"closed":"true", "pointsCount": "3"}',
-              }
-            ]}
-          />
-          <ObjectButton
-            invertIcon={props.darkTheme}
-            classID="mark.symbol"
-            title={strings.toolbar.symbol}
-            icon="Shapes"
-          />
+      <React.Fragment key="getGlyphToolItems">
+        <span className={"charticulator__toolbar-horizontal-separator"} />
+        {labels && (
+          <span
+            className={
+              props.layout === LayoutDirection.Vertical
+                ? "charticulator__toolbar-vertical-label"
+                : "charticulator__toolbar-label"
+            }
+          >
+            {strings.toolbar.marks}
+          </span>
+        )}
+        <MultiObjectButton
+          invertIcon={props.darkTheme}
+          compact={props.layout === LayoutDirection.Vertical}
+          tools={[
+            {
+              classID: "mark.rect",
+              title: strings.toolbar.rectangle,
+              icon: "ElementRect",
+              options: '{"shape":"rectangle"}',
+            },
+            {
+              classID: "mark.rect",
+              title: strings.toolbar.ellipse,
+              icon: "ElementEllipse",
+              options: '{"shape":"ellipse"}',
+            },
+            {
+              classID: "mark.rect",
+              title: strings.toolbar.triangle,
+              icon: "ElementTriangle",
+              options: '{"shape":"triangle"}',
+            },
+            {
+              classID: "mark.polygon",
+              title: strings.toolbar.polygon,
+              icon: "ElementPolygon",
+              options: '{"closed":"true", "pointsCount": "3"}',
+            }
+          ]}
+        />
+        <ObjectButton
+          invertIcon={props.darkTheme}
+          classID="mark.symbol"
+          title={strings.toolbar.symbol}
+          icon="ElementSymbol"
+        />
 
+        <ObjectButton
+          invertIcon={props.darkTheme}
+          classID="mark.line"
+          title={strings.toolbar.line}
+          icon="ElementLine"
+        />
+        <MultiObjectButton
+          invertIcon={props.darkTheme}
+          compact={props.layout === LayoutDirection.Vertical}
+          tools={[
+            {
+              classID: "mark.text",
+              title: strings.toolbar.text,
+              icon: "FontColorA",
+            },
+            {
+              classID: "mark.textbox",
+              title: strings.toolbar.textbox,
+              icon: "TextField",
+            },
+          ]}
+        />
+        <MultiObjectButton
+          invertIcon={props.darkTheme}
+          compact={props.layout === LayoutDirection.Vertical}
+          tools={[
+            {
+              classID: "mark.icon",
+              title: strings.toolbar.icon,
+              icon: "ElementIcon",
+            },
+            {
+              classID: "mark.image",
+              title: strings.toolbar.image,
+              icon: "ElementImage",
+            },
+          ]}
+        />
+        <ObjectButton
+          invertIcon={props.darkTheme}
+          classID="mark.data-axis"
+          title={strings.toolbar.dataAxis}
+          icon="mark/data-axis"
+        />
+        {store.editorType === EditorType.Embedded ? (
           <ObjectButton
             invertIcon={props.darkTheme}
-            classID="mark.line"
-            title={strings.toolbar.line}
-            icon="Line"
+            classID="mark.nested-chart"
+            title={strings.toolbar.nestedChart}
+            icon="BarChartVerticalFilter"
           />
-          <MultiObjectButton
-            invertIcon={props.darkTheme}
-            compact={props.layout === LayoutDirection.Vertical}
-            tools={[
-              {
-                classID: "mark.text",
-                title: strings.toolbar.text,
-                icon: "FontColorA",
-              },
-              {
-                classID: "mark.textbox",
-                title: strings.toolbar.textbox,
-                icon: "TextField",
-              },
-            ]}
-          />
-          <MultiObjectButton
-            invertIcon={props.darkTheme}
-            compact={props.layout === LayoutDirection.Vertical}
-            tools={[
-              {
-                classID: "mark.icon",
-                title: strings.toolbar.icon,
-                icon: "ImagePixel",
-              },
-              {
-                classID: "mark.image",
-                title: strings.toolbar.image,
-                icon: "FileImage",
-              },
-            ]}
-          />
-          <ObjectButton
-            invertIcon={props.darkTheme}
-            classID="mark.data-axis"
-            title={strings.toolbar.dataAxis}
-            icon="mark/data-axis"
-          />
-          {store.editorType === EditorType.Embedded ? (
-            <ObjectButton
+        ) : null}
+        {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
+          <>
+            <span className={"charticulator__toolbar-horizontal-separator"} />
+            <FluentToolButton
               invertIcon={props.darkTheme}
-              classID="mark.nested-chart"
-              title={strings.toolbar.nestedChart}
-              icon="BarChartVerticalFilter"
+              title={strings.menuBar.undo}
+              disabled={store.historyManager.statesBefore.length === 0}
+              icon="Undo"
+              onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
             />
-          ) : null}
-          {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
-            <>
-              <span className={"charticulator__toolbar-horizontal-separator"} />
-              <FluentToolButton
-                invertIcon={props.darkTheme}
-                title={strings.menuBar.undo}
-                disabled={store.historyManager.statesBefore.length === 0}
-                icon="Undo"
-                onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
-              />
-              <FluentToolButton
-                invertIcon={props.darkTheme}
-                title={strings.menuBar.redo}
-                disabled={store.historyManager.statesAfter.length === 0}
-                icon="Redo"
-                onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
-              />
-            </>
-          ) : null}
-        </>
-      </>,
+            <FluentToolButton
+              invertIcon={props.darkTheme}
+              title={strings.menuBar.redo}
+              disabled={store.historyManager.statesAfter.length === 0}
+              icon="Redo"
+              onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
+            />
+          </>
+        ) : null}
+      </React.Fragment>
     ];
   };
 
   // eslint-disable-next-line max-lines-per-function
   const getChartToolItems = (labels: boolean = true) => {
     return [
-      <>
+      <React.Fragment key="getChartToolItems">
         <LinkButton invertIcon={props.darkTheme} label={true} />
-        <LegendButton invertIcon={props.darkTheme}/>
+        <LegendButton invertIcon={props.darkTheme} />
         <span className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
@@ -269,13 +266,13 @@ export const FluentUIToolbar: React.FC<{
             {
               classID: "plot-segment.cartesian",
               title: strings.toolbar.region2D,
-              icon: "BorderDot",
+              icon: "PlotRegion",
               noDragging: true,
             },
             {
               classID: "plot-segment.line",
               title: strings.toolbar.line,
-              icon: "Line",
+              icon: "ElementLine",
               noDragging: true,
             },
           ]}
@@ -328,13 +325,14 @@ export const FluentUIToolbar: React.FC<{
             ]}
           />
         </>
-      </>,
+      </React.Fragment>,
     ];
   };
 
   const renderScaffoldButton = () => {
     return (
       <MultiObjectButton
+        key={"saffoldButton"}
         invertIcon={props.darkTheme}
         compact={props.layout === LayoutDirection.Vertical}
         tools={[
@@ -374,6 +372,7 @@ export const FluentUIToolbar: React.FC<{
   const renderGuidesButton = () => {
     return (
       <MultiObjectButton
+        key={"guidesButton"}
         invertIcon={props.darkTheme}
         compact={props.layout === LayoutDirection.Vertical}
         tools={[
@@ -411,16 +410,45 @@ export const FluentUIToolbar: React.FC<{
     );
   };
 
+
+  const renderSaveEmbedded = () => {
+    const hasUnsavedChanges = store.chartManager.hasUnsavedChanges();
+
+    return (
+      <FluentToolButton
+        key={"saveEmbedded"}
+        icon={<SVGImageIcon url={R.getSVGIcon("toolbar/save")} width={16} height={16} />}
+        text={strings.menuBar.saveButton}
+        disabled={!hasUnsavedChanges}
+        title={strings.menuBar.save}
+        onClick={() => {
+          store.dispatcher.dispatch(new Actions.UpdatePlotSegments());
+          store.dispatcher.dispatch(new Actions.UpdateDataAxis());
+          store.dispatcher.dispatch(new Actions.Save());
+        }}
+      />
+    );
+  };
+
   // eslint-disable-next-line max-lines-per-function
   const getToolItems = (
     labels: boolean = true,
     innerWidth: number = window.innerWidth
   ) => {
+    const isEmbeddedApp = store.editorType === EditorType.NestedEmbeddedApp;
     return (
-      <>
+      <React.Fragment key="toolItemsFragment">
+        {isEmbeddedApp ? (
+          <React.Fragment key={"saveEmbeddedFragment"}>
+            {renderSaveEmbedded()}
+            <span className={"charticulator__toolbar-horizontal-separator"} />
+          </React.Fragment>
+        ) : null
+        }
         {props.undoRedoLocation === UndoRedoLocation.ToolBar ? (
           <>
             <FluentToolButton
+              key={"undoButton"}
               invertIcon={props.darkTheme}
               title={strings.menuBar.undo}
               disabled={store.historyManager.statesBefore.length === 0}
@@ -428,17 +456,19 @@ export const FluentUIToolbar: React.FC<{
               onClick={() => new Actions.Undo().dispatch(store.dispatcher)}
             />
             <FluentToolButton
+              key={"redoButton"}
               invertIcon={props.darkTheme}
               title={strings.menuBar.redo}
               disabled={store.historyManager.statesAfter.length === 0}
               icon={"Redo"}
               onClick={() => new Actions.Redo().dispatch(store.dispatcher)}
             />
-            <span className={"charticulator__toolbar-horizontal-separator"} />
+            <span key={"separator1"} className={"charticulator__toolbar-horizontal-separator"} />
           </>
         ) : null}
         {labels && (
           <span
+            key={"marksLabel"}
             className={
               props.layout === LayoutDirection.Vertical
                 ? "charticulator__toolbar-vertical-label"
@@ -449,90 +479,98 @@ export const FluentUIToolbar: React.FC<{
           </span>
         )}
         <MultiObjectButton
+          key={"marksButton"}
           invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
               classID: "mark.rect",
               title: strings.toolbar.rectangle,
-              icon: "RectangleShape",
+              icon: "ElementRect",
               options: '{"shape":"rectangle"}',
             },
             {
               classID: "mark.rect",
               title: strings.toolbar.ellipse,
-              icon: "Ellipse",
+              icon: "ElementEllipse",
               options: '{"shape":"ellipse"}',
             },
             {
               classID: "mark.rect",
               title: strings.toolbar.triangle,
-              icon: "TriangleShape",
+              icon: "ElementTriangle",
               options: '{"shape":"triangle"}',
             },
             {
               classID: "mark.polygon",
               title: strings.toolbar.polygon,
-              icon: "Polygon",
+              icon: "ElementPolygon",
               options: '{"closed":"true", "pointsCount": "3"}',
             },
           ]}
         />
         <ObjectButton
-          invertIcon={props.darkTheme} classID="mark.symbol" title="Symbol" icon="Shapes" />
+          key={"symbolMark"}
+          invertIcon={props.darkTheme} classID="mark.symbol" title="Symbol" icon="ElementSymbol" />
         <ObjectButton
-          invertIcon={props.darkTheme} classID="mark.line" title="Line" icon="Line" />
+          key={"lineMark"}
+          invertIcon={props.darkTheme} classID="mark.line" title="Line" icon="ElementLine" />
         <MultiObjectButton
+          key={"textMarksButton"}
           invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
               classID: "mark.text",
               title: strings.toolbar.text,
-              icon: "FontColorA",
+              icon: "ElementText",
             },
             {
               classID: "mark.textbox",
               title: strings.toolbar.textbox,
-              icon: "TextField",
+              icon: "ElementTextbox",
             },
           ]}
         />
         <MultiObjectButton
+          key={"imageMarksButton"}
           invertIcon={props.darkTheme}
           compact={props.layout === LayoutDirection.Vertical}
           tools={[
             {
               classID: "mark.icon",
               title: strings.toolbar.icon,
-              icon: "ImagePixel",
+              icon: "ElementIcon",
             },
             {
               classID: "mark.image",
               title: strings.toolbar.image,
-              icon: "FileImage",
+              icon: "ElementImage",
             },
           ]}
         />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <span key={"separator2"} className={"charticulator__toolbar-horizontal-separator"} />
         <ObjectButton
+          key={"dataAxis"}
           invertIcon={props.darkTheme}
           classID="mark.data-axis"
           title={strings.toolbar.dataAxis}
-          icon="mark/data-axis"
+          icon="DataAxis"
         />
         <ObjectButton
+          key={"nestedChart"}
           invertIcon={props.darkTheme}
           classID="mark.nested-chart"
           title={strings.toolbar.nestedChart}
-          icon="BarChartVerticalFilter"
+          icon="NestedChart"
         />
-        <LegendButton invertIcon={props.darkTheme} />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
-        <LinkButton invertIcon={props.darkTheme} label={labels} />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <LegendButton key={"legendButton"} invertIcon={props.darkTheme} />
+        <span key={"separator3"} className={"charticulator__toolbar-horizontal-separator"} />
+        <LinkButton key={"linkButton"} invertIcon={props.darkTheme} label={labels} />
+        <span key={"separator4"} className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
+            key={"guidesLabel"}
             className={
               props.layout === LayoutDirection.Vertical
                 ? "charticulator__toolbar-vertical-label"
@@ -545,43 +583,49 @@ export const FluentUIToolbar: React.FC<{
         {innerWidth > minWidthToColapseButtons.guides ? (
           <>
             <ObjectButton
+              key={"guideY"}
               invertIcon={props.darkTheme}
               classID="guide-y"
               title={strings.toolbar.guideY}
-              icon="guide/x"
+              icon="GuideXline"
             />
             <ObjectButton
+              key={"guideX"}
               invertIcon={props.darkTheme}
               classID="guide-x"
               title={strings.toolbar.guideX}
-              icon="guide/y"
+              icon="GuideYline"
             />
             <ObjectButton
+              key={"guideCoordinatorX"}
               invertIcon={props.darkTheme}
               classID="guide-coordinator-x"
               title={strings.toolbar.guideX}
-              icon="guide/coordinator-x"
+              icon="GuideCoordinatorX"
             />
             <ObjectButton
+              key={"guideCoordinatorY"}
               invertIcon={props.darkTheme}
               classID="guide-coordinator-y"
               title={strings.toolbar.guideY}
-              icon="guide/coordinator-y"
+              icon="GuideCoordinatorY"
             />
             <ObjectButton
+              key={"guideCoordinatorPolar"}
               invertIcon={props.darkTheme}
               classID="guide-coordinator-polar"
               title={strings.toolbar.guidePolar}
-              icon="guide/coordinator-polar"
+              icon="GuideCoordinatorPolar"
             />
           </>
         ) : (
           renderGuidesButton()
         )}
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <span key={"separator5"} className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <>
             <span
+              key={"plotLabel"}
               className={
                 props.layout === LayoutDirection.Vertical
                   ? "charticulator__toolbar-vertical-label"
@@ -595,22 +639,25 @@ export const FluentUIToolbar: React.FC<{
           </>
         )}
         <ObjectButton
+          key={"plotSegmentCartesian"}
           invertIcon={props.darkTheme}
           classID="plot-segment.cartesian"
           title={strings.toolbar.region2D}
-          icon="BorderDot"
+          icon="PlotRegion"
           noDragging={true}
         />
         <ObjectButton
+          key={"plotSegmentLine"}
           invertIcon={props.darkTheme}
           classID="plot-segment.line"
           title={strings.toolbar.line}
-          icon="Line"
+          icon="PlotSegmentLine"
           noDragging={true}
         />
-        <span className={"charticulator__toolbar-horizontal-separator"} />
+        <span key={"separator6"} className={"charticulator__toolbar-horizontal-separator"} />
         {labels && (
           <span
+            key={"scaffoldsLabel"}
             className={
               props.layout === LayoutDirection.Vertical
                 ? "charticulator__toolbar-vertical-label"
@@ -623,42 +670,46 @@ export const FluentUIToolbar: React.FC<{
         {innerWidth > minWidthToColapseButtons.scaffolds ? (
           <>
             <ScaffoldButton
+              key={"scaffoldCartesianX"}
               darkTheme={props.darkTheme}
               type="cartesian-x"
               title={strings.toolbar.lineH}
-              icon="scaffold/cartesian-x"
+              icon="ScaffoldXline"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              key={"scaffoldCartesianY"}
               darkTheme={props.darkTheme}
               type="cartesian-y"
               title={strings.toolbar.lineV}
-              icon="scaffold/cartesian-y"
+              icon="ScaffoldYline"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              key={"scaffoldPolar"}
               darkTheme={props.darkTheme}
               type="polar"
               title={strings.toolbar.polar}
-              icon="scaffold/circle"
+              icon="ScaffoldCircle"
               currentTool={store.currentTool}
             />
             <ScaffoldButton
+              key={"scaffoldCurve"}
               darkTheme={props.darkTheme}
               type="curve"
               title={strings.toolbar.curve}
-              icon="scaffold/curve"
+              icon="ScaffoldCurve"
               currentTool={store.currentTool}
             />
           </>
         ) : (
           renderScaffoldButton()
         )}
-      </>
+      </React.Fragment>
     );
   };
 
-  let tooltipsItems = [];
+  let tooltipsItems: React.JSX.Element[] = [];
   if (store.editorType === "embedded") {
     const chartToolItems = getChartToolItems(props.toolbarLabels);
     const glyphToolItems = getGlyphToolItems(props.toolbarLabels);
@@ -666,34 +717,20 @@ export const FluentUIToolbar: React.FC<{
   } else {
     tooltipsItems = [getToolItems(props.toolbarLabels, innerWidth)];
   }
+
   return (
     <>
-      <div
-        className={
-          props.layout === LayoutDirection.Vertical
-            ? "charticulator__toolbar-vertical"
-            : "charticulator__toolbar-horizontal"
-        }
+      <Toolbar
+        aria-label="Editor toolbar"
+        size="medium"
+        style={{
+          border: `2px solid ${tokens.colorNeutralBackground3}`,
+          borderRadius: "8px",
+          backgroundColor: tokens.colorNeutralBackground1
+        }}
       >
-        <div className="charticulator__toolbar-buttons-align-left">
-          {tooltipsItems.map((item, index) => {
-            return (
-              <React.Fragment key={index}>
-                <div
-                  key={index}
-                  className={
-                    props.layout === LayoutDirection.Vertical
-                      ? "charticulator__toolbar-vertical-group"
-                      : "charticulator__toolbar-horizontal-group"
-                  }
-                >
-                  {item}
-                </div>
-              </React.Fragment>
-            );
-          })}
-        </div>
-      </div>
+        {tooltipsItems}
+      </Toolbar>
     </>
   );
 };
@@ -711,259 +748,217 @@ export interface ObjectButtonProps {
   compact?: boolean;
 }
 
-export class ObjectButton extends ContextedComponent<
-  ObjectButtonProps,
-  Record<string, unknown>
-> {
-  public token: EventSubscription;
+export const ObjectButton: React.FC<ObjectButtonProps> = (props) => {
+  const { store, dispatcher } = React.useContext(MainReactContext);
+  const [, setRenderVersion] = React.useState(0);
 
-  public getIsActive() {
+  const getIsActive = React.useCallback(() => {
     return (
-      this.store.currentTool == this.props.classID &&
-      this.store.currentToolOptions == this.props.options
+      store.currentTool == props.classID &&
+      store.currentToolOptions == props.options
     );
-  }
+  }, [store.currentTool, store.currentToolOptions, props.classID, props.options]);
 
-  public componentDidMount() {
-    this.token = this.context.store.addListener(
-      AppStore.EVENT_CURRENT_TOOL,
-      () => {
-        this.forceUpdate();
-      }
-    );
-  }
+  React.useEffect(() => {
+    const token = store.addListener(AppStore.EVENT_CURRENT_TOOL, () => {
+      setRenderVersion((value) => value + 1);
+    });
 
-  public componentWillUnmount() {
-    this.token.remove();
-  }
-
-  public render() {
-    return (
-      <>
-        <DraggableElement
-          dragData={
-            this.props.noDragging
-              ? null
-              : this.props.onDrag
-                ? this.props.onDrag
-                : () => {
-                  return new DragData.ObjectType(
-                    this.props.classID,
-                    this.props.options
-                  );
-                }
-          }
-          onDragStart={() => this.setState({ dragging: true })}
-          onDragEnd={() => this.setState({ dragging: false })}
-          renderDragElement={() => {
-            return [
-              <SVGImageIcon
-                invert={this.props.invertIcon}
-                url={getSVGIcon(this.props.icon)}
-                width={32}
-                height={32}
-              />,
-              { x: -16, y: -16 },
-            ];
-          }}
-        >
-          <ToolbarButton
-            appearance="subtle"
-            icon={
-              typeof this.props.icon === "string" ? (
-                <SVGImageIcon
-                  invert={this.props.invertIcon}
-                  url={R.getSVGIcon(this.props.icon)}
-                  width={20}
-                  height={20}
-                />
-              ) : (
-                this.props.icon
-              )
-            }
-            title={this.props.title}
-            value={this.props.text}
-            // toggle={this.getIsActive()}
-            onClick={() => {
-              this.dispatch(
-                new Actions.SetCurrentTool(
-                  this.props.classID,
-                  this.props.options
-                )
-              );
-              if (this.props.onClick) {
-                this.props.onClick();
-              }
-            }}
-          />
-        </DraggableElement>
-      </>
-    );
-  }
-}
-
-export class MultiObjectButton extends ContextedComponent<
-  {
-    compact?: boolean;
-    tools: ObjectButtonProps[];
-    invertIcon?: boolean;
-  },
-  {
-    currentSelection: {
-      classID: string;
-      options: string;
+    return () => {
+      token.remove();
     };
-    dragging: boolean;
-  }
-> {
-  public state = {
-    currentSelection: {
-      classID: this.props.tools[0].classID,
-      options: this.props.tools[0].options,
-    },
-    dragging: false,
-  };
-  public token: EventSubscription;
+  }, [store]);
 
-  public isActive() {
-    const store = this.store;
-    for (const item of this.props.tools) {
-      if (
-        item.classID == store.currentTool &&
-        item.options == store.currentToolOptions
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }
+  return (
+    <>
+      <DraggableElement
+        dragData={
+          props.noDragging
+            ? undefined
+            : props.onDrag
+              ? props.onDrag
+              : () => {
+                return new DragData.ObjectType(props.classID, props.options);
+              }
+        }
+        onDragStart={() => setRenderVersion((value) => value + 1)}
+        onDragEnd={() => setRenderVersion((value) => value + 1)}
+        renderDragElement={() => {
+          return [
+            <SVGImageIcon
+              invert={props.invertIcon}
+              url={getSVGIcon(props.icon)}
+              width={32}
+              height={32}
+            />,
+            { x: -16, y: -16 },
+          ];
+        }}
+      >
+        <ToolbarButton
+          appearance="subtle"
+          icon={
+            typeof props.icon === "string" ? (
+              <SVGImageIcon
+                invert={props.invertIcon}
+                url={R.getSVGIcon(props.icon)}
+                width={20}
+                height={20}
+              />
+            ) : (
+              props.icon
+            )
+          }
+          title={props.title}
+          value={props.text}
+          // toggle={getIsActive()}
+          onClick={() => {
+            dispatcher.dispatch(new Actions.SetCurrentTool(props.classID, props.options));
+            if (props.onClick) {
+              props.onClick();
+            }
+          }}
+        />
+      </DraggableElement>
+    </>
+  );
+};
 
-  public getSelectedTool() {
-    for (const item of this.props.tools) {
+export const MultiObjectButton: React.FC<{
+  compact?: boolean;
+  tools: ObjectButtonProps[];
+  invertIcon?: boolean;
+}> = ({ tools, invertIcon }) => {
+  const { store } = React.useContext(MainReactContext);
+  const [currentSelection, setCurrentSelection] = React.useState<{
+    classID: string;
+    options: string;
+  }>({
+    classID: tools[0]?.classID ?? "",
+    options: tools[0]?.options ?? "",
+  });
+  const [, setDragging] = React.useState(false);
+
+  const getSelectedTool = React.useCallback(() => {
+    for (const item of tools) {
       if (
-        item.classID == this.state.currentSelection.classID &&
-        item.options == this.state.currentSelection.options
+        item.classID == currentSelection.classID &&
+        item.options == currentSelection.options
       ) {
         return item;
       }
     }
-    return this.props.tools[0];
-  }
+    return tools[0];
+  }, [currentSelection, tools]);
 
-  public componentDidMount() {
-    this.token = this.store.addListener(AppStore.EVENT_CURRENT_TOOL, () => {
-      for (const item of this.props.tools) {
-        // If the tool is within the tools defined here, we update the current selection
+  React.useEffect(() => {
+    const token = store.addListener(AppStore.EVENT_CURRENT_TOOL, () => {
+      for (const item of tools) {
         if (
-          this.store.currentTool == item.classID &&
-          this.store.currentToolOptions == item.options
+          store.currentTool == item.classID &&
+          store.currentToolOptions == item.options
         ) {
-          this.setState({
-            currentSelection: {
-              classID: item.classID,
-              options: item.options,
-            },
+          setCurrentSelection({
+            classID: item.classID,
+            options: item.options ?? "",
           });
           break;
         }
       }
-      this.forceUpdate();
     });
-  }
 
-  public componentWillUnmount() {
-    this.token.remove();
-  }
+    return () => token.remove();
+  }, [store, tools]);
 
-  public render() {
-    const currentTool = this.getSelectedTool();
+  const currentTool = getSelectedTool();
 
-    return (
-      <DraggableElement
-        dragData={() => {
-          if (currentTool?.onDrag) {
-            return currentTool?.onDrag();
-          }
-          return new DragData.ObjectType(
-            currentTool.classID,
-            currentTool.options
-          );
-        }}
-        onDragStart={() => this.setState({ dragging: true })}
-        onDragEnd={() => this.setState({ dragging: false })}
-        renderDragElement={() => {
-          return [
-            <SVGImageIcon
-              invert={this.props.invertIcon}
-              url={R.getSVGIcon(currentTool.icon)}
-              height={20}
-              width={20}
-              aria-hidden="true"
-            />,
-            { x: 16, y: 16 },
-          ];
-        }}
-      >
-        <Menu>
-          <MenuTrigger disableButtonEnhancement>
-            <ToolbarButton
-              appearance="subtle"
-              title={currentTool?.title}
-              icon={
-                <SVGImageIcon
-                  invert={this.props.invertIcon}
-                  url={R.getSVGIcon(currentTool.icon)}
-                  height={20}
-                  width={20}
-                ></SVGImageIcon>
+  return (
+    <DraggableElement
+      dragData={() => {
+        if (currentTool?.onDrag) {
+          return currentTool.onDrag();
+        }
+        return new DragData.ObjectType(
+          currentTool.classID,
+          currentTool.options
+        );
+      }}
+      onDragStart={() => setDragging(true)}
+      onDragEnd={() => setDragging(false)}
+      renderDragElement={() => {
+        return [
+          <SVGImageIcon
+            key={`multi-object-button-drag-element-${currentTool.classID}-${currentTool.options}`}
+            invert={invertIcon}
+            url={R.getSVGIcon(currentTool.icon)}
+            height={20}
+            width={20}
+            aria-hidden="true"
+          />,
+          { x: 16, y: 16 },
+        ];
+      }}
+    >
+      <Menu>
+        <MenuTrigger disableButtonEnhancement>
+          <ToolbarButton
+            key={`multi-object-button-toolbar-button-${currentTool.classID}-${currentTool.options}`}
+            appearance="subtle"
+            title={currentTool?.title}
+            icon={
+              <SVGImageIcon
+                key={`multi-object-button-icon-${currentTool.classID}-${currentTool.options}`}
+                invert={invertIcon}
+                url={R.getSVGIcon(currentTool.icon)}
+                height={20}
+                width={20}
+              ></SVGImageIcon>
+            }
+            onClick={() => {
+              if (currentTool) {
+                new Actions.SetCurrentTool(
+                  currentTool.classID,
+                  currentTool.options
+                ).dispatch(store.dispatcher);
               }
-              onClick={() => {
-                if (currentTool) {
-                  this.dispatch(
-                    new Actions.SetCurrentTool(
-                      currentTool.classID,
-                      currentTool.options
-                    )
-                  );
-                }
-              }}
-            />
-          </MenuTrigger>
+            }}
+          />
+        </MenuTrigger>
 
-          <MenuPopover>
-            <MenuList>
-              {this.props.tools.map((tool, index) => {
-                return (
-                  <MenuItem
-                    key={`menu-${index}`}
-                    onClick={() => {
-                      if (tool) {
-                        this.dispatch(
-                          new Actions.SetCurrentTool(tool.classID, tool.options)
-                        );
-                      }
-                    }}
-                    icon={
-                      <SVGImageIcon
-                        invert={this.props.invertIcon}
-                        key={`icon-${index}`}
-                        url={R.getSVGIcon(tool.icon)}
-                        height={20}
-                        width={20}
-                      ></SVGImageIcon>
+        <MenuPopover>
+          <MenuList>
+            {tools.map((tool, index) => {
+              return (
+                <MenuItem
+                  key={`multi-object-button-menu-item-${tool.classID}-${tool.options}-${index}`}
+                  onClick={() => {
+                    if (tool) {
+                      new Actions.SetCurrentTool(
+                        tool.classID,
+                        tool.options
+                      ).dispatch(store.dispatcher);
                     }
-                  >
-                    {tool.title}{" "}
-                  </MenuItem>
-                );
-              })}
-            </MenuList>
-          </MenuPopover>
-        </Menu>
-      </DraggableElement>
-    );
-  }
-}
+                  }}
+                  icon={
+                    <SVGImageIcon
+                      invert={invertIcon}
+                      key={`multi-object-button-menu-item-icon-${tool.classID}-${tool.options}-${index}`}
+                      url={R.getSVGIcon(tool.icon)}
+                      height={20}
+                      width={20}
+                    ></SVGImageIcon>
+                  }
+                >
+                  {tool.title}{" "}
+                </MenuItem>
+              );
+            })}
+          </MenuList>
+        </MenuPopover>
+      </Menu>
+    </DraggableElement>
+  );
+};
 
 export const ScaffoldButton: React.FC<{
   currentTool: string;
@@ -998,7 +993,7 @@ export const LinkButton: React.FC<{
   const button = React.useRef();
 
   return (
-    <span id="linkCreator">
+    <span id="linkCreator" key="linkCreator">
       <Popover
         open={isOpen}
         positioning={{
@@ -1008,13 +1003,13 @@ export const LinkButton: React.FC<{
       >
         <PopoverTrigger>
           <ToolbarButton
-            ref={button}
+            ref={button.current}
             title={strings.toolbar.link}
             value={props.label ? strings.toolbar.link : ""}
             icon={
               <SVGImageIcon
                 invert={props.invertIcon}
-                url={R.getSVGIcon("CharticulatorLine")}
+                url={R.getSVGIcon("LinkTool")}
                 height={20}
                 width={20}
               />
@@ -1035,7 +1030,7 @@ export const LinkButton: React.FC<{
 
 export const LegendButton: React.FC<{
   invertIcon?: boolean;
-}> = ({invertIcon}) => {
+}> = ({ invertIcon }) => {
   // const { store } = React.useContext(MainReactContext);
   const [isOpen, setOpen] = React.useState(false);
 
@@ -1046,15 +1041,16 @@ export const LegendButton: React.FC<{
   }, [setOpen]);
 
   return (
-    <span id="createLegend">
+    <span id="createLegend" key="createLegend">
       <Popover open={isOpen}>
         <PopoverTrigger>
           <ToolbarButton
+            key="legendButton"
             title={strings.toolbar.legend}
             icon={
               <SVGImageIcon
                 invert={invertIcon}
-                url={R.getSVGIcon("CharticulatorLegend")}
+                url={"Legend"}
                 height={20}
                 width={20}
               />

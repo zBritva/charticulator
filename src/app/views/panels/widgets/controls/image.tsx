@@ -135,7 +135,7 @@ export class InputImage extends ContextedComponent<
             <img
               key="image"
               className="el-image"
-              src={isNone ? R.getSVGIcon("FileImage") : image.src}
+              src={isNone ? R.getSVGIcon("ElementImage") : image.src}
             />,
             <span key="text" className="el-text-wrapper">
               <span className="el-text">
@@ -403,7 +403,7 @@ export class InputImageProperty extends InputImage {
             <img
               key="image"
               className="el-image2"
-              src={isNone ? R.getSVGIcon("FileImage") : image.src}
+              src={isNone ? R.getSVGIcon("ElementImage") : image.src}
             />,
             <ImageUploader
               key={0}

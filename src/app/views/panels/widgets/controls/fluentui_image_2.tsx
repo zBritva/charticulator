@@ -97,7 +97,7 @@ export class InputImage extends ContextedComponent<
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
         onClick={this.startChooseImage}
-        // style={{ marginBottom: "5px" }}
+      // style={{ marginBottom: "5px" }}
       >
         {this.state.dragOver ? (
           <div style={{ width: "100%" }}>
@@ -125,7 +125,7 @@ export class InputImage extends ContextedComponent<
               // text={isNone ? strings.core.none : imageDisplayURL}
               // iconProps={{
               //   imageProps: {
-              //     src: isNone ? R.getSVGIcon("FileImage") : image.src,
+              //     src: isNone ? R.getSVGIcon("ElementImage") : image.src,
               //     style: {
               //       height: "16px",
               //       width: "16px",
@@ -137,7 +137,7 @@ export class InputImage extends ContextedComponent<
                   height={16}
                   width={16}
                   url={R.getSVGIcon(
-                    isNone ? R.getSVGIcon("FileImage") : image.src
+                    isNone ? R.getSVGIcon("ElementImage") : image.src
                   )}
                 />
               }
@@ -177,7 +177,7 @@ export class InputImage extends ContextedComponent<
         .then((r) => {
           this.emitOnChange(r);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
     if (e.dataTransfer.files.length > 0) {
       ImageUploader.ParseFiles(e.dataTransfer.files).then((r) => {
@@ -322,7 +322,7 @@ export class ImageUploader extends React.Component<
                 strings.objects.image.defaultPlaceholder
               }
               relationship="label"
-              // styles={ToolTipHostStyles}
+            // styles={ToolTipHostStyles}
             >
               <Input
                 value={
@@ -330,7 +330,7 @@ export class ImageUploader extends React.Component<
                   strings.objects.image.defaultPlaceholder
                 }
                 disabled
-                // styles={ImageMappingTextFieldStyles}
+              // styles={ImageMappingTextFieldStyles}
               />
             </Tooltip>
             {/* <FluentButton marginTop="0px"> */}
@@ -470,7 +470,7 @@ export class InputImageProperty extends InputImage {
           [
             <FluentUIImage
               key="image"
-              src={isNone ? R.getSVGIcon("FileImage") : image.src}
+              src={isNone ? R.getSVGIcon("ElementImage") : image.src}
               width={24}
               height={24}
             />,

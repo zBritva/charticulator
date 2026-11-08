@@ -1,6 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
+import { Application } from "./application";
+import { CDNBackend } from "./backend/cdn";
+import { HybridBackend } from "./backend/hybrid";
+import { IndexedDBBackend } from "./backend/indexed_db";
+
 /**
  * ![App workflow](media://workflow.png)
  *
@@ -51,7 +56,35 @@ export {
   NestedEditorData,
   NestedEditorEventType,
 } from "./application";
+export {
+  makeDefaultDataset
+} from "./default_dataset"
+
+export * as CDNBackend from "./backend/cdn";
+export * as HybridBackend from "./backend/hybrid";
+export * as IndexedDBBackend from "./backend/indexed_db";
+
+export {
+  AppStore,
+  Migrator,
+  Selection,
+  EditorType,
+} from "./stores"
+export {
+  MainView,
+  MainViewProps,
+  LayoutDirection,
+  PositionsLeftRight,
+  PositionsLeftRightTop,
+  UndoRedoLocation,
+  MainViewState
+} from "./main_view"
+export {
+  MainReactContext
+} from "./context_component"
 export { CharticulatorAppConfig, MainViewConfig } from "./config";
+export { setConfig } from "./../core";
+
 export { addSVGIcon, getSVGIcon } from "./resources";
 export { ExportTemplateTarget } from "./../template";
 export { Widgets } from "./views/panels/index";
@@ -59,3 +92,7 @@ export { expect_deep_approximately_equals } from "./utils/index";
 export { PopupContainer } from "./controllers/popup_controller";
 // tslint:disable-next-line
 export * as globals from "./globals";
+
+export * as Worker from "../worker";
+
+export default Application;

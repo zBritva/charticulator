@@ -163,7 +163,7 @@ export class ColumnsView extends React.Component<
             {this.props.store.editorType === EditorType.Chart ? (
               <Button
                 appearance="subtle"
-                icon={<SVGImageIcon url={R.getSVGIcon("general/replace")} />}
+                icon={<SVGImageIcon url={"Replace"} />}
                 title={strings.dataset.replaceWithCSV}
                 // eslint-disable-next-line
                 onClick={() => {
@@ -434,7 +434,7 @@ export class ColumnView extends React.Component<
           function: "powerBIderivedColumn"
         } as DerivedColumnDescription;
       }))
-    } 
+    }
     if (!derivedColumns) {
       return null;
     }

@@ -27,9 +27,9 @@ export class TextAlignmentHandleView extends React.Component<
   React.PropsWithChildren<TextAlignmentHandleViewProps>,
   TextAlignmentHandleViewState
 > {
-  private container: SVGGElement;
-  private anchorCircle: SVGCircleElement;
-  private rotationCircle: SVGCircleElement;
+  private container: React.RefObject<SVGGElement> = React.createRef();
+  private anchorCircle: React.RefObject<SVGCircleElement> = React.createRef();
+  private rotationCircle: React.RefObject<SVGCircleElement> = React.createRef();
   private hammer: HammerManager;
 
   constructor(props: TextAlignmentHandleViewProps) {
@@ -44,7 +44,7 @@ export class TextAlignmentHandleView extends React.Component<
   }
 
   public getRelativePoint(px: number, py: number) {
-    const anchorBounds = this.anchorCircle.getBoundingClientRect();
+    const anchorBounds = this.anchorCircle.current.getBoundingClientRect();
     const x = px - (anchorBounds.left + anchorBounds.width / 2);
     const y = py - (anchorBounds.top + anchorBounds.height / 2);
     return { x: x / this.props.zoom.scale, y: -y / this.props.zoom.scale };
@@ -52,7 +52,7 @@ export class TextAlignmentHandleView extends React.Component<
 
   // eslint-disable-next-line
   public componentDidMount() {
-    this.hammer = new Hammer(this.container);
+    this.hammer = new Hammer(this.container.current);
     this.hammer.add(new Hammer.Pan({ threshold: 1 }));
     this.hammer.add(new Hammer.Tap());
 
@@ -209,7 +209,7 @@ export class TextAlignmentHandleView extends React.Component<
       const p1 = this.getRelativePoint(cx + e.deltaX, cy + e.deltaY);
       previousAlignment = this.props.handle.alignment;
       previousRotation = this.props.handle.rotation;
-      if (el == this.rotationCircle) {
+      if (el == this.rotationCircle.current) {
         mode = "rotation";
         handleRotation(p1);
       } else {
@@ -285,7 +285,7 @@ export class TextAlignmentHandleView extends React.Component<
         );
       },
       {
-        anchor: this.container,
+        anchor: this.container.current,
       }
     );
   }
@@ -371,14 +371,14 @@ export class TextAlignmentHandleView extends React.Component<
           ["visible", handle.visible || this.props.visible]
         )}
         onClick={this.handleClick}
-        ref={(e) => (this.container = e)}
+        ref={this.container}
       >
         <circle
           className="element-shape handle-ghost"
           cx={anchor.x}
           cy={anchor.y}
           r={0}
-          ref={(e) => (this.anchorCircle = e)}
+          ref={this.anchorCircle}
         />
         <g transform={`translate(${fp.x - 16},${fp.y - 16})`}>
           <path
@@ -405,13 +405,13 @@ export class TextAlignmentHandleView extends React.Component<
         />
         <circle
           className="element-shape handle-ghost element-rotation"
-          ref={(e) => (this.rotationCircle = e)}
+          ref={this.rotationCircle}
           cx={fp.x}
           cy={fp.y}
           r={8}
         />
         {this.renderDragging()}
-      </g>
+      </g >
     );
   }
 }

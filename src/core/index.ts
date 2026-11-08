@@ -89,18 +89,6 @@ import * as Utils from "./common/utils";
 import * as ColorUtils from "./common/color";
 export * from "./actions";
 
-export {
-  Expression,
-  Specification,
-  SpecTypes,
-  Prototypes,
-  Solver,
-  Graphics,
-  Dataset,
-  Utils,
-  ColorUtils
-};
-
 import { CharticulatorCoreConfig, setConfig } from "./config";
 
 import { initialize as initialize_WASMSolver } from "./solver/wasm_solver";
@@ -118,3 +106,18 @@ export function initialize(config?: CharticulatorCoreConfig): Promise<void> {
   // }, true);
   return initialize_WASMSolver();
 }
+
+export {
+  Expression,
+  Specification,
+  SpecTypes,
+  Prototypes,
+  Solver,
+  Graphics,
+  Dataset,
+  Utils,
+  ColorUtils,
+  setConfig
+};
+
+export default initialize;

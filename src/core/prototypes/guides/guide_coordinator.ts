@@ -44,7 +44,7 @@ export class GuideCoordinatorClass extends ChartElementClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "GuideCoordinator",
-    iconPath: "guide/coordinator-x",
+    iconPath: "GuideCoordinatorX",
   };
 
   public static defaultAttributes: Partial<GuideCoordinatorAttributes> = {
@@ -85,7 +85,7 @@ export class GuideCoordinatorClass extends ChartElementClass<
       let i = 0;
       i <
       <number>this.object.properties.count -
-        GuideCoordinatorClass.BaseGuidesCount;
+      GuideCoordinatorClass.BaseGuidesCount;
       i++
     ) {
       const name = `value${i}`;
@@ -126,7 +126,7 @@ export class GuideCoordinatorClass extends ChartElementClass<
       let i = 0;
       i <
       <number>this.object.properties.count -
-        GuideCoordinatorClass.BaseGuidesCount;
+      GuideCoordinatorClass.BaseGuidesCount;
       i++
     ) {
       const name = `value${i}`;

@@ -42,7 +42,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Symbol",
-    iconPath: "Shapes",
+    iconPath: "ElementSymbol",
     creatingInteraction: {
       type: "point",
       mapping: { x: "x", y: "y" },
@@ -127,7 +127,7 @@ export class SymbolElementClass extends EmphasizableMarkClass<
       opacity: attrs.opacity,
       ...this.generateEmphasisStyle(emphasize),
     };
-    
+
     const key = `glyph:${glyphIndex}-symbol:${this.object._id}`;
     switch (attrs.symbol) {
       case "square": {
@@ -291,19 +291,19 @@ export class SymbolElementClass extends EmphasizableMarkClass<
           }),
           this.object.mappings.stroke != null
             ? manager.mappingEditor(
-                strings.objects.strokeWidth,
-                "strokeWidth",
-                {
-                  hints: { rangeNumber: [0, 5] },
-                  defaultValue: 1,
-                  numberOptions: {
-                    showSlider: true,
-                    sliderRange: [0, 5],
-                    minimum: 0,
-                  },
-                  searchSection: strings.objects.style,
-                }
-              )
+              strings.objects.strokeWidth,
+              "strokeWidth",
+              {
+                hints: { rangeNumber: [0, 5] },
+                defaultValue: 1,
+                numberOptions: {
+                  showSlider: true,
+                  sliderRange: [0, 5],
+                  minimum: 0,
+                },
+                searchSection: strings.objects.style,
+              }
+            )
             : null,
           manager.mappingEditor(strings.objects.opacity, "opacity", {
             hints: { rangeNumber: [0, 1] },

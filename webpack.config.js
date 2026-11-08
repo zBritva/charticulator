@@ -18,7 +18,7 @@ module.exports = (env, { mode }) => {
   if (mode == null) {
     mode = "production";
   }
-  const extensions = ['.tsx', '.ts', '.jsx', '.js', '.css', 'svg'];
+  const extensions = ['.tsx', '.ts', '.jsx', '.js', '.css', '.svg'];
   const pegjsConfig = {
     test: /\.pegjs$/,
     loader: require.resolve('pegjs-loader'),
@@ -39,7 +39,9 @@ module.exports = (env, { mode }) => {
         options: {
           transpileOnly: false,
           experimentalWatchApi: false,
-          compilerOptions: tsconfig.compilerOptions
+          compilerOptions: {
+            ...tsconfig.compilerOptions,
+          }
         }
       }
     ]
@@ -52,6 +54,52 @@ module.exports = (env, { mode }) => {
       require.resolve('sass-loader')
     ],
   };
+  const svgConfig = {
+    test: /\.svg$/i,
+    issuer: /\.[jt]sx?$/,
+    type: 'asset',
+    parser: {
+      dataUrlCondition: {
+        maxSize: 32 * 1024 // Inline SVGs smaller than 8kb as Base64, emit larger ones as files
+      }
+    },
+    generator: {
+      filename: 'icons/[name].[ext]' // Defines output folder and naming format
+    },
+    oneOf: [
+      {
+        resourceQuery: /react/,
+        use: [
+          {
+            loader: require.resolve('@svgr/webpack'),
+            options: {
+              typescript: true,
+            }
+          }
+        ],
+        type: 'javascript/auto',
+      },
+      {
+        // Fallback for CSS files or other assets (e.g. background-image)
+        type: 'asset/resource',
+      },
+    ]
+  };
+  const lscgConfig = {
+    test: /lscg-solver/,
+    use: [
+      {
+        loader: 'exports-loader',
+        options: {
+          exports: 'single desc', // Injects 'var desc;' at the top and exports it
+        },
+      },
+    ],
+  }
+  const externals = {
+    'react': 'react',
+    'react-dom': 'react-dom'
+  }
   const plugins = [
     new webpack.DefinePlugin({
       CHARTICULATOR_PACKAGE: JSON.stringify({
@@ -61,13 +109,16 @@ module.exports = (env, { mode }) => {
       }),
       "process.env": {
         NODE_ENV: JSON.stringify(mode)
-      }
+      },
     })
   ];
   return [
     {
       name: "app",
       dependencies: ["worker"],
+      experiments: {
+        outputModule: true, // Enables the ESM output type mechanism
+      },
       // devtool: "eval",
       entry:
         mode == "production"
@@ -83,9 +134,16 @@ module.exports = (env, { mode }) => {
         filename: "[name].bundle.js",
         path: __dirname + "/dist/scripts",
         // Export the app as a global variable "Charticulator"
-        libraryTarget: "var",
-        library: "Charticulator"
+        library: {
+          type: "module",
+        },
+        chunkFormat: 'module',
       },
+      // externals: {
+      //   // Exclude react and react-dom from the final bundle
+      //   react: 'module react',
+      //   'react-dom': 'module react-dom',
+      // },
       optimization: {
         minimize: false,
         usedExports: true,
@@ -99,8 +157,9 @@ module.exports = (env, { mode }) => {
           pegjsConfig,
           typescriptConfig,
           cssConfig,
+          svgConfig,
           {
-            test: /\.(woff|ttf|ico|woff2|jpg|jpeg|png|webp|svg)$/i,
+            test: /\.(woff|ttf|ico|woff2|jpg|jpeg|png|webp)$/i,
             use: [
               {
                 loader: require.resolve('url-loader'),
@@ -117,9 +176,11 @@ module.exports = (env, { mode }) => {
         alias: {
           resources: __dirname + "/resources",
           src: path.resolve(__dirname, '/src'),
+          'lscg-solver': path.resolve(__dirname, './lscg-solver-umd.js'),
         },
         extensions: extensions
       },
+      externals,
       plugins: [...plugins, mode === "production" ? new Visualizer({
         reportFilename: 'app.static.html',
         openAnalyzer: false,
@@ -148,6 +209,7 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
+      externals,
       plugins
     },
     {
@@ -155,7 +217,8 @@ module.exports = (env, { mode }) => {
       module: {
         rules: [
           pegjsConfig,
-          typescriptConfig
+          typescriptConfig,
+          svgConfig,
         ]
       },
       entry: {
@@ -171,7 +234,7 @@ module.exports = (env, { mode }) => {
         alias: {
           src: path.resolve(__dirname, '/src'),
           resources: __dirname + "/resources",
-          // 'lscg-solver': path.resolve(__dirname, './lscg-solver-umd.js'),
+          'lscg-solver': path.resolve(__dirname, './lscg-solver-umd.js'),
           [path.resolve(__dirname, '/src/core/common/fetch')]: false,
           './src/core/common/fetch.ts': false,
         },
@@ -188,8 +251,12 @@ module.exports = (env, { mode }) => {
       module: {
         rules: [
           pegjsConfig,
-          typescriptConfig
+          typescriptConfig,
+          svgConfig
         ]
+      },
+      experiments: {
+        outputModule: true, // Enables the ESM output type mechanism
       },
       entry: {
         container: "./src/container/index.ts"
@@ -198,8 +265,10 @@ module.exports = (env, { mode }) => {
         filename: "[name].bundle.js",
         path: __dirname + "/dist/scripts",
         // Export the app as a global variable "Charticulator"
-        libraryTarget: "var",
-        library: "CharticulatorContainer"
+        library: {
+          type: "module",
+        },
+        chunkFormat: 'module',
       },
       resolve: {
         alias: {
@@ -214,6 +283,7 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
+      externals,
       plugins: [...plugins, mode === "production" ? new Visualizer({
         reportFilename: 'container.static.html',
         openAnalyzer: false,

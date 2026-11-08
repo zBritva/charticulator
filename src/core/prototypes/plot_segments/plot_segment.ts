@@ -25,12 +25,12 @@ export abstract class PlotSegmentClass<
   PropertiesType extends Specification.AttributeMap = Specification.AttributeMap,
   AttributesType extends Specification.AttributeMap = Specification.AttributeMap
 > extends ChartElementClass<PropertiesType, AttributesType> {
-  public readonly object: Specification.PlotSegment<PropertiesType>;
-  public readonly state: Specification.PlotSegmentState<AttributesType>;
+  public declare readonly object: Specification.PlotSegment<PropertiesType>;
+  public declare readonly state: Specification.PlotSegmentState<AttributesType>;
 
   /** Fill the layout's default state */
   // eslint-disable-next-line
-  public initializeState(): void {}
+  public initializeState(): void { }
 
   /** Build intrinsic constraints between attributes (e.g., x2 - x1 = width for rectangles) */
   // eslint-disable-next-line
@@ -42,7 +42,7 @@ export abstract class PlotSegmentClass<
     // eslint-disable-next-line
     manager: ChartStateManager
     // eslint-disable-next-line
-  ): void {}
+  ): void { }
 
   /** Build constraints for glyphs within */
   // eslint-disable-next-line
@@ -53,7 +53,7 @@ export abstract class PlotSegmentClass<
     context: BuildConstraintsContext,
     // eslint-disable-next-line
     manager: ChartStateManager
-  ): void {}
+  ): void { }
 
   /** Get the graphics that represent this layout */
   public getPlotSegmentGraphics(

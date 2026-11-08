@@ -25,9 +25,7 @@ export class DropZoneView
     DropZoneViewState
   >
   implements Droppable {
-  public refs: {
-    container: SVGGElement;
-  };
+  container: React.RefObject<SVGGElement> = React.createRef<SVGGElement>();
 
   constructor(props: DropZoneViewProps) {
     super(props);
@@ -35,7 +33,7 @@ export class DropZoneView
   }
 
   public componentDidMount() {
-    globals.dragController.registerDroppable(this, this.refs.container);
+    globals.dragController.registerDroppable(this, this.container.current);
   }
 
   public componentWillUnmount() {
@@ -127,15 +125,13 @@ export class DropZoneView
     const height = 9;
     let extra = "";
     if (Math.abs(angle) < Math.PI / 2) {
-      extra = `translate(0, ${-height / 2}) rotate(180) translate(0, ${
-        height / 2
-      })`;
+      extra = `translate(0, ${-height / 2}) rotate(180) translate(0, ${height / 2
+        })`;
     }
     return (
       <g
-        transform={`translate(${cx},${cy}) rotate(${
-          ((angle + Math.PI) / Math.PI) * 180
-        }) translate(${dx},${dy}) ${extra}`}
+        transform={`translate(${cx},${cy}) rotate(${((angle + Math.PI) / Math.PI) * 180
+          }) translate(${dx},${dy}) ${extra}`}
       >
         <text
           className="dropzone-element-text"
@@ -196,19 +192,19 @@ export class DropZoneView
           const angleOffset = -90;
           const start = [
             x +
-              radius *
-                Math.cos(Geometry.degreesToRadians(angleOffset + startAngle)),
+            radius *
+            Math.cos(Geometry.degreesToRadians(angleOffset + startAngle)),
             y +
-              radius *
-                Math.sin(Geometry.degreesToRadians(angleOffset + startAngle)),
+            radius *
+            Math.sin(Geometry.degreesToRadians(angleOffset + startAngle)),
           ];
           const end = [
             x +
-              radius *
-                Math.cos(Geometry.degreesToRadians(angleOffset + endAngle)),
+            radius *
+            Math.cos(Geometry.degreesToRadians(angleOffset + endAngle)),
             y +
-              radius *
-                Math.sin(Geometry.degreesToRadians(angleOffset + endAngle)),
+            radius *
+            Math.sin(Geometry.degreesToRadians(angleOffset + endAngle)),
           ];
           const largeArcFlag = endAngle - startAngle < 180 ? 0 : 1;
           return [
@@ -398,7 +394,7 @@ export class DropZoneView
 
     return (
       <g
-        ref="container"
+        ref={this.container}
         className={classNames("dropzone", `dropzone-${z.type}`, [
           "active",
           this.state.active,

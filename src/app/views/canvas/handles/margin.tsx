@@ -19,9 +19,7 @@ export class MarginHandleView extends React.Component<
   React.PropsWithChildren<MarginHandleViewProps>,
   MarginHandleViewState
 > {
-  public refs: {
-    margin: SVGGElement;
-  };
+  private margin = React.createRef<SVGGElement>();
   public hammer: HammerManager;
 
   constructor(props: MarginHandleViewProps) {
@@ -33,7 +31,7 @@ export class MarginHandleView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.margin);
+    this.hammer = new Hammer(this.margin.current);
     this.hammer.add(new Hammer.Pan({ threshold: 1 }));
 
     let context: HandlesDragContext = null;
@@ -74,7 +72,7 @@ export class MarginHandleView extends React.Component<
         dYLast = e.deltaY;
         let newValue =
           ((this.props.handle.axis == "x" ? dXIntegrate : dYIntegrate) * sign) /
-            total +
+          total +
           oldValue;
         if (this.props.handle.range) {
           newValue = Math.min(
@@ -96,7 +94,7 @@ export class MarginHandleView extends React.Component<
         dYLast = e.deltaY;
         let newValue =
           ((this.props.handle.axis == "x" ? dXIntegrate : dYIntegrate) * sign) /
-            total +
+          total +
           oldValue;
         if (this.props.handle.range) {
           newValue = Math.min(
@@ -149,7 +147,7 @@ export class MarginHandleView extends React.Component<
     }
     return (
       <g
-        ref="margin"
+        ref={this.margin}
         className={classNames(
           "handle",
           "handle-gap-" + handle.axis,

@@ -34,16 +34,16 @@ export abstract class ChartElementClass<
   PropertiesType extends Specification.AttributeMap = Specification.AttributeMap,
   AttributesType extends Specification.AttributeMap = Specification.AttributeMap
 > extends ObjectClass<PropertiesType, AttributesType> {
-  public readonly object: Specification.ChartElement<PropertiesType>;
-  public readonly state: Specification.ChartElementState<AttributesType>;
-  public readonly parent: ChartClass;
+  public declare readonly object: Specification.ChartElement<PropertiesType>;
+  public declare readonly state: Specification.ChartElementState<AttributesType>;
+  public declare readonly parent: ChartClass;
 
   /** Get intrinsic constraints between attributes (e.g., x2 - x1 = width for rectangles) */
   public buildConstraints(
     solver: ConstraintSolver,
     context: BuildConstraintsContext,
     manager: ChartStateManager
-  ): void {}
+  ): void { }
 
   /** Get the graphics that represent this layout */
   public getGraphics(manager: ChartStateManager): Graphics.Element {

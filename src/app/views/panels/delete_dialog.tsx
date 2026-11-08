@@ -17,6 +17,7 @@ import { Actions } from "../../actions";
 import { SVGImageIcon } from "../../components";
 import { MainContextInterface } from "../../context_component";
 import { getDefaultColorGeneratorResetFunction } from "../../../core";
+import { BinRecycleFullRegular } from "@fluentui/react-icons";
 
 interface DeleteDialogProps {
   context: MainContextInterface;
@@ -50,11 +51,10 @@ export const DeleteDialog = ({ context }: DeleteDialogProps): JSX.Element => {
       <Popover open={!isHidden}>
         <PopoverTrigger>
           <Button
-            icon={<SVGImageIcon url={R.getSVGIcon("toolbar/trash")} />}
+            icon={<BinRecycleFullRegular />}
             title={strings.menuBar.reset}
             onClick={onClick}
             appearance="transparent"
-            className="charticulator__button-menu-fluent"
           >
             {strings.menuBar.reset}
           </Button>

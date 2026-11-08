@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 import * as React from "react";
-import { ButtonRaised } from "./index";
 import { copyToClipboard } from "../utils";
 import { PropsWithChildren } from "react";
+import { Button } from "@fluentui/react-components";
 
 export enum TelemetryActionType {
   Exception = "exception",
@@ -35,9 +35,8 @@ export class ErrorBoundary extends React.Component<
   public componentDidCatch(error: Error, info: React.ErrorInfo) {
     this.setState({
       hasError: true,
-      errorString: `${error.name} \n ${error.message} \n ${
-        error.stack && error.stack
-      } \n ${info.componentStack}`,
+      errorString: `${error.name} \n ${error.message} \n ${error.stack && error.stack
+        } \n ${info.componentStack}`,
     });
 
     this.props.telemetryRecorder?.record(TelemetryActionType.Exception, {
@@ -64,22 +63,24 @@ export class ErrorBoundary extends React.Component<
             last resort, you can undo the previous change and try again.
           </p>
           <p>
-            <ButtonRaised
-              text="Try Again"
+            <Button
               onClick={() => {
                 this.setState({
                   hasError: false,
                 });
               }}
-            />
+            >
+              Try Again
+            </Button>
           </p>
           <p>
-            <ButtonRaised
-              text="Copy diagnostic information to clipboard"
+            <Button
               onClick={() => {
                 copyToClipboard(this.state.errorString);
               }}
-            />
+            >
+              Copy diagnostic information to clipboard
+            </Button>
           </p>
           <pre>
             {this.state.errorString}

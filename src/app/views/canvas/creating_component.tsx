@@ -151,9 +151,7 @@ export class CreatingComponent extends React.Component<
   React.PropsWithChildren<CreatingComponentProps>,
   CreatingComponentState
 > {
-  public refs: {
-    handler: SVGRectElement;
-  };
+  private handler: React.RefObject<SVGRectElement> = React.createRef();
 
   public hammer: HammerManager;
   private mode: string;
@@ -171,7 +169,7 @@ export class CreatingComponent extends React.Component<
   }
 
   public getPointFromEvent(point: Point): Point {
-    const r = this.refs.handler.getBoundingClientRect();
+    const r = this.handler.current.getBoundingClientRect();
     const p = Geometry.unapplyZoom(this.props.zoom, {
       x: point.x - r.left,
       y: point.y - r.top,
@@ -316,13 +314,13 @@ export class CreatingComponent extends React.Component<
     if (this.mode !== this.props.mode) {
       this.mode = this.props.mode;
       this.hammer?.destroy();
-      this.hammer = new Hammer(this.refs.handler);
+      this.hammer = new Hammer(this.handler.current);
       this.initHammer();
     }
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.handler);
+    this.hammer = new Hammer(this.handler.current);
     this.initHammer();
   }
 
@@ -485,7 +483,7 @@ export class CreatingComponent extends React.Component<
         <rect
           className="interaction-handler"
           style={{ cursor: "crosshair" }}
-          ref="handler"
+          ref={this.handler}
           x={0}
           y={0}
           width={this.props.width}
@@ -515,11 +513,11 @@ export class CreatingComponent extends React.Component<
               });
             };
             const leave = () => {
-              this.refs.handler.removeEventListener("mousemove", move);
-              this.refs.handler.removeEventListener("mouseleave", leave);
+              this.handler.current.removeEventListener("mousemove", move);
+              this.handler.current.removeEventListener("mouseleave", leave);
             };
-            this.refs.handler.addEventListener("mousemove", move);
-            this.refs.handler.addEventListener("mouseleave", leave);
+            this.handler.current.addEventListener("mousemove", move);
+            this.handler.current.addEventListener("mouseleave", leave);
           }}
         />
       </g>
@@ -614,25 +612,25 @@ export class CreatingComponentFromCreatingInteraction extends React.Component<
             const mapping = {};
             let index = 1;
             // TODO move this.props.description.mapping to state
-            for (let idx = 0; idx < points.length; idx = idx+2) {
+            for (let idx = 0; idx < points.length; idx = idx + 2) {
               mapping[`x${index}`] = `x${index}`
               index++;
             }
             index = 1;
-            for (let idx = 1; idx < points.length; idx = idx+2) {
+            for (let idx = 1; idx < points.length; idx = idx + 2) {
               mapping[`y${index}`] = `y${index}`;
               index++;
             }
             this.props.description.mapping = mapping;
-            
+
             const inMapping = {};
             index = 1;
-            for (let idx = 0; idx < points.length; idx = idx+2) {
+            for (let idx = 0; idx < points.length; idx = idx + 2) {
               inMapping[`x${index}`] = points[idx];
               index++;
             }
             index = 1;
-            for (let idx = 1; idx < points.length; idx = idx+2) {
+            for (let idx = 1; idx < points.length; idx = idx + 2) {
               inMapping[`y${index}`] = points[idx];
               index++;
             }

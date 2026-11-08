@@ -19,5 +19,5 @@
 export { ChartComponent } from "./chart_component";
 export { ChartTemplate, TemplateInstance } from "./chart_template";
 export { ChartContainer } from "./container";
-
+export { setConfig } from "./../core";
 export * from "../core";

@@ -3,6 +3,7 @@
 import { FormatLocaleDefinition } from "d3-format";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import {
   Dataset,
@@ -53,8 +54,8 @@ export interface LocalizationConfig {
 export interface ChartContainerComponentState {
   width: number;
   height: number;
-  selection: { table: string; indices: Set<number> } & DataSelection;
-  localization: LocalizationConfig;
+  selection: { table: string; indices: Set<number> } & DataSelection | null;
+  localization: LocalizationConfig | null;
 }
 
 export class ChartContainerComponent extends React.Component<
@@ -234,11 +235,14 @@ export class ChartContainer extends EventEmitter {
         localization?.thousandsDelimiter ?? defaultNumberFormat.decimal,
     });
     setBillionsFormatOption(localization?.billionsFormat || "billions");
-    setTimeZone(utcTimeZone);
+    if (utcTimeZone) {
+      setTimeZone(utcTimeZone);
+    }
   }
 
-  private container: Element;
-  private component: ChartContainerComponent;
+  private container: Element | null = null;
+  private root: ReturnType<typeof createRoot> | undefined;
+  private component: ChartContainerComponent | undefined;
 
   /** Resize the chart */
   public resize(width: number, height: number) {
@@ -320,7 +324,8 @@ export class ChartContainer extends EventEmitter {
 
   public setChart(chart: Specification.Chart) {
     this.chart = chart;
-    ReactDOM.render(this.reactMount(this.width, this.height), this.container);
+    this.root = createRoot(this.container);
+    this.root.render(this.reactMount(this.width, this.height));
   }
 
   public static setFormatOptions(options: FormatLocaleDefinition) {
@@ -393,16 +398,18 @@ export class ChartContainer extends EventEmitter {
       this.unmount();
     }
     if (typeof container == "string") {
-      container = document.getElementById(container);
+      this.container = document.getElementById(container);
+    } else {
+      this.container = container;
+      this.root = createRoot(this.container);
+      this.root?.render(this.reactMount(width, height));
     }
-    this.container = container;
-    ReactDOM.render(this.reactMount(width, height), container);
   }
 
   /** Unmount the chart */
   public unmount() {
-    if (this.container) {
-      ReactDOM.unmountComponentAtNode(this.container);
+    if (this.container && this.root) {
+      this.root.unmount();
       this.container = null;
     }
   }

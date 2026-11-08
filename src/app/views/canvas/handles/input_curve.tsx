@@ -7,10 +7,11 @@ import * as globals from "../../../globals";
 import * as R from "../../../resources";
 import { toSVGNumber } from "../../../utils";
 import { PopupView } from "../../../controllers";
-import { ButtonRaised } from "../../../components";
 import { HandlesDragContext, HandleViewProps } from "./common";
 import { strings } from "../../../../strings";
 import { FluentInputNumber } from "../../panels/widgets/controls/fluentui_input_number";
+
+import { Button } from "@fluentui/react-components"
 
 import BezierEditor from "./BezierEditor";
 
@@ -29,9 +30,7 @@ export class InputCurveHandleView extends React.Component<
   React.PropsWithChildren<InputCurveHandleViewProps>,
   InputCurveHandleViewState
 > {
-  public refs: {
-    interaction: SVGRectElement;
-  };
+  interaction: React.RefObject<SVGRectElement> = React.createRef<SVGRectElement>();
 
   public state: InputCurveHandleViewState = {
     enabled: false,
@@ -43,7 +42,7 @@ export class InputCurveHandleView extends React.Component<
   public hammer: HammerManager;
 
   public getPoint(x: number, y: number): Point {
-    const bbox = this.refs.interaction.getBoundingClientRect();
+    const bbox = this.interaction.current.getBoundingClientRect();
     x -= bbox.left;
     y -= bbox.top + bbox.height;
     x /= this.props.zoom.scale;
@@ -107,7 +106,7 @@ export class InputCurveHandleView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.interaction);
+    this.hammer = new Hammer(this.interaction.current);
 
     this.hammer.on("panstart", (e) => {
       if (this.state.drawingCurve) {
@@ -253,17 +252,19 @@ export class InputCurveHandleView extends React.Component<
             enabled: false,
             drawingPen: false,
           });
-          
+
           const context = new HandlesDragContext();
           this.props.onDragStart(this.props.handle, context);
-          context.emit("end", { value: [
-            [
-              { x: -.5, y: -.5 },
-              { x: 0, y: 0 },
-              { x: 0, y: 0 },
-              { x: .5, y: .5 }
+          context.emit("end", {
+            value: [
+              [
+                { x: -.5, y: -.5 },
+                { x: 0, y: 0 },
+                { x: 0, y: 0 },
+                { x: .5, y: .5 }
+              ]
             ]
-          ] });
+          });
         }}
       >
         <rect x={cx - 16} y={cy - 16} width={32} height={32} />
@@ -350,8 +351,7 @@ export class InputCurveHandleView extends React.Component<
                       />
                     </div>
                     <div style={{ textAlign: "right", marginTop: "10px" }}>
-                      <ButtonRaised
-                        text={strings.handles.drawSpiral}
+                      <Button
                         onClick={() => {
                           context.close();
                           // Make sprial and emit.
@@ -419,7 +419,9 @@ export class InputCurveHandleView extends React.Component<
                           }
                           dragContext.emit("end", { value: curve });
                         }}
-                      />
+                      >
+                        {strings.handles.drawSpiral}
+                      </Button>
                     </div>
                   </div>
                 </PopupView>
@@ -458,7 +460,7 @@ export class InputCurveHandleView extends React.Component<
     return (
       <g className="handle">
         <rect
-          ref="interaction"
+          ref={this.interaction}
           style={{
             pointerEvents: this.state.enabled ? "fill" : "none",
             cursor: "crosshair",

@@ -30,71 +30,71 @@ export const MinimizablePanelView: React.FC<
   }>
 > = ({ children, title, width, open }) => {
   const [isOpen, setOpen] = React.useState(open === undefined ? true : open);
-  
+
   const restoreFocusSourceAttributes = useRestoreFocusSource();
 
-    return (
-      <>
-        <div className="minimizable-panel-view">
-            {!isOpen ? (
-                <>
-                    <Button
-                        style={{
-                            margin: '2px'
-                        }}
-                        appearance="subtle"
-                        size="small"
-                        icon={<ArrowLeft12Regular />}
-                        onClick={() => setOpen(true)}
-                    />
-                    <Label style={{
-                        writingMode: 'vertical-rl',
-                        textOrientation: 'mixed'
-                    }}>{title}</Label>
-                </>
-            ) : null}
-            <InlineDrawer
-                {...restoreFocusSourceAttributes}
-                open={isOpen}
-                position="end"
-                style={{
-                    width: width
-                }}
-                separator>
-                <DrawerHeader
-                    style={{
-                        padding: '2px'
-                    }}>
-                    <DrawerHeaderTitle
-                    style={{
-                        padding: '2px',
-                        fontSize: '14px'
-                    }}
-                    action={
-                        <Button
-                            appearance="subtle"
-                            aria-label="Close"
-                            size="small"
-                            style={{
-                                marginRight: '15px'
-                            }}
-                            icon={<ArrowRight12Regular />}
-                            onClick={() => setOpen(false)}
-                        />
-                    }
-                    >
-                    {title}
-                    </DrawerHeaderTitle>
-                </DrawerHeader>
-                <DrawerBody style={{
-                    padding: '5px'
-                }}>
-                    {children}
-                </DrawerBody>
-            </InlineDrawer>
-        </div>
-      </>
-    );
+  return (
+    <>
+      <div className="minimizable-panel-view">
+        {!isOpen ? (
+          <>
+            <Button
+              style={{
+                margin: '2px'
+              }}
+              appearance="subtle"
+              size="small"
+              icon={<ArrowLeft12Regular />}
+              onClick={() => setOpen(true)}
+            />
+            <Label style={{
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed'
+            }}>{title}</Label>
+          </>
+        ) : null}
+        <InlineDrawer
+          {...restoreFocusSourceAttributes}
+          open={isOpen}
+          position="end"
+          style={{
+            width: width
+          }}
+          separator>
+          <DrawerHeader
+            style={{
+              padding: '2px'
+            }}>
+            <DrawerHeaderTitle
+              style={{
+                padding: '2px',
+                fontSize: '14px'
+              }}
+              action={
+                <Button
+                  appearance="subtle"
+                  aria-label="Close"
+                  size="small"
+                  style={{
+                    marginRight: '15px'
+                  }}
+                  icon={<ArrowRight12Regular />}
+                  onClick={() => setOpen(false)}
+                />
+              }
+            >
+              {title}
+            </DrawerHeaderTitle>
+          </DrawerHeader>
+          <DrawerBody style={{
+            padding: '5px'
+          }}>
+            {children}
+          </DrawerBody>
+        </InlineDrawer>
+      </div>
+    </>
+  );
 }
 
 export interface MinimizablePaneProps {
@@ -135,21 +135,23 @@ export class MinimizablePane extends React.Component<
           onClick={() => this.setState({ minimized: !this.state.minimized })}
           icon={
             <SVGImageIcon
+              height={16}
+              width={16}
               url={R.getSVGIcon(
                 this.state.minimized ? "ChevronRight" : "ChevronDown"
               )}
             />
           }
-          // iconProps={{
-          //   iconName: this.state.minimized ? "ChevronRight" : "ChevronDown",
-          //   styles: {
-          //     root: {
-          //       fontSize: "unset",
-          //       height: 12,
-          //     },
-          //   },
-          // }}
-          // styles={PanelHeaderStyles}
+        // iconProps={{
+        //   iconName: this.state.minimized ? "ChevronRight" : "ChevronDown",
+        //   styles: {
+        //     root: {
+        //       fontSize: "unset",
+        //       height: 12,
+        //     },
+        //   },
+        // }}
+        // styles={PanelHeaderStyles}
         />
         <span className="title">{this.props.title}</span>
         {this.props.onMaximize ? (
@@ -162,7 +164,7 @@ export class MinimizablePane extends React.Component<
                 <SVGImageIcon
                   height={20}
                   width={20}
-                  url={R.getSVGIcon("general/popout")}
+                  url={"Popout"}
                 />
               }
               onClick={() => this.props.onMaximize()}

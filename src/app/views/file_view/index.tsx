@@ -110,11 +110,9 @@ export class FileView extends React.Component<
   React.PropsWithChildren<FileViewProps>,
   FileViewState
 > {
-  public refs: {
-    inputSaveChartName: HTMLInputElement;
-  };
+  private buttonBackinputSaveChartName: React.RefObject<HTMLElement> = React.createRef();
 
-  private buttonBack: HTMLElement;
+  private buttonBack: React.RefObject<HTMLDivElement> = React.createRef();
   constructor(props: FileViewProps) {
     super(props);
     this.state = {
@@ -124,7 +122,7 @@ export class FileView extends React.Component<
 
   componentDidMount() {
     setTimeout(() => {
-      this.buttonBack?.focus();
+      this.buttonBack.current?.focus();
     }, 100);
   }
 
@@ -183,15 +181,15 @@ export class FileView extends React.Component<
 
   public render() {
     return (
-      <MainReactContext.Provider value={{ store: this.props.store }}>
+      <MainReactContext.Provider value={{ store: this.props.store, dispatcher: this.props.store.dispatcher }}>
         <div style={{
-            background: tokens.colorNeutralBackground1
-          }} className="charticulator__file-view">
+          background: tokens.colorNeutralBackground1
+        }} className="charticulator__file-view">
           <div style={{
             background: tokens.colorBrandBackground
-          }}  className="charticulator__file-view-tabs" data-testid="file-view-tabs">
+          }} className="charticulator__file-view-tabs" data-testid="file-view-tabs">
             <div
-              ref={(r) => (this.buttonBack = r)}
+              ref={this.buttonBack}
               tabIndex={0}
               className="el-button-back"
               onClick={() => this.props.onClose()}

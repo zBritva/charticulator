@@ -63,7 +63,7 @@ export class GuideClass extends ChartElementClass<
 
   public static metadata: ObjectClassMetadata = {
     displayName: "Guide",
-    iconPath: "guide/x",
+    iconPath: "GuideXline",
   };
 
   public static defaultProperties: Partial<GuideProperties> = {
@@ -77,15 +77,15 @@ export class GuideClass extends ChartElementClass<
   public attributes: {
     [name in GuideAttributeNames]: GuideAttributeDescription;
   } = {
-    value: {
-      name: GuideAttributeNames.value,
-      type: Specification.AttributeType.Number,
-    },
-    computedBaselineValue: {
-      name: GuideAttributeNames.computedBaselineValue,
-      type: Specification.AttributeType.Number,
-    },
-  };
+      value: {
+        name: GuideAttributeNames.value,
+        type: Specification.AttributeType.Number,
+      },
+      computedBaselineValue: {
+        name: GuideAttributeNames.computedBaselineValue,
+        type: Specification.AttributeType.Number,
+      },
+    };
 
   public initializeState() {
     this.state.attributes.value = 0;

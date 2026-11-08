@@ -23,9 +23,7 @@ export class PointHandleView extends React.Component<
   React.PropsWithChildren<PointHandleViewProps>,
   PointHandleViewState
 > {
-  public refs: {
-    circle: SVGCircleElement;
-  };
+  private circle = React.createRef<SVGCircleElement>();
   public hammer: HammerManager;
 
   constructor(props: PointHandleViewProps) {
@@ -38,7 +36,7 @@ export class PointHandleView extends React.Component<
   }
 
   public componentDidMount() {
-    this.hammer = new Hammer(this.refs.circle);
+    this.hammer = new Hammer(this.circle.current);
     this.hammer.add(new Hammer.Pan());
 
     let context: HandlesDragContext = null;
@@ -114,7 +112,7 @@ export class PointHandleView extends React.Component<
     });
     return (
       <g
-        ref="circle"
+        ref={this.circle}
         className={classNames(
           "handle",
           "handle-point",

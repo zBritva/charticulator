@@ -5,15 +5,16 @@ import { ICDNBackendOptions } from "./backend/cdn";
 import { IHybridBackendOptions } from "./backend/hybrid";
 export { MainViewConfig } from "./main_view";
 import { MainViewConfig } from "./main_view";
+import { EditorType } from "./stores/app_store";
 
 export interface AppExtension {
   script:
-    | string
-    | {
-        src: string;
-        sha256: string;
-        integrity: string;
-      };
+  | string
+  | {
+    src: string;
+    sha256: string;
+    integrity: string;
+  };
   style: string;
   initialize: string;
 }
@@ -54,6 +55,7 @@ export interface CharticulatorAppConfig extends CharticulatorCoreConfig {
     TargetOrigins: string;
     Embedded: boolean;
   };
+  EditorType?: EditorType;
   Backend: Backend;
   CDNBackend: ICDNBackendOptions | IHybridBackendOptions;
   MainView: MainViewConfig;

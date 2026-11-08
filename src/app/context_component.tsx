@@ -7,37 +7,24 @@ import { strings } from "../strings";
 
 export interface MainContextInterface {
   store: AppStore;
+  dispatcher: AppStore["dispatcher"];
 }
 
-export const MainContextTypes = {
-  store: (props: any, propName: string, componentName: string) => {
-    if (props[propName] instanceof AppStore) {
-      return null;
-    } else {
-      return new Error(strings.error.storeNotFound(componentName));
-    }
-  },
-};
+export const MainReactContext = React.createContext<MainContextInterface>({} as MainContextInterface);
+
 
 export class ContextedComponent<TProps, TState> extends React.Component<
   React.PropsWithChildren<TProps>,
   TState
 > {
-  public context: MainContextInterface;
-
-  constructor(props: TProps, context: MainContextInterface) {
-    super(props, context);
-  }
-
-  public static contextTypes = MainContextTypes;
+  static contextType = MainReactContext;
+  declare context: React.ContextType<typeof MainReactContext>;
 
   public dispatch(action: Action) {
-    this.context.store.dispatcher.dispatch(action);
+    this.context.store?.dispatcher.dispatch(action);
   }
 
   public get store(): AppStore {
     return this.context.store;
   }
 }
-
-export const MainReactContext = React.createContext<MainContextInterface>(null);
