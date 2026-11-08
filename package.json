@@ -9,7 +9,8 @@
     "url": "git+https://github.com/zBritva/charticulator.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "author": {
     "name": "Donghao Ren",
