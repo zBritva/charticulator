@@ -50,6 +50,20 @@ Run the following command to build Charticulator, which will create a self conta
 npm run build
 ```
 
+## npm package
+
+`npm run build_npm` is the existing development package build. It is unminified, and aside from React it bundles dependencies into the scripts.
+
+`npm run build_npm_prod` is the package build for host applications such as Power Designer:
+
+```bash
+npm run build_npm_prod
+```
+
+That build minifies `app`, `container`, and `worker` with Terser and does not emit eval source maps. `app` and `container` load shared libraries from the host (React, Fluent UI, d3, ReactGrid, styled-components, and the other `peerDependencies`). The worker bundle stays self-contained, because it runs in a Web Worker, and is minified. Import paths are unchanged (`@zbritva/charticulator/app`, `container`, `worker`, and the CSS exports). Install the peer dependencies in the host app. Keep every `@fluentui/*` package on one Fluent UI 9 release so styles and context are not duplicated.
+
+The patched `lscg-solver` build and the expression parser stay inside the bundles. `@silevis/reactgrid/styles.css` is still compiled into the app script. `app.css` and `container.css` are separate files, as before.
+
 ## App configurations (config.yml)
 
 Charticulator stores user charts in [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) by default. The backend can be switched to `hybrid`, `cdn`.

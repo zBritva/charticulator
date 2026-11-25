@@ -14,10 +14,68 @@ try {
     .trim();
 } catch (e) { }
 
+// Packages the npm production build should load from the host app.
+// The patched lscg solver and the pegjs parser stay in the bundle.
+function isNpmProductionExternal(request) {
+  if (!request || request.indexOf("!") !== -1) {
+    return false;
+  }
+  if (/\.(css|scss|sass|less)(\?.*)?$/.test(request)) {
+    return false;
+  }
+  if (request === "lscg-solver" || request.indexOf("lscg-solver/") === 0) {
+    return false;
+  }
+  if (
+    request === "react" ||
+    request.indexOf("react/") === 0 ||
+    request === "react-dom" ||
+    request.indexOf("react-dom/") === 0 ||
+    request === "styled-components" ||
+    request.indexOf("styled-components/") === 0 ||
+    request === "@silevis/reactgrid" ||
+    request.indexOf("@silevis/reactgrid/") === 0 ||
+    request === "hammerjs" ||
+    request.indexOf("hammerjs/") === 0 ||
+    request === "file-saver" ||
+    request.indexOf("file-saver/") === 0 ||
+    request === "seedrandom" ||
+    request.indexOf("seedrandom/") === 0 ||
+    request === "svg-path-parser" ||
+    request.indexOf("svg-path-parser/") === 0 ||
+    request.indexOf("@fluentui/") === 0 ||
+    request.indexOf("d3-") === 0
+  ) {
+    return true;
+  }
+  return false;
+}
+
+// "module <id>" is a static ESM import, matching output.library.type "module".
+function npmProductionExternals(data, callback) {
+  const request = data && data.request;
+  if (isNpmProductionExternal(request)) {
+    return callback(null, "module " + request);
+  }
+  callback();
+}
+
 module.exports = (env, { mode }) => {
   if (mode == null) {
     mode = "production";
   }
+  // Set only for `build.js npm --mode=production` (webpack --env npm).
+  const npmProduction = Boolean(env && env.npm) && mode === "production";
+  const libraryOptimization = npmProduction
+    ? {
+      // Webpack's default minimizer is Terser.
+      minimize: true,
+      usedExports: true,
+    }
+    : {
+      minimize: false,
+      usedExports: true,
+    };
   const extensions = ['.tsx', '.ts', '.jsx', '.js', '.css', '.svg'];
   const pegjsConfig = {
     test: /\.pegjs$/,
@@ -144,10 +202,10 @@ module.exports = (env, { mode }) => {
       //   react: 'module react',
       //   'react-dom': 'module react-dom',
       // },
-      optimization: {
-        minimize: false,
-        usedExports: true,
-      },
+      // No eval, and no source maps, in the npm production package.
+      // Use devtool: "source-map" here if external maps are needed.
+      ...(npmProduction ? { devtool: false } : {}),
+      optimization: libraryOptimization,
       cache: {
         type: 'filesystem',
         allowCollectingMemory: true,
@@ -180,7 +238,7 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
-      externals,
+      externals: npmProduction ? npmProductionExternals : externals,
       plugins: [...plugins, mode === "production" ? new Visualizer({
         reportFilename: 'app.static.html',
         openAnalyzer: false,
@@ -230,6 +288,16 @@ module.exports = (env, { mode }) => {
         libraryTarget: "var",
         library: "CharticulatorWorker"
       },
+      // The worker runs on its own. Keep every dependency inside the file.
+      ...(npmProduction
+        ? {
+          devtool: false,
+          optimization: {
+            minimize: true,
+            usedExports: true,
+          },
+        }
+        : {}),
       resolve: {
         alias: {
           src: path.resolve(__dirname, '/src'),
@@ -270,6 +338,17 @@ module.exports = (env, { mode }) => {
         },
         chunkFormat: 'module',
       },
+      // Leave optimization unset outside the npm production build so the
+      // website production build keeps webpack's mode defaults.
+      ...(npmProduction
+        ? {
+          devtool: false,
+          optimization: {
+            minimize: true,
+            usedExports: true,
+          },
+        }
+        : {}),
       resolve: {
         alias: {
           src: path.resolve(__dirname, '/src'),
@@ -283,7 +362,7 @@ module.exports = (env, { mode }) => {
         },
         extensions: extensions
       },
-      externals,
+      externals: npmProduction ? npmProductionExternals : externals,
       plugins: [...plugins, mode === "production" ? new Visualizer({
         reportFilename: 'container.static.html',
         openAnalyzer: false,
